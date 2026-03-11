@@ -26,6 +26,7 @@ poetry run ruff check .
 - THORP `model_card` and traceability helpers are migrated into the new package layout.
 - THORP `radiation` runtime seam is migrated as slice 002.
 - THORP `WeibullVC` runtime primitive is migrated as slice 003.
+- THORP `SoilHydraulics` is migrated as slice 004.
 
 ## Next validation
-- Migrate the next THORP seam, likely `SoilHydraulics`, with behavior-preserving regression checks.
+- Migrate the next THORP seam, likely `initial_soil_and_roots`, with behavior-preserving regression checks.

@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 003
-- Gate D. Bounded slices 001 through 003 approved for THORP
+- Gate C. Validation plan ready through slice 004
+- Gate D. Bounded slices 001 through 004 approved for THORP
 
 ## Migrated THORP Slices
 
@@ -65,3 +65,9 @@ Slice 003:
 - target: `src/stomatal_optimiaztion/domains/thorp/vulnerability.py`
 - scope: scalar and vectorized vulnerability-curve behavior
 - excluded: `THORPParams`, `SoilHydraulics`, and the wider config bundle
+
+Slice 004:
+- source: `THORP/src/thorp/config.py` (`SoilHydraulics`)
+- target: `src/stomatal_optimiaztion/domains/thorp/soil_hydraulics.py`
+- scope: soil hydraulic relationships and equation-tagged methods
+- excluded: `THORPParams` and `initial_soil_and_roots`

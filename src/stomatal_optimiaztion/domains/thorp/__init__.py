@@ -5,10 +5,12 @@ from stomatal_optimiaztion.domains.thorp.model_card import (
     require_equation_ids,
 )
 from stomatal_optimiaztion.domains.thorp.radiation import RadiationResult, radiation
+from stomatal_optimiaztion.domains.thorp.soil_hydraulics import SoilHydraulics
 from stomatal_optimiaztion.domains.thorp.vulnerability import WeibullVC
 
 __all__ = [
     "RadiationResult",
+    "SoilHydraulics",
     "WeibullVC",
     "equation_id_set",
     "iter_equation_refs",

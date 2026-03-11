@@ -68,8 +68,16 @@ The third slice introduces the first numerical primitive that requires array sem
 - introduce `numpy` explicitly rather than hiding that dependency behind later seams
 - keep the rest of `config.py` blocked until a larger hydraulic seam is selected
 
+## Slice 004: THORP Soil Hydraulics
+
+The fourth slice ports the next bounded hydraulic dataclass:
+- move `SoilHydraulics` out of `config.py` into a dedicated THORP module
+- preserve equation tags for `E_S2_4` through `E_S2_8`
+- keep the implementation vectorized and numerically aligned with legacy snapshots
+- leave `THORPParams` and `initial_soil_and_roots` blocked for the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, and Weibull seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, Weibull, and soil-hydraulics seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `SoilHydraulics` or another bounded hydraulic seam
+3. prepare the next THORP source audit for `initial_soil_and_roots` or another bounded soil seam
