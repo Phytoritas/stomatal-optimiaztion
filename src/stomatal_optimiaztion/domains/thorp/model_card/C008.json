@@ -1,0 +1,1486 @@
+{
+    "doc": {
+        "id": "Potkay2021_THORP_SupportingInfo",
+        "title": "Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning (Supporting Information)",
+        "authors": [
+            "Sean S. Potkay",
+            "Scott B. MacDonald",
+            "Duncan N. L. Menge",
+            "William R. L. Anderegg"
+        ],
+        "year": 2021,
+        "doi": null,
+        "page_count": 86,
+        "source_file": "/mnt/data/Potkay et al. - 2021 - Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning.pdf"
+    },
+    "model_card": {
+        "name": "THORP_dynamic_allocation_S8",
+        "aliases": [
+            "Dynamic Allocation Fractions",
+            "Marginal gain–cost allocation"
+        ],
+        "task": [
+            "Compute dynamic biomass allocation fractions among leaves, sapwood, and layered root pools using a gradient-ascent-inspired marginal gain–cost ratio",
+            "Update allocation fractions daily (noon) while simulating growth and senescence continuously at each time-step"
+        ],
+        "domain": [
+            "plant/forest carbon allocation",
+            "optimality theory",
+            "xylem hydraulics",
+            "allometry",
+            "photosynthesis"
+        ],
+        "assumptions": [
+            {
+                "id": "A_S8_1",
+                "text": "The allocation module does not include reproduction; it targets net growth/biomass partitioning.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_b3",
+                        "char_span": [
+                            270,
+                            322
+                        ],
+                        "snippet": "does not presently describe allocation for reproduction."
+                    }
+                ]
+            },
+            {
+                "id": "A_S8_2",
+                "text": "Allocation fractions are recalculated once per day at noon, while growth and senescence are simulated continuously at each time-step.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_b3",
+                        "char_span": [
+                            144,
+                            189
+                        ],
+                        "snippet": "allocation fractions recalculated each day at noon. Growth and senescence are simulated continuously"
+                    }
+                ]
+            },
+            {
+                "id": "A_S8_3",
+                "text": "Instantaneous allocation fractions are proportional to marginal gain divided by marginal cost; negative ratios are set to zero and fractions are normalized across pools.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_b4",
+                        "char_span": null,
+                        "snippet": "u k ∝ marginal gaink marginal costk"
+                    },
+                    {
+                        "page": 46,
+                        "block_id": "p46_b5",
+                        "char_span": null,
+                        "snippet": "where “marginal gaink” and “marginal costk” are defined in (S.8.2) and (S.8.3), respectively."
+                    },
+                    {
+                        "page": 46,
+                        "block_id": "p46_b12",
+                        "char_span": null,
+                        "snippet": "u k = max(0, marginal gaink / marginal costk )"
+                    },
+                    {
+                        "page": 46,
+                        "block_id": "p46_b17",
+                        "char_span": null,
+                        "snippet": "where the summation in the denominator is over all k carbon pools (j is used as the summation index)."
+                    }
+                ]
+            },
+            {
+                "id": "A_S8_4",
+                "text": "Mean pool life spans (τ) motivate a gain/cost ratio rule (rather than gain−cost), yielding life-span-weighted allocation tendencies.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 48,
+                        "block_id": "p48_b3",
+                        "char_span": null,
+                        "snippet": "… When comparing the gain/cost ratio vs. gain minus cost formulations of uk, it is important to note that the former is proportional to τk · ∂gain/∂Ck …"
+                    }
+                ]
+            },
+            {
+                "id": "A_S8_5",
+                "text": "Root allocation to saturated soil layers is prevented by setting the corresponding root-layer gain–cost ratio terms to zero when Ψsoil,i ≥ 0.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 47,
+                        "block_id": "p47_b2",
+                        "char_span": [
+                            200,
+                            212
+                        ],
+                        "snippet": "… when Ψsoil,i ≥ 0, by setting their gain/cost ratio terms to zero. …"
+                    }
+                ]
+            },
+            {
+                "id": "A_S8_6",
+                "text": "Allocation is estimated from instantaneous conditions and does not include anticipatory behavior or delayed responses in the allocation module.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 47,
+                        "block_id": "p47_b3",
+                        "char_span": [
+                            18,
+                            31
+                        ],
+                        "snippet": "… the allocation is instantaneous and thus in some sense ignores anticipatory behaviors in plant allocation."
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "E_S8_1",
+                "label": "S.8.1",
+                "latex": "u_k \\propto \\frac{\\mathrm{marginal\\ gain}*k}{\\mathrm{marginal\\ cost}*k}",
+                "variables": [
+                    "u_k",
+                    "marginal_gain_k",
+                    "marginal_cost_k"
+                ],
+                "explanation": "Proportionality rule for allocation based on marginal gain–cost ratio.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_b4",
+                        "char_span": null,
+                        "snippet": "u k ∝ marginal gaink marginal costk"
+                    },
+                    {
+                        "page": 46,
+                        "block_id": "p46_b5",
+                        "char_span": null,
+                        "snippet": "where “marginal gaink” and “marginal costk” are defined in (S.8.2) and (S.8.3), respectively."
+                    }
+                ]
+            },
+            {
+                "id": "E_S8_2",
+                "label": "S.8.2",
+                "latex": "\\mathrm{marginal\\ gain}*k=\\frac{d}{dC_k}\\left[a_L\\,(A_n+R_d)-R_m\\right]",
+                "variables": [
+                    "marginal_gain_k",
+                    "C_k",
+                    "a_L",
+                    "A_n",
+                    "R_d",
+                    "R_m"
+                ],
+                "explanation": "Marginal gain defined as derivative of gross canopy assimilation minus maintenance respiration w.r.t. carbon pool size.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_b7",
+                        "char_span": null,
+                        "snippet": "marginal gaink = d dCk [ aL (An + Rd) − Rm ]"
+                    },
+                    {
+                        "page": 46,
+                        "block_id": "p46_b8",
+                        "char_span": null,
+                        "snippet": "“Marginal gain” is the derivative of a proxy for fitness (here, canopy carbon assimilation minus respiration) with respect to carbon pool size."
+                    }
+                ]
+            },
+            {
+                "id": "E_S8_3",
+                "label": "S.8.3",
+                "latex": "\\mathrm{marginal\\ cost}*k=\\frac{dS_k}{dC_k}=\\frac{1}{\\tau_i}",
+                "variables": [
+                    "marginal_cost_k",
+                    "S_k",
+                    "C_k",
+                    "tau_i"
+                ],
+                "explanation": "Marginal cost defined via senescence flux derivative; equals inverse mean life span of the corresponding pool.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_b9",
+                        "char_span": null,
+                        "snippet": "marginal costk = dSk dCk = τ i"
+                    },
+                    {
+                        "page": 46,
+                        "block_id": "p46_b10",
+                        "char_span": null,
+                        "snippet": "(S.8.3)"
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b28",
+                        "char_span": null,
+                        "snippet": "marginal costL = 1 τL (S.8.10)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S8_4",
+                "label": "S.8.4",
+                "latex": "u_k=\\frac{\\max\\!\\left(0,\\frac{\\mathrm{marginal\\\\ gain}*k}{\\mathrm{marginal\\\\ cost}*k}\\right)}{\\sum_j \\max\\!\\left(0,\\frac{\\mathrm{marginal\\\\ gain}*j}{\\mathrm{marginal\\\\ cost}*j}\\right)}",
+                "variables": [
+                    "u_k",
+                    "marginal_gain_k",
+                    "marginal_cost_k",
+                    "j"
+                ],
+                "explanation": "Non-negative gain–cost ratios are normalized across all pools to produce allocation fractions.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_b12",
+                        "char_span": null,
+                        "snippet": "u k = max(0, marginal gaink / marginal costk )"
+                    },
+                    {
+                        "page": 46,
+                        "block_id": "p46_b13",
+                        "char_span": null,
+                        "snippet": "Σ j max(0, marginal gainj / marginal costj )"
+                    },
+                    {
+                        "page": 46,
+                        "block_id": "p46_b14",
+                        "char_span": null,
+                        "snippet": "(S.8.4)"
+                    },
+                    {
+                        "page": 46,
+                        "block_id": "p46_b15",
+                        "char_span": null,
+                        "snippet": "The “max” operator ensures that negative economic gain from growth in any carbon pool is prevented."
+                    },
+                    {
+                        "page": 46,
+                        "block_id": "p46_b16",
+                        "char_span": null,
+                        "snippet": "The normalization of uk ensures that the sum of all allocation fractions is one."
+                    },
+                    {
+                        "page": 46,
+                        "block_id": "p46_b17",
+                        "char_span": null,
+                        "snippet": "where the summation in the denominator is over all k carbon pools (j is used as the summation index)."
+                    }
+                ]
+            },
+            {
+                "id": "E_S8_5",
+                "label": "S.8.5",
+                "latex": "\\mathrm{marginal\\ gain}*k=(A_n+R_d)\\frac{da_L}{dC_k}+a_L\\,\\wp\\frac{dI}{dC_k}+a_L\\,\\lambda\\frac{dE}{dC_k}-\\frac{dR_m}{dC_k}",
+                "variables": [
+                    "marginal_gain_k",
+                    "A_n",
+                    "R_d",
+                    "a_L",
+                    "C_k",
+                    "wp",
+                    "lambda",
+                    "I",
+                    "E",
+                    "R_m"
+                ],
+                "explanation": "Chain-rule expansion of marginal gain showing productivity, light-capture, and water-use contributions, minus maintenance respiration sensitivity.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 49,
+                        "block_id": "p49_b4",
+                        "char_span": null,
+                        "snippet": "marginal gaink = (An + Rd) daL dCk + aL"
+                    },
+                    {
+                        "page": 49,
+                        "block_id": "p49_b5",
+                        "char_span": null,
+                        "snippet": "℘ dI dCk"
+                    },
+                    {
+                        "page": 49,
+                        "block_id": "p49_b6",
+                        "char_span": null,
+                        "snippet": "+ aL λ dE dCk −"
+                    },
+                    {
+                        "page": 49,
+                        "block_id": "p49_b7",
+                        "char_span": null,
+                        "snippet": "dRm dCk"
+                    },
+                    {
+                        "page": 49,
+                        "block_id": "p49_b8",
+                        "char_span": null,
+                        "snippet": "(S.8.5)"
+                    },
+                    {
+                        "page": 49,
+                        "block_id": "p49_b9",
+                        "char_span": null,
+                        "snippet": "where ℘ = ∂An/∂I and λ = ∂An/∂E …"
+                    }
+                ]
+            },
+            {
+                "id": "E_S8_6",
+                "label": "S.8.6",
+                "latex": "\\mathrm{marginal\\\\ gain}*L=\\chi_L\\left[A_n+a_L\\left(\\lambda\\frac{dE}{da_L}+\\wp\\frac{\\partial I}{\\partial a_L}\\right)\\right]",
+                "variables": [
+                    "marginal_gain_L",
+                    "chi_L",
+                    "A_n",
+                    "a_L",
+                    "lambda",
+                    "E",
+                    "wp",
+                    "I"
+                ],
+                "explanation": "Leaf-pool marginal gain expressed through leaf area sensitivity and photosynthetic sensitivities to E and I.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b3",
+                        "char_span": null,
+                        "snippet": "marginal gainL = χL [ An + aL (λ"
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b4",
+                        "char_span": null,
+                        "snippet": "dE daL + ℘"
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b5",
+                        "char_span": null,
+                        "snippet": "dI ∂aL )]"
+                    }
+                ]
+            },
+            {
+                "id": "E_S8_7",
+                "label": "S.8.7",
+                "latex": "\\mathrm{marginal\\ gain}*{sW}=a_L\\left[\\lambda\\frac{dE}{dD}+\\wp\\left(\\frac{\\partial I}{\\partial H}\\frac{\\partial H}{\\partial D}+\\frac{\\partial I}{\\partial W}\\frac{\\partial W}{\\partial D}\\right)\\right]\\frac{dD}{dC_W}-r*{sW}^m",
+                "variables": [
+                    "marginal_gain_sW",
+                    "a_L",
+                    "lambda",
+                    "E",
+                    "D",
+                    "wp",
+                    "I",
+                    "H",
+                    "W",
+                    "C_W",
+                    "r_sW_m"
+                ],
+                "explanation": "Sapwood/wood marginal gain propagated through diameter-mediated changes in E and I, minus sapwood maintenance respiration coefficient.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b8",
+                        "char_span": null,
+                        "snippet": "marginal gainsW = aL [ λ"
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b9",
+                        "char_span": null,
+                        "snippet": "dE dD + ℘ ("
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b10",
+                        "char_span": null,
+                        "snippet": "dI dH"
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b11",
+                        "char_span": null,
+                        "snippet": "∂H ∂D +"
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b12",
+                        "char_span": null,
+                        "snippet": "dI dW"
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b13",
+                        "char_span": null,
+                        "snippet": "∂W ∂D )"
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b14",
+                        "char_span": null,
+                        "snippet": "dD dC W − rsW m"
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b15",
+                        "char_span": null,
+                        "snippet": "… dE/dD is defined in Eq. (S.3.58), ∂H/∂D in Eq. (S.1.5), ∂I/∂H in Eq. (S.5.4), ∂W/∂D in Eq. (S.1.7), ∂I/∂W in Eq."
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b16",
+                        "char_span": null,
+                        "snippet": "(S.5.5), and dD/dCW in Eq. (S.1.6), and where rsWm is sapwood maintenance respiration (Eq. (S.7.4))."
+                    }
+                ]
+            },
+            {
+                "id": "E_S8_8",
+                "label": "S.8.8",
+                "latex": "\\mathrm{marginal\\ gain}*{R,H,i}=a_L\\,\\lambda\\frac{dE}{dC*{R,H,i}}-r_R^m",
+                "variables": [
+                    "marginal_gain_R_H_i",
+                    "a_L",
+                    "lambda",
+                    "E",
+                    "C_R_H_i",
+                    "r_R_m"
+                ],
+                "explanation": "Horizontal-root marginal gain in soil layer i, minus root maintenance respiration coefficient.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b19",
+                        "char_span": null,
+                        "snippet": "marginal gainR,H,i = aL λ ("
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b20",
+                        "char_span": null,
+                        "snippet": "dE dCR,H,i − rR m"
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b21",
+                        "char_span": null,
+                        "snippet": "(S.8.8)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S8_9",
+                "label": "S.8.9",
+                "latex": "\\mathrm{marginal\\ gain}*{R,V,i}=a_L\\,\\lambda\\frac{dE}{dC*{R,V,i}}-r_R^m",
+                "variables": [
+                    "marginal_gain_R_V_i",
+                    "a_L",
+                    "lambda",
+                    "E",
+                    "C_R_V_i",
+                    "r_R_m"
+                ],
+                "explanation": "Vertical-root marginal gain in soil layer i, minus root maintenance respiration coefficient.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b22",
+                        "char_span": null,
+                        "snippet": "marginal gainR,V,i = aL λ ("
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b23",
+                        "char_span": null,
+                        "snippet": "dE dCR,V,i − rR m"
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b24",
+                        "char_span": null,
+                        "snippet": "(S.8.9)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S8_10",
+                "label": "S.8.10",
+                "latex": "\\mathrm{marginal\\ cost}*L=\\frac{1}{\\tau_L}",
+                "variables": [
+                    "marginal_cost_L",
+                    "tau_L"
+                ],
+                "explanation": "Leaf marginal cost equals inverse mean leaf life span.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b27",
+                        "char_span": null,
+                        "snippet": "marginal cost terms are evaluated from definitions of gain (Eq. (S.8.2)), cost (Eq. (S.8.3)), and senescence (see Section S.7)."
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b28",
+                        "char_span": null,
+                        "snippet": "marginal costL = 1 τL (S.8.10)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S8_11",
+                "label": "S.8.11",
+                "latex": "\\mathrm{marginal\\ cost}*{sW}=\\frac{1}{\\tau*{sW}}",
+                "variables": [
+                    "marginal_cost_sW",
+                    "tau_sW"
+                ],
+                "explanation": "Sapwood marginal cost equals inverse mean sapwood life span.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b29",
+                        "char_span": null,
+                        "snippet": "marginal costsW = 1 τsW"
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b30",
+                        "char_span": null,
+                        "snippet": "(S.8.11)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S8_12",
+                "label": "S.8.12",
+                "latex": "\\mathrm{marginal\\ cost}*{R,H,i}=\\mathrm{marginal\\ cost}*{R,V,i}=\\frac{1}{\\tau_R}",
+                "variables": [
+                    "marginal_cost_R_H_i",
+                    "marginal_cost_R_V_i",
+                    "tau_R"
+                ],
+                "explanation": "Root marginal costs (both pools, each soil layer i) equal inverse mean root life span.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b31",
+                        "char_span": null,
+                        "snippet": "marginal costR,H,i = marginal costR,V,i = 1 τR"
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b32",
+                        "char_span": null,
+                        "snippet": "(S.8.12)"
+                    }
+                ]
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "u_k",
+                "name": "allocation fraction to carbon pool k",
+                "unit": "dimensionless",
+                "definition": "Instantaneous fraction of new carbon allocated to pool k after normalization across pools.",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_b12",
+                        "char_span": null,
+                        "snippet": "u k = max(0, marginal gaink / marginal costk )"
+                    }
+                ]
+            },
+            {
+                "symbol": "marginal gain_k",
+                "name": "marginal gain for pool k",
+                "unit": null,
+                "definition": "Derivative of a proxy for fitness (gross canopy assimilation minus maintenance respiration) with respect to carbon pool size C_k.",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_b7",
+                        "char_span": null,
+                        "snippet": "marginal gaink = d dCk [ aL (An + Rd) − Rm ]"
+                    },
+                    {
+                        "page": 49,
+                        "block_id": "p49_b4",
+                        "char_span": null,
+                        "snippet": "marginal gaink = (An + Rd) daL dCk + aL"
+                    }
+                ]
+            },
+            {
+                "symbol": "marginal cost_k",
+                "name": "marginal cost for pool k",
+                "unit": null,
+                "definition": "Derivative of senescence flux S_k with respect to pool size C_k; represented via inverse pool life span.",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_b9",
+                        "char_span": null,
+                        "snippet": "marginal costk = dSk dCk = τ i"
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b27",
+                        "char_span": null,
+                        "snippet": "marginal cost terms are evaluated from definitions of gain (Eq. (S.8.2)), cost (Eq. (S.8.3)), and senescence (see Section S.7)."
+                    }
+                ]
+            },
+            {
+                "symbol": "C_k",
+                "name": "carbon pool size",
+                "unit": null,
+                "definition": "Carbon amount in pool k (e.g., leaves, sapwood/wood, root layer pools).",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_b7",
+                        "char_span": null,
+                        "snippet": "marginal gaink = d dCk [ aL (An + Rd) − Rm ]"
+                    }
+                ]
+            },
+            {
+                "symbol": "S_k",
+                "name": "senescence flux from pool k",
+                "unit": null,
+                "definition": "Carbon lost from pool k due to senescence; used as the allocation cost proxy.",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_b9",
+                        "char_span": null,
+                        "snippet": "marginal costk = dSk dCk = τ i"
+                    }
+                ]
+            },
+            {
+                "symbol": "a_L",
+                "name": "leaf area",
+                "unit": null,
+                "definition": "Leaf area controlling canopy carbon gain and scaling light- and water-related marginal gain terms.",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_b7",
+                        "char_span": null,
+                        "snippet": "marginal gaink = d dCk [ aL (An + Rd) − Rm ]"
+                    },
+                    {
+                        "page": 49,
+                        "block_id": "p49_b4",
+                        "char_span": null,
+                        "snippet": "marginal gaink = (An + Rd) daL dCk + aL"
+                    }
+                ]
+            },
+            {
+                "symbol": "A_n",
+                "name": "net assimilation",
+                "unit": null,
+                "definition": "Net assimilation term used in marginal gain expressions; responds to light interception I and water-use E via sensitivities ℘ and λ.",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 49,
+                        "block_id": "p49_b1",
+                        "char_span": null,
+                        "snippet": "… the second term in (S.8.5) is the contribution to marginal gain from increased light capture, where I is the light interception by an average leaf …"
+                    },
+                    {
+                        "page": 49,
+                        "block_id": "p49_b2",
+                        "char_span": null,
+                        "snippet": "… where ℘ = ∂An/∂I and λ = ∂An/∂E (see Section S.6). …"
+                    }
+                ]
+            },
+            {
+                "symbol": "R_d",
+                "name": "dark respiration",
+                "unit": null,
+                "definition": "Leaf respiration term used to form gross assimilation (A_n + R_d) in the gain definition.",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_b7",
+                        "char_span": null,
+                        "snippet": "marginal gaink = d dCk [ aL (An + Rd) − Rm ]"
+                    }
+                ]
+            },
+            {
+                "symbol": "R_m",
+                "name": "maintenance respiration",
+                "unit": null,
+                "definition": "Whole-tree maintenance respiration subtracted in the gain definition; contributes as −dR_m/dC_k in the chain-rule expansion.",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_b8",
+                        "char_span": null,
+                        "snippet": "“Marginal gain” is the derivative of a proxy for fitness (here, canopy carbon assimilation minus respiration) with respect to carbon pool size."
+                    },
+                    {
+                        "page": 49,
+                        "block_id": "p49_b8",
+                        "char_span": null,
+                        "snippet": "(S.8.5)"
+                    }
+                ]
+            },
+            {
+                "symbol": "I",
+                "name": "average-leaf light interception",
+                "unit": null,
+                "definition": "Light interception metric affecting A_n; appears through the sensitivity ℘ = ∂A_n/∂I.",
+                "aliases": [],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 49,
+                        "block_id": "p49_b2",
+                        "char_span": null,
+                        "snippet": "… where ℘ = ∂An/∂I and λ = ∂An/∂E (see Section S.6). …"
+                    },
+                    {
+                        "page": 49,
+                        "block_id": "p49_b6",
+                        "char_span": null,
+                        "snippet": "+ aL λ dE dCk −"
+                    }
+                ]
+            },
+            {
+                "symbol": "E",
+                "name": "water-use / transpiration",
+                "unit": null,
+                "definition": "Whole-tree water-use metric affecting A_n; appears through the sensitivity λ = ∂A_n/∂E.",
+                "aliases": [],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 49,
+                        "block_id": "p49_b3",
+                        "char_span": null,
+                        "snippet": "… the third term in (S.8.5) is the contribution to marginal gain from improving water-use, given by λ · dE/dCk. …"
+                    },
+                    {
+                        "page": 49,
+                        "block_id": "p49_b7",
+                        "char_span": null,
+                        "snippet": "dRm dCk"
+                    }
+                ]
+            },
+            {
+                "symbol": "D",
+                "name": "trunk diameter",
+                "unit": null,
+                "definition": "Allometric variable used to propagate sapwood effects on E and I (via height H and width W).",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b8",
+                        "char_span": null,
+                        "snippet": "marginal gainsW = aL [ λ"
+                    }
+                ]
+            },
+            {
+                "symbol": "H",
+                "name": "tree height",
+                "unit": null,
+                "definition": "Allometric variable affecting light interception I; depends on D.",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b11",
+                        "char_span": null,
+                        "snippet": "∂H ∂D +"
+                    }
+                ]
+            },
+            {
+                "symbol": "W",
+                "name": "canopy width",
+                "unit": null,
+                "definition": "Allometric variable affecting light interception I; depends on D.",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b12",
+                        "char_span": null,
+                        "snippet": "dI dW"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_W",
+                "name": "wood (sapwood) carbon pool",
+                "unit": null,
+                "definition": "Wood carbon pool used as independent variable for diameter sensitivity dD/dC_W in sapwood marginal gain.",
+                "aliases": [],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b14",
+                        "char_span": null,
+                        "snippet": "dD dC W − rsW m"
+                    }
+                ]
+            },
+            {
+                "symbol": "C*{R,H,i}",
+                "name": "horizontal-root carbon pool in soil layer i",
+                "unit": null,
+                "definition": "Root carbon pool for horizontal root class in soil layer i.",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b19",
+                        "char_span": null,
+                        "snippet": "marginal gainR,H,i = aL λ ("
+                    }
+                ]
+            },
+            {
+                "symbol": "C_{R,V,i}",
+                "name": "vertical-root carbon pool in soil layer i",
+                "unit": null,
+                "definition": "Root carbon pool for vertical root class in soil layer i.",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b22",
+                        "char_span": null,
+                        "snippet": "marginal gainR,V,i = aL λ ("
+                    }
+                ]
+            },
+            {
+                "symbol": "Ψ_soil,i",
+                "name": "soil water potential in layer i",
+                "unit": null,
+                "definition": "Soil water potential used to prevent root allocation to saturated soil layers (Ψ_soil,i ≥ 0).",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 47,
+                        "block_id": "p47_b2",
+                        "char_span": null,
+                        "snippet": "We further prevent roots from allocating to saturated soil layers, where Ψsoil,i ≥ 0, by setting their gain/cost ratio terms to zero. We note that this approach differs from reducing τR under saturated conditions; decreasing τR, however, leads to numerical difficulties."
+                    }
+                ]
+            },
+            {
+                "symbol": "i",
+                "name": "soil-layer index",
+                "unit": null,
+                "definition": "Index over discretized soil layers for layered root pools.",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b17",
+                        "char_span": null,
+                        "snippet": "For each root pool, i denotes the soil layer in which the roots are located."
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "symbol": "\tau_L",
+                "name": "mean leaf life span",
+                "unit": null,
+                "default": null,
+                "estimation": "Model parameter (constant mean life span) used in marginal cost terms.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b28",
+                        "char_span": null,
+                        "snippet": "marginal costL = 1 τL (S.8.10)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\tau_{sW}",
+                "name": "mean sapwood life span",
+                "unit": null,
+                "default": null,
+                "estimation": "Model parameter (constant mean life span) used in marginal cost terms.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b30",
+                        "char_span": null,
+                        "snippet": "(S.8.11)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\tau_R",
+                "name": "mean root life span",
+                "unit": null,
+                "default": null,
+                "estimation": "Model parameter (constant mean life span) used in marginal cost terms; not modified under saturation due to numerical issues.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b32",
+                        "char_span": null,
+                        "snippet": "(S.8.12)"
+                    },
+                    {
+                        "page": 47,
+                        "block_id": "p47_b2",
+                        "char_span": null,
+                        "snippet": "… decreasing τR, however, leads to numerical difficulties."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\chi_L",
+                "name": "specific leaf area factor",
+                "unit": null,
+                "default": null,
+                "estimation": "Parameter linking leaf carbon to leaf area (da_L/dC_L), used in leaf marginal gain.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 49,
+                        "block_id": "p49_b0",
+                        "char_span": null,
+                        "snippet": "The first term in (S.8.5) simplifies to (An + Rd) · χL, where χL is specific leaf area."
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b3",
+                        "char_span": null,
+                        "snippet": "marginal gainL = χL [ An + aL (λ"
+                    }
+                ]
+            },
+            {
+                "symbol": "r_{sW}^m",
+                "name": "sapwood maintenance respiration coefficient",
+                "unit": null,
+                "default": null,
+                "estimation": "Parameter representing the sensitivity of maintenance respiration to sapwood carbon; subtracts from sapwood marginal gain.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b16",
+                        "char_span": null,
+                        "snippet": "(S.5.5), and dD/dCW in Eq. (S.1.6), and where rsWm is sapwood maintenance respiration (Eq. (S.7.4))."
+                    }
+                ]
+            },
+            {
+                "symbol": "r_R^m",
+                "name": "root maintenance respiration coefficient",
+                "unit": null,
+                "default": null,
+                "estimation": "Parameter representing the sensitivity of maintenance respiration to root carbon; subtracts from root marginal gains.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b21",
+                        "char_span": null,
+                        "snippet": "(S.8.8)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\wp",
+                "name": "∂A_n/∂I sensitivity",
+                "unit": null,
+                "default": null,
+                "estimation": "Sensitivity of net assimilation to light interception (defined in Section S.6 and used in gain expansion).",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 49,
+                        "block_id": "p49_b2",
+                        "char_span": null,
+                        "snippet": "… where ℘ = ∂An/∂I and λ = ∂An/∂E (see Section S.6). …"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\lambda",
+                "name": "∂A_n/∂E sensitivity",
+                "unit": null,
+                "default": null,
+                "estimation": "Sensitivity of net assimilation to water-use (defined in Section S.6 and used in gain expansion).",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 49,
+                        "block_id": "p49_b2",
+                        "char_span": null,
+                        "snippet": "… where ℘ = ∂An/∂I and λ = ∂An/∂E (see Section S.6). …"
+                    }
+                ]
+            }
+        ],
+        "algorithm": {
+            "name": "Dynamic allocation fractions via marginal gain–cost ratios",
+            "inputs": [
+                "State variables (carbon pools C_k, hydraulics, light interception I, water-use E, assimilation A_n, respiration terms)"
+            ],
+            "outputs": [
+                "Allocation fractions u_k for each carbon pool k"
+            ],
+            "steps": [
+                {
+                    "id": "ALG_S8_1",
+                    "text": "Simulate growth and senescence continuously at each time-step.",
+                    "evidence": [
+                        {
+                            "page": 46,
+                            "block_id": "p46_b3",
+                            "char_span": null,
+                            "snippet": "Allocation fractions are recalculated each day at noon. Growth and senescence are simulated continuously at each time-step. … does not presently describe allocation for reproduction."
+                        }
+                    ]
+                },
+                {
+                    "id": "ALG_S8_2",
+                    "text": "At each day’s noon, compute marginal gains for all pools (Eq. S.8.5), using simplified pool-specific expressions (Eqs. S.8.6–S.8.9).",
+                    "evidence": [
+                        {
+                            "page": 46,
+                            "block_id": "p46_b3",
+                            "char_span": null,
+                            "snippet": "Allocation fractions are recalculated each day at noon. Growth and senescence are simulated continuously at each time-step. … does not presently describe allocation for reproduction."
+                        },
+                        {
+                            "page": 49,
+                            "block_id": "p49_b4",
+                            "char_span": null,
+                            "snippet": "marginal gaink = (An + Rd) daL dCk + aL"
+                        },
+                        {
+                            "page": 50,
+                            "block_id": "p50_b3",
+                            "char_span": null,
+                            "snippet": "marginal gainL = χL [ An + aL (λ"
+                        }
+                    ]
+                },
+                {
+                    "id": "ALG_S8_3",
+                    "text": "Compute marginal costs from senescence definitions (Eq. S.8.3), yielding inverse life spans for leaves, sapwood, and roots (Eqs. S.8.10–S.8.12).",
+                    "evidence": [
+                        {
+                            "page": 46,
+                            "block_id": "p46_b9",
+                            "char_span": null,
+                            "snippet": "marginal costk = dSk dCk = τ i"
+                        },
+                        {
+                            "page": 50,
+                            "block_id": "p50_b27",
+                            "char_span": null,
+                            "snippet": "marginal cost terms are evaluated from definitions of gain (Eq. (S.8.2)), cost (Eq. (S.8.3)), and senescence (see Section S.7)."
+                        }
+                    ]
+                },
+                {
+                    "id": "ALG_S8_4",
+                    "text": "Form gain–cost ratios; set negative ratios to zero via max(0,·). For saturated soil layers (Ψ_soil,i ≥ 0), set the corresponding root-layer ratios to zero.",
+                    "evidence": [
+                        {
+                            "page": 46,
+                            "block_id": "p46_b11",
+                            "char_span": null,
+                            "snippet": "The allocation scheme is based on a gradient ascent method; thus, allocation is given by setting a fraction of zero if the gain/cost ratio is negative and a positive fraction if the ratio is positive."
+                        },
+                        {
+                            "page": 47,
+                            "block_id": "p47_b2",
+                            "char_span": null,
+                            "snippet": "We further prevent roots from allocating to saturated soil layers, where Ψsoil,i ≥ 0, by setting their gain/cost ratio terms to zero. We note that this approach differs from reducing τR under saturated conditions; decreasing τR, however, leads to numerical difficulties."
+                        }
+                    ]
+                },
+                {
+                    "id": "ALG_S8_5",
+                    "text": "Normalize non-negative ratios across pools to obtain u_k (Eq. S.8.4), and allocate new growth proportionally to u_k until the next daily update.",
+                    "evidence": [
+                        {
+                            "page": 46,
+                            "block_id": "p46_b12",
+                            "char_span": null,
+                            "snippet": "u k = max(0, marginal gaink / marginal costk )"
+                        },
+                        {
+                            "page": 46,
+                            "block_id": "p46_b17",
+                            "char_span": null,
+                            "snippet": "where the summation in the denominator is over all k carbon pools (j is used as the summation index)."
+                        }
+                    ]
+                }
+            ],
+            "pseudocode": null,
+            "uncertain": false,
+            "evidence": [
+                {
+                    "page": 46,
+                    "block_id": "p46_b3",
+                    "char_span": null,
+                    "snippet": "Allocation fractions are recalculated each day at noon. Growth and senescence are simulated continuously at each time-step. … does not presently describe allocation for reproduction."
+                }
+            ]
+        },
+        "implementation": {
+            "notes": "Allocation fractions u_k are recomputed daily at noon using gain–cost ratios; growth/senescence proceed continuously each time-step.",
+            "pseudocode_ref": null,
+            "code_ref": null,
+            "uncertain": true,
+            "evidence": [
+                {
+                    "page": 46,
+                    "block_id": "p46_b3",
+                    "char_span": null,
+                    "snippet": "Allocation fractions are recalculated each day at noon. Growth and senescence are simulated continuously at each time-step. … does not presently describe allocation for reproduction."
+                }
+            ]
+        },
+        "dependency_graph": {
+            "nodes": [
+                {
+                    "id": "S8_allocation",
+                    "name": "Dynamic allocation fractions (S.8)"
+                },
+                {
+                    "id": "S6_photosynthesis_opt",
+                    "name": "Photosynthesis sensitivities (℘, λ) (Section S.6)"
+                },
+                {
+                    "id": "S5_light",
+                    "name": "Light interception model (I derivatives) (Section S.5)"
+                },
+                {
+                    "id": "S3_hydraulics",
+                    "name": "Hydraulic / transpiration model (E derivatives) (Section S.3)"
+                },
+                {
+                    "id": "S1_allometry",
+                    "name": "Allometry (D→H,W and D–C_W relations) (Section S.1)"
+                },
+                {
+                    "id": "S7_senescence",
+                    "name": "Senescence / life span costs (τ) (Section S.7)"
+                }
+            ],
+            "edges": [
+                {
+                    "from": "S6_photosynthesis_opt",
+                    "to": "S8_allocation",
+                    "type": "inputs",
+                    "detail": "℘=∂A_n/∂I and λ=∂A_n/∂E in Eq. (S.8.5)"
+                },
+                {
+                    "from": "S5_light",
+                    "to": "S8_allocation",
+                    "type": "inputs",
+                    "detail": "I and its derivatives ∂I/∂a_L, ∂I/∂H, ∂I/∂W"
+                },
+                {
+                    "from": "S3_hydraulics",
+                    "to": "S8_allocation",
+                    "type": "inputs",
+                    "detail": "E and its derivatives dE/da_L, dE/dD, dE/dC_R"
+                },
+                {
+                    "from": "S1_allometry",
+                    "to": "S8_allocation",
+                    "type": "inputs",
+                    "detail": "Allometric derivatives ∂H/∂D, ∂W/∂D, dD/dC_W"
+                },
+                {
+                    "from": "S7_senescence",
+                    "to": "S8_allocation",
+                    "type": "inputs",
+                    "detail": "Life spans τ used in marginal costs"
+                }
+            ],
+            "uncertain": false,
+            "evidence": [
+                {
+                    "page": 50,
+                    "block_id": "p50_b15",
+                    "char_span": null,
+                    "snippet": "… dE/dD is defined in Eq. (S.3.58), ∂H/∂D in Eq. (S.1.5), ∂I/∂H in Eq. (S.5.4), ∂W/∂D in Eq. (S.1.7), ∂I/∂W in Eq."
+                },
+                {
+                    "page": 49,
+                    "block_id": "p49_b2",
+                    "char_span": null,
+                    "snippet": "… where ℘ = ∂An/∂I and λ = ∂An/∂E (see Section S.6). …"
+                }
+            ]
+        },
+        "numerics": {
+            "time_resolution": "Model time-step (unspecified); allocation updated daily at noon.",
+            "stability_notes": "Root cost adjustment under saturation is avoided due to numerical issues; saturated-layer ratios are set to zero instead.",
+            "uncertain": true,
+            "evidence": [
+                {
+                    "page": 46,
+                    "block_id": "p46_b3",
+                    "char_span": null,
+                    "snippet": "Allocation fractions are recalculated each day at noon. Growth and senescence are simulated continuously at each time-step. … does not presently describe allocation for reproduction."
+                },
+                {
+                    "page": 47,
+                    "block_id": "p47_b2",
+                    "char_span": null,
+                    "snippet": "We further prevent roots from allocating to saturated soil layers, where Ψsoil,i ≥ 0, by setting their gain/cost ratio terms to zero. We note that this approach differs from reducing τR under saturated conditions; decreasing τR, however, leads to numerical difficulties."
+                }
+            ]
+        },
+        "validation": {
+            "approach": "Comparison against numerical optimization of net assimilation (Figure S2).",
+            "results_summary": "Qualitative agreement in allocation trends; quantitative deviations noted for some metrics (SMF/RMF/LMF).",
+            "uncertain": false,
+            "evidence": [
+                {
+                    "page": 49,
+                    "block_id": "p49_b2",
+                    "char_span": null,
+                    "snippet": "… We compared THORP’s allocation algorithm to the numerical solution by setting rsWm and rRm to zero, and setting τk = 1 … THORP qualitatively agrees with the numerical solution, but differs quantitatively …"
+                }
+            ]
+        },
+        "datasets": [
+            {
+                "id": "DS_S8_FigS2",
+                "name": "In-silico comparison to numerical optimization (Figure S2)",
+                "description": "Comparison between THORP allocation fractions and a numerical solution that maximizes whole-tree net assimilation a_L·A_n by exhaustive search across allocation fractions under multiple environmental-condition combinations.",
+                "evidence": [
+                    {
+                        "page": 49,
+                        "block_id": "p49_b2",
+                        "char_span": null,
+                        "snippet": "… We compared THORP’s allocation algorithm to the numerical solution … Figure S2 compares THORP to the numerical solution across a variety of environmental conditions …"
+                    }
+                ]
+            }
+        ],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L_S8_1",
+                "text": "Reproduction allocation is not modeled in this allocation scheme.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_b3",
+                        "char_span": null,
+                        "snippet": "Allocation fractions are recalculated each day at noon. Growth and senescence are simulated continuously at each time-step. … does not presently describe allocation for reproduction."
+                    }
+                ]
+            },
+            {
+                "id": "L_S8_2",
+                "text": "Allocation is based on instantaneous conditions; anticipatory behavior or memory is not represented in the allocation module.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 47,
+                        "block_id": "p47_b3",
+                        "char_span": null,
+                        "snippet": "Allocation is also estimated based on instantaneous conditions, and thus in some sense ignores anticipatory behaviors in plant allocation. Our allocation scheme therefore does not currently account for allocation based on delayed responses to environmental and endogenous physiological cues."
+                    }
+                ]
+            },
+            {
+                "id": "L_S8_3",
+                "text": "Root life span is not reduced under saturated conditions due to numerical issues; instead, saturated-layer root ratio terms are set to zero when Ψ_soil,i ≥ 0.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 47,
+                        "block_id": "p47_b2",
+                        "char_span": null,
+                        "snippet": "We further prevent roots from allocating to saturated soil layers, where Ψsoil,i ≥ 0, by setting their gain/cost ratio terms to zero. … decreasing τR, however, leads to numerical difficulties."
+                    }
+                ]
+            },
+            {
+                "id": "L_S8_4",
+                "text": "The gradient-ascent allocation rule is an analytical approximation; comparisons to a numerical optimization show qualitative agreement but quantitative deviations in some scenarios (e.g., over-predicted SMF and under-predicted RMF/LMF).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 49,
+                        "block_id": "p49_b2",
+                        "char_span": null,
+                        "snippet": "… THORP qualitatively agrees with the numerical solution, but differs quantitatively; it over-predicts SMF and under-predicts RMF and LMF, likely because it is based on an analytical approximation of the numerical solution."
+                    }
+                ]
+            },
+            {
+                "id": "L_S8_5",
+                "text": "Mean life spans are currently constant; future versions are noted to include environmental-cued senescence.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b33",
+                        "char_span": null,
+                        "snippet": "While we have treated mean life spans as constant in time, we will include environmental-cued senescence in future versions of the model."
+                    }
+                ]
+            }
+        ],
+        "open_questions": [
+            {
+                "id": "Q_S8_1",
+                "question": "What is the exact mapping between the wood carbon pool C_W used in Eq. (S.8.7) and the sapwood pool k=sW (i.e., is C_W identical to C_{sW} in this model)?",
+                "why_needed": "Implementation of sapwood allocation requires a consistent state variable for dD/dC and maintenance respiration derivative.",
+                "likely_location": "Section S.1 (allometry/carbon pools) and definitions of carbon pools in model state vector.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b14",
+                        "char_span": null,
+                        "snippet": "dD dC W − rsW m"
+                    }
+                ]
+            },
+            {
+                "id": "Q_S8_2",
+                "question": "What are the precise definitions (and units) of I and E as used in the sensitivities ℘=∂A_n/∂I and λ=∂A_n/∂E in this section?",
+                "why_needed": "Correct computation of marginal gains requires consistent scaling of light interception and water-use terms.",
+                "likely_location": "Section S.5 (light interception) and Section S.3 (hydraulics/transpiration), referenced explicitly in S.8.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 49,
+                        "block_id": "p49_b2",
+                        "char_span": null,
+                        "snippet": "… where ℘ = ∂An/∂I and λ = ∂An/∂E (see Section S.6). …"
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b15",
+                        "char_span": null,
+                        "snippet": "… dE/dD is defined in Eq. (S.3.58), ∂H/∂D in Eq. (S.1.5), ∂I/∂H in Eq. (S.5.4), …"
+                    }
+                ]
+            },
+            {
+                "id": "Q_S8_3",
+                "question": "Are mean life spans τ_L, τ_{sW}, and τ_R constant in time in all simulations, and if so, what parameter values are used?",
+                "why_needed": "Allocation costs directly depend on τ; reproducing results requires specified life-span parameterization.",
+                "likely_location": "Parameter table / Section S.7 (senescence) and simulation setup sections.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 50,
+                        "block_id": "p50_b33",
+                        "char_span": null,
+                        "snippet": "While we have treated mean life spans as constant in time, we will include environmental-cued senescence in future versions of the model."
+                    },
+                    {
+                        "page": 50,
+                        "block_id": "p50_b28",
+                        "char_span": null,
+                        "snippet": "marginal costL = 1 τL (S.8.10)"
+                    }
+                ]
+            }
+        ]
+    },
+    "provenance": {
+        "mode": "EXTRACT",
+        "extraction_time_utc": "2026-01-03T02:55:48+00:00",
+        "model": "GPT-5.2 Thinking",
+        "is_partial": true,
+        "chunk": {
+            "chunk_id": "C008",
+            "page_range": [
+                46,
+                50
+            ],
+            "section_heading": "S.8 Dynamic Allocation Fractions",
+            "chunk_summary": "Defines the THORP dynamic carbon allocation rule as normalized non-negative ratios of marginal gain to marginal cost, derives general and pool-specific marginal gain expressions, and defines marginal costs via inverse life spans."
+        },
+        "chunk_plan": null,
+        "next_recommended_chunk_id": "C009",
+        "notes": [
+            "Evidence snippets are limited to pages 46–50 (chunk range).",
+            "Eq. (S.8.5) introduces sensitivities ℘=∂A_n/∂I and λ=∂A_n/∂E, referencing Section S.6; derivative definitions for I and E are referenced to Sections S.5 and S.3."
+        ]
+    }
+}

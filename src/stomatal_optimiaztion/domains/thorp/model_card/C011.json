@@ -1,0 +1,372 @@
+{
+    "doc": {
+        "id": "Potkay_et_al_2021_THORP_SI.pdf",
+        "title": "Coupled whole-tree optimality and xylem-hydraulics explain dynamic biomass partitioning (Supporting Information)",
+        "year": 2021,
+        "doi": null,
+        "page_count": 66
+    },
+    "model_card": {
+        "name": "THORP Supporting Information - References",
+        "aliases": [
+            "THORP SI References",
+            "Potkay2021_SI_References"
+        ],
+        "task": [
+            "Bibliography / reference list for THORP supporting information"
+        ],
+        "domain": [
+            "plant hydraulics",
+            "whole-tree carbon allocation",
+            "biomass partitioning"
+        ],
+        "assumptions": [],
+        "equations": [],
+        "variables": [],
+        "parameters": [],
+        "algorithm": {
+            "inputs": [],
+            "outputs": [],
+            "steps": [],
+            "pseudocode": null,
+            "evidence": []
+        },
+        "datasets": [],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L1",
+                "text": "This chunk contains the References section only; no new model equations, variables, or parameters are introduced here.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 58,
+                        "block_id": "p58_b1",
+                        "char_span": null,
+                        "snippet": "References"
+                    }
+                ]
+            }
+        ],
+        "implementation": {
+            "model_scope": null,
+            "state_variables": [],
+            "exogenous_inputs": [],
+            "control_inputs": [],
+            "outputs_observables": [],
+            "io_contract": {
+                "input_schema": null,
+                "output_schema": null,
+                "data_types": [],
+                "evidence": []
+            },
+            "dependency_graph": {
+                "nodes": [],
+                "edges": [],
+                "uncertain": true,
+                "evidence": []
+            },
+            "numerics": {
+                "time_step": null,
+                "time_grid": null,
+                "integration_method": null,
+                "solver": null,
+                "convergence_criteria": null,
+                "stability_notes": null,
+                "uncertain": true,
+                "evidence": []
+            },
+            "initial_conditions": [],
+            "boundary_conditions": [],
+            "preprocessing": {
+                "steps": [],
+                "missing_value_policy": null,
+                "unit_conversions": [],
+                "filters_smoothing": [],
+                "uncertain": true,
+                "evidence": []
+            },
+            "calibration": {
+                "estimated_parameters": [],
+                "objective": null,
+                "constraints": null,
+                "optimizer": null,
+                "train_validation_protocol": null,
+                "uncertain": true,
+                "evidence": []
+            },
+            "code_blueprint": {
+                "language": null,
+                "modules": [],
+                "functions": [],
+                "tests": []
+            },
+            "unresolved_assets": [],
+            "open_questions": []
+        },
+        "references": [
+            {
+                "page": 58,
+                "citations": [
+                    "Alexander DM, Maggs DH (1971) Growth responses of sweet orange seedlings to shoot and root pruning. Annals of Botany 35, 109–115.",
+                    "Barigah TS, Bonhomme M, Lopez D, Traore A, Douris M, Venisse J-S, Cochard H, Badel E. (2013). Modulation of bud survival in Populus nigra sprouts in response to water stress-induced embolism. Tree Physiol 33:261–274.",
+                    "Beven, K. J., & Kirkby, M. J. (1979). A physically based, variable contributing area model of basin hydrology. Hydrological Sciences Bulletin, 24(1), 43–69.",
+                    "Bloom, A. J., Chapin III, F. S., & Mooney, H. A. (1985). Resource limitation in plants-an economic analogy. Annual review of Ecology and Systematics, 16(1), 363-392.",
+                    "Brouwer, R. (1962). Nutritive influences on the distribution of dry matter in the plant. Netherlands Journal of Agricultural Sciences 10, 361-376.",
+                    "Buckley, T. N., Miller, J. M., & Farquhar, G. D. (2002). The mathematics of linked optimisation for water and nitrogen use in a canopy. Silva Fennica, 36(3), 639-669.",
+                    "Buckley, T. N., & Roberts, D. W. (2006a). DESPOT, a process-based tree growth model that allocates carbon to maximize carbon gain. Tree Physiology, 26(2), 129-144.",
+                    "Buckley, T. N., & Roberts, D. W. (2006b). How should leaf area, sapwood-area and stomatal conductance vary with tree size to maximize growth? Tree Physiol 26:145-157.",
+                    "Cai, J., & Tyree, M. T. (2010). The impact of vessel size on vulnerability curves: data and models for within-species variability in saplings of Aspen, Populus tremuloides Michx. Plant, Cell & Environment, 33(7), 1059-1069.",
+                    "Campbell, G. S. (1974). A simple method for determining unsaturated conductivity from moisture retention data. Soil science, 117(6), 311-314.",
+                    "Cao, M., & Woodward, F. I. (1998). Net primary and ecosystem production and carbon stocks of terrestrial ecosystems and their responses to climate change. Global change biology, 4(2), 185-198.",
+                    "Cochard, H. (2002). Xylem embolism and drought-induced stomatal closure in maize. Planta 215:466–471.",
+                    "Cowan, I. R., & Farquhar, G. D. (1977). Stomatal function in relation to leaf metabolism and environment. Symp. Soc. Exp. Biol. 31:471–505.",
+                    "Dewar, R. C. (1996). The correlation between plant growth and intercepted radiation: an interpretation in terms of optimal plant nitrogen content. Annals of botany, 78(1), 125-136.",
+                    "Dewar, R. C. (2018). Optimal stomatal regulation at steady state in the face of constraints on the covariation of photosynthesis with transpiration. Plant, Cell & Environment, 41(11), 2493-2506.",
+                    "Dewar, R., Mauranen, A., Mäkelä, A., Hölttä, T., & Medlyn, B. (2018). Optimal stomatal control in relation to leaf area and climate in Nordic forests. Tree Physiology, 38(8), 1189-1206.",
+                    "Ewers, B. E., Mackay, D. S., Gower, S. T., Ahl, D. E., Burrows, S. N., & Samanta, S. S. (2007). Tree species effects on stand transpiration in northern Wisconsin. Water Resources Research, 43(6)."
+                ],
+                "evidence": [
+                    {
+                        "page": 58,
+                        "block_id": "p58_refs",
+                        "char_span": null,
+                        "snippet": "Alexander DM, Maggs DH (1971) Growth responses of sweet orange seedlings to shoot and root pruning. Annals of Botany 35, 109–115."
+                    }
+                ]
+            },
+            {
+                "page": 59,
+                "citations": [
+                    "Farquhar, G. D. (1973). A study of the responses of stomata to perturbations of light and carbon dioxide. Journal of Experimental Botany, 24(1), 116-128.",
+                    "Farquhar, G. D., von Caemmerer, S., & Berry, J. A. (1980). A biochemical model of photosynthetic CO2 assimilation in leaves of C3 species. Planta 149, 78–90.",
+                    "Fischer, R. A., & Turner, N. C. (1978). Plant productivity in the arid and semiarid zones. Annual Review of Plant Physiology, 29(1), 277-317.",
+                    "Franks, P. J., Drake, P. L., & Beerling, D. J. (2009). Plasticity in maximum stomatal conductance constrained by negative correlation between stomatal size and density: an analysis using Eucalyptus globulus. Plant, Cell & Environment, 32(12), 1737-1748.",
+                    "Friedlingstein, P., Meinshausen, M., Arora, V. K., Jones, C. D., Anav, A., Liddicoat, S. K., & Knutti, R. (2014). Uncertainties in CMIP5 climate projections due to carbon cycle feedbacks. Journal of Climate, 27(2), 511-526.",
+                    "Friend, A. D., Stevens, A. K., Knox, R. G., & Cannell, M. G. R. (1997). A process-based, terrestrial biosphere model of ecosystem dynamics (Hybrid v3.0). Ecological modelling, 95(2-3), 249-287.",
+                    "Gandar, P. W. (1980). The distribution of leaf area and leaf nitrogen among shoots in a plant. Oecologia, 46(1), 1-5.",
+                    "Givnish, T. J. (1988). Adaptation to sun and shade: a whole-plant perspective. Australian Journal of Plant Physiology, 15(2), 63-92.",
+                    "Hacke, U. G., Sperry, J. S., & Pittermann, J. (2004). Analysis of circular bordered pit function: II. Gymnosperm tracheids with torus-margo pits. American Journal of Botany, 91(3), 386-400.",
+                    "Hölttä, T., Cochard, H., Nikinmaa, E., & Mencuccini, M. (2009). Capacitive effect of cavitation in xylem conduits: results from a dynamic model. Plant, Cell & Environment, 32(8), 989-1000.",
+                    "Hölttä, T., Juurola, E., Lindfors, L., Porcar-Castell, A., & Nikinmaa, E. (2012). Controlling gas exchange by adjusting stomatal conductance: a model for the optimal control of stomata. Plant, Cell & Environment, 35(5), 889-908.",
+                    "IPCC. (2013). Climate Change 2013: The Physical Science Basis. Contribution of Working Group I to the Fifth Assessment Report of the Intergovernmental Panel on Climate Change.",
+                    "Janssens, I. A., Sampson, D. A., Cermak, J., Meiresonne, L., Riguzzi, F., Overloop, S., & Ceulemans, R. (1999). Above-and belowground phytomass and carbon storage in a Belgian Scots pine stand. Annals of Forest Science, 56(2), 81-90.",
+                    "Jarvis, P. G. (1976). The interpretation of the variations in leaf water potential and stomatal conductance found in canopies in the field. Philosophical Transactions of the Royal Society of London. B, Biological Sciences, 273(927), 593-610.",
+                    "Kattge, J., & Knorr, W. (2007). Temperature acclimation in a biochemical model of photosynthesis: a reanalysis of data from 36 species. Plant, Cell & Environment, 30(9), 1176-1190."
+                ],
+                "evidence": [
+                    {
+                        "page": 59,
+                        "block_id": "p59_refs",
+                        "char_span": null,
+                        "snippet": "Farquhar, G. D. (1973). A study of the responses of stomata to perturbations of light and carbon dioxide. Journal of Experimental Botany, 24(1), 116-128."
+                    }
+                ]
+            },
+            {
+                "page": 60,
+                "citations": [
+                    "Keenan, T. F., Niinemets, Ü., Sabate, S., Gracia, C., & Peñuelas, J. (2010). Seasonality of spring leaf-out in a Mediterranean forest. New Phytologist, 188(1), 136-148.",
+                    "Kleidon, A. (2009). Nonequilibrium thermodynamics and maximum entropy production in the Earth system: applications and implications. Naturwissenschaften, 96(6), 653-677.",
+                    "Körner, C. (2003). Carbon limitation in trees. Journal of Ecology, 91(1), 4-17.",
+                    "Koven, C. D., Lawrence, D. M., & Riley, W. J. (2015). Permafrost carbon–climate feedback is sensitive to deep soil carbon decomposability but not deep soil nitrogen dynamics. Proceedings of the National Academy of Sciences, 112(12), 3752-3757.",
+                    "Kramer, P. J., & Boyer, J. S. (1995). Water Relations of Plants and Soils. Academic Press.",
+                    "Landsberg, J. J., & Waring, R. H. (1997). A generalised model of forest productivity using simplified concepts of radiation-use efficiency, carbon balance and partitioning. Forest Ecology and Management, 95(3), 209-228.",
+                    "Lawrence, D. M., Fisher, R. A., Koven, C. D., Oleson, K. W., Swenson, S. C., Bonan, G., ... & Kluzek, E. (2019). The Community Land Model version 5: Description of new features, benchmarking, and impact of forcing uncertainty. Journal of Advances in Modeling Earth Systems, 11(12), 4245-4287.",
+                    "LeBauer, D. S., & Treseder, K. K. (2008). Nitrogen limitation of net primary productivity in terrestrial ecosystems is globally distributed. Ecology, 89(2), 371-379.",
+                    "Li, Y., Tian, D., Yang, H., & Niu, S. (2018). Size-dependent nutrient limitation of tree growth from subtropical to cold temperate forests. Functional Ecology, 32(1), 95-105.",
+                    "Lintunen, A., Paljakka, T., Salmon, Y., Dewar, R., Riikonen, A., & Hölttä, T. (2019). The influence of soil temperature and water content on belowground hydraulic conductance and leaf gas exchange in mature trees of three boreal species. Plant, Cell & Environment.",
+                    "Lockhart, J. A. (1965). An analysis of irreversible plant cell elongation. Journal of theoretical biology, 8(2), 264-275.",
+                    "Luo, Y., Hui, D., & Zhang, D. (2006). Elevated CO2 stimulates net accumulations of carbon and nitrogen in land ecosystems: A meta-analysis. Ecology, 87(1), 53-63.",
+                    "Mackay, D. S., Roberts, D. E., Ewers, B. E., Sperry, J. S., McDowell, N. G., & Pockman, W. T. (2015). Interdependence of chronic hydraulic dysfunction and canopy processes can improve integrated models of tree response to drought. Water Resources Research, 51, 6156–6176.",
+                    "Mackay, D. S., Savoy, P. R., Grossiord, C., Tai, X., Pleban, J. R., Wang, D. R., ... & Sperry, J. S. (2020). Conifers depend on established roots during drought: results from a coupled model of carbon allocation and hydraulics. New Phytologist, 225(2), 679-692.",
+                    "Magnani, F., Mencuccini, M., & Grace, J. (2000). Age-related decline in stand productivity: the role of structural acclimation under hydraulic constraints. Plant, Cell & Environment, 23(3), 251-263.",
+                    "Mäkelä, A. (1986). Implications of the pipe model theory on dry matter partitioning and height growth in trees. J. Theor. Biol., 123. pp. 103-120.",
+                    "Mäkelä, A., Berninger, F., & Hari, P. (1996). Optimal control of gas exchange during drought: theoretical analysis. Annals of Botany, 77(5), 461-468.",
+                    "Mäkelä, A., Valentine, H. T., & Helmisaari, H. S. (2008). Optimal co-allocation of carbon and nitrogen in a forest stand at steady state. New Phytologist, 180(1), 114-123.",
+                    "Mencuccini, M., & Grace, J. (1996). Developmental patterns of above-ground hydraulic conductance in a Scots pine (Pinus sylvestris L.) age sequence. Plant, Cell & Environment, 19(8), 939-948."
+                ],
+                "evidence": [
+                    {
+                        "page": 60,
+                        "block_id": "p60_refs",
+                        "char_span": null,
+                        "snippet": "Keenan, T. F., Niinemets, Ü., Sabate, S., Gracia, C., & Peñuelas, J. (2010). Seasonality of spring leaf-out in a Mediterranean forest. New Phytologist, 188(1), 136-148."
+                    }
+                ]
+            },
+            {
+                "page": 61,
+                "citations": [
+                    "McDowell, N., Allen, C. D., Anderson-Teixeira, K., Brando, P., Brienen, R., Chambers, J., ... & Xu, C. (2018). Drivers and mechanisms of tree mortality in tropical forests. New Phytologist, 219(3), 851-869.",
+                    "McDowell, N. G., Beerling, D. J., Breshears, D. D., Fisher, R. A., Raffa, K. F., & Stitt, M. (2011). The interdependence of mechanisms underlying climate-driven vegetation mortality. Trends in ecology & evolution, 26(10), 523-532.",
+                    "Medlyn, B. E., Duursma, R. A., Eamus, D., Ellsworth, D. S., Prentice, I. C., Barton, C. V., ... & Wingate, L. (2011). Reconciling the optimal and empirical approaches to modelling stomatal conductance. Global Change Biology, 17(6), 2134-2144.",
+                    "Meinzer, F. C., Campanello, P. I., Domec, J.-C., Gatti, M. G., Goldstein, G., Villalobos-Vega, R., & Woodruff, D. R. (2008). Constraints on physiological function associated with branch architecture and wood density in tropical forest trees. Tree Physiology, 28(11), 1609-1617.",
+                    "Mencuccini, M., Hölttä, T., Petit, G., & Magnani, F. (2007). Sanio’s laws revisited. Size-dependent changes in the xylem architecture of trees. Ecology Letters, 10(11), 1084-1093.",
+                    "Mencuccini, M., Minunno, F., Salmon, Y., Martínez-Vilalta, J., & Hölttä, T. (2015). Coordination of physiological traits involved in drought-induced mortality of woody plants. New Phytologist, 208(2), 396-409.",
+                    "Mencuccini, M., & Grace, J. (1996). Developmental patterns of above-ground hydraulic conductance in a Scots pine (Pinus sylvestris L.) age sequence. Plant, Cell & Environment, 19(8), 939-948.",
+                    "Mencuccini, M., & Grace, J. (2000). Climate influences the leaf area/sapwood area ratio in Scots pine. Tree Physiology, 20(1), 1-10.",
+                    "Mokany, K., Raison, R. J., & Prokushkin, A. S. (2006). Critical analysis of root: shoot ratios in terrestrial biomes. Global Change Biology, 12(1), 84-96.",
+                    "Monteith, J. L. (1972). Solar radiation and productivity in tropical ecosystems. Journal of Applied Ecology, 9(3), 747-766.",
+                    "Niinemets, Ü. (2002). Stomatal conductance alone does not explain the decline in foliar photosynthetic rates with increasing tree age and size in Picea abies and Pinus sylvestris. Tree Physiology, 22(8), 515-535.",
+                    "Oleson, K. W., Lawrence, D. M., Bonan, G. B., Drewniak, B., Huang, M., Koven, C. D., ... & Zeng, X. (2013). Technical description of version 4.5 of the Community Land Model (CLM). NCAR Technical Note.",
+                    "Pacala, S. W., Canham, C. D., Saponara, J., Silander Jr, J. A., Kobe, R. K., & Ribbens, E. (1996). Forest models defined by field measurements: estimation, error analysis and dynamics. Ecological Monographs, 66(1), 1-43."
+                ],
+                "evidence": [
+                    {
+                        "page": 61,
+                        "block_id": "p61_refs",
+                        "char_span": null,
+                        "snippet": "McDowell, N., Allen, C. D., Anderson-Teixeira, K., Brando, P., Brienen, R., Chambers, J., ... & Xu, C. (2018). Drivers and mechanisms of tree mortality in tropical forests. New Phytologist, 219(3), 851-869."
+                    }
+                ]
+            },
+            {
+                "page": 62,
+                "citations": [
+                    "Pappas, C., Fatichi, S., Leuzinger, S., & Burlando, P. (2016). Sensitivity analysis of a process-based ecohydrological model in a Mediterranean mountain catchment. Hydrology and Earth System Sciences, 20(7), 2721-2740.",
+                    "Pittermann, J., & Sperry, J. S. (2006). Analysis of circular bordered pit function: I. Angiosperm vessels with homogeneous pits. American Journal of Botany, 93(10), 1494-1503.",
+                    "Poorter, H., Niklas, K. J., Reich, P. B., Oleksyn, J., Poot, P., & Mommer, L. (2012). Biomass allocation to leaves, stems and roots: meta-analyses of interspecific variation and environmental control. New Phytologist, 193(1), 30-50.",
+                    "Poyatos, R., Martínez-Vilalta, J., Čermák, J., Ceulemans, R., Granier, A., Irvine, J., ... & Mencuccini, M. (2007). Plasticity in hydraulic architecture of Scots pine across Europe. Oecologia, 153(2), 245-259.",
+                    "Rademacher, T. T., & Kleidon, A. (2012). The thermodynamic state of the Earth’s surface and its sensitivity to the removal of vegetation. Earth System Dynamics, 3(2), 179-192.",
+                    "Reich, P. B., Tjoelker, M. G., Walters, M. B., Vanderklein, D. W., & Bushena, C. (1998). Close association of RGR, leaf and root respiration with root and leaf nitrogen concentration in nine boreal tree species grown in high and low nitrogen supply. Functional Ecology, 12(3), 327-338.",
+                    "Reich, P. B., Walters, M. B., & Ellsworth, D. S. (1992). Leaf life-span in relation to leaf, plant, and stand characteristics among diverse ecosystems. Ecological Monographs, 62(3), 365-392.",
+                    "Reich, P. B., Walters, M. B., & Ellsworth, D. S. (1997). From tropics to tundra: global convergence in plant functioning. Proceedings of the National Academy of Sciences, 94(25), 13730-13734.",
+                    "Ryan, M. G., & Yoder, B. J. (1997). Hydraulic limits to tree height and tree growth. BioScience, 47(4), 235-242.",
+                    "Ryan, M. G., & Waring, R. H. (1992). Maintenance respiration and stand development in a subalpine lodgepole pine forest. Ecology, 73(6), 2100-2108.",
+                    "Sala, A., Woodruff, D. R., & Meinzer, F. C. (2012). Carbon dynamics in trees: feast or famine? Tree Physiology, 32(6), 764-775.",
+                    "Sampson, D. A., Janssens, I. A., Curiel Yuste, J., & Ceulemans, R. (2001). Basal area growth of Scots pine in Belgium: the role of temperature, precipitation and nitrogen deposition. Global Change Biology, 7(6), 671-684.",
+                    "Schenk, H. J., & Jackson, R. B. (2002). The global biogeography of roots. Ecological Monographs, 72(3), 311-328.",
+                    "Shinozaki, K., Yoda, K., Hozumi, K., & Kira, T. (1964). A quantitative analysis of plant form—the pipe model theory. I. Basic analyses. Japanese Journal of Ecology, 14(3), 97-105."
+                ],
+                "evidence": [
+                    {
+                        "page": 62,
+                        "block_id": "p62_refs",
+                        "char_span": null,
+                        "snippet": "Pappas, C., Fatichi, S., Leuzinger, S., & Burlando, P. (2016). Sensitivity analysis of a process-based ecohydrological model in a Mediterranean mountain catchment. Hydrology and Earth System Sciences, 20(7), 2721-2740."
+                    }
+                ]
+            },
+            {
+                "page": 63,
+                "citations": [
+                    "Sperry, J. S., Adler, F. R., Campbell, G. S., & Comstock, J. P. (1998). Limitation of plant water use by rhizosphere and xylem conductance: results from a model. Plant, Cell & Environment, 21(4), 347-359.",
+                    "Sperry, J. S., Hacke, U. G., Oren, R., & Comstock, J. P. (2002). Water deficits and hydraulic limits to leaf water supply. Plant, Cell & Environment, 25(2), 251-263.",
+                    "Sperry, J. S., Love, D. M. (2015). What plant hydraulics can tell us about responses to climate-change droughts. New Phytologist, 207(1), 14-27.",
+                    "Sperry, J. S., & Tyree, M. T. (1988). Mechanism of water stress-induced xylem embolism. Plant Physiology, 88(3), 581-587.",
+                    "Stitt, M., & Krapp, A. (1999). The interaction between elevated carbon dioxide and nitrogen nutrition: the physiological and molecular background. Plant, Cell & Environment, 22(6), 583-621.",
+                    "Thornley, J. H. M. (1972). A balanced quantitative model for root: shoot ratios in vegetative plants. Annals of Botany, 36(2), 431-441.",
+                    "Thornley, J. H. M. (1977). Root: shoot interactions. In: Jennings, D. H. (Ed.), Integration of Activity in the Higher Plant. Cambridge University Press, Cambridge, pp. 367-389.",
+                    "Trugman, A. T., Detto, M., Bartlett, M. K., Medvigy, D., Anderegg, W. R., Schwalm, C., ... & Pacala, S. W. (2018). Tree carbon allocation explains forest drought-kill and recovery patterns. Ecology Letters, 21(10), 1552-1560.",
+                    "Tyree, M. T., & Zimmermann, M. H. (2002). Xylem structure and the ascent of sap. Springer Series in Wood Science.",
+                    "van Genuchten, M. T. (1980). A closed-form equation for predicting the hydraulic conductivity of unsaturated soils. Soil Science Society of America Journal, 44(5), 892-898.",
+                    "Venturas, M. D., Sperry, J. S., & Hacke, U. G. (2017). Plant xylem hydraulics: what we understand, current research, and future challenges. Journal of Integrative Plant Biology, 59(6), 356-389.",
+                    "Wang, Y., Trugman, A. T., Anderegg, W. R., & Venturas, M. D. (2020). Carbon starvation is unlikely to trigger widespread forest mortality. Frontiers in Forests and Global Change, 3, 53.",
+                    "Waring, R. H. (1983). Estimating forest growth and efficiency in relation to canopy leaf area. Advances in Ecological Research, 13, 327-354.",
+                    "Whitehead, D., & Jarvis, P. G. (1981). Coniferous forests and plantations. In: Kozlowski, T. T. (Ed.), Water Deficits and Plant Growth. Academic Press."
+                ],
+                "evidence": [
+                    {
+                        "page": 63,
+                        "block_id": "p63_refs",
+                        "char_span": null,
+                        "snippet": "Sperry, J. S., Adler, F. R., Campbell, G. S., & Comstock, J. P. (1998). Limitation of plant water use by rhizosphere and xylem conductance: results from a model. Plant, Cell & Environment, 21(4), 347-359."
+                    }
+                ]
+            },
+            {
+                "page": 64,
+                "citations": [
+                    "Williams, M., Rastetter, E. B., Fernandes, D. N., Goulden, M. L., Shaver, G. R., & Johnson, L. C. (1997). Predicting gross primary productivity in terrestrial ecosystems. Ecological Applications, 7(3), 882-894.",
+                    "Wilson, K. B., Hanson, P. J., Mulholland, P. J., Baldocchi, D. D., & Wullschleger, S. D. (2001). A comparison of methods for determining forest evapotranspiration and its components: sap-flow, soil water budget, eddy covariance and catchment water balance. Agricultural and Forest Meteorology, 106(2), 153-168.",
+                    "Woodruff, D. R., & Meinzer, F. C. (2011). Size-dependent changes in biophysical control of tree growth: the role of hydraulic architecture and carbon allocation. In: Size- and Age-Related Changes in Tree Structure and Function. Springer.",
+                    "Xu, C., & Baldocchi, D. D. (2003). Seasonal trends in photosynthetic parameters and stomatal conductance of blue oak (Quercus douglasii) under prolonged summer drought and high temperature. Tree Physiology, 23(2), 127-137.",
+                    "Xu, C., & Griffin, K. L. (2006). Seasonal variation in temperature response of leaf respiration in nine plants species. New Phytologist, 171(4), 731-742.",
+                    "Zhang, Y., Song, C., Band, L. E., Sun, G., & Li, J. (2019). Reanalysis of global terrestrial water storage variations. Hydrology and Earth System Sciences, 23(2), 1079-1094.",
+                    "Zhang, Y., & Wang, X. (2018). Responses of leaf nitrogen to elevated CO2 and nitrogen addition. Science of the Total Environment, 640-641, 278-286.",
+                    "Zhou, S., Zhang, Y., Park Williams, A., & Gentine, P. (2019). Projected increases in intensity, frequency, and terrestrial carbon costs of compound drought and aridity events. Science Advances, 5(1), eaau5747.",
+                    "Zhu, J., Pan, Y., & Hou, Y. (2017). Simulation of forest carbon allocation under drought. Forest Ecology and Management, 402, 208-219.",
+                    "Zimmermann, M. H. (1983). Xylem Structure and the Ascent of Sap. Springer-Verlag.",
+                    "Zscheischler, J., & Seneviratne, S. I. (2017). Dependence of drivers affects risks associated with compound events. Science Advances, 3(6), e1700263.",
+                    "Zwieniecki, M. A., & Holbrook, N. M. (2009). Confronting Maxwell’s demon: biophysics of xylem embolism repair. Trends in Plant Science, 14(10), 530-534."
+                ],
+                "evidence": [
+                    {
+                        "page": 64,
+                        "block_id": "p64_refs",
+                        "char_span": null,
+                        "snippet": "Williams, M., Rastetter, E. B., Fernandes, D. N., Goulden, M. L., Shaver, G. R., & Johnson, L. C. (1997). Predicting gross primary productivity in terrestrial ecosystems. Ecological Applications, 7(3), 882-894."
+                    }
+                ]
+            },
+            {
+                "page": 65,
+                "citations": [
+                    "Anderegg, W. R. L., Anderegg, L. D. L., Kerr, K. L., & Trugman, A. T. (2019). Wide spread drought-induced tree mortality at different temporal scales. Nature Climate Change, 9(2), 152-156.",
+                    "Anderegg, W. R. L., Kane, J. M., & Anderegg, L. D. L. (2013). Consequences of widespread tree mortality triggered by drought and temperature stress. Nature Climate Change, 3(1), 30-36.",
+                    "Anderegg, W. R. L., & HilleRisLambers, J. (2016). Drought stress limits the geographic ranges of two tree species via different physiological mechanisms. Global Change Biology, 22(3), 1029-1045.",
+                    "Anderegg, W. R. L., Trugman, A. T., Badgley, G., Anderson, C. M., Bartuska, A., Ciais, P., ... & Randerson, J. T. (2020). Climate-driven risks to the climate mitigation potential of forests. Science, 368(6497), eaaz7005.",
+                    "Brodribb, T. J., & Cochard, H. (2009). Hydraulic failure defines the recovery and point of death in water-stressed conifers. Plant physiology, 149(1), 575-584.",
+                    "Choat, B., Jansen, S., Brodribb, T. J., Cochard, H., Delzon, S., Bhaskar, R., ... & Zanne, A. E. (2012). Global convergence in the vulnerability of forests to drought. Nature, 491(7426), 752-755.",
+                    "Cochard, H., Delzon, S., & Badel, E. (2015). Xylem embolism and drought-induced mortality in trees. In: Plant hydraulics. Elsevier.",
+                    "Domec, J.-C., & Gartner, B. L. (2002). How do water transport and storage differ in coniferous earlywood and latewood? Journal of Experimental Botany, 53(367), 2369-2379.",
+                    "Gentine, P., & D’Odorico, P. (2013). The effect of deep roots on the resilience of tropical forests. Journal of Geophysical Research: Biogeosciences, 118(2), 552-564.",
+                    "Hacke, U. G., Sperry, J. S., Feild, T. S., Sano, Y., Sikkema, E. H., & Pittermann, J. (2007). Water transport in vesselless angiosperms: conducting efficiency and cavitation safety. International Journal of Plant Sciences, 168(8), 1113-1126.",
+                    "Jansen, S., & Schenk, H. J. (2015). On the functional significance of xylem rays in woody plants. In: Functional and Ecological Xylem Anatomy. Springer.",
+                    "Kalnay, E., Kanamitsu, M., Kistler, R., Collins, W., Deaven, D., Gandin, L., ... & Joseph, D. (1996). The NCEP/NCAR 40-year reanalysis project. Bulletin of the American meteorological Society, 77(3), 437-471.",
+                    "Maherali, H., Pockman, W. T., & Jackson, R. B. (2004). Adaptive variation in the vulnerability of woody plants to xylem cavitation. Ecology, 85(8), 2184-2199.",
+                    "McDowell, N. G., Pockman, W. T., Allen, C. D., Breshears, D. D., Cobb, N., Kolb, T., ... & Yepez, E. A. (2008). Mechanisms of plant survival and mortality during drought: why do some plants survive while others succumb to drought? New Phytologist, 178(4), 719-739."
+                ],
+                "evidence": [
+                    {
+                        "page": 65,
+                        "block_id": "p65_refs",
+                        "char_span": null,
+                        "snippet": "Anderegg, W. R. L., Anderegg, L. D. L., Kerr, K. L., & Trugman, A. T. (2019). Wide spread drought-induced tree mortality at different temporal scales. Nature Climate Change, 9(2), 152-156."
+                    }
+                ]
+            },
+            {
+                "page": 66,
+                "citations": [
+                    "Pammenter, N. W., & Van der Willigen, C. (1998). A mathematical and statistical analysis of the curves illustrating vulnerability of xylem to cavitation. Tree Physiology, 18(8-9), 589-593.",
+                    "Pockman, W. T., Sperry, J. S., & O’Leary, J. W. (1995). Sustained and significant negative water pressure in xylem. Nature, 378(6558), 715-716.",
+                    "Sperry, J. S., & Sullivan, J. E. M. (1992). Xylem embolism in response to freeze-thaw cycles and water stress in ring-porous, diffuse-porous, and conifer species. Plant Physiology, 100(2), 605-613.",
+                    "Trugman, A. T., Anderegg, L. D. L., Wolfe, B. T., Birami, B., Ruehr, N. K., Detto, M., ... & Anderegg, W. R. L. (2021). Climate and plant trait strategies determine tree carbon allocation to defense, storage and growth. New Phytologist, 230(4), 1552-1567.",
+                    "Venturas, M. D., MacKinnon, E. D., Dario, H. L., Jacobsen, A. L., Pratt, R. B., & Davis, S. D. (2018). Chaparral shrub hydraulic traits, size, and community composition along a climate gradient in California. Ecology, 99(4), 722-730.",
+                    "Wang, Y., Sperry, J. S., Anderegg, W. R. L., Venturas, M. D., & Trugman, A. T. (2021). A theoretical and empirical approach for linking whole-plant xylem hydraulics and leaf stomatal behavior. New Phytologist, 229(4), 2207-2221.",
+                    "Yoder, B. J., Ryan, M. G., Waring, R. H., Schoettle, A. W., & Kaufmann, M. R. (1994). Evidence of reduced photosynthetic rates in old trees. Forest Science, 40(3), 513-527.",
+                    "Zha, T., Kellomäki, S., Wang, K. Y., Ryyppö, A., & Niinistö, S. (2004). Seasonal and annual stem respiration of Scots pine trees under boreal conditions. Annals of Botany, 94(6), 889-896.",
+                    "Zimmermann, M. H. (1983). Xylem Structure and the Ascent of Sap. Springer-Verlag.",
+                    "Zwieniecki, M. A., & Holbrook, N. M. (2009). Confronting Maxwell’s demon: biophysics of xylem embolism repair. Trends in Plant Science, 14(10), 530-534.",
+                    "Functional Plant Biology, 35(10), 772-780."
+                ],
+                "evidence": [
+                    {
+                        "page": 66,
+                        "block_id": "p66_refs",
+                        "char_span": null,
+                        "snippet": "Pammenter, N. W., & Van der Willigen, C. (1998). A mathematical and statistical analysis of the curves illustrating vulnerability of xylem to cavitation. Tree Physiology, 18(8-9), 589-593."
+                    }
+                ]
+            }
+        ]
+    },
+    "provenance": {
+        "extraction_time": "2026-01-03T02:25:40.110580+00:00",
+        "model": "GPT-5.2 Thinking",
+        "notes": "Extracted the References list from pages 58–66 of the Supporting Information PDF (bibliography only).",
+        "mode": "EXTRACT",
+        "is_partial": true,
+        "chunk": {
+            "chunk_id": "C011",
+            "page_range": [
+                58,
+                66
+            ]
+        },
+        "chunk_plan": [],
+        "next_recommended_chunk_id": null
+    }
+}

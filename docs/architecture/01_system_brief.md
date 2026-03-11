@@ -9,19 +9,16 @@ The new `stomatal-optimiaztion` repo exists to provide:
 - a migration-friendly documentation backbone
 - a clean place to stage bounded refactor slices
 
-## Candidate Target Shape
+## Finalized Target Shape
 
-Short term:
-- keep this repo as the architecture and migration control plane
-- defer broad source import
-- define contracts and destination modules before copying code
-
-Probable medium-term shape:
+This repository will stay a single Python package with staged domain subpackages:
 - `src/stomatal_optimiaztion/domains/thorp`
 - `src/stomatal_optimiaztion/domains/tomato`
 - `src/stomatal_optimiaztion/domains/load_cell`
 - `configs/` for migration and experiment settings
-- `docs/architecture/` for decisions and evidence
+- `docs/architecture/` for decisions, evidence, and slice planning
+
+Shared helpers can be introduced later under `src/stomatal_optimiaztion/shared/`, but only after at least two domains need the same seam.
 
 ## Primary Source Domains
 
@@ -47,8 +44,40 @@ Refactor by boundary and evidence, not by bulk copying. The new repo should only
 - validation commands are defined
 - artifact handling rules are explicit
 
+## Slice 001: THORP Model-Card Traceability
+
+The first bounded migration slice is intentionally small:
+- copy THORP `model_card` JSON assets only
+- do not copy the source PDF or any MATLAB outputs
+- migrate stdlib-only traceability helpers before numerical kernels
+- prove the seam with package-local tests before moving simulation code
+
+## Slice 002: THORP Radiation Kernel
+
+The second slice moves the first runtime kernel:
+- port `radiation.py` as a standalone THORP runtime seam
+- preserve equation tags from S.5
+- validate with a legacy snapshot and an extreme-angle behavior test
+- keep the seam stdlib-only to avoid dependency growth before larger numerical modules move
+
+## Slice 003: THORP Weibull Vulnerability Curve
+
+The third slice introduces the first numerical primitive that requires array semantics:
+- port `WeibullVC` from `config.py` into its own THORP module
+- preserve scalar and vectorized behavior from the legacy tests
+- introduce `numpy` explicitly rather than hiding that dependency behind later seams
+- keep the rest of `config.py` blocked until a larger hydraulic seam is selected
+
+## Slice 004: THORP Soil Hydraulics
+
+The fourth slice ports the next bounded hydraulic dataclass:
+- move `SoilHydraulics` out of `config.py` into a dedicated THORP module
+- preserve equation tags for `E_S2_4` through `E_S2_8`
+- keep the implementation vectorized and numerically aligned with legacy snapshots
+- leave `THORPParams` and `initial_soil_and_roots` blocked for the next seam
+
 ## Immediate Deliverables
 
-1. define the target repo profile
-2. define the first migration seam
-3. define verification commands for the first seam
+1. keep `poetry run pytest` green for the migrated model-card, radiation, Weibull, and soil-hydraulics seams
+2. keep `poetry run ruff check .` green as the minimum lint gate
+3. prepare the next THORP source audit for `initial_soil_and_roots` or another bounded soil seam

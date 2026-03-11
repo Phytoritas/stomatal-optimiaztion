@@ -1,0 +1,774 @@
+{
+    "doc": {
+        "id": "Potkay et al. - 2021 - Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning.pdf",
+        "title": "Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning",
+        "year": 2021,
+        "doi": null,
+        "page_count": 66
+    },
+    "model_card": {
+        "name": "Potkay2021_S6_Photosynthesis_GainRisk",
+        "section": "S.6 Photosynthesis and Gain-Risk Stomata Optimization",
+        "task": [
+            "Compute net leaf CO2 assimilation rate (An) by coupling stomatal CO2 diffusion with biochemical demand (Farquhar-type light- and Rubisco-limited rates)",
+            "Compute electron transport rate (J) as a smooth (hyperbolic) minimum of biochemical maximum and light-limited rates",
+            "Provide analytic expressions used in THORP for (i) marginal light-use efficiency ℘ = ∂An/∂I and (ii) marginal water-use efficiency λ = ∂An/∂E (Buckley et al. 2017 form)",
+            "Describe how stomatal state variables are closed using a Gain–Risk framework (Sperry et al. 2017), selecting an optimal leaf water potential ΨL to balance carbon gain vs hydraulic risk"
+        ],
+        "assumptions": [
+            {
+                "id": "A_S6_1",
+                "text": "Net assimilation An is simultaneously constrained by (i) stomatal CO2 diffusion supply An = Gc(ca − ci) and (ii) biochemical demand given by a smooth minimum between Aj and Ac, minus dark respiration Rd.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Eq. (S.6.1) and surrounding text"
+                    }
+                ]
+            },
+            {
+                "id": "A_S6_2",
+                "text": "Rubisco-limited (Ac) and electron-transport-limited (Aj) gross rates follow Michaelis–Menten forms in ci (Farquhar et al. 1980).",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Eqs. (S.6.2)–(S.6.3) and definitions"
+                    }
+                ]
+            },
+            {
+                "id": "A_S6_3",
+                "text": "Electron transport rate J is a smooth (hyperbolic) minimum of Jmax and JI, with curvature c′′, where JI = ϰ·I.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Eq. (S.6.4) and text defining JI = ϰ·I"
+                    }
+                ]
+            },
+            {
+                "id": "A_S6_4",
+                "text": "Curvature factors are fixed at c′ = 0.98 for the Aj–Ac minimum and c′′ = 0.90 for the Jmax–JI minimum.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Text immediately after Eqs. (S.6.1) and (S.6.4)"
+                    }
+                ]
+            },
+            {
+                "id": "A_S6_5",
+                "text": "Dark respiration is modeled as Rd = 0.01·Vc,max with temperature dependence via Harley & Baldocchi (1995) parameterization for Vc,max (and also for Jmax).",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Text after Eq. (S.6.1) and after Eq. (S.6.4)"
+                    }
+                ]
+            },
+            {
+                "id": "A_S6_6",
+                "text": "Gain–Risk stomatal closure selects ΨL by combining a supply curve E(ΨL) with a gain curve An(ΨL), enabling simultaneous solution for ΨL, E, Gw, Gc, ci, and An (framework attributed to Sperry et al. 2017).",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "asset": "/mnt/data/render_p43.png",
+                        "pointer": "Gain–Risk description paragraphs (beginning of page 43)"
+                    }
+                ]
+            },
+            {
+                "id": "A_S6_7",
+                "text": "Transpirational leaf cooling is excluded; leaf temperature is approximated by air temperature.",
+                "evidence": [
+                    {
+                        "page": 44,
+                        "asset": "/mnt/data/render_p44.png",
+                        "pointer": "Text after Eq. (S.6.16) discussing exclusion of transpirative cooling"
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "E_S6_1",
+                "latex": "A_n = G_c\\,(c_a-c_i) = \\frac{A_j + A_c - \\sqrt{(A_j + A_c)^2 - 4c' A_j A_c}}{2c'} - R_d",
+                "explanation": "Net assimilation equals stomatal CO2 supply and equals a smooth minimum (hyperbolic form) between electron-transport-limited (Aj) and Rubisco-limited (Ac) gross rates, minus dark respiration.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Eq. (S.6.1)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S6_2",
+                "latex": "A_c = V_{c,\\max}\\,\\frac{c_i-\\Gamma^*}{c_i + K_c\\left(1+\\frac{o_a}{K_o}\\right)}",
+                "explanation": "Rubisco-limited gross assimilation rate (Michaelis–Menten form in ci).",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Eq. (S.6.2)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S6_3",
+                "latex": "A_j = \\frac{J}{4}\\,\\frac{c_i-\\Gamma^*}{c_i + 2\\Gamma^*}",
+                "explanation": "Electron-transport-limited gross assimilation rate.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Eq. (S.6.3)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S6_4",
+                "latex": "J = \\frac{J_{\\max}+J_I - \\sqrt{(J_{\\max}+J_I)^2 - 4c'' J_{\\max}J_I}}{2c''},\\quad J_I=\\varkappa I",
+                "explanation": "Electron transport rate as smooth minimum of Jmax and light-limited rate JI.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Eq. (S.6.4) and definition of JI"
+                    }
+                ]
+            },
+            {
+                "id": "E_S6_5",
+                "latex": "\\wp = \\frac{\\partial A_n}{\\partial I} = \\frac{\\partial A_n}{\\partial A_j}\\,\\frac{\\partial A_j}{\\partial J}\\,\\frac{\\partial J}{\\partial J_I}\\,\\frac{\\partial J_I}{\\partial I}",
+                "explanation": "Marginal light-use efficiency computed by chain rule.",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "asset": "/mnt/data/render_p43.png",
+                        "pointer": "Eq. (S.6.5)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S6_6",
+                "latex": "\\frac{\\partial A_n}{\\partial A_j}=\\frac{1}{2c'}\\left[1-\\frac{A_j+(1-2c')A_c}{\\sqrt{(A_j+A_c)^2-4c'A_jA_c}}\\right]",
+                "explanation": "Sensitivity of An to Aj from differentiating the smooth-minimum form.",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "asset": "/mnt/data/render_p43.png",
+                        "pointer": "Eq. (S.6.6)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S6_7",
+                "latex": "A_j = \\mathcal{H} - \\sqrt{\\mathcal{H}^2-\\Omega\\,G_c}",
+                "explanation": "Analytical expression for Aj (cited as reproduced from Eller et al. 2018).",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "asset": "/mnt/data/render_p43.png",
+                        "pointer": "Eq. (S.6.7)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S6_8",
+                "latex": "\\mathcal{H}=\\frac{J}{4}+G_c\\,(c_a+2\\Gamma^*)-R_d",
+                "explanation": "Auxiliary term used in the analytical Aj solution.",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "asset": "/mnt/data/render_p43.png",
+                        "pointer": "Eq. (S.6.8)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S6_9",
+                "latex": "\\Omega=\\frac{J}{4}(c_a-\\Gamma^*)-R_d\\,(c_a+2\\Gamma^*)",
+                "explanation": "Auxiliary term used in the analytical Aj solution.",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "asset": "/mnt/data/render_p43.png",
+                        "pointer": "Eq. (S.6.9)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S6_10",
+                "latex": "\\frac{\\partial A_j}{\\partial J}=\\frac{1}{8}\\,\\frac{G_c(c_a-\\Gamma^*)-A_j}{\\sqrt{\\mathcal{H}^2-\\Omega G_c}}=\\frac{1}{8}\\,\\frac{G_c(c_a-\\Gamma^*)-A_j}{\\mathcal{H}-A_j}",
+                "explanation": "Sensitivity of Aj to J (used in ℘ chain rule).",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "asset": "/mnt/data/render_p43.png",
+                        "pointer": "Eq. (S.6.10)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S6_11",
+                "latex": "\\frac{\\partial J}{\\partial J_I}=\\frac{1}{2c''}\\left[1-\\frac{J_I+(1-2c'')J_{\\max}}{\\sqrt{(J_I+J_{\\max})^2-4c''J_IJ_{\\max}}}\\right]",
+                "explanation": "Sensitivity of J to JI from differentiating the smooth-minimum form in Eq. (S.6.4).",
+                "evidence": [
+                    {
+                        "page": 44,
+                        "asset": "/mnt/data/render_p44.png",
+                        "pointer": "Eq. (S.6.11)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S6_12",
+                "latex": "\\lambda = \\frac{\\partial A_n}{\\partial E}=\\frac{A_n}{E}\\,\\frac{\\Xi}{\\Xi+G_c}",
+                "explanation": "Analytical marginal water-use efficiency λ under stated simplifications (Buckley et al. 2017 form as used in THORP).",
+                "evidence": [
+                    {
+                        "page": 44,
+                        "asset": "/mnt/data/render_p44.png",
+                        "pointer": "Eq. (S.6.12)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S6_13",
+                "latex": "\\Xi = \\frac{\\partial A_n}{\\partial c_i}=\\frac{\\partial A_n}{\\partial A_c}\\,\\frac{\\partial A_c}{\\partial c_i}+\\frac{\\partial A_n}{\\partial A_j}\\,\\frac{\\partial A_j}{\\partial c_i}",
+                "explanation": "Definition of Ξ used in λ expression.",
+                "evidence": [
+                    {
+                        "page": 44,
+                        "asset": "/mnt/data/render_p44.png",
+                        "pointer": "Eq. (S.6.13)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S6_14",
+                "latex": "\\frac{\\partial A_n}{\\partial A_c}=\\frac{1}{2c'}\\left[1-\\frac{A_c+(1-2c')A_j}{\\sqrt{(A_j+A_c)^2-4c'A_jA_c}}\\right]",
+                "explanation": "Sensitivity of An to Ac from differentiating the smooth-minimum form.",
+                "evidence": [
+                    {
+                        "page": 44,
+                        "asset": "/mnt/data/render_p44.png",
+                        "pointer": "Eq. (S.6.14)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S6_15",
+                "latex": "\\frac{\\partial A_c}{\\partial c_i}=V_{c,\\max}\\,\\frac{\\Gamma^*+K_c\\left(1+\\frac{o_a}{K_o}\\right)}{\\left[c_i+K_c\\left(1+\\frac{o_a}{K_o}\\right)\\right]^2}",
+                "explanation": "Derivative of Ac with respect to ci.",
+                "evidence": [
+                    {
+                        "page": 44,
+                        "asset": "/mnt/data/render_p44.png",
+                        "pointer": "Eq. (S.6.15)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S6_16",
+                "latex": "\\frac{\\partial A_j}{\\partial c_i}=\\frac{J}{4}\\,\\frac{3\\Gamma^*}{(c_i+2\\Gamma^*)^2}",
+                "explanation": "Derivative of Aj with respect to ci.",
+                "evidence": [
+                    {
+                        "page": 44,
+                        "asset": "/mnt/data/render_p44.png",
+                        "pointer": "Eq. (S.6.16)"
+                    }
+                ]
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "A_n",
+                "name": "net assimilation rate",
+                "unit": "mol C m^-2 s^-1",
+                "definition": "Net CO2 assimilation rate at the leaf level.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Text and Eq. (S.6.1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "G_c",
+                "name": "stomatal CO2 conductance",
+                "unit": "mol CO2 m^-2 s^-1 kPa^-1",
+                "definition": "CO2 conductance used in diffusion supply An = Gc(ca − ci); related to water-vapor conductance by Gc = Gw/1.6.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Paragraph introducing Gc and relation to Gw"
+                    }
+                ]
+            },
+            {
+                "symbol": "G_w",
+                "name": "stomatal water-vapor conductance",
+                "unit": "mol H2O m^-2 s^-1 kPa^-1",
+                "definition": "Water-vapor conductance; linked to Gc via the 1.6 diffusivity ratio.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Gc = Gw/1.6 statement"
+                    }
+                ]
+            },
+            {
+                "symbol": "c_a",
+                "name": "atmospheric CO2 partial pressure",
+                "unit": "kPa",
+                "definition": "CO2 concentration (as partial pressure) outside the leaf.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Definitions around Eq. (S.6.1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "c_i",
+                "name": "intercellular CO2 partial pressure",
+                "unit": "kPa",
+                "definition": "CO2 concentration (as partial pressure) in the intercellular leaf space.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Definitions around Eqs. (S.6.2)–(S.6.3)"
+                    }
+                ]
+            },
+            {
+                "symbol": "A_c",
+                "name": "Rubisco-limited gross assimilation rate",
+                "unit": "mol C m^-2 s^-1",
+                "definition": "Carboxylation-limited gross CO2 uptake rate (Michaelis–Menten in ci).",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Eq. (S.6.2)"
+                    }
+                ]
+            },
+            {
+                "symbol": "A_j",
+                "name": "electron-transport-limited gross assimilation rate",
+                "unit": "mol C m^-2 s^-1",
+                "definition": "Light/electron-transport-limited gross CO2 uptake rate.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Eq. (S.6.3)"
+                    }
+                ]
+            },
+            {
+                "symbol": "R_d",
+                "name": "leaf dark respiration",
+                "unit": "mol C m^-2 s^-1",
+                "definition": "Leaf respiration term subtracted from gross assimilation to obtain net An.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Text after Eq. (S.6.1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "V_{c,max}",
+                "name": "maximum carboxylation rate",
+                "unit": "mol C m^-2 s^-1",
+                "definition": "Biochemical maximum Rubisco carboxylation capacity (temperature dependent).",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Definitions following Eq. (S.6.3)"
+                    }
+                ]
+            },
+            {
+                "symbol": "J",
+                "name": "electron transport rate",
+                "unit": "mol e^- m^-2 s^-1",
+                "definition": "Effective electron transport rate controlling Aj.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Eq. (S.6.4) and variable definitions"
+                    }
+                ]
+            },
+            {
+                "symbol": "J_{max}",
+                "name": "maximum electron transport rate",
+                "unit": "mol e^- m^-2 s^-1",
+                "definition": "Biochemical maximum electron transport capacity (temperature dependent).",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Text describing hyperbolic minimum for J"
+                    }
+                ]
+            },
+            {
+                "symbol": "J_I",
+                "name": "light-limited electron transport rate",
+                "unit": "mol e^- m^-2 s^-1",
+                "definition": "Light-limited electron transport rate defined as JI = ϰ·I.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Definition of JI"
+                    }
+                ]
+            },
+            {
+                "symbol": "I",
+                "name": "absorbed light (solar insolation)",
+                "unit": "W m^-2",
+                "definition": "Absorbed/intercepted light used to set JI = ϰ·I (I computed in Section S.5).",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "JI = ϰ·I statement"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\Gamma^*",
+                "name": "CO2 compensation point",
+                "unit": "kPa",
+                "definition": "CO2 compensation point appearing in Ac and Aj expressions.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Definitions following Eq. (S.6.3)"
+                    }
+                ]
+            },
+            {
+                "symbol": "o_a",
+                "name": "atmospheric O2 partial pressure",
+                "unit": "kPa",
+                "definition": "Atmospheric oxygen concentration (partial pressure) used in Ac denominator term.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Definitions following Eq. (S.6.3)"
+                    }
+                ]
+            },
+            {
+                "symbol": "K_c",
+                "name": "Michaelis constant for carboxylation",
+                "unit": "kPa",
+                "definition": "Michaelis–Menten constant used in Ac expression.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Definitions following Eq. (S.6.3)"
+                    }
+                ]
+            },
+            {
+                "symbol": "K_o",
+                "name": "Michaelis constant for oxygenation",
+                "unit": "kPa",
+                "definition": "Michaelis–Menten constant used in Ac expression.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Definitions following Eq. (S.6.3)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\wp",
+                "name": "marginal light-use efficiency",
+                "unit": "mol C J^-1",
+                "definition": "Expected gain in productivity per increase in absorbed light capture; computed by Eq. (S.6.5).",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "asset": "/mnt/data/render_p43.png",
+                        "pointer": "Text introducing ℘ and Eq. (S.6.5)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\lambda",
+                "name": "marginal water-use efficiency",
+                "unit": "mol C (mol H2O)^-1",
+                "definition": "Defined as ∂An/∂E; computed using an analytical form (Eq. S.6.12) rather than finite differences of An(ΨL) and E(ΨL).",
+                "evidence": [
+                    {
+                        "page": 44,
+                        "asset": "/mnt/data/render_p44.png",
+                        "pointer": "Paragraph defining λ and Eq. (S.6.12)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\Psi_L",
+                "name": "leaf water potential",
+                "unit": "MPa (sign convention as used in hydraulics sections)",
+                "definition": "Leaf water potential optimized within the Gain–Risk framework to close coupled hydraulics–photosynthesis.",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "asset": "/mnt/data/render_p43.png",
+                        "pointer": "Gain–Risk description listing unknowns including ΨL"
+                    }
+                ]
+            },
+            {
+                "symbol": "E",
+                "name": "transpiration rate",
+                "unit": "mol H2O m^-2 s^-1 (as used in the model’s gas-exchange context)",
+                "definition": "Transpiration used in Gain–Risk supply curve E(ΨL) and for λ = ∂An/∂E.",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "asset": "/mnt/data/render_p43.png",
+                        "pointer": "Gain–Risk description (supply curve E(ΨL))"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\Xi",
+                "name": "auxiliary term for λ",
+                "unit": "mol C m^-2 s^-1 kPa^-1",
+                "definition": "Ξ = ∂An/∂ci assembled from derivatives with respect to Ac and Aj.",
+                "evidence": [
+                    {
+                        "page": 44,
+                        "asset": "/mnt/data/render_p44.png",
+                        "pointer": "Eq. (S.6.13)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\mathcal{H}",
+                "name": "auxiliary term for Aj analytical solution",
+                "unit": "mol C m^-2 s^-1",
+                "definition": "Helper term defined in Eq. (S.6.8).",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "asset": "/mnt/data/render_p43.png",
+                        "pointer": "Eq. (S.6.8)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\Omega",
+                "name": "auxiliary term for Aj analytical solution",
+                "unit": "mol C m^-2 s^-1 kPa",
+                "definition": "Helper term defined in Eq. (S.6.9).",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "asset": "/mnt/data/render_p43.png",
+                        "pointer": "Eq. (S.6.9)"
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "symbol": "c'",
+                "name": "curvature factor for smooth min(Aj, Ac)",
+                "value": 0.98,
+                "unit": "dimensionless",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Text after Eq. (S.6.1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "c''",
+                "name": "curvature factor for smooth min(Jmax, JI)",
+                "value": 0.90,
+                "unit": "dimensionless",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Text after Eq. (S.6.4)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\varkappa",
+                "name": "proportionality constant between JI and I",
+                "value": 6.90e-7,
+                "unit": "mol C J^-1",
+                "notes": "Given as an approximate value with stated assumptions about quantum yield and PAR wavelength.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Text defining ϰ and its approximate value"
+                    }
+                ]
+            },
+            {
+                "symbol": "R_d/V_{c,\\max}",
+                "name": "respiration proportionality",
+                "value": 0.01,
+                "unit": "dimensionless",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/render_p42.png",
+                        "pointer": "Rd = 0.01·Vc,max statement"
+                    }
+                ]
+            }
+        ],
+        "algorithm": {
+            "inputs": [
+                "c_a",
+                "o_a",
+                "I",
+                "V_{c,max}",
+                "J_{max}",
+                "K_c",
+                "K_o",
+                "\\Gamma^*",
+                "G_w (or G_c)",
+                "R_d",
+                "hydraulic state needed to evaluate E(\\Psi_L) and conductances (from Section S.3)"
+            ],
+            "outputs": [
+                "A_n",
+                "A_c",
+                "A_j",
+                "J",
+                "\\wp (=\\partial A_n/\\partial I)",
+                "\\lambda (=\\partial A_n/\\partial E)",
+                "optimal \\Psi_L (via Gain–Risk closure)"
+            ],
+            "steps": [
+                "Set Gc = Gw/1.6.",
+                "Compute Ac(ci) via Eq. (S.6.2).",
+                "Compute JI = ϰ·I and J via Eq. (S.6.4).",
+                "Compute Aj(ci, J) via Eq. (S.6.3).",
+                "Compute An via Eq. (S.6.1). (Within the full model, ci and stomatal variables are closed jointly with hydraulics using Gain–Risk.)",
+                "Compute marginal light-use efficiency ℘ via Eq. (S.6.5) using Eqs. (S.6.6), (S.6.10), (S.6.11), and ∂JI/∂I = ϰ.",
+                "Compute λ via Eq. (S.6.12) where Ξ is assembled by Eq. (S.6.13) using Eqs. (S.6.14)–(S.6.16).",
+                "Gain–Risk closure: evaluate candidate ΨL values to generate E(ΨL) and An(ΨL); select an optimal ΨL per the Gain–Risk framework referenced to Sperry et al. (2017), then report corresponding E, Gw, Gc, ci, and An."
+            ],
+            "evidence": [
+                {
+                    "page": 42,
+                    "asset": "/mnt/data/render_p42.png",
+                    "pointer": "Eqs. (S.6.1)–(S.6.4)"
+                },
+                {
+                    "page": 43,
+                    "asset": "/mnt/data/render_p43.png",
+                    "pointer": "Eqs. (S.6.5)–(S.6.10) and Gain–Risk description"
+                },
+                {
+                    "page": 44,
+                    "asset": "/mnt/data/render_p44.png",
+                    "pointer": "Eqs. (S.6.11)–(S.6.16) and λ discussion"
+                }
+            ]
+        },
+        "datasets": [],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L_S6_1",
+                "text": "Gain–Risk objective/selection details are referenced to Sperry et al. (2017) rather than fully re-derived here; THORP relies on that framework to close ΨL and stomatal conductances.",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "asset": "/mnt/data/render_p43.png",
+                        "pointer": "Paragraph referring readers to Sperry et al. (2017) for full details"
+                    }
+                ]
+            },
+            {
+                "id": "L_S6_2",
+                "text": "Transpirational cooling is excluded; this simplification is noted to avoid pathological cases (e.g., λ < 0 under certain derivative evaluations) and to simplify derivative derivations in hydraulics-related terms.",
+                "evidence": [
+                    {
+                        "page": 44,
+                        "asset": "/mnt/data/render_p44.png",
+                        "pointer": "Text after Eq. (S.6.16) discussing exclusion of transpirative cooling"
+                    }
+                ]
+            }
+        ]
+    },
+    "provenance": {
+        "extraction_time": "2026-01-03T02:20:00Z",
+        "model": "GPT-5.2 Thinking",
+        "mode": "EXTRACT",
+        "is_partial": false,
+        "chunk": {
+            "chunk_id": "C006",
+            "page_range": [
+                42,
+                44
+            ],
+            "section_start_page": 42,
+            "section_end_page": 44
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C006",
+                "title": "S.6 Photosynthesis and Gain-Risk Stomata Optimization",
+                "page_range": [
+                    42,
+                    44
+                ],
+                "rationale": "Defines coupled diffusion–biochemistry assimilation model, electron transport smoothing, and analytic derivatives for ℘ and λ used later for allocation decisions."
+            },
+            {
+                "chunk_id": "C007",
+                "title": "S.7 Maintenance Respiration and Senescence",
+                "page_range": [
+                    45,
+                    45
+                ],
+                "rationale": "Defines whole-tree maintenance respiration (pool-wise) and senescence/lifespan-driven turnover used in carbon balance."
+            }
+        ],
+        "next_recommended_chunk_id": "C007"
+    }
+}

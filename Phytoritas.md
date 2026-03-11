@@ -9,4 +9,8 @@ This repository is the scaffold-first refactoring workspace for the legacy sourc
 Current status:
 - Bootstrap complete
 - Architecture scaffold seeded
-- Implementation gate closed until the first audit, boundary decision, and validation plan are approved
+- Target repo shape finalized as a staged single-package domain workspace
+- Slice 001 migrated: THORP model-card traceability assets and helpers
+- Slice 002 migrated: THORP radiation runtime seam
+- Slice 003 migrated: THORP Weibull vulnerability-curve primitive
+- Slice 004 migrated: THORP soil hydraulics dataclass

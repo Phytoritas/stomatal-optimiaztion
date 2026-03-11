@@ -8,12 +8,17 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "numpy>=1.26,<3.0"
 ]
 
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+packages = [{ include = "stomatal_optimiaztion", from = "src" }]
+include = ["src/stomatal_optimiaztion/domains/thorp/model_card/*.json"]
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^9.0.2"

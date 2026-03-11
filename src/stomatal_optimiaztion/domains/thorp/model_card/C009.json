@@ -1,0 +1,600 @@
+{
+    "doc": {
+        "id": "Potkay et al. - 2021 - Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning.pdf",
+        "title": "Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning",
+        "year": 2021,
+        "doi": null,
+        "page_count": 66,
+        "source_file": "/mnt/data/Potkay et al. - 2021 - Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning.pdf"
+    },
+    "model_card": {
+        "name": "Potkay2021_S9_CarbonPoolDynamics_NSC_Growth",
+        "section": "S.9 Carbon Pool Dynamics",
+        "task": [
+            "Represent uncoupled photosynthesis–growth dynamics via a nonstructural carbohydrate (NSC) storage pool",
+            "Update NSC pool using gross canopy assimilation, maintenance respiration, and phloem loading for growth plus construction respiration",
+            "Compute growth rate G as a linear function of NSC pool size modulated by air-temperature-dependent growth modifier gT(Ta)",
+            "Update structural carbon pools (leaf, sapwood, layered roots) using allocation fractions and senescence fluxes; route senesced sapwood to heartwood",
+            "Update basal diameter from wood growth and allometric derivative dD/dCW; update canopy geometry (H, W), leaf area, and downstream hydraulic capacities"
+        ],
+        "assumptions": [
+            {
+                "id": "A_S9_1",
+                "text": "Growth and photosynthesis are uncoupled; growth is driven by an NSC storage pool that enables recovery after disturbances.",
+                "evidence": [
+                    {
+                        "page": 50,
+                        "asset": "/mnt/data/render_p50.png",
+                        "pointer": "S.9 opening paragraph"
+                    }
+                ]
+            },
+            {
+                "id": "A_S9_2",
+                "text": "NSC is defined as starch NSC (not soluble sugars required for osmoregulation).",
+                "evidence": [
+                    {
+                        "page": 50,
+                        "asset": "/mnt/data/render_p50.png",
+                        "pointer": "S.9 opening paragraph (NSC definition sentence)"
+                    }
+                ]
+            },
+            {
+                "id": "A_S9_3",
+                "text": "Growth dependence on NSC is simplified to the linear portion of a Michaelis–Menten relationship, so phloem loading for growth scales linearly with NSC pool size via a constant proportionality ζ.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Paragraph between Eqs. (S.9.1) and (S.9.2a)"
+                    }
+                ]
+            },
+            {
+                "id": "A_S9_4",
+                "text": "A unitless temperature modifier gT(Ta) is applied to growth (Scots Pine parameterization), with gT(Ta)=0 for Ta<0°C and logistic form for Ta≥0°C.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eqs. (S.9.2a)–(S.9.2b)"
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "E_S9_1",
+                "label": "S.9.1",
+                "latex": "\\frac{\\partial C_S}{\\partial t}=a_L(A_n+R_d)-R_m-\\frac{G}{1-f_c}",
+                "explanation": "NSC pool balance: filled by gross canopy carbon assimilation aL(An+Rd), depleted by maintenance respiration Rm and phloem loading for growth plus construction respiration at rate G/(1−fc).",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.1) and surrounding text"
+                    }
+                ]
+            },
+            {
+                "id": "E_S9_2",
+                "label": "S.9.2a",
+                "latex": "G=g_T(T_a)\\,\\zeta\\,C_S\\,(1-f_c)",
+                "explanation": "Total growth rate is proportional to NSC pool size (linearized), reduced by construction-respiration fraction, and modulated by temperature-dependent growth modifier gT.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.2a)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S9_3",
+                "label": "S.9.2b",
+                "latex": "g_T(T_a)=\\begin{cases}0,&T_a<0^{\\circ}\\mathrm{C}\\\\\frac{1}{1+\\exp\\left[-(0.185\\ ^\\circ\\mathrm{C}^{-1})(T_a-18.4\\ ^\\circ\\mathrm{C})\\right]},&T_a\\ge 0^{\\circ}\\mathrm{C}\\end{cases}",
+                "explanation": "Piecewise temperature modifier for growth used in THORP (Scots Pine).",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.2b)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S9_4",
+                "label": "S.9.3",
+                "latex": "\\frac{\\partial C_L}{\\partial t}=u_L G-S_L",
+                "explanation": "Leaf carbon pool dynamics: gains from allocation fraction uL of growth, losses from leaf senescence SL.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.3)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S9_5",
+                "label": "S.9.4",
+                "latex": "\\frac{\\partial C_{sW}}{\\partial t}=u_{sW} G-S_{sW}",
+                "explanation": "Sapwood carbon pool dynamics: gains from allocation fraction usW of growth, losses from sapwood senescence SsW.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.4)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S9_6",
+                "label": "S.9.5",
+                "latex": "\\frac{\\partial C_{R,H,i}}{\\partial t}=u_{R,H,i} G-S_{R,H,i}",
+                "explanation": "Horizontal-root carbon pool in soil layer i: gains from allocation fraction uR,H,i, losses from senescence SR,H,i.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.5)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S9_7",
+                "label": "S.9.6",
+                "latex": "\\frac{\\partial C_{R,V,i}}{\\partial t}=u_{R,V,i} G-S_{R,V,i}",
+                "explanation": "Vertical-root carbon pool in soil layer i: gains from allocation fraction uR,V,i, losses from senescence SR,V,i.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.6)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S9_8",
+                "label": "S.9.7",
+                "latex": "\\frac{\\partial C_{hW}}{\\partial t}=S_{sW}",
+                "explanation": "Senesced sapwood carbon is added to the heartwood pool at the sapwood senescence rate.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.7) and preceding sentence"
+                    }
+                ]
+            },
+            {
+                "id": "E_S9_9",
+                "label": "S.9.8",
+                "latex": "\\frac{\\partial D}{\\partial t}=u_{sW}G\\,\\frac{\\partial D}{\\partial C_W}",
+                "explanation": "Basal diameter growth rate is driven by wood allocation usW·G scaled by the allometric derivative ∂D/∂CW (defined elsewhere).",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.8) and the sentence referencing ∂D/∂CW definition"
+                    }
+                ]
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "C_S",
+                "name": "NSC (storage) carbon pool",
+                "unit": "mol C",
+                "definition": "Nonstructural carbohydrate storage pool used to decouple photosynthesis and growth.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Text defining CS and Eq. (S.9.1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "a_L",
+                "name": "leaf area",
+                "unit": "m^2",
+                "definition": "Leaf area scaling canopy carbon assimilation input into the NSC pool.",
+                "evidence": [
+                    {
+                        "page": 50,
+                        "asset": "/mnt/data/render_p50.png",
+                        "pointer": "S.9 paragraph defining gross canopy assimilation aL·(An+Rd)"
+                    }
+                ]
+            },
+            {
+                "symbol": "A_n",
+                "name": "net assimilation rate",
+                "unit": "mol C m^-2 s^-1",
+                "definition": "Net leaf assimilation rate (from Section S.6), used in NSC filling term aL(An+Rd).",
+                "evidence": [
+                    {
+                        "page": 50,
+                        "asset": "/mnt/data/render_p50.png",
+                        "pointer": "S.9 paragraph referencing Section S.6"
+                    }
+                ]
+            },
+            {
+                "symbol": "R_d",
+                "name": "leaf dark respiration rate",
+                "unit": "mol C m^-2 s^-1",
+                "definition": "Leaf dark respiration rate, added to An to obtain gross canopy carbon assimilation.",
+                "evidence": [
+                    {
+                        "page": 50,
+                        "asset": "/mnt/data/render_p50.png",
+                        "pointer": "S.9 paragraph (aL·(An+Rd))"
+                    }
+                ]
+            },
+            {
+                "symbol": "R_m",
+                "name": "whole-tree maintenance respiration",
+                "unit": "mol C s^-1",
+                "definition": "Total maintenance respiration draining the NSC pool (defined in Section S.7).",
+                "evidence": [
+                    {
+                        "page": 50,
+                        "asset": "/mnt/data/render_p50.png",
+                        "pointer": "S.9 paragraph referencing Section S.7"
+                    }
+                ]
+            },
+            {
+                "symbol": "G",
+                "name": "total growth rate",
+                "unit": "mol C s^-1",
+                "definition": "Growth rate allocated among structural pools; coupled to NSC pool size by Eq. (S.9.2a).",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Text defining G and Eq. (S.9.2a)"
+                    }
+                ]
+            },
+            {
+                "symbol": "f_c",
+                "name": "construction respiration fraction",
+                "unit": "dimensionless",
+                "definition": "Fraction of carbon spent on construction respiration; phloem loading for growth+construction is G/(1−fc).",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Text preceding Eq. (S.9.1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\zeta",
+                "name": "growth proportionality constant",
+                "unit": "s^-1",
+                "definition": "Proportionality constant linking NSC pool size to phloem loading (and thus growth) under the linearized assumption.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Sentence immediately after Eq. (S.9.2b)"
+                    }
+                ]
+            },
+            {
+                "symbol": "g_T(T_a)",
+                "name": "temperature growth modifier",
+                "unit": "dimensionless",
+                "definition": "Unitless modifier describing growth temperature dependence as a function of air temperature Ta.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eqs. (S.9.2a)–(S.9.2b)"
+                    }
+                ]
+            },
+            {
+                "symbol": "T_a",
+                "name": "air temperature",
+                "unit": "°C",
+                "definition": "Air temperature driving gT(Ta) in the growth model.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.2b)"
+                    }
+                ]
+            },
+            {
+                "symbol": "u_L",
+                "name": "leaf allocation fraction",
+                "unit": "dimensionless",
+                "definition": "Fraction of total growth G allocated to leaves (defined in Section S.8).",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Text above Eq. (S.9.3)"
+                    }
+                ]
+            },
+            {
+                "symbol": "u_{sW}",
+                "name": "sapwood allocation fraction",
+                "unit": "dimensionless",
+                "definition": "Fraction of total growth G allocated to sapwood/wood (defined in Section S.8).",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Text above Eq. (S.9.4)"
+                    }
+                ]
+            },
+            {
+                "symbol": "u_{R,H,i}",
+                "name": "horizontal-root allocation fraction in layer i",
+                "unit": "dimensionless",
+                "definition": "Fraction of total growth G allocated to horizontal root pool in soil layer i (defined in Section S.8).",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Text above Eq. (S.9.5)"
+                    }
+                ]
+            },
+            {
+                "symbol": "u_{R,V,i}",
+                "name": "vertical-root allocation fraction in layer i",
+                "unit": "dimensionless",
+                "definition": "Fraction of total growth G allocated to vertical root pool in soil layer i (defined in Section S.8).",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Text above Eq. (S.9.6)"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_L",
+                "name": "leaf carbon pool",
+                "unit": "mol C",
+                "definition": "Structural leaf carbon pool updated by allocation and senescence.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.3)"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_{sW}",
+                "name": "sapwood carbon pool",
+                "unit": "mol C",
+                "definition": "Structural sapwood carbon pool updated by allocation and senescence.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.4)"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_{R,H,i}",
+                "name": "horizontal-root carbon pool in soil layer i",
+                "unit": "mol C",
+                "definition": "Horizontal root pool carbon in layer i updated by allocation and senescence.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.5)"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_{R,V,i}",
+                "name": "vertical-root carbon pool in soil layer i",
+                "unit": "mol C",
+                "definition": "Vertical root pool carbon in layer i updated by allocation and senescence.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.6)"
+                    }
+                ]
+            },
+            {
+                "symbol": "S_L",
+                "name": "leaf senescence flux",
+                "unit": "mol C s^-1",
+                "definition": "Leaf senescence loss flux (defined in Section S.7).",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.3)"
+                    }
+                ]
+            },
+            {
+                "symbol": "S_{sW}",
+                "name": "sapwood senescence flux",
+                "unit": "mol C s^-1",
+                "definition": "Sapwood senescence loss flux (defined in Section S.7) and source term for heartwood growth.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eqs. (S.9.4) and (S.9.7)"
+                    }
+                ]
+            },
+            {
+                "symbol": "S_{R,H,i}",
+                "name": "horizontal-root senescence flux in layer i",
+                "unit": "mol C s^-1",
+                "definition": "Senescence loss flux for horizontal root pool in layer i (defined in Section S.7).",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.5)"
+                    }
+                ]
+            },
+            {
+                "symbol": "S_{R,V,i}",
+                "name": "vertical-root senescence flux in layer i",
+                "unit": "mol C s^-1",
+                "definition": "Senescence loss flux for vertical root pool in layer i (defined in Section S.7).",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.6)"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_{hW}",
+                "name": "heartwood carbon pool",
+                "unit": "mol C",
+                "definition": "Heartwood carbon pool increased by sapwood senescence in THORP.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.7)"
+                    }
+                ]
+            },
+            {
+                "symbol": "D",
+                "name": "basal diameter",
+                "unit": null,
+                "definition": "Basal diameter updated as carbon pools evolve, via Eq. (S.9.8).",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Sentence preceding Eq. (S.9.8)"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_W",
+                "name": "wood carbon pool used for diameter sensitivity",
+                "unit": "mol C",
+                "definition": "Wood carbon state used in the derivative ∂D/∂CW (defined elsewhere).",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Eq. (S.9.8) term ∂D/∂CW and reference sentence"
+                    }
+                ]
+            }
+        ],
+        "parameters": [],
+        "algorithm": {
+            "inputs": [
+                "State: C_S, C_L, C_{sW}, C_{R,H,i}, C_{R,V,i}, C_{hW}, D",
+                "Fluxes/terms: a_L(A_n+R_d), R_m, S_L, S_{sW}, S_{R,H,i}, S_{R,V,i}",
+                "Allocation fractions: u_L, u_{sW}, u_{R,H,i}, u_{R,V,i}",
+                "Growth parameters: f_c, \\zeta, g_T(T_a)",
+                "Allometric derivative: \\partial D/\\partial C_W (defined in Section S.1)"
+            ],
+            "outputs": [
+                "Updated pools: C_S, C_L, C_{sW}, C_{R,H,i}, C_{R,V,i}, C_{hW}",
+                "Updated geometry: D (and downstream H, W as noted)",
+                "Updated leaf area a_L (as noted)"
+            ],
+            "steps": [
+                "Update NSC pool via Eq. (S.9.1).",
+                "Compute growth rate G via Eq. (S.9.2a) with gT(Ta) from Eq. (S.9.2b).",
+                "Update structural pools via Eqs. (S.9.3)–(S.9.6) using allocation fractions and senescence rates (defined earlier).",
+                "Add senesced sapwood carbon to heartwood via Eq. (S.9.7).",
+                "Update basal diameter via Eq. (S.9.8).",
+                "Using updated D, compute updated H and W from power-law allometries (referenced to Section S.1); update leaf area as aL = X_L·C_L; compute stem and root maximum hydraulic conductances per Sections S.3 and S.4 (as stated in text)."
+            ],
+            "evidence": [
+                {
+                    "page": 51,
+                    "asset": "/mnt/data/render_p51.png",
+                    "pointer": "All S.9 equations and concluding paragraph describing geometry/area/hydraulics updates"
+                },
+                {
+                    "page": 50,
+                    "asset": "/mnt/data/render_p50.png",
+                    "pointer": "S.9 opening paragraph (uncoupled growth–photosynthesis; NSC definition)"
+                }
+            ]
+        },
+        "datasets": [],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L_S9_1",
+                "text": "The authors note the growth dynamics representation (linearized NSC dependence) is crude and intended for future improvement; the present focus is biomass partitioning for a given tree size rather than accurate growth rate/age dynamics.",
+                "evidence": [
+                    {
+                        "page": 51,
+                        "asset": "/mnt/data/render_p51.png",
+                        "pointer": "Paragraph after Eq. (S.9.2b)"
+                    }
+                ]
+            }
+        ]
+    },
+    "provenance": {
+        "extraction_time": "2026-01-03T03:03:00Z",
+        "model": "GPT-5.2 Thinking",
+        "mode": "EXTRACT",
+        "is_partial": false,
+        "chunk": {
+            "chunk_id": "C009",
+            "page_range": [
+                50,
+                51
+            ],
+            "section_start_page": 50,
+            "section_end_page": 51,
+            "section_heading": "S.9 Carbon Pool Dynamics"
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C009",
+                "title": "S.9 Carbon Pool Dynamics",
+                "page_range": [
+                    50,
+                    51
+                ],
+                "rationale": "Defines NSC-driven growth, construction respiration fraction, structural pool ODEs, heartwood routing, and diameter update linking allocation to allometry."
+            },
+            {
+                "chunk_id": "C010",
+                "title": "S.10 Simulation Descriptions",
+                "page_range": [
+                    52,
+                    66
+                ],
+                "rationale": "Describes the simulation experiments, parameterization choices, boundary conditions, and site/scenario settings used to generate main-text results."
+            }
+        ],
+        "next_recommended_chunk_id": "C010"
+    }
+}

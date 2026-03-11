@@ -1,0 +1,703 @@
+{
+    "doc": {
+        "id": "Potkay et al. - 2021 - Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning.pdf",
+        "title": "Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning",
+        "year": 2021,
+        "doi": null,
+        "page_count": 66,
+        "source_file": "/mnt/data/Potkay et al. - 2021 - Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning.pdf"
+    },
+    "model_card": {
+        "name": "Potkay2021_S10_SimulationDescriptions_Protocols",
+        "section": "S.10 Simulation Descriptions",
+        "task": [
+            "Specify the simulation experiment designs (control, drought/groundwater, competition/light, elevated CO2, pruning recovery) used to evaluate THORP’s biomass partitioning predictions and sensitivities",
+            "Define forcing datasets, initialization conditions, run duration/time step, and treatment perturbations for each experiment"
+        ],
+        "assumptions": [
+            {
+                "id": "A_S10_1",
+                "text": "S.10 provides detailed descriptions of the ten simulations summarized in Table 2 of the main text; most results are shown in main-text Figures 2–6, and pruning experiments in Figure S11.",
+                "evidence": [
+                    {
+                        "page": 52,
+                        "snippet": "52    S.10 SIMULATION DESCRIPTIONS    This section describes in full detail the ten simulations summarized in Table 2 in the main text.  Results are presented in the main text (Figures 2-6), except for those experiments with a pruning, which are in Figure S11."
+                    }
+                ]
+            },
+            {
+                "id": "A_S10_2",
+                "text": "When reporting biomass fractions, dry biomass is assumed 50% carbon by weight, except roots assumed 55% carbon by weight.",
+                "evidence": [
+                    {
+                        "page": 52,
+                        "snippet": "… THORP simulates the size of carbon pools and not  explicitly biomass; when biomass fractions are reported, they were calculated assuming the dry biomass  is 50% carbon by weight, except roots which were assumed to be 55% carbon by weight (Janssens et al.,  1999)."
+                    }
+                ]
+            }
+        ],
+        "equations": [],
+        "variables": [
+            {
+                "symbol": "LMF",
+                "name": "leaf mass fraction",
+                "unit": "dimensionless",
+                "definition": "Leaf biomass fraction used for reporting partitioning vs total dry mass.",
+                "evidence": [
+                    {
+                        "page": 52,
+                        "snippet": "… biomass fractions (leaf mass fraction, LMF; aboveground woody (stem) mass fraction, SMF; root mass fraction, RMF) …"
+                    }
+                ]
+            },
+            {
+                "symbol": "SMF",
+                "name": "aboveground woody (stem) mass fraction",
+                "unit": "dimensionless",
+                "definition": "Aboveground woody biomass fraction used for reporting partitioning.",
+                "evidence": [
+                    {
+                        "page": 52,
+                        "snippet": "… biomass fractions (leaf mass fraction, LMF; aboveground woody (stem) mass fraction, SMF; root mass fraction, RMF) …"
+                    }
+                ]
+            },
+            {
+                "symbol": "RMF",
+                "name": "root mass fraction",
+                "unit": "dimensionless",
+                "definition": "Root biomass fraction used for reporting partitioning.",
+                "evidence": [
+                    {
+                        "page": 52,
+                        "snippet": "… biomass fractions (leaf mass fraction, LMF; aboveground woody (stem) mass fraction, SMF; root mass fraction, RMF) …"
+                    }
+                ]
+            },
+            {
+                "symbol": "Z95%",
+                "name": "rooting depth (95%)",
+                "unit": "m",
+                "definition": "Depth above which 95% of root biomass is present; used as rooting depth metric in figures.",
+                "evidence": [
+                    {
+                        "page": 55,
+                        "snippet": "… Rooting depth is generally reported as the depth above which 95% of root biomass is present (Z95% in Figure 2a,c,  5a,b,c, S.6a,e, S.7a,e, S.8a,e, S.9a,e) …"
+                    }
+                ]
+            },
+            {
+                "symbol": "Z99.5%",
+                "name": "rooting depth (99.5%)",
+                "unit": "m",
+                "definition": "Depth above which 99.5% of root biomass is present; used in some analyses (e.g., Figure 5c).",
+                "evidence": [
+                    {
+                        "page": 55,
+                        "snippet": "… and we sometimes consider the depth above which 99.5% of root  biomass is present (Z99.5% in Figure 5c)."
+                    }
+                ]
+            },
+            {
+                "symbol": "Huber value",
+                "name": "sapwood-to-leaf area ratio",
+                "unit": "dimensionless",
+                "definition": "Ratio of sapwood and leaf areas, reported to compare treatments to control.",
+                "evidence": [
+                    {
+                        "page": 55,
+                        "snippet": "… compare biomass partitioning (LMF, SMF, RMF), rooting  depth, and Huber values (the ratio of sapwood and leaf areas) …"
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "symbol": "Δt",
+                "name": "simulation time step",
+                "value": 6,
+                "unit": "hours",
+                "notes": "Control experiment run at 6-hour time steps.",
+                "evidence": [
+                    {
+                        "page": 53,
+                        "snippet": "… The model was simulated for a total of 100-years  at 6-hour time-steps with NOAA re-analysis data (NCEP/NCAR Reanalysis 1; Kalnay et al., 1996) as  environmental forcing …"
+                    }
+                ]
+            },
+            {
+                "symbol": "CO2",
+                "name": "atmospheric CO2 concentration (elevated treatment)",
+                "value": 600,
+                "unit": "ppm",
+                "notes": "Elevated-CO2 experiment uses 600 ppm; nutrient limitation not represented in current THORP version.",
+                "evidence": [
+                    {
+                        "page": 56,
+                        "snippet": "… identical to  the control except CO2 concentrations were elevated to 600 ppm … The current version of THORP does not  describe nutrient acquisition and partitioning …"
+                    }
+                ]
+            },
+            {
+                "symbol": "H_n",
+                "name": "overstory canopy height (competition treatment)",
+                "value": 30,
+                "unit": "m",
+                "notes": "Overstory canopy introduced after spin-up; LAI=3.",
+                "evidence": [
+                    {
+                        "page": 56,
+                        "snippet": "… except a 30 m tall overstory with a LAI of 3 was  introduced … after the ~2.6 spin-up  period."
+                    }
+                ]
+            },
+            {
+                "symbol": "LAI_n",
+                "name": "overstory leaf area index (competition treatment)",
+                "value": 3,
+                "unit": "dimensionless",
+                "notes": "Overstory canopy LAI in shading experiment.",
+                "evidence": [
+                    {
+                        "page": 56,
+                        "snippet": "… except a 30 m tall overstory with a LAI of 3 was  introduced …"
+                    }
+                ]
+            },
+            {
+                "symbol": "K_n",
+                "name": "overstory canopy extinction coefficient",
+                "value": 0.032,
+                "unit": "m^-1",
+                "notes": "Used in S.5 for shading experiment (replacing Table 3 value).",
+                "evidence": [
+                    {
+                        "page": 56,
+                        "snippet": "… (Κn = 3.2 ∙ 10-2 m-1 in S.5 of SI instead of value in Table 3 in main text) …"
+                    }
+                ]
+            }
+        ],
+        "datasets": [
+            {
+                "name": "NCEP/NCAR Reanalysis 1 (NOAA re-analysis)",
+                "type": "meteorological forcing",
+                "time_span": "1948-1958 (repeated 10 times for 100-year simulation)",
+                "variables": [
+                    "air temperature",
+                    "soil temperature",
+                    "relative humidity (computed from specific humidity)",
+                    "precipitation",
+                    "wind speed",
+                    "incoming solar insolation"
+                ],
+                "evidence": [
+                    {
+                        "page": 53,
+                        "snippet": "… 6-hour time-steps with NOAA re-analysis data (NCEP/NCAR Reanalysis 1; Kalnay et al., 1996) as  environmental forcing, namely air and soil temperatures, relative air humidity of the air, precipitation,  windspeeds, and incoming solar insolation. … relative humidity which was calculated from  specific humidity."
+                    },
+                    {
+                        "page": 53,
+                        "snippet": "… Re-analysis data was taken from 1948-1958 and repeated 10-times and from the land  cell with the smallest Euclidean distance from the Poblet nature reserve …"
+                    }
+                ]
+            },
+            {
+                "name": "Poblet nature reserve site characterization (Prades Mountains, NE Iberian Peninsula)",
+                "type": "site/parameter context",
+                "details": [
+                    "Location: 41° 19′ 58.05″ N, 1° 0′ 52.26″ E",
+                    "Mean annual rainfall: 664 mm",
+                    "Mean annual temperature: 11.3 °C"
+                ],
+                "evidence": [
+                    {
+                        "page": 53,
+                        "snippet": "… Poblet nature reserve (Prades Mountains, Northeastern Iberian  Peninsula, 41° 19′ 58.05″ N, 1° 0′ 52.26″ E). The climate there is Mediterranean, with a mean annual  rainfall of 664 mm … and moderately warm temperatures (11.3 °C on average …)"
+                    }
+                ]
+            }
+        ],
+        "algorithm": {
+            "inputs": [
+                "Initial tree allometry and carbon pools (basal diameter, leaf area/LAI, root/shoot fractions, NSC concentrations)",
+                "Soil profile and boundary conditions for Richards equation (free drainage or groundwater Dirichlet condition)",
+                "Meteorological forcing time series from reanalysis (Tair, Tsoil, RH, precipitation, wind, insolation)",
+                "Treatment modifiers (precipitation scaling; groundwater-table depth; overstory canopy shading; elevated CO2; pruning multipliers and parameter changes)"
+            ],
+            "outputs": [
+                "Time series of biomass partitioning metrics (LMF, SMF, RMF) vs total dry mass",
+                "Root distribution / rooting depth metrics (e.g., Z95%, Z99.5%)",
+                "Huber value (sapwood-to-leaf area ratio)",
+                "Recovery trajectories after pruning (shoot-root ratio, total biomass, productivity)"
+            ],
+            "steps": [
+                "Run a control simulation for 100 years at 6-hour time steps using NCEP/NCAR Reanalysis 1 forcing; repeat 1948–1958 forcing 10 times.",
+                "Initialize site/soil: Poblet-reserve-like soil/geology; solve Richards equation over a 30 m ‘soil column’ with a free-drainage lower boundary (control), and initialize soil-water potentials in hydrostatic equilibrium with a deep water table.",
+                "Initialize tree: start from a specified basal diameter and derived height/canopy width; set initial LAI; compute initial pool sizes using assumed carbon content fractions; set initial root distribution with an asymptotic depth function; set initial NSC concentrations by organ.",
+                "After ~2.6-year spin-up for allometry and soil hydrology equilibration, report biomass fractions and apply treatments as specified below.",
+                "Drought treatments: reduce precipitation to 50% and 75% of control; compare partitioning, rooting depth, and Huber value vs control as functions of total biomass.",
+                "Groundwater-access treatment: set a shallow groundwater table (2 m) with precipitation reduced to 50%; replace free-drainage boundary by a constant-pressure (Dirichlet) boundary and solve Richards equation only above the groundwater depth; track true water-table depth over time.",
+                "Competition (light) treatment: introduce an overstory canopy (30 m tall, LAI 3, K_n = 3.2×10^-2 m^-1) after spin-up to shade the target tree.",
+                "Elevated CO2 treatment: increase atmospheric CO2 to 600 ppm (no nutrient limitation represented).",
+                "Pruning recovery treatments: after (i) ~2.6 years and (ii) 30 years, remove 50% of either (a) all root-layer pools (both intralayer and interlayer) or (b) leaf + aboveground sapwood + heartwood pools; for shoot pruning also adjust parameters to reflect halved stem conductance and geometry (b2 halved, ξ halved, canopy area halved via b1×√0.5), then continue the remainder of the 100-year simulation."
+            ],
+            "evidence": [
+                {
+                    "page": 53,
+                    "snippet": "… 100-years  at 6-hour time-steps with NOAA re-analysis data …"
+                },
+                {
+                    "page": 54,
+                    "snippet": "… Biomass fractions (LMF, SMF, RMF) are reported after a ~2.6 years spin up period for allometry and soil  hydrology to equilibrate."
+                },
+                {
+                    "page": 54,
+                    "snippet": "… precipitation rates  were reduced to 50% and 75% of their control values."
+                },
+                {
+                    "page": 55,
+                    "snippet": "… a shallow, 2 m deep water table … precipitation rates were reduced to 50% … replaced by a constant pressure (Dirichlet) boundary condition …"
+                },
+                {
+                    "page": 56,
+                    "snippet": "… a 30 m tall overstory with a LAI of 3 was  introduced …"
+                },
+                {
+                    "page": 56,
+                    "snippet": "… CO2 concentrations were elevated to 600 ppm …"
+                },
+                {
+                    "page": 57,
+                    "snippet": "… removing half of either its root or shoot mass … four total recovery experiments …"
+                }
+            ]
+        },
+        "experiments": [
+            {
+                "id": "EXP_S10_1_CONTROL",
+                "name": "Control experiment",
+                "duration_years": 100,
+                "time_step_hours": 6,
+                "forcing": {
+                    "dataset": "NCEP/NCAR Reanalysis 1 (NOAA re-analysis)",
+                    "period": "1948-1958",
+                    "repetition": "Repeated 10 times; nearest land grid cell to Poblet site",
+                    "notes": "Period chosen to avoid long-term warming/drying trends; RH computed from specific humidity."
+                },
+                "site_soil": {
+                    "site": "Poblet nature reserve (Prades Mountains, NE Iberian Peninsula)",
+                    "coordinates": "41° 19′ 58.05″ N, 1° 0′ 52.26″ E",
+                    "soil_column_depth_m": 30,
+                    "lower_boundary_condition": "free drainage",
+                    "water_table_context": "Water table estimated 70–100 m deep; initialization uses hydrostatic equilibrium with a 74 m deep water table."
+                },
+                "initial_tree": {
+                    "basal_diameter_m": "1.5 · 10^-2",
+                    "height_m_approx": 4.4,
+                    "canopy_width_m_approx": 0.6,
+                    "initial_LAI": 0.4,
+                    "sapwood_fraction_of_total_wood": 0.94,
+                    "initial_RMF": 0.3,
+                    "carbon_content_by_weight": {
+                        "default_dry_biomass": 0.5,
+                        "roots": 0.55
+                    },
+                    "root_depth_distribution_notes": "Root carbon distributed by an asymptotic depth function Y = 1 - βd (notation as extracted); β chosen so 99% of root biomass is above 3 m depth.",
+                    "NSC_initialization": "NSC concentrations: 20% in leaves, 4% in wood; 20% of total NSC belowground.",
+                    "spin_up_years": "~2.6 (report biomass fractions after spin-up)"
+                },
+                "evidence": [
+                    {
+                        "page": 53,
+                        "snippet": "… 6-hour time-steps with NOAA re-analysis data (NCEP/NCAR Reanalysis 1; Kalnay et al., 1996) … Re-analysis data was taken from 1948-1958 and repeated 10-times …"
+                    },
+                    {
+                        "page": 53,
+                        "snippet": "… Poblet nature reserve … 41° 19′ 58.05″ N, 1° 0′ 52.26″ E). The climate there is Mediterranean, with a mean annual  rainfall of 664 mm … (11.3 °C on average …)"
+                    },
+                    {
+                        "page": 53,
+                        "snippet": "… the lower  boundary condition … (at the bottom of the simulated soil column, which is here 30 m deep) … in free drainage … water table … 70-100 m …"
+                    },
+                    {
+                        "page": 53,
+                        "snippet": "… The initial allometry was calculated for a tree with a 1.5 · 10-2 m basal diameter … (~4.4 m and ~0.6 m, respectively). … initial LAI of 0.4 … initial RMF of 30% …"
+                    },
+                    {
+                        "page": 54,
+                        "snippet": "… Soil water potentials were initialized assuming hydrostatic equilibrium with a 74 m  deep water table …"
+                    },
+                    {
+                        "page": 54,
+                        "snippet": "… The extinction coefficient, β, was chosen so that 99%  of root biomass was above a 3 m depth …"
+                    },
+                    {
+                        "page": 54,
+                        "snippet": "… The NSC pool was initialized assuming NSC concentrations of  20% in leaves, 4% in wood, and that 20% of the total NSC is belowground …"
+                    },
+                    {
+                        "page": 54,
+                        "snippet": "… Biomass fractions … are reported after a ~2.6 years spin up period …"
+                    }
+                ]
+            },
+            {
+                "id": "EXP_S10_2_DROUGHT_P50",
+                "name": "Reduced precipitation to 50% of control",
+                "modifications": [
+                    {
+                        "type": "precipitation_scaling",
+                        "value": 0.5,
+                        "relative_to": "control"
+                    }
+                ],
+                "comparison_basis": "Compare allocation vs control as a function of total biomass (growth rates differ).",
+                "reported_outputs": [
+                    "LMF",
+                    "SMF",
+                    "RMF",
+                    "rooting depth (Z95%)",
+                    "Huber value"
+                ],
+                "evidence": [
+                    {
+                        "page": 54,
+                        "snippet": "… conditions were the same as control experiment except precipitation rates  were reduced to 50% and 75% of their control values. …"
+                    }
+                ]
+            },
+            {
+                "id": "EXP_S10_3_DROUGHT_P75",
+                "name": "Reduced precipitation to 75% of control",
+                "modifications": [
+                    {
+                        "type": "precipitation_scaling",
+                        "value": 0.75,
+                        "relative_to": "control"
+                    }
+                ],
+                "comparison_basis": "Compare allocation vs control as a function of total biomass (growth rates differ).",
+                "reported_outputs": [
+                    "LMF",
+                    "SMF",
+                    "RMF",
+                    "rooting depth (Z95%)",
+                    "Huber value"
+                ],
+                "evidence": [
+                    {
+                        "page": 54,
+                        "snippet": "… conditions were the same as control experiment except precipitation rates  were reduced to 50% and 75% of their control values. …"
+                    }
+                ]
+            },
+            {
+                "id": "EXP_S10_4_DROUGHT_P50_GW2M",
+                "name": "Reduced precipitation (50%) with shallow groundwater table",
+                "modifications": [
+                    {
+                        "type": "precipitation_scaling",
+                        "value": 0.5,
+                        "relative_to": "control"
+                    },
+                    {
+                        "type": "groundwater_table",
+                        "defined_depth_m": 2
+                    },
+                    {
+                        "type": "soil_lower_boundary",
+                        "condition": "constant pressure (Dirichlet) at bottom of Richards domain above groundwater"
+                    }
+                ],
+                "notes": [
+                    "Richards equation solved only for nodes above defined groundwater depth; nodes below assumed hydrostatic equilibrium.",
+                    "Root growth constrained to layers where Ψsoil,i < 0 (so positive potentials below groundwater do not alter allometry under this constraint).",
+                    "True water-table depth may vary seasonally and deepen over time; tracked and mean values reported."
+                ],
+                "evidence": [
+                    {
+                        "page": 55,
+                        "snippet": "… A third water stress experiment was performed with a shallow, 2 m deep water table … precipitation rates were reduced to 50% … replaced by a constant pressure (Dirichlet) boundary condition …"
+                    }
+                ]
+            },
+            {
+                "id": "EXP_S10_5_LIGHT_COMPETITION_OVERSTORY",
+                "name": "Aboveground competition (shading) via overstory canopy",
+                "modifications": [
+                    {
+                        "type": "overstory_canopy",
+                        "height_m": 30,
+                        "LAI": 3,
+                        "K_n_m_inv": 0.032,
+                        "introduced_after_years": "~2.6 (post spin-up)"
+                    }
+                ],
+                "notes": "Represents an end-member case where the target tree is more light-stressed but belowground conditions are unchanged; overstory transpiration effects on soil are not represented.",
+                "evidence": [
+                    {
+                        "page": 56,
+                        "snippet": "… except a 30 m tall overstory with a LAI of 3 was  introduced … (Κn = 3.2 ∙ 10-2 m-1 …) after the ~2.6 spin-up  period."
+                    }
+                ]
+            },
+            {
+                "id": "EXP_S10_6_ELEVATED_CO2",
+                "name": "Elevated atmospheric CO2",
+                "modifications": [
+                    {
+                        "type": "CO2",
+                        "ppm": 600
+                    }
+                ],
+                "notes": "Nutrient acquisition/limitation not represented in current THORP version; treatment represents elevated CO2 without nutrient limitation.",
+                "evidence": [
+                    {
+                        "page": 56,
+                        "snippet": "… identical to  the control except CO2 concentrations were elevated to 600 ppm … does not  describe nutrient acquisition and partitioning …"
+                    }
+                ]
+            },
+            {
+                "id": "EXP_S10_7_PRUNE_ROOTS_EARLY",
+                "name": "Recovery after early root pruning",
+                "modifications": [
+                    {
+                        "type": "pruning_time",
+                        "when": "after initial ~2.6-year spin-up"
+                    },
+                    {
+                        "type": "root_pool_multiplier",
+                        "applies_to": [
+                            "CR,H,i",
+                            "CR,V,i"
+                        ],
+                        "multiplier": 0.5,
+                        "scope": "all soil layers"
+                    }
+                ],
+                "evidence": [
+                    {
+                        "page": 57,
+                        "snippet": "… two  in which pruning occurred after the initial ~2.6 year spin up period … We ‘pruned’ roots by simply reducing the root carbon pool of each soil layer by 50% (both  interlayer and intralayer pools halved) …"
+                    }
+                ]
+            },
+            {
+                "id": "EXP_S10_8_PRUNE_SHOOTS_EARLY",
+                "name": "Recovery after early shoot pruning",
+                "modifications": [
+                    {
+                        "type": "pruning_time",
+                        "when": "after initial ~2.6-year spin-up"
+                    },
+                    {
+                        "type": "shoot_pool_multiplier",
+                        "applies_to": [
+                            "C_L",
+                            "C_{sW} (sapwood)",
+                            "C_{hW} (heartwood)"
+                        ],
+                        "multiplier": 0.5
+                    },
+                    {
+                        "type": "parameter_changes_at_pruning",
+                        "changes": [
+                            {
+                                "parameter": "b2",
+                                "operation": "multiply",
+                                "value": 0.5,
+                                "notes": "Halve stem xylem conductance for a given basal diameter (semicircular trunk assumption)."
+                            },
+                            {
+                                "parameter": "ξ",
+                                "operation": "multiply",
+                                "value": 0.5,
+                                "notes": "Half as much woody biomass required to grow radially (maintain basal semicircularity)."
+                            },
+                            {
+                                "parameter": "b1",
+                                "operation": "multiply",
+                                "value": "√0.5",
+                                "notes": "Reduce canopy area by half to maintain LAI at pruning time."
+                            }
+                        ]
+                    }
+                ],
+                "notes": [
+                    "Text describes halving leaf and aboveground sapwood and heartwood carbon pools; sapwood/heartwood pools are aboveground in THORP’s carbon bookkeeping."
+                ],
+                "evidence": [
+                    {
+                        "page": 57,
+                        "snippet": "… we ‘pruned’ shoots by reducing the leaf and aboveground sap-  and heart-wood carbon pools by 50%. … b2  which controls stem conductance was halved … ξ  which governs wood volume was halved … b1 which controls canopy width  was multiplied by √0.5 …"
+                    }
+                ]
+            },
+            {
+                "id": "EXP_S10_9_PRUNE_ROOTS_LATE",
+                "name": "Recovery after late root pruning",
+                "modifications": [
+                    {
+                        "type": "pruning_time",
+                        "when": "after first 30 years of simulation"
+                    },
+                    {
+                        "type": "root_pool_multiplier",
+                        "applies_to": [
+                            "CR,H,i",
+                            "CR,V,i"
+                        ],
+                        "multiplier": 0.5,
+                        "scope": "all soil layers"
+                    }
+                ],
+                "evidence": [
+                    {
+                        "page": 57,
+                        "snippet": "… four total recovery experiments … two in which pruning occurred  after the first 30 years of simulation."
+                    }
+                ]
+            },
+            {
+                "id": "EXP_S10_10_PRUNE_SHOOTS_LATE",
+                "name": "Recovery after late shoot pruning",
+                "modifications": [
+                    {
+                        "type": "pruning_time",
+                        "when": "after first 30 years of simulation"
+                    },
+                    {
+                        "type": "shoot_pool_multiplier",
+                        "applies_to": [
+                            "C_L",
+                            "C_{sW} (sapwood)",
+                            "C_{hW} (heartwood)"
+                        ],
+                        "multiplier": 0.5
+                    },
+                    {
+                        "type": "parameter_changes_at_pruning",
+                        "changes": [
+                            {
+                                "parameter": "b2",
+                                "operation": "multiply",
+                                "value": 0.5
+                            },
+                            {
+                                "parameter": "ξ",
+                                "operation": "multiply",
+                                "value": 0.5
+                            },
+                            {
+                                "parameter": "b1",
+                                "operation": "multiply",
+                                "value": "√0.5"
+                            }
+                        ]
+                    }
+                ],
+                "notes": [
+                    "Text describes halving leaf and aboveground sapwood and heartwood carbon pools; sapwood/heartwood pools are aboveground in THORP’s carbon bookkeeping."
+                ],
+                "evidence": [
+                    {
+                        "page": 57,
+                        "snippet": "… four total recovery experiments … two in which pruning occurred  after the first 30 years of simulation."
+                    }
+                ]
+            }
+        ],
+        "additional_experiments": [
+            {
+                "id": "EXP_S10_11_GW_DEPTH_SWEEP",
+                "name": "Groundwater-table depth sweep",
+                "modifications": [
+                    {
+                        "type": "groundwater_table_series",
+                        "schedule": "Lower defined groundwater table in 2 m increments from 2 m to 20 m; then in 4 m increments to 40 m; then in 8 m increments to 80 m."
+                    }
+                ],
+                "purpose": "Investigate role of soil moisture profiles on rooting depth and root distribution with depth.",
+                "evidence": [
+                    {
+                        "page": 55,
+                        "snippet": "… additional experiments were simulated with  deeper groundwater tables … Between experiments, the groundwater table was lowered in 2 m increments  down to 20 m, then down to 40 m in 4 m increments, and lastly down to 80 m in 8 m increments."
+                    }
+                ],
+                "notes": "Described as additional experiments after the shallow groundwater-table run; the text indicates a series of runs across multiple groundwater depths."
+            }
+        ],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L_S10_1",
+                "text": "The elevated-CO2 simulation does not include nutrient acquisition/limitation, so it represents an idealized response without nutrient constraints.",
+                "evidence": [
+                    {
+                        "page": 56,
+                        "snippet": "… does not  describe nutrient acquisition and partitioning, so this simulation represents the case of elevated CO2  without the possibility of nutrient limitation."
+                    }
+                ]
+            },
+            {
+                "id": "L_S10_2",
+                "text": "The shading/competition simulation does not include the overstory trees’ transpiration effects on soil moisture, so belowground resource acquisition for the target tree is not affected by the added canopy.",
+                "evidence": [
+                    {
+                        "page": 56,
+                        "snippet": "… In reality, additional trees from the overstory would also  transpire, dry soils … and thus directly  influence belowground allocation … as well. "
+                    }
+                ]
+            },
+            {
+                "id": "L_S10_3",
+                "text": "The shoot-pruning disturbance is implemented as halving aboveground pools with additional parameter adjustments to satisfy THORP’s assumptions; it does not strictly represent literal pruning.",
+                "evidence": [
+                    {
+                        "page": 57,
+                        "snippet": "… Our disturbance does not strictly represent  true pruning like in the Brouwer (1962) experiment … Additionally, ‘pruning’ shoots required extra changes so not to  invalidate THORP’s assumptions …"
+                    }
+                ]
+            }
+        ]
+    },
+    "provenance": {
+        "extraction_time": "2026-01-03T03:03:00Z",
+        "model": "GPT-5.2 Thinking",
+        "mode": "EXTRACT",
+        "is_partial": false,
+        "chunk": {
+            "chunk_id": "C010",
+            "page_range": [
+                52,
+                57
+            ],
+            "section_start_page": 52,
+            "section_end_page": 57,
+            "section_heading": "S.10 Simulation Descriptions"
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C010",
+                "title": "S.10 Simulation Descriptions",
+                "page_range": [
+                    52,
+                    57
+                ],
+                "rationale": "Defines the experimental protocols, forcing data, initialization, and treatment perturbations used to evaluate THORP across control, drought/groundwater, shading, elevated CO2, and pruning recovery simulations."
+            },
+            {
+                "chunk_id": "C011",
+                "title": "References",
+                "page_range": [
+                    58,
+                    66
+                ],
+                "rationale": "Bibliography; generally non-model content (useful only if citation mapping is required)."
+            }
+        ],
+        "next_recommended_chunk_id": "C011"
+    }
+}

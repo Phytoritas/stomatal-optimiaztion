@@ -1,0 +1,461 @@
+{
+    "doc": {
+        "id": "Potkay et al. - 2021 - Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning.pdf",
+        "title": "Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning",
+        "year": 2021,
+        "doi": null,
+        "page_count": 66
+    },
+    "model_card": {
+        "name": "Potkay2021_Supplement_S4_StemConductanceScaling",
+        "section": "S.4 Scaling of Stem Conductances with Tree Size",
+        "task": [
+            "Derive whole-tree maximum stem conductance (k_S) scaling with tree size",
+            "Account for sapwood vs heartwood via heartwood–sapwood transition diameter (D_t)"
+        ],
+        "assumptions": [
+            {
+                "id": "A_S4_1",
+                "text": "Stem conductance is represented as a series of conductors connected in series axially and in parallel radially; total conductance is computed by integrating inverse conductivity along height.",
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_S4_text_series_parallel",
+                        "snippet": "Stem conductance is represented as a series of conductors connected in-parallel radially and connected in-series axially ... (kS)−1 = ∫0H (KS(x))−1 dx (S.4.1)."
+                    }
+                ]
+            },
+            {
+                "id": "A_S4_2",
+                "text": "Local xylem conductivity KS(x) is approximated by (i) Hagen–Poiseuille scaling integrated radially across conduits and (ii) multiplied by (H/x)^2 to account for in-parallel flow across multiple branches at distance x from the apex.",
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_eq_S4_2",
+                        "snippet": "KS(x) ∝ (H/x)^2 ∫*{dt(x)/2}^{d(x)/2} Rx(r)^4 Nx(r) r dr (S.4.2)."
+                    }
+                ]
+            },
+            {
+                "id": "A_S4_3",
+                "text": "Sapwood area fraction is conserved along the tree height, expressed as dt(x)/d(x) = Dt/D (uniform heartwood fraction along stem).",
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_S4_text_sapwood_conserved",
+                        "snippet": "We further assume that sapwood area is conserved along the height of the tree (dt(x)/d(x) = Dt/D)."
+                    }
+                ]
+            },
+            {
+                "id": "A_S4_4",
+                "text": "Branch outer diameter scales approximately linearly with distance from apex: d(x) ∝ x (at least for the Scots Pine parameterization used for validation).",
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_S4_text_dx_linear",
+                        "snippet": "branch diameter approximately scales linearly with distance from apex, d(x) ∝ x ..."
+                    }
+                ]
+            },
+            {
+                "id": "A_S4_5",
+                "text": "Tree height and basal diameter are linked via a power-law allometry captured as log(H) ∝ c0·log(D), enabling substitution of H with D in conductance scaling.",
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_S4_text_H_D_allometry",
+                        "snippet": "recall log(H) ∝ c0·log(D) ... replacement of H with its equivalent D ..."
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "E_S4_1",
+                "latex": "(k_S)^{-1} = \\int*{0}^{H} \\left(K_S(x)\\right)^{-1}\\,dx",
+                "explanation": "Whole-tree maximum stem conductance (kS) computed as axial series integral of inverse local conductivity KS(x) from apex (x=0) to canopy height (x=H).",
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_eq_S4_1",
+                        "snippet": "(kS)−1 = ∫0H (KS(x))−1 dx (S.4.1)."
+                    }
+                ]
+            },
+            {
+                "id": "E_S4_2",
+                "latex": "K_S(x) \\propto \\left(\\frac{H}{x}\\right)^2 \\int_{d_t(x)/2}^{d(x)/2} R_x(r)^4\\,N_x(r)\\,r\\,dr",
+                "explanation": "Local xylem conductivity at distance x from apex based on Hagen–Poiseuille scaling integrated radially from heartwood–sapwood transition radius to outer radius, and multiplied by an in-parallel branching term (H/x)^2.",
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_eq_S4_2",
+                        "snippet": "KS(x) ∝ (H/x)^2 ∫*{dt(x)/2}^{d(x)/2} Rx(r)^4 Nx(r) r dr (S.4.2)."
+                    }
+                ]
+            },
+            {
+                "id": "E_S4_3",
+                "latex": "K_S(x) \\propto \\left(\\frac{H}{x}\\right)^2 \\int*{d_t(x)/2}^{d(x)/2} r^{\\beta}\\,dr",
+                "explanation": "Replacement of the Rx^4Nx·r proportionality by a single power-law in r with dummy scaling exponent β.",
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_eq_S4_3",
+                        "snippet": "KS(x) ∝ (H/x)^2 ∫*{dt(x)/2}^{d(x)/2} r^β dr (S.4.3)."
+                    }
+                ]
+            },
+            {
+                "id": "E_S4_4",
+                "latex": "K_S(x) \\propto \\left(\\frac{H}{x}\\right)^2\\left[d(x)^{\\beta+1} - d_t(x)^{\\beta+1}\right]",
+                "explanation": "Integrated form of Eq. S.4.3.",
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_eq_S4_4",
+                        "snippet": "KS(x) ∝ (H/x)^2 [ d(x)^{β+1} − dt(x)^{β+1} ] (S.4.4)."
+                    }
+                ]
+            },
+            {
+                "id": "E_S4_5",
+                "latex": "k_S \\propto H^{\\beta}\\left[1-\\left(\\frac{D_t}{D}\\right)^{\\beta+1}\\right]",
+                "explanation": "Whole-tree maximum stem conductance scaling after combining the axial integral with the sapwood-conservation and diameter-scaling assumptions.",
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_eq_S4_5",
+                        "snippet": "kS ∝ H^β [ 1 − (Dt/D)^{β+1} ] (S.4.5)."
+                    }
+                ]
+            },
+            {
+                "id": "E_S4_6",
+                "latex": "k_S \\propto D^{\\beta c_0}\\left[1-\\left(\\frac{D_t}{D}\\right)^{\\beta+1}\\right]",
+                "explanation": "Further simplification by substituting H using the height–diameter allometry log(H) ∝ c0·log(D).",
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_eq_S4_6",
+                        "snippet": "kS ∝ D^{β c0} [ 1 − (Dt/D)^{β+1} ] (S.4.6)."
+                    }
+                ]
+            },
+            {
+                "id": "E_S4_7",
+                "latex": "k_S = b_2\\left(\\frac{D}{D*{ref}}\\right)^{c_2}\\left[1-\\left(\\frac{D_t}{D}\\right)^{\\frac{c_2}{c_0}+1}\\right]",
+                "explanation": "Final stem conductance function used by THORP: replaces dummy exponent β with c2/c0, introduces proportionality constant b2 and reference diameter Dref for dimensional consistency.",
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_eq_S4_7",
+                        "snippet": "kS = b2 (D/Dref)^{c2} [ 1 − (Dt/D)^{c2/c0 + 1} ] (S.4.7)."
+                    }
+                ]
+            },
+            {
+                "id": "E_S4_8",
+                "latex": "\\frac{d k_S}{d D} = \\frac{c_2 + \\left(\\frac{c_2}{c_0}+1-c_2\\right)\\left(\\frac{D_t}{D}\\right)^{\\frac{c_2}{c_0}+1}}{1-\\left(\\frac{D_t}{D}\\right)^{\\frac{c_2}{c_0}+1}}\\,\\frac{k_S}{D}",
+                "explanation": "Derivative of kS with respect to basal diameter D (used later for allocation/optimality derivatives).",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "block_id": "p41_eq_S4_8",
+                        "snippet": "dkS/dD = [c2 + (c2/c0 + 1 − c2)(Dt/D)^{c2/c0 + 1}] / [1 − (Dt/D)^{c2/c0 + 1}] · kS/D (S.4.8)."
+                    }
+                ]
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "k_S",
+                "unit": "mol H2O s^-1 MPa^-1",
+                "definition": "Maximum stem xylem conductance at the whole-tree scale.",
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_S4_def_kS",
+                        "snippet": "The scaling of stem xylem conductance, kS [mol H2O·s−1·MPa−1] ..."
+                    }
+                ]
+            },
+            {
+                "symbol": "K_S(x)",
+                "unit": "mol H2O m s^-1 MPa^-1",
+                "definition": "Xylem conductivity at distance x from the apex.",
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_S4_def_KSx",
+                        "snippet": "KS(x) is the xylem conductivity [mol H2O·m·s−1·MPa−1] at a distance x [m] from the apex."
+                    }
+                ]
+            },
+            {
+                "symbol": "x",
+                "unit": "m",
+                "definition": "Distance from apex along the stem/branch system (integration coordinate in S.4).",
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_S4_def_x",
+                        "snippet": " ... at a distance x [m] from the apex."
+                    }
+                ]
+            },
+            {
+                "symbol": "H",
+                "unit": "m",
+                "definition": "Tree height (canopy height) used as upper limit of the axial integration and in branching multiplier (H/x)^2.",
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_S4_H_in_eq",
+                        "snippet": "(kS)−1 = ∫0H ... ; KS(x) ∝ (H/x)^2 ..."
+                    }
+                ]
+            },
+            {
+                "symbol": "d(x)",
+                "unit": "m",
+                "definition": "Outer branch/stem diameter at distance x from the apex.",
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_S4_def_dx",
+                        "snippet": "outer diameter, d(x) [m], for a branch at a distance x from the apex."
+                    }
+                ]
+            },
+            {
+                "symbol": "d_t(x)",
+                "unit": "m",
+                "definition": "Diameter of the heartwood–sapwood transition at distance x from the apex.",
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_S4_def_dtx",
+                        "snippet": "heartwood–sapwood transition of the branch, dt(x) [m] ..."
+                    }
+                ]
+            },
+            {
+                "symbol": "D",
+                "unit": "m",
+                "definition": "Basal (trunk) diameter at the base of the tree, with d(H)=D.",
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_S4_def_D",
+                        "snippet": "Note that d(H) = D ..."
+                    }
+                ]
+            },
+            {
+                "symbol": "D_t",
+                "unit": "m",
+                "definition": "Basal diameter of the heartwood–sapwood transition at the base of the tree, with dt(H)=Dt.",
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_S4_def_Dt",
+                        "snippet": " ... and dt(H) = Dt, where D and Dt are the trunk diameter and diameter of the heartwood-sapwood transition at the base ..."
+                    }
+                ]
+            },
+            {
+                "symbol": "R_x(r)",
+                "unit": "m",
+                "definition": "Xylem conduit radius as a function of radial coordinate r.",
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_S4_def_Rx",
+                        "snippet": "Rx is the xylem conduit radius ..."
+                    }
+                ]
+            },
+            {
+                "symbol": "N_x(r)",
+                "unit": "count (dimensionless)",
+                "definition": "Number of xylem conduits (as a function of r) used in local conductivity scaling.",
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_S4_def_Nx",
+                        "snippet": " ... and Nx is the number of xylem conduits."
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "name": "\beta",
+                "unit": "dimensionless",
+                "role": "Dummy scaling exponent replacing the Rx^4Nx·r proportionality with r^β.",
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_S4_beta",
+                        "snippet": "We replace the Rx^4Nx r proportionality with a single power-law function of r with dummy scaling-exponent, β ..."
+                    }
+                ]
+            },
+            {
+                "name": "c_0",
+                "unit": "dimensionless",
+                "role": "Height–diameter allometry exponent in log(H) ∝ c0·log(D).",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "block_id": "p41_S4_c0_fixed",
+                        "snippet": "We fixed c0 at 0.64 ... (regressed when plotting log(H) against log(D) ...)."
+                    }
+                ],
+                "notes": "Value (0.64) is the Scots Pine parameterization used in the paper’s calibration/validation context."
+            },
+            {
+                "name": "c_2",
+                "unit": "dimensionless",
+                "role": "Scaling exponent describing how kS scales with basal diameter when no heartwood is present; used via β = c2/c0.",
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_S4_c2_definition",
+                        "snippet": "We replace the dummy exponent, β, with c2/c0, where c2 is a new scaling exponent that describes how stem conductance scales with basal diameter when there is no heartwood ..."
+                    },
+                    {
+                        "page": 41,
+                        "block_id": "p41_S4_c2_fixed",
+                        "snippet": "We fixed c2 so that kS ∝ H^1.45 for Scots Pine ... i.e. c2 = 1.45·c0."
+                    }
+                ],
+                "notes": "The paper sets c2 = 1.45·c0 for Scots Pine (no heartwood case)."
+            },
+            {
+                "name": "b_2",
+                "unit": "mol H2O s^-1 MPa^-1",
+                "role": "Lumped proportionality constant in the final kS expression (Eq. S.4.7).",
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_S4_b2_units",
+                        "snippet": "adding a lumped proportionality constant, b2 [mol H2O·s−1·MPa−1] ..."
+                    },
+                    {
+                        "page": 40,
+                        "block_id": "p40_S4_b2_estimation",
+                        "snippet": "We estimated b2 for Scots Pine by fitting Eq. S.4.7 to whole-tree stem conductance data ... by ordinary-least squares regression ..."
+                    }
+                ]
+            },
+            {
+                "name": "D_{ref}",
+                "unit": "m",
+                "role": "Reference diameter used for dimensional consistency in Eq. S.4.7.",
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_S4_Dref",
+                        "snippet": " ... and a reference diameter, Dref = 1 m, for dimensional consistency."
+                    }
+                ],
+                "default": 1.0
+            }
+        ],
+        "algorithm": {
+            "inputs": [
+                "D",
+                "D_t",
+                "c_0",
+                "c_2",
+                "b_2",
+                "D_ref"
+            ],
+            "outputs": [
+                "k_S",
+                "dk_S_dD"
+            ],
+            "steps": [
+                "Compute exponent a = c2/c0 + 1.",
+                "Compute heartwood factor h = (Dt/D)^a.",
+                "Compute kS = b2 * (D/Dref)^c2 * (1 - h). (Eq. S.4.7)",
+                "Compute dkS/dD = [c2 + (a - c2) * h] / (1 - h) * (kS/D). (Eq. S.4.8)"
+            ],
+            "evidence": [
+                {
+                    "page": 40,
+                    "block_id": "p40_eq_S4_7",
+                    "snippet": "kS = b2 (D/Dref)^{c2} [1 − (Dt/D)^{c2/c0 + 1}] (S.4.7)."
+                },
+                {
+                    "page": 41,
+                    "block_id": "p41_eq_S4_8",
+                    "snippet": "Derivative of maximum stem conductance ... (S.4.8)."
+                }
+            ]
+        },
+        "notes": [
+            {
+                "id": "N_S4_1",
+                "text": "Eq. S.4.1–S.4.6 are given as proportionalities (∝); Eq. S.4.7 introduces b2 and Dref to convert to an equality used in the model.",
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_S4_proportionality_to_equality",
+                        "snippet": "We also remove the proportionality by adding a lumped proportionality constant, b2 ... and a reference diameter, Dref = 1 m ..."
+                    }
+                ]
+            },
+            {
+                "id": "N_S4_2",
+                "text": "The paper’s Scots Pine calibration choices include fixing c0=0.64 and choosing c2 such that kS ∝ H^1.45 when no heartwood is present; b2 is then estimated by OLS fitting of Eq. S.4.7.",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "block_id": "p41_S4_calibration",
+                        "snippet": "We fixed c0 at 0.64 ... We fixed c2 so that kS ∝ H^1.45 ... We estimated b2 ... by ordinary-least squares regression ..."
+                    }
+                ]
+            }
+        ]
+    },
+    "provenance": {
+        "extraction_time": "2026-01-03T02:06:00Z",
+        "model": "GPT-5.2 Thinking",
+        "mode": "EXTRACT",
+        "is_partial": false,
+        "chunk": {
+            "chunk_id": "C004",
+            "page_range": [
+                39,
+                41
+            ],
+            "section_start_page": 39,
+            "section_end_page": 41
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C004",
+                "title": "S.4 Scaling of Stem Conductances with Tree Size",
+                "page_range": [
+                    39,
+                    41
+                ],
+                "rationale": "Defines the stem conductance scaling law kS(D,Dt) used in THORP, including the heartwood correction and the derivative dkS/dD needed for allocation/optimality derivatives."
+            },
+            {
+                "chunk_id": "C005",
+                "title": "S.5 Light Interception",
+                "page_range": [
+                    41,
+                    45
+                ],
+                "rationale": "Introduces the light interception model (Beer–Lambert style) and its derivatives used later for allocation fractions."
+            }
+        ],
+        "next_recommended_chunk_id": "C005"
+    }
+}

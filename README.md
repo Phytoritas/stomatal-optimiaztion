@@ -1,22 +1,32 @@
 # stomatal-optimiaztion
 
 ## Purpose
-- Briefly describe the biological or modeling question this repository addresses.
+- Refactor the legacy `00. Stomatal Optimization` workspace into a scaffold-aligned Python repository.
+- Keep architecture decisions, validation seams, and staged code migration explicit before broad implementation.
 
 ## Inputs
-- Document forcing data, parameters, canonical variable names, and configuration files here.
+- Legacy source domains from `THORP`, `TOMATO`, and `load-cell-data`
+- Canonical variable names in [`docs/variable_glossary.md`](docs/variable_glossary.md)
+- Curated THORP `model_card` JSON assets for equation traceability
 
 ## Outputs
-- Document canonical outputs, units, and generated artifacts here.
+- Architecture artifacts under `docs/architecture/`
+- Domain packages under `src/stomatal_optimiaztion/`
+- Validation artifacts from `pytest` and `ruff`
 
 ## How to run
 ```bash
 poetry install
 poetry run pytest
+poetry run ruff check .
 ```
 
 ## Current status
-- Bootstrapped.
+- Gates A through C are satisfied for the first bounded migration slice.
+- THORP `model_card` and traceability helpers are migrated into the new package layout.
+- THORP `radiation` runtime seam is migrated as slice 002.
+- THORP `WeibullVC` runtime primitive is migrated as slice 003.
+- THORP `SoilHydraulics` is migrated as slice 004.
 
 ## Next validation
-- Add one representative baseline, smoke test, or comparison check.
+- Migrate the next THORP seam, likely `initial_soil_and_roots`, with behavior-preserving regression checks.
