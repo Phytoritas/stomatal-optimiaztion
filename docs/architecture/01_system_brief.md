@@ -84,8 +84,16 @@ The fifth slice ports the first bounded soil-setup function:
 - validate soil-grid geometry and initialization outputs against legacy snapshots
 - keep `richards_equation` and `soil_moisture` blocked for a later slice
 
+## Slice 006: THORP Richards Equation
+
+The sixth slice ports the next bounded soil-dynamics seam:
+- move `richards_equation` from `soil.py` into a dedicated dynamics module
+- reuse migrated `SoilGrid` and `SoilHydraulics`
+- keep the interface bounded by a minimal `RichardsEquationParams` dataclass
+- leave `soil_moisture` blocked as the next surface-coupling seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, and soil-initialization seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, and Richards-equation seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `richards_equation` or another bounded soil-dynamics seam
+3. prepare the next THORP source audit for `soil_moisture` or another bounded surface-coupling seam

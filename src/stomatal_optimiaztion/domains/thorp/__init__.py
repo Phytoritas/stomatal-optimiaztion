@@ -5,6 +5,10 @@ from stomatal_optimiaztion.domains.thorp.model_card import (
     require_equation_ids,
 )
 from stomatal_optimiaztion.domains.thorp.radiation import RadiationResult, radiation
+from stomatal_optimiaztion.domains.thorp.soil_dynamics import (
+    RichardsEquationParams,
+    richards_equation,
+)
 from stomatal_optimiaztion.domains.thorp.soil_hydraulics import SoilHydraulics
 from stomatal_optimiaztion.domains.thorp.soil_initialization import (
     BottomBoundaryCondition,
@@ -19,6 +23,7 @@ __all__ = [
     "BottomBoundaryCondition",
     "InitialSoilAndRoots",
     "RadiationResult",
+    "RichardsEquationParams",
     "SoilGrid",
     "SoilHydraulics",
     "SoilInitializationParams",
@@ -28,5 +33,6 @@ __all__ = [
     "iter_equation_refs",
     "model_card_document_names",
     "radiation",
+    "richards_equation",
     "require_equation_ids",
 ]

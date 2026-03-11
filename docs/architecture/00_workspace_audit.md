@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 005
-- Gate D. Bounded slices 001 through 005 approved for THORP
+- Gate C. Validation plan ready through slice 006
+- Gate D. Bounded slices 001 through 006 approved for THORP
 
 ## Migrated THORP Slices
 
@@ -77,3 +77,9 @@ Slice 005:
 - target: `src/stomatal_optimiaztion/domains/thorp/soil_initialization.py`
 - scope: bounded soil discretization and root initialization
 - excluded: `richards_equation`, `soil_moisture`, and full soil time stepping
+
+Slice 006:
+- source: `THORP/src/thorp/soil.py` (`richards_equation`)
+- target: `src/stomatal_optimiaztion/domains/thorp/soil_dynamics.py`
+- scope: bounded Richards-equation solver with minimal parameter surface
+- excluded: `soil_moisture` and full coupled surface flux logic
