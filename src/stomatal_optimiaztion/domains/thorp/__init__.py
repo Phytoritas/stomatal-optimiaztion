@@ -1,3 +1,8 @@
+from stomatal_optimiaztion.domains.thorp.hydraulics import (
+    RootUptakeParams,
+    RootUptakeResult,
+    e_from_soil_to_root_collar,
+)
 from stomatal_optimiaztion.domains.thorp.model_card import (
     equation_id_set,
     iter_equation_refs,
@@ -26,11 +31,14 @@ __all__ = [
     "InitialSoilAndRoots",
     "RadiationResult",
     "RichardsEquationParams",
+    "RootUptakeParams",
+    "RootUptakeResult",
     "SoilGrid",
     "SoilHydraulics",
     "SoilInitializationParams",
     "SoilMoistureParams",
     "WeibullVC",
+    "e_from_soil_to_root_collar",
     "equation_id_set",
     "initial_soil_and_roots",
     "iter_equation_refs",
