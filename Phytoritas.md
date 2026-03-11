@@ -14,3 +14,4 @@ Current status:
 - Slice 002 migrated: THORP radiation runtime seam
 - Slice 003 migrated: THORP Weibull vulnerability-curve primitive
 - Slice 004 migrated: THORP soil hydraulics dataclass
+- Slice 005 migrated: THORP soil initialization seam

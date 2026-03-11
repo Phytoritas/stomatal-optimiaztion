@@ -76,8 +76,16 @@ The fourth slice ports the next bounded hydraulic dataclass:
 - keep the implementation vectorized and numerically aligned with legacy snapshots
 - leave `THORPParams` and `initial_soil_and_roots` blocked for the next seam
 
+## Slice 005: THORP Soil Initialization
+
+The fifth slice ports the first bounded soil-setup function:
+- move `SoilGrid`, `InitialSoilAndRoots`, and `initial_soil_and_roots` from `soil.py`
+- depend only on migrated primitives plus a minimal parameter dataclass
+- validate soil-grid geometry and initialization outputs against legacy snapshots
+- keep `richards_equation` and `soil_moisture` blocked for a later slice
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, Weibull, and soil-hydraulics seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, and soil-initialization seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `initial_soil_and_roots` or another bounded soil seam
+3. prepare the next THORP source audit for `richards_equation` or another bounded soil-dynamics seam
