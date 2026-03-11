@@ -33,4 +33,4 @@ Migrate the bounded `soil_moisture` seam so the soil column can couple surface e
 
 ## Next Seam
 
-- `e_from_soil_to_root_collar` from `hydraulics.py`
+- `stomata` from `hydraulics.py`

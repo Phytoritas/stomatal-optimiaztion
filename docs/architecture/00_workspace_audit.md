@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 007
-- Gate D. Bounded slices 001 through 007 approved for THORP
+- Gate C. Validation plan ready through slice 008
+- Gate D. Bounded slices 001 through 008 approved for THORP
 
 ## Migrated THORP Slices
 
@@ -89,3 +89,9 @@ Slice 007:
 - target: `src/stomatal_optimiaztion/domains/thorp/soil_dynamics.py`
 - scope: bounded soil surface-coupling seam for evaporation, precipitation, and top-boundary updates
 - excluded: `e_from_soil_to_root_collar`, stomatal optimization, and the wider hydraulics stack
+
+Slice 008:
+- source: `THORP/src/thorp/hydraulics.py` (`e_from_soil_to_root_collar`)
+- target: `src/stomatal_optimiaztion/domains/thorp/hydraulics.py`
+- scope: bounded root-uptake hydraulics and resistance bookkeeping
+- excluded: `stomata`, canopy conductance coupling, and the wider optimization stack

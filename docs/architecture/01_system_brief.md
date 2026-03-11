@@ -100,8 +100,16 @@ The seventh slice ports the bounded soil surface-coupling seam:
 - keep the interface bounded by a minimal `SoilMoistureParams` dataclass
 - leave `e_from_soil_to_root_collar` blocked as the next hydraulics seam
 
+## Slice 008: THORP Root Uptake Hydraulics
+
+The eighth slice ports the next bounded hydraulics seam:
+- move `e_from_soil_to_root_collar` from `hydraulics.py` into a dedicated THORP hydraulics module
+- reuse migrated `WeibullVC` and soil initialization outputs
+- keep the interface bounded by a minimal `RootUptakeParams` dataclass
+- leave `stomata` blocked as the next coupled hydraulics seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, and soil-moisture seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, and root-uptake seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `e_from_soil_to_root_collar` or another bounded hydraulics seam
+3. prepare the next THORP source audit for `stomata` or another bounded coupled hydraulics seam
