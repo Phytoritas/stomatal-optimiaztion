@@ -33,4 +33,4 @@ Migrate the THORP soil hydraulic dataclass as the first bounded hydraulic seam a
 
 ## Next Seam
 
-- `initial_soil_and_roots` from `soil.py`
+- `richards_equation` from `soil.py`
