@@ -24,6 +24,13 @@ class RichardsEquationParams:
     soil: SoilHydraulics
 
 
+@dataclass(frozen=True, slots=True)
+class SoilMoistureParams:
+    richards: RichardsEquationParams
+    m_h2o: float
+    r_gas: float
+
+
 @implements(
     "E_S2_1",
     "E_S2_10",
@@ -134,3 +141,85 @@ def richards_equation(
         q_bttm = -float(params.soil.k_soil_sat(np.array([z_mid_true[n_soil_true - 1]]))[0])
 
     return psi_new.astype(float), q_bttm
+
+
+@implements("E_S2_3", "E_S2_9", "E_S2_11", "E_S2_12")
+def soil_moisture(
+    *,
+    params: SoilMoistureParams,
+    grid: SoilGrid,
+    psi_soil_by_layer: NDArray[np.floating],
+    t_a: float,
+    t_soil: float,
+    rh: float,
+    u10: float,
+    precip: float,
+    e_soil: NDArray[np.floating],
+    la: float,
+    w: float,
+) -> tuple[NDArray[np.floating], float]:
+    dz = grid.dz
+    z_mid = grid.z_mid
+    richards = params.richards
+    soil = richards.soil
+
+    f = -la * e_soil * params.m_h2o / richards.rho / w**2 / dz
+
+    dhd_p = 1e6 / richards.g / richards.rho
+    with np.errstate(over="ignore", invalid="ignore"):
+        rh_soil = float(
+            np.exp(
+                dhd_p
+                * float(psi_soil_by_layer[0])
+                * richards.g
+                * params.m_h2o
+                / params.r_gas
+                / (t_soil + 273.15)
+            )
+        )
+    rh_soil = min(1.0, rh_soil)
+
+    e_vsat = 0.61094 * np.exp(17.625 * t_a / (t_a + 243.04))
+    e_vsat_soil = 0.61094 * np.exp(17.625 * t_soil / (t_soil + 243.04))
+    e_v = rh * e_vsat
+    e_v_soil = rh_soil * e_vsat_soil
+    vpd_soil = e_v_soil - e_v
+
+    g_a = 0.147 * (u10 / 10.0) ** 0.5
+    evap = g_a * vpd_soil / 101.325
+    evap = params.m_h2o / richards.rho * evap
+    evap = max(0.0, float(evap))
+
+    vwc_min = float(soil.vwc(np.array([-np.inf]), np.array([z_mid[0]]))[0]) + 0.1 * (
+        float(soil.vwc(np.array([0.0]), np.array([z_mid[0]]))[0])
+        - float(soil.vwc(np.array([-np.inf]), np.array([z_mid[0]]))[0])
+    )
+    evap_max = (
+        (
+            float(
+                soil.vwc(
+                    np.array([psi_soil_by_layer[0]]),
+                    np.array([z_mid[0]]),
+                )[0]
+            )
+            - vwc_min
+        )
+        / richards.dt
+        - float(f[0])
+    ) * float(dz[0])
+    evap_max = max(0.0, 0.95 * float(evap_max))
+    evap = min(evap, evap_max)
+
+    q_top = evap
+    if precip > 0:
+        q_top = -precip
+        evap = float("nan")
+
+    psi_new, _ = richards_equation(
+        params=richards,
+        grid=grid,
+        q_top=float(q_top),
+        f=f,
+        psi_soil_by_layer=psi_soil_by_layer,
+    )
+    return psi_new, float(evap)

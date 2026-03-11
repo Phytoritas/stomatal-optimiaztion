@@ -7,7 +7,9 @@ from stomatal_optimiaztion.domains.thorp.model_card import (
 from stomatal_optimiaztion.domains.thorp.radiation import RadiationResult, radiation
 from stomatal_optimiaztion.domains.thorp.soil_dynamics import (
     RichardsEquationParams,
+    SoilMoistureParams,
     richards_equation,
+    soil_moisture,
 )
 from stomatal_optimiaztion.domains.thorp.soil_hydraulics import SoilHydraulics
 from stomatal_optimiaztion.domains.thorp.soil_initialization import (
@@ -27,6 +29,7 @@ __all__ = [
     "SoilGrid",
     "SoilHydraulics",
     "SoilInitializationParams",
+    "SoilMoistureParams",
     "WeibullVC",
     "equation_id_set",
     "initial_soil_and_roots",
@@ -35,4 +38,5 @@ __all__ = [
     "radiation",
     "richards_equation",
     "require_equation_ids",
+    "soil_moisture",
 ]
