@@ -33,4 +33,4 @@ Migrate the first behavior-level THORP runtime seam into the new package without
 
 ## Next Seam
 
-- `WeibullVC` from `config.py`, likely as the next runtime primitive
+- `SoilHydraulics` from `config.py`

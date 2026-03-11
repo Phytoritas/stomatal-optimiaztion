@@ -60,8 +60,16 @@ The second slice moves the first runtime kernel:
 - validate with a legacy snapshot and an extreme-angle behavior test
 - keep the seam stdlib-only to avoid dependency growth before larger numerical modules move
 
+## Slice 003: THORP Weibull Vulnerability Curve
+
+The third slice introduces the first numerical primitive that requires array semantics:
+- port `WeibullVC` from `config.py` into its own THORP module
+- preserve scalar and vectorized behavior from the legacy tests
+- introduce `numpy` explicitly rather than hiding that dependency behind later seams
+- keep the rest of `config.py` blocked until a larger hydraulic seam is selected
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card and radiation seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, and Weibull seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `WeibullVC` or another small runtime primitive
+3. prepare the next THORP source audit for `SoilHydraulics` or another bounded hydraulic seam

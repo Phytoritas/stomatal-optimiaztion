@@ -43,13 +43,25 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready for slice 001
-- Gate D. First slice approved for THORP model-card traceability
+- Gate C. Validation plan ready through slice 003
+- Gate D. Bounded slices 001 through 003 approved for THORP
 
-## Active First Slice
+## Migrated THORP Slices
 
 Slice 001:
 - source: `THORP/model_card/*.json`, `THORP/src/thorp/implements.py`, and traceability-facing patterns
 - target: `src/stomatal_optimiaztion/domains/thorp/`
 - scope: curated equation metadata, decorator-based traceability, and tests
 - excluded: simulation runtime, MATLAB assets, and generated outputs
+
+Slice 002:
+- source: `THORP/src/thorp/radiation.py`
+- target: `src/stomatal_optimiaztion/domains/thorp/radiation.py`
+- scope: standalone canopy radiation kernel plus regression tests
+- excluded: forcing, growth, and simulation orchestration
+
+Slice 003:
+- source: `THORP/src/thorp/config.py` (`WeibullVC`)
+- target: `src/stomatal_optimiaztion/domains/thorp/vulnerability.py`
+- scope: scalar and vectorized vulnerability-curve behavior
+- excluded: `THORPParams`, `SoilHydraulics`, and the wider config bundle

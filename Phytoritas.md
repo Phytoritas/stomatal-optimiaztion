@@ -12,3 +12,4 @@ Current status:
 - Target repo shape finalized as a staged single-package domain workspace
 - Slice 001 migrated: THORP model-card traceability assets and helpers
 - Slice 002 migrated: THORP radiation runtime seam
+- Slice 003 migrated: THORP Weibull vulnerability-curve primitive
