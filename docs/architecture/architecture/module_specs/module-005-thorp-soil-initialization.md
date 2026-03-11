@@ -33,4 +33,4 @@ Migrate the `initial_soil_and_roots` seam as the first bounded function that com
 
 ## Next Seam
 
-- `richards_equation` from `soil.py`
+- `soil_moisture` from `soil.py`
