@@ -33,4 +33,4 @@ Migrate the bounded Richards-equation solver so the soil column dynamics can run
 
 ## Next Seam
 
-- `soil_moisture` from `soil.py`
+- `e_from_soil_to_root_collar` from `hydraulics.py`

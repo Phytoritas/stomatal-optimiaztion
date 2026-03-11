@@ -92,8 +92,16 @@ The sixth slice ports the next bounded soil-dynamics seam:
 - keep the interface bounded by a minimal `RichardsEquationParams` dataclass
 - leave `soil_moisture` blocked as the next surface-coupling seam
 
+## Slice 007: THORP Soil Moisture
+
+The seventh slice ports the bounded soil surface-coupling seam:
+- move `soil_moisture` from `soil.py` into the migrated soil-dynamics module
+- reuse migrated `SoilGrid`, `SoilHydraulics`, and `richards_equation`
+- keep the interface bounded by a minimal `SoilMoistureParams` dataclass
+- leave `e_from_soil_to_root_collar` blocked as the next hydraulics seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, and Richards-equation seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, and soil-moisture seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `soil_moisture` or another bounded surface-coupling seam
+3. prepare the next THORP source audit for `e_from_soil_to_root_collar` or another bounded hydraulics seam

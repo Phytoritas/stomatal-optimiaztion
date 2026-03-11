@@ -29,6 +29,7 @@ poetry run ruff check .
 - THORP `SoilHydraulics` is migrated as slice 004.
 - THORP `initial_soil_and_roots` is migrated as slice 005.
 - THORP `richards_equation` is migrated as slice 006.
+- THORP `soil_moisture` is migrated as slice 007.
 
 ## Next validation
-- Migrate the next THORP seam, likely `soil_moisture`, with behavior-preserving regression checks.
+- Migrate the next THORP seam, likely `e_from_soil_to_root_collar`, with behavior-preserving regression checks.
