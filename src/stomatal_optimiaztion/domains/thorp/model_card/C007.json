@@ -1,0 +1,450 @@
+{
+    "doc": {
+        "id": "Potkay et al. - 2021 - Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning.pdf",
+        "title": "Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning",
+        "year": 2021,
+        "doi": null,
+        "page_count": 66
+    },
+    "model_card": {
+        "name": "Potkay2021_S7_MaintenanceRespiration_Senescence",
+        "section": "S.7 Maintenance Respiration and Senescence",
+        "task": [
+            "Compute whole-tree maintenance respiration as the sum of leaf, sapwood, and root maintenance respiration",
+            "Compute senescence (turnover) fluxes for leaves, sapwood, and two root carbon pools from mean lifespans"
+        ],
+        "assumptions": [
+            {
+                "id": "A_S7_1",
+                "text": "Whole-tree maintenance respiration is additive across organs/pools: leaf (area-scaled dark respiration), sapwood (pool-specific maintenance rate × sapwood carbon), and roots (pool-specific maintenance rate × total root carbon).",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "S.7 first paragraph + Eq. (S.7.1)"
+                    }
+                ]
+            },
+            {
+                "id": "A_S7_2",
+                "text": "Sapwood and root pool-specific maintenance respiration rates use Q10-type temperature dependence; Q10 is set to 1.80 for sapwood and 1.98 for roots (Scots Pine parameterization).",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Text after Eq. (S.7.1) (Q10 values and citations)"
+                    }
+                ]
+            },
+            {
+                "id": "A_S7_3",
+                "text": "Senescence rates are determined solely from mean lifespans (constant lifespans in current THORP), i.e., senescence flux = pool carbon / lifespan.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "S.7 senescence paragraph + Eqs. (S.7.2)–(S.7.5)"
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "E_S7_1",
+                "latex": "R_m = a_L R_d + r_{sw}^m\\,C_{sw} + r_R^m\\,C_R",
+                "explanation": "Whole-tree maintenance respiration is the sum of leaf dark respiration (area-scaled), sapwood maintenance respiration, and root maintenance respiration.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Eq. (S.7.1)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S7_2",
+                "latex": "S_L = \frac{C_L}{\tau_L}",
+                "explanation": "Leaf senescence (turnover) flux from leaf carbon pool and mean leaf lifespan.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Eq. (S.7.2)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S7_3",
+                "latex": "S_{sw} = \frac{C_{sw}}{\tau_{sw}}",
+                "explanation": "Sapwood senescence (turnover) flux from sapwood carbon pool and mean sapwood lifespan.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Eq. (S.7.3)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S7_4",
+                "latex": "S_{R,H,i} = \frac{C_{R,H,i}}{\tau_R}",
+                "explanation": "Horizontal/root-uptake pool senescence flux in soil layer i from its carbon pool and mean root lifespan.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Eq. (S.7.4)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S7_5",
+                "latex": "S_{R,V,i} = \frac{C_{R,V,i}}{\tau_R}",
+                "explanation": "Vertical/root-transport pool senescence flux in soil layer i from its carbon pool and mean root lifespan.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Eq. (S.7.5)"
+                    }
+                ]
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "R_m",
+                "name": "whole-tree maintenance respiration",
+                "unit": "mol C s^-1",
+                "definition": "Sum of maintenance respiration contributions from leaves, sapwood, and roots.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Definition sentence above Eq. (S.7.1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "a_L",
+                "name": "leaf area",
+                "unit": "m^2",
+                "definition": "Leaf area used to scale leaf dark respiration (area basis) to whole-tree flux.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Eq. (S.7.1) term a_L R_d"
+                    }
+                ]
+            },
+            {
+                "symbol": "R_d",
+                "name": "leaf dark respiration rate (area basis)",
+                "unit": "mol C m^-2 s^-1",
+                "definition": "Leaf dark respiration rate (temperature dependence defined in Section S.6).",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Text after Eq. (S.7.1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "r_{sw}^m",
+                "name": "sapwood pool-specific maintenance respiration rate",
+                "unit": "s^-1",
+                "definition": "Maintenance respiration rate per unit sapwood carbon pool (temperature dependent via Q10-type equation).",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Text defining r_sw^m and its units"
+                    }
+                ]
+            },
+            {
+                "symbol": "r_R^m",
+                "name": "root pool-specific maintenance respiration rate",
+                "unit": "s^-1",
+                "definition": "Maintenance respiration rate per unit root carbon pool (temperature dependent via Q10-type equation).",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Text defining r_R^m and its units"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_{sw}",
+                "name": "sapwood carbon pool",
+                "unit": "mol C",
+                "definition": "Sapwood carbon pool used in maintenance respiration and senescence.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Eq. (S.7.1) and Eq. (S.7.3)"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_L",
+                "name": "leaf carbon pool",
+                "unit": "mol C",
+                "definition": "Leaf carbon pool used to compute senescence flux.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Eq. (S.7.2)"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_R",
+                "name": "root carbon pool (aggregate)",
+                "unit": "mol C",
+                "definition": "Root carbon pool used for whole-tree root maintenance respiration (distinct from the two root sub-pools used for senescence).",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Eq. (S.7.1) root term"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_{R,H,i}",
+                "name": "root carbon pool (horizontal) in soil layer i",
+                "unit": "mol C",
+                "definition": "One of two root pools within the i-th soil layer; senescence flux computed using τ_R.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Eq. (S.7.4)"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_{R,V,i}",
+                "name": "root carbon pool (vertical) in soil layer i",
+                "unit": "mol C",
+                "definition": "Second of two root pools within the i-th soil layer; senescence flux computed using τ_R.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Eq. (S.7.5)"
+                    }
+                ]
+            },
+            {
+                "symbol": "S_L",
+                "name": "leaf senescence flux",
+                "unit": "mol C s^-1",
+                "definition": "Leaf turnover flux computed from mean lifespan.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Eq. (S.7.2)"
+                    }
+                ]
+            },
+            {
+                "symbol": "S_{sw}",
+                "name": "sapwood senescence flux",
+                "unit": "mol C s^-1",
+                "definition": "Sapwood turnover flux computed from mean lifespan.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Eq. (S.7.3)"
+                    }
+                ]
+            },
+            {
+                "symbol": "S_{R,H,i}",
+                "name": "root (horizontal) senescence flux in layer i",
+                "unit": "mol C s^-1",
+                "definition": "Turnover flux of the horizontal root pool in soil layer i.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Eq. (S.7.4)"
+                    }
+                ]
+            },
+            {
+                "symbol": "S_{R,V,i}",
+                "name": "root (vertical) senescence flux in layer i",
+                "unit": "mol C s^-1",
+                "definition": "Turnover flux of the vertical root pool in soil layer i.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Eq. (S.7.5)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\tau_L",
+                "name": "mean leaf lifespan",
+                "unit": "s",
+                "definition": "Mean lifespan of the leaf carbon pool used to compute leaf senescence flux.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Sentence below Eqs. (S.7.2)–(S.7.5)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\tau_{sw}",
+                "name": "mean sapwood lifespan",
+                "unit": "s",
+                "definition": "Mean lifespan of the sapwood carbon pool used to compute sapwood senescence flux.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Sentence below Eqs. (S.7.2)–(S.7.5)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\tau_R",
+                "name": "mean root lifespan",
+                "unit": "s",
+                "definition": "Mean lifespan of root pools (used for both C_{R,H,i} and C_{R,V,i}).",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Sentence below Eqs. (S.7.2)–(S.7.5)"
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "symbol": "Q10_{sw}",
+                "name": "Q10 for sapwood maintenance respiration",
+                "value": 1.80,
+                "unit": "dimensionless",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Q10 sentence (sapwood)"
+                    }
+                ]
+            },
+            {
+                "symbol": "Q10_{R}",
+                "name": "Q10 for root maintenance respiration",
+                "value": 1.98,
+                "unit": "dimensionless",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Q10 sentence (roots)"
+                    }
+                ]
+            }
+        ],
+        "algorithm": {
+            "inputs": [
+                "a_L",
+                "R_d",
+                "r_{sw}^m(T)",
+                "r_R^m(T)",
+                "C_L",
+                "C_{sw}",
+                "C_R (aggregate)",
+                "C_{R,H,i} (i=1..N)",
+                "C_{R,V,i} (i=1..N)",
+                "\tau_L",
+                "\tau_{sw}",
+                "\tau_R"
+            ],
+            "outputs": [
+                "R_m",
+                "S_L",
+                "S_{sw}",
+                "S_{R,H,i}",
+                "S_{R,V,i}"
+            ],
+            "steps": [
+                "Compute whole-tree maintenance respiration: Rm = aL*Rd + r_sw^m*C_sw + r_R^m*C_R. (Eq. S.7.1)",
+                "Compute senescence fluxes from mean lifespans: SL = CL/τL; Ssw = Csw/τsw; SR,H,i = CR,H,i/τR; SR,V,i = CR,V,i/τR. (Eqs. S.7.2–S.7.5)"
+            ],
+            "evidence": [
+                {
+                    "page": 45,
+                    "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                    "pointer": "All S.7 equations"
+                }
+            ]
+        },
+        "limitations": [
+            {
+                "id": "L_S7_1",
+                "text": "Mean lifespans (and thus senescence rates) are assumed constant in current THORP; the text notes future versions may include variable senescence dependent on environmental/physiological factors (e.g., embolism) to represent stress-induced and seasonal deciduousness.",
+                "evidence": [
+                    {
+                        "page": 45,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p45.png",
+                        "pointer": "Closing paragraph of S.7"
+                    }
+                ]
+            }
+        ],
+        "datasets": [],
+        "metrics": []
+    },
+    "provenance": {
+        "extraction_time": "2026-01-03T02:30:00Z",
+        "model": "GPT-5.2 Thinking",
+        "mode": "EXTRACT",
+        "is_partial": false,
+        "chunk": {
+            "chunk_id": "C007",
+            "page_range": [
+                45,
+                45
+            ],
+            "section_start_page": 45,
+            "section_end_page": 45
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C007",
+                "title": "S.7 Maintenance Respiration and Senescence",
+                "page_range": [
+                    45,
+                    45
+                ],
+                "rationale": "Defines whole-tree maintenance respiration and organ/pool turnover (senescence) fluxes required for whole-tree carbon balance and allocation in the next section."
+            },
+            {
+                "chunk_id": "C008",
+                "title": "S.8 Dynamic Allocation Fractions",
+                "page_range": [
+                    46,
+                    52
+                ],
+                "rationale": "Introduces the marginal gain–cost allocation rule for dynamic biomass partitioning (u_k) and its derivatives."
+            }
+        ],
+        "next_recommended_chunk_id": "C008"
+    }
+}

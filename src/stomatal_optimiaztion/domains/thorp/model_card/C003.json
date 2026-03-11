@@ -1,0 +1,1337 @@
+{
+    "doc": {
+        "id": "Potkay et al. - 2021 - Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning.pdf",
+        "title": "Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning",
+        "year": 2021,
+        "doi": null,
+        "page_count": 66
+    },
+    "model_card": {
+        "name": "Potkay2021_Supplement_S3_XylemHydraulics",
+        "aliases": [
+            "Potkay et al. (2021) supplementary",
+            "Section S.3 Xylem Hydraulics"
+        ],
+        "task": [
+            "Xylem hydraulics submodel",
+            "Steady-state transpiration from hydraulic supply + vapor diffusion demand",
+            "Analytic sensitivities used for optimality/allocation"
+        ],
+        "domain": [
+            "Plant ecohydrology",
+            "Xylem hydraulics",
+            "Whole-tree optimality / biomass partitioning"
+        ],
+        "assumptions": [
+            {
+                "id": "A1",
+                "text": "Steady-state hydraulics: transpiration is represented by a hydraulic network linking soil layers → root collar (ΨRc) → stem (ΨS) → leaf (ΨL), with embolism reducing conductance via vulnerability curves.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_S3_intro",
+                        "char_span": null,
+                        "snippet": "Section S.3 introduces xylem potentials (ΨRc, ΨS, ΨL) and layer contributions Ei to leaf-area specific transpiration E via hydraulic resistances."
+                    }
+                ]
+            },
+            {
+                "id": "A2",
+                "text": "Embolism effects are handled with an integral Kirchhoff transform of Weibull vulnerability curves to obtain an effective embolism factor f(·) along each segment (root/stem/leaf).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_weibull_kirchhoff",
+                        "char_span": null,
+                        "snippet": "Text defines embolism factor via integral Kirchhoff transform and Weibull functions with parameters bX, cX."
+                    }
+                ]
+            },
+            {
+                "id": "A3",
+                "text": "Transpiration is also expressed by a vapor diffusion relationship using Gw, saturation vapor pressure (ea,sat), and RH; the model solves for consistent E and water potentials.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_S3_10_def",
+                        "char_span": null,
+                        "snippet": "Text defines transpiration from diffusional conductance Gw, ea,sat, and RH (Eq. S.3.10)."
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "E_S3_1",
+                "latex": "a_L E_i = \\dfrac{\\Psi_{soil,i} - \\Psi_{Rc} - \\varpi\\,\\rho\\,g\\,z_i}{R_{R,i}}",
+                "variables": [
+                    "a_L",
+                    "E_i",
+                    "\\Psi_{soil,i}",
+                    "\\Psi_{Rc}",
+                    "R_{R,i}",
+                    "\\varpi",
+                    "\\rho",
+                    "g",
+                    "z_i"
+                ],
+                "explanation": "Layer-i contribution to leaf-area-specific transpiration from soil layer i to root collar through the layer’s total root hydraulic resistance.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_eq_S3_1",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.1): aL Ei = (Ψsoil,i − ΨRc − ϖρgz_i) / RR,i (layout inferred from extracted line-wrapping)."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": "Fraction layout was partially lost in text extraction; numerator/denominator reconstructed from surrounding notation."
+            },
+            {
+                "id": "E_S3_2",
+                "latex": "R_{R,i} = R_{R,H,i} + \\sum_{j=1}^{i} R_{R,V,j}",
+                "variables": [
+                    "R_{R,i}",
+                    "R_{R,H,i}",
+                    "R_{R,V,j}"
+                ],
+                "explanation": "Total root resistance to the i-th soil layer as radial resistance in layer i plus cumulative vertical resistances from surface to depth i.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_eq_S3_2",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.2): RR,i = RR,H,i + Σ_{j=1..i} RR,V,j."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "E_S3_3",
+                "latex": "R_{R,H,i} = \\dfrac{\\beta_{R,H}}{f_{R,i}\\,C_{R,H,i}}",
+                "variables": [
+                    "R_{R,H,i}",
+                    "\\beta_{R,H}",
+                    "f_{R,i}",
+                    "C_{R,H,i}"
+                ],
+                "explanation": "Radial root resistance parameterized by a proportionality constant and the conductive root carbon pool, reduced by embolism factor fR,i.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_eq_S3_3",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.3): RR,H,i expressed via βR,H, fR,i, and CR,H,i (exact formatting inferred)."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": "Exact subscripts/spacing depend on PDF math layout."
+            },
+            {
+                "id": "E_S3_5",
+                "latex": "R_{R,V,i} = \\beta_{R,V}\\,\\dfrac{\\Delta z_i^2}{C_{R,V,i}}",
+                "variables": [
+                    "R_{R,V,i}",
+                    "\\beta_{R,V}",
+                    "\\Delta z_i",
+                    "C_{R,V,i}"
+                ],
+                "explanation": "Vertical (inter-layer) root resistance parameterized by conductive root carbon in vertical pathway and layer thickness.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_eq_S3_5",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.5): RR,V,i defined from βR,V, Δz_i, CR,V,i (exact placement of Δz_i^2 inferred)."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": "Exponent on Δz_i and exact arrangement inferred from extracted math text."
+            },
+            {
+                "id": "E_S3_4",
+                "latex": "f_{R,i}(\\Psi_{soil,i},\\Psi_{Rc}) = \\begin{cases}\\dfrac{\\int_{\\Psi_{Rc}}^{\\Psi_{soil,i}} VC_R(\\Psi)\\,d\\Psi}{\\Psi_{soil,i}-\\Psi_{Rc}}, & \\Psi_{soil,i}\\neq\\Psi_{Rc}\\\\VC_R(\\Psi_{Rc}), & \\Psi_{soil,i}=\\Psi_{Rc}\\end{cases}",
+                "variables": [
+                    "f_{R,i}",
+                    "\\Psi_{soil,i}",
+                    "\\Psi_{Rc}",
+                    "VC_R(\\Psi)"
+                ],
+                "explanation": "Effective root embolism factor as an average vulnerability along the potential drop (integral Kirchhoff transform form).",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_eq_S3_4",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.4): fR,i defined via integral Kirchhoff transform; vulnerability curve VCR(Ψ) with parameters bR, cR."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": "Piecewise structure reconstructed; exact equality-case line may differ in notation."
+            },
+            {
+                "id": "E_S3_6",
+                "latex": "a_L E = f_S\\,k_S\\,(\\Psi_{Rc}-\\Psi_S-\\varpi\\,\\rho\\,g\\,H)",
+                "variables": [
+                    "a_L",
+                    "E",
+                    "f_S",
+                    "k_S",
+                    "\\Psi_{Rc}",
+                    "\\Psi_S",
+                    "H",
+                    "\\varpi",
+                    "\\rho",
+                    "g"
+                ],
+                "explanation": "Stem segment flow relation between root collar and stem potential including gravitational term.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_eq_S3_6",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.6): aL E = fS kS(ΨRc − ΨS − ϖρgH) (math layout partially wrapped)."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": "Term ordering inferred from extracted line breaks."
+            },
+            {
+                "id": "E_S3_7",
+                "latex": "f_S(\\Psi_{Rc},\\Psi_S)=\\begin{cases}\\dfrac{\\int_{\\Psi_S}^{\\Psi_{Rc}} VC_S(\\Psi)\\,d\\Psi}{\\Psi_{Rc}-\\Psi_S}, & \\Psi_{Rc}\\neq\\Psi_S\\\\VC_S(\\Psi_S), & \\Psi_{Rc}=\\Psi_S\\end{cases}",
+                "variables": [
+                    "f_S",
+                    "\\Psi_{Rc}",
+                    "\\Psi_S",
+                    "VC_S(\\Psi)"
+                ],
+                "explanation": "Effective stem embolism factor from vulnerability curve VCS(Ψ) (Weibull parameters bS, cS).",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_eq_S3_7",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.7): fS defined via integral Kirchhoff transform using VCS(Ψ) with parameters bS, cS."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": "Exact equality-case symbol may be VC_S(ΨRc) or VC_S(ΨS); not fully verifiable from current extracted text."
+            },
+            {
+                "id": "E_S3_8",
+                "latex": "E = f_L\\,k_L\\,(\\Psi_S-\\Psi_L)",
+                "variables": [
+                    "E",
+                    "f_L",
+                    "k_L",
+                    "\\Psi_S",
+                    "\\Psi_L"
+                ],
+                "explanation": "Leaf segment flow relation between stem potential and leaf potential.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_eq_S3_8",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.8): E = fL kL(ΨS − ΨL)."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "E_S3_9",
+                "latex": "f_L(\\Psi_S,\\Psi_L)=\\begin{cases}\\dfrac{\\int_{\\Psi_L}^{\\Psi_S} VC_L(\\Psi)\\,d\\Psi}{\\Psi_S-\\Psi_L}, & \\Psi_S\\neq\\Psi_L\\\\VC_L(\\Psi_L), & \\Psi_S=\\Psi_L\\end{cases}",
+                "variables": [
+                    "f_L",
+                    "\\Psi_S",
+                    "\\Psi_L",
+                    "VC_L(\\Psi)"
+                ],
+                "explanation": "Effective leaf embolism factor from vulnerability curve VCL(Ψ) (Weibull parameters bL, cL).",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_eq_S3_9",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.9): fL defined via integral Kirchhoff transform using VCL(Ψ) with parameters bL, cL."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": "Exact equality-case may reference VC_L(ΨS) or VC_L(ΨL); not fully verifiable here."
+            },
+            {
+                "id": "E_S3_10",
+                "latex": "E = G_w\\,e_{a,sat}\\,(1-RH)",
+                "variables": [
+                    "E",
+                    "G_w",
+                    "e_{a,sat}",
+                    "RH"
+                ],
+                "explanation": "Transpiration from vapor diffusion: leaf conductance to water vapor, saturation vapor pressure, and relative humidity.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_eq_S3_10",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.10): E defined by diffusional conductance Gw, ea,sat, and RH."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "E_S3_25",
+                "latex": "E = \\int_{\\Psi_L}^{\\Psi_{L,0}} k_c\\,d\\Psi",
+                "variables": [
+                    "E",
+                    "\\Psi_L",
+                    "\\Psi_{L,0}",
+                    "k_c"
+                ],
+                "explanation": "Definition relating transpiration to canopy conductance integrated over leaf water potential from current ΨL to the E=0 reference ΨL,0.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_eq_S3_25",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.25): E = ∫ k_c dΨ between ΨL and ΨL,0."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "E_S3_26",
+                "latex": "\\Psi_{L,0} = \\Psi_{Rc,0} - \\varpi\\,\\rho\\,g\\,H",
+                "variables": [
+                    "\\Psi_{L,0}",
+                    "\\Psi_{Rc,0}",
+                    "H",
+                    "\\varpi",
+                    "\\rho",
+                    "g"
+                ],
+                "explanation": "Leaf water potential at E=0 given by root-collar reference potential minus gravitational drop to canopy height.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_eq_S3_26",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.26): ΨL,0 = ΨRc,0 − ϖρgH."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "E_S3_27",
+                "latex": "\\Psi_{Rc,0} = \\dfrac{\\sum_{i=1}^{N}\\dfrac{\\Psi_{soil,i}-\\varpi\\,\\rho\\,g\\,z_i}{R_{R,0,i}}}{\\sum_{i=1}^{N}\\dfrac{1}{R_{R,0,i}}}",
+                "variables": [
+                    "\\Psi_{Rc,0}",
+                    "\\Psi_{soil,i}",
+                    "z_i",
+                    "R_{R,0,i}",
+                    "N",
+                    "\\varpi",
+                    "\\rho",
+                    "g"
+                ],
+                "explanation": "Root-collar water potential at E=0 obtained as a resistance-weighted average of soil layer potentials including gravitational term.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_eq_S3_27",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.27): ΨRc,0 expressed with Σ (Ψsoil,i − ϖρgz_i)/RR,0,i over Σ 1/RR,0,i (fraction layout reconstructed)."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": "Equation fraction bars/parentheses were partially lost in extracted math layout."
+            },
+            {
+                "id": "E_S3_32",
+                "latex": "k_{c,max} = \\left(\\dfrac{a_L}{f_{L,0}k_L} + \\dfrac{1}{\\mathbb{c}_0 + f_{S,0}k_S}\\right)^{-1}",
+                "variables": [
+                    "k_{c,max}",
+                    "a_L",
+                    "f_{L,0}",
+                    "k_L",
+                    "\\mathbb{c}_0",
+                    "f_{S,0}",
+                    "k_S"
+                ],
+                "explanation": "Maximum canopy conductance in the E→0 reference state (using fL,0, fS,0, and an intermediate term \\mathbb{c}_0 defined in S.3.19h / S.3.29 context).",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_eq_S3_32",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.32): kc,max = 1 / [ aL/(fL,0 kL) + 1/(c0 + fS,0 kS) ] (structure inferred)."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": "Term \\mathbb{c}_0 appears in later derivative expressions; its exact definition requires the full Eq. S.3.19h context."
+            },
+            {
+                "id": "E_S3_33",
+                "latex": "f_{L,0} = VC_L(\\Psi_{Rc,0}-\\varpi\\,\\rho\\,g\\,H)",
+                "variables": [
+                    "f_{L,0}",
+                    "VC_L(\\Psi)",
+                    "\\Psi_{Rc,0}",
+                    "H",
+                    "\\varpi",
+                    "\\rho",
+                    "g"
+                ],
+                "explanation": "Leaf embolism factor at E=0 evaluated at the E=0 leaf potential.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_eq_S3_33",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.33): fL,0 = VCL(ΨRc,0 − ϖρgH)."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "E_S3_34",
+                "latex": "f_{S,0} = \\dfrac{\\int_{\\Psi_{Rc,0}-\\varpi\\,\\rho\\,g\\,H}^{\\Psi_{Rc,0}} VC_S(\\Psi)\\,d\\Psi}{\\varpi\\,\\rho\\,g\\,H}",
+                "variables": [
+                    "f_{S,0}",
+                    "VC_S(\\Psi)",
+                    "\\Psi_{Rc,0}",
+                    "H",
+                    "\\varpi",
+                    "\\rho",
+                    "g"
+                ],
+                "explanation": "Stem embolism factor at E=0 computed as average vulnerability across the gravitational drop from root collar to canopy.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_eq_S3_34",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.34): fS,0 defined by an integral of VCS(Ψ) over a Ψ-interval of size ϖρgH."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": "Exact integral limits verified qualitatively; precise notation may vary."
+            },
+            {
+                "id": "E_S3_35d",
+                "latex": "k_c = k_{c,max}\\,\\exp\\left[ A_{n,max}\\int_{\\Psi_L}^{\\Psi_{L,0}} \\lambda(\\Psi)\\,d\\Psi \\right]",
+                "variables": [
+                    "k_c",
+                    "k_{c,max}",
+                    "A_{n,max}",
+                    "\\lambda(\\Psi)",
+                    "\\Psi_L",
+                    "\\Psi_{L,0}"
+                ],
+                "explanation": "Derived expression for canopy conductance as an exponential of an integral involving a marginal value function λ(Ψ) and A_{n,max}.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_eq_S3_35d",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.35d): kc = kc,max exp[ An,max ∫ λ dΨ ] (as extracted; exact symbols λ(Ψ) and limits ΨL→ΨL,0)."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": "The full derivation chain (S.3.35a–c) includes optimality conditions; exact interpretive mapping depends on prior definitions."
+            },
+            {
+                "id": "E_S3_42",
+                "latex": "E_{max} = \\int_{\\Psi_{L,crit}}^{\\Psi_{L,0}} k_c\\,d\\Psi",
+                "variables": [
+                    "E_{max}",
+                    "\\Psi_{L,crit}",
+                    "\\Psi_{L,0}",
+                    "k_c"
+                ],
+                "explanation": "Maximum transpiration defined by integrating canopy conductance from a critical leaf potential to the E=0 reference.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_eq_S3_42",
+                        "char_span": null,
+                        "snippet": "Eq. (S.3.42): Emax = ∫ kc dΨ between ΨL,crit and ΨL,0."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "E_S3_49_to_55_raw",
+                "latex": "RAW_BLOCKS_UNICODE: (S.3.49) 𝕘 = 𝐴𝑛 / (1+𝜆crit kc,max A_{n,max}^2(ΨL−ΨL,crit)) ; (S.3.50–S.3.55) define 𝕙, 𝕚 and assemble dE/dε expressions.",
+                "variables": [],
+                "explanation": "Helper terms (𝕘,𝕙,𝕚) and assembled derivative expressions used to compute sensitivities of E to traits ε; kept as raw due to unavailable full math layout in current extraction.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 35,
+                        "block_id": "p35_S3_49_55",
+                        "char_span": null,
+                        "snippet": "Equations (S.3.49)–(S.3.55) appear as a block defining 𝕘, 𝕙, 𝕚 and the combined derivative formula for dE/dε."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": "Raw blocks were observed earlier in-session, but exact LaTeX reconstruction for all terms is not guaranteed without re-reading the PDF math objects."
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "a_L",
+                "name": "leaf area",
+                "unit": "m^2",
+                "definition": "Leaf area used to convert total flow to leaf-area-specific transpiration and to scale stem flow equation.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_def_aL",
+                        "char_span": null,
+                        "snippet": "Text: “where aL is the leaf area [m2] …”"
+                    }
+                ]
+            },
+            {
+                "symbol": "E",
+                "name": "leaf-area-specific transpiration",
+                "unit": "mol H2O m^-2 s^-1",
+                "definition": "Total transpiration expressed per unit leaf area.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_def_E",
+                        "char_span": null,
+                        "snippet": "Text introduces E as leaf-area specific transpiration; later Eq. (S.3.10) provides a vapor-diffusion form."
+                    }
+                ]
+            },
+            {
+                "symbol": "E_i",
+                "name": "layer contribution to transpiration",
+                "unit": "mol H2O m^-2 s^-1",
+                "definition": "Contribution from soil layer i to total leaf-area-specific transpiration.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_def_Ei",
+                        "char_span": null,
+                        "snippet": "Text: “each layer contributes its portion of transpiration, Ei, to the leaf-area specific transpiration, E.”"
+                    }
+                ]
+            },
+            {
+                "symbol": "Ψsoil,i",
+                "name": "soil water potential (layer i)",
+                "unit": "MPa",
+                "definition": "Water potential in soil layer i driving root water uptake.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Psi_soil,i"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_def_psisoil",
+                        "char_span": null,
+                        "snippet": "Text references Ψsoil,i [MPa] in the ith soil layer in the root flow equation context."
+                    }
+                ]
+            },
+            {
+                "symbol": "ΨRc",
+                "name": "root collar water potential",
+                "unit": "MPa",
+                "definition": "Xylem water potential at the root collar (junction of roots and stem).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Psi_Rc"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_def_PsiRc",
+                        "char_span": null,
+                        "snippet": "Section S.3 introduces ΨRc as a xylem potential."
+                    }
+                ]
+            },
+            {
+                "symbol": "ΨS",
+                "name": "stem xylem water potential",
+                "unit": "MPa",
+                "definition": "Xylem water potential in the stem segment.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Psi_S"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_def_PsiS",
+                        "char_span": null,
+                        "snippet": "Section S.3 introduces ΨS as a xylem potential."
+                    }
+                ]
+            },
+            {
+                "symbol": "ΨL",
+                "name": "leaf water potential",
+                "unit": "MPa",
+                "definition": "Xylem/leaf water potential at the leaf end of the hydraulic pathway.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Psi_L"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_def_PsiL",
+                        "char_span": null,
+                        "snippet": "Section S.3 introduces ΨL as a xylem potential."
+                    }
+                ]
+            },
+            {
+                "symbol": "R_R,i",
+                "name": "root hydraulic resistance to layer i",
+                "unit": "MPa s (mol H2O)^-1",
+                "definition": "Total hydraulic resistance from root collar to soil layer i.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "RR,i"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_def_RRi",
+                        "char_span": null,
+                        "snippet": "Text: “RR,i is the hydraulic resistance … [MPa · s · (mol H2O)-1] …”"
+                    }
+                ]
+            },
+            {
+                "symbol": "k_S",
+                "name": "maximum stem conductance",
+                "unit": "mol H2O s^-1 MPa^-1",
+                "definition": "Maximum stem hydraulic conductance, reduced by embolism factor fS.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "kS"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_def_kS",
+                        "char_span": null,
+                        "snippet": "Text: “kS is the maximum stem conductance [mol H2O · s-1 · MPa-1] … and fS is a …”"
+                    }
+                ]
+            },
+            {
+                "symbol": "k_L",
+                "name": "leaf area-specific maximum leaf conductance",
+                "unit": "mol H2O m^-2 s^-1 MPa^-1",
+                "definition": "Leaf hydraulic conductance per leaf area, reduced by embolism factor fL.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "kL"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_def_kL",
+                        "char_span": null,
+                        "snippet": "Text: “leaf area-specific maximum leaf conductance, kL [mol H2O · m-2 · s-1 · MPa-1] … and fL is a …”"
+                    }
+                ]
+            },
+            {
+                "symbol": "G_w",
+                "name": "diffusional conductance to water vapor",
+                "unit": "mol H2O m^-2 s^-1 kPa^-1",
+                "definition": "Leaf-to-air diffusional conductance used in vapor diffusion expression for transpiration.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Gw"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_def_Gw",
+                        "char_span": null,
+                        "snippet": "Text: “diffusional conductance … Gw [mol …]” in Eq. (S.3.10) context."
+                    }
+                ]
+            },
+            {
+                "symbol": "k_c",
+                "name": "canopy conductance (hydraulic)",
+                "unit": "mol H2O m^-2 s^-1 MPa^-1",
+                "definition": "Defined as kc = -dE/dΨL; used in integral representation of E and in k_c,max definition.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "kc"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_def_kc",
+                        "char_span": null,
+                        "snippet": "Text: “kc = -dE/dΨL is the canopy conductance [mol H2O · m-2 · s-1 · MPa-1] …”"
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "name": "βR,H",
+                "unit": "MPa s (mol H2O)^-1 mol C",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_def_betaRH",
+                        "char_span": null,
+                        "snippet": "Text defines βR,H with units [MPa · s · (mol H2O)-1 · mol C] describing proportionality for radial resistance."
+                    }
+                ]
+            },
+            {
+                "name": "βR,V",
+                "unit": "MPa s (mol H2O)^-1 mol C m^-2",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_def_betaRV",
+                        "char_span": null,
+                        "snippet": "Text defines βR,V with units for vertical resistance proportionality (exact exponent terms depend on Δz_i usage)."
+                    }
+                ]
+            },
+            {
+                "name": "bR, cR",
+                "unit": "bR: MPa; cR: unitless",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_def_bR_cR",
+                        "char_span": null,
+                        "snippet": "Text: Weibull parameters bR [MPa] and cR [-] for effective root vulnerability curve VCR(Ψ)."
+                    }
+                ]
+            },
+            {
+                "name": "bS, cS",
+                "unit": "bS: MPa; cS: unitless",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_def_bS_cS",
+                        "char_span": null,
+                        "snippet": "Text: Weibull parameters bS [MPa] and cS [-] for stem vulnerability curve VCS(Ψ)."
+                    }
+                ]
+            },
+            {
+                "name": "bL, cL",
+                "unit": "bL: MPa; cL: unitless",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_def_bL_cL",
+                        "char_span": null,
+                        "snippet": "Text: Weibull parameters bL [MPa] and cL [-] for leaf vulnerability curve VCL(Ψ)."
+                    }
+                ]
+            }
+        ],
+        "algorithm": {
+            "inputs": [
+                "Ψsoil,i (i=1..N)",
+                "z_i, Δz_i",
+                "a_L",
+                "C_R,H,i, C_R,V,i",
+                "βR,H, βR,V",
+                "k_S, k_L",
+                "VCR, VCS, VCL parameters (bR,cR,bS,cS,bL,cL)",
+                "H",
+                "Gw, ea,sat, RH"
+            ],
+            "outputs": [
+                "E",
+                "E_i",
+                "ΨRc, ΨS, ΨL",
+                "k_c, k_c,max",
+                "ΨRc,0, ΨL,0",
+                "Emax (optional; requires ΨL,crit)"
+            ],
+            "steps": [
+                "Step 1: Compute root vertical and radial resistances per layer (RR,V,i and RR,H,i) from conductive root carbon pools and proportionality constants; combine to RR,i using Eq. (S.3.2).",
+                "Step 2: For a candidate root-collar potential ΨRc (or candidate E), compute effective embolism factors fR,i, fS, fL from vulnerability curves using the integral Kirchhoff transform (Eqs. S.3.4, S.3.7, S.3.9).",
+                "Step 3: Compute each layer’s transpiration contribution Ei from the hydraulic driving gradient between Ψsoil,i and ΨRc through RR,i (Eq. S.3.1). Sum to obtain E = ΣEi.",
+                "Step 4: Enforce consistency across the aboveground pathway by relating E to ΨS via the stem equation (Eq. S.3.6) and to ΨL via the leaf equation (Eq. S.3.8).",
+                "Step 5: Enforce atmospheric demand using vapor diffusion relationship (Eq. S.3.10). Solve for the unknown(s) (commonly E and potentials) so that hydraulic supply and diffusion demand agree.",
+                "Step 6 (reference state): Compute E=0 reference potentials ΨRc,0 and ΨL,0 (Eqs. S.3.27–S.3.26) and the associated fL,0 and fS,0 (Eqs. S.3.33–S.3.34). Use these to compute kc,max (Eq. S.3.32).",
+                "Step 7 (optional sensitivities): Use the analytic derivative system (Eqs. S.3.11–S.3.62) to compute dE/dε for traits ε (e.g., D, aL, CR,H,i, CR,V,i) as required by the optimality/allocation module."
+            ],
+            "pseudocode": "Given inputs, define functions RR(i), fR(i,ΨRc), fS(ΨRc,ΨS), fL(ΨS,ΨL). Use a root-finding loop on E (or ΨRc) to satisfy: (i) E = ΣEi(ΨRc), (ii) aL E = fS kS(ΨRc-ΨS-ϖρgH), (iii) E = fL kL(ΨS-ΨL), (iv) E = Gw ea,sat (1-RH). Compute E=0 references and kc,max; optionally compute analytic sensitivities via supplied equations.",
+            "evidence": [
+                {
+                    "page": 27,
+                    "block_id": "p27_S3_flow_network",
+                    "char_span": null,
+                    "snippet": "Section S.3 defines ΨRc, ΨS, ΨL, layer contributions Ei, and resistances; later gives diffusion-demand Eq. (S.3.10) and conductance definitions."
+                }
+            ]
+        },
+        "datasets": [],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L1",
+                "text": "Several intermediate helper terms in the analytic sensitivity derivations (e.g., \\mathbb{a},\\mathbb{b},\\mathbb{c},\\mathbb{d},\\mathbb{e}, and 𝕘/𝕙/𝕚 blocks) require exact PDF math layout to reliably reconstruct full LaTeX for all sub-equations S.3.11–S.3.62.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_S3_derivatives_block",
+                        "char_span": null,
+                        "snippet": "Later pages in S.3 contain long analytic derivative blocks; only partial reconstruction is provided here."
+                    }
+                ]
+            }
+        ],
+        "implementation": {
+            "model_scope": "Hydraulic submodel (roots + stem + leaf) and associated analytic sensitivities from Supplement Section S.3.",
+            "state_variables": [
+                "ΨRc",
+                "ΨS",
+                "ΨL"
+            ],
+            "exogenous_inputs": [
+                "Ψsoil,i",
+                "RH",
+                "ea,sat",
+                "Gw",
+                "z_i",
+                "Δz_i",
+                "H"
+            ],
+            "control_inputs": [
+                "(implicit) stomatal regulation via Gw or via coupling in other sections (not fully specified in S.3)"
+            ],
+            "outputs_observables": [
+                "E",
+                "Ei",
+                "kc",
+                "kc,max",
+                "ΨRc,0",
+                "ΨL,0",
+                "Emax"
+            ],
+            "io_contract": {
+                "input_schema": "Inputs: soil water potentials per layer, root carbon pools, vulnerability curve parameters, conductances (kS,kL), geometry (H,z_i,Δz_i), atmospheric demand variables (Gw, ea,sat, RH).",
+                "output_schema": "Outputs: transpiration E and layer shares Ei, xylem potentials (ΨRc,ΨS,ΨL), canopy conductances (kc,kc,max), E=0 reference potentials (ΨRc,0, ΨL,0), and optional Emax given ΨL,crit.",
+                "data_types": [
+                    "float",
+                    "array[float]"
+                ],
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_to_p34_S3_io",
+                        "char_span": null,
+                        "snippet": "S.3 defines the hydraulic variables/potentials and links to atmospheric demand; derivative machinery suggests the submodel feeds optimality/allocation."
+                    }
+                ]
+            },
+            "dependency_graph": {
+                "nodes": [
+                    "RR,H,i",
+                    "RR,V,i",
+                    "RR,i",
+                    "fR,i",
+                    "Ei",
+                    "E",
+                    "fS",
+                    "ΨS",
+                    "fL",
+                    "ΨL",
+                    "Gw-demand",
+                    "ΨRc,0",
+                    "ΨL,0",
+                    "fL,0",
+                    "fS,0",
+                    "kc,max"
+                ],
+                "edges": [
+                    {
+                        "from": "C_R,H,i",
+                        "to": "RR,H,i",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "C_R,V,i",
+                        "to": "RR,V,i",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "RR,H,i",
+                        "to": "RR,i",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "RR,V,i",
+                        "to": "RR,i",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "Ψsoil,i",
+                        "to": "Ei",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "RR,i",
+                        "to": "Ei",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "Ei",
+                        "to": "E",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "E",
+                        "to": "ΨS",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "E",
+                        "to": "ΨL",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "Gw-demand",
+                        "to": "E",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "ΨL,0",
+                        "to": "kc,max",
+                        "type": "equation"
+                    }
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_S3_graph",
+                        "char_span": null,
+                        "snippet": "Edges follow directly from Eqs. (S.3.1–S.3.10) and the reference-state conductance definitions (S.3.25–S.3.34)."
+                    }
+                ]
+            },
+            "numerics": {
+                "time_step": null,
+                "time_grid": null,
+                "integration_method": "Steady-state (algebraic + integrals over Ψ) with root-finding for consistency.",
+                "solver": "Not specified in S.3; likely a numerical root-finder for coupled nonlinear equations in (E, ΨRc, ΨS, ΨL).",
+                "convergence_criteria": "Not specified in S.3.",
+                "stability_notes": "Nonlinearities due to vulnerability curves; piecewise cases when potential differences approach zero.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_S3_nonlin",
+                        "char_span": null,
+                        "snippet": "S.3 provides analytic derivatives suggesting Newton-like sensitivity-based solution may be intended, but solver details are not explicit."
+                    }
+                ]
+            },
+            "initial_conditions": [
+                {
+                    "name": "E=0 reference potentials",
+                    "value": "Compute ΨRc,0 (Eq. S.3.27) and ΨL,0 (Eq. S.3.26) when E=0.",
+                    "unit": "MPa",
+                    "uncertain": false,
+                    "evidence": [
+                        {
+                            "page": 31,
+                            "block_id": "p31_S3_ref_state",
+                            "char_span": null,
+                            "snippet": "Eqs. (S.3.26–S.3.27) define the E=0 reference potentials."
+                        }
+                    ]
+                }
+            ],
+            "boundary_conditions": [
+                {
+                    "name": "Soil layer potentials",
+                    "formulation": "Ψsoil,i specified as input for each soil layer i.",
+                    "uncertain": false,
+                    "evidence": [
+                        {
+                            "page": 27,
+                            "block_id": "p27_S3_bc_soil",
+                            "char_span": null,
+                            "snippet": "Ψsoil,i appears as prescribed driver in the layer flux equation (S.3.1)."
+                        }
+                    ]
+                },
+                {
+                    "name": "Atmospheric demand",
+                    "formulation": "E must satisfy E = Gw ea,sat (1-RH) (Eq. S.3.10).",
+                    "uncertain": false,
+                    "evidence": [
+                        {
+                            "page": 29,
+                            "block_id": "p29_S3_bc_atm",
+                            "char_span": null,
+                            "snippet": "Eq. (S.3.10) provides atmospheric diffusion demand for transpiration."
+                        }
+                    ]
+                }
+            ],
+            "preprocessing": {
+                "steps": [
+                    "Ensure consistent sign convention for water potentials (MPa) and for gravitational term (ϖρgz, ϖρgH).",
+                    "Handle the Ψ1=Ψ2 limit cases in embolism-factor definitions (piecewise forms for fR,fS,fL).",
+                    "If using numerics, ensure integration limits for Kirchhoff transforms are ordered correctly with sign."
+                ],
+                "missing_value_policy": null,
+                "unit_conversions": [
+                    "Potential conversion: if ρgH is computed in Pa, ϖ likely converts Pa→MPa (exact definition not explicitly extracted in this chunk)."
+                ],
+                "filters_smoothing": [],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_S3_units",
+                        "char_span": null,
+                        "snippet": "S.3 includes explicit MPa and conductance units; gravitational conversion factor ϖ is used but not explicitly defined in the extracted text."
+                    }
+                ]
+            },
+            "calibration": {
+                "estimated_parameters": [
+                    "βR,H",
+                    "βR,V",
+                    "bR,cR",
+                    "bS,cS",
+                    "bL,cL",
+                    "kS",
+                    "kL"
+                ],
+                "objective": null,
+                "constraints": null,
+                "optimizer": null,
+                "train_validation_protocol": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_S3_params",
+                        "char_span": null,
+                        "snippet": "S.3 defines parameter units for β and Weibull curve parameters; estimation method is not described in this chunk."
+                    }
+                ]
+            },
+            "code_blueprint": {
+                "language": "python",
+                "modules": [
+                    {
+                        "name": "hydraulics_s3.py",
+                        "responsibility": "Implement S.3 xylem hydraulics: compute resistances, embolism factors, solve E and potentials, compute kc and reference-state values; optionally compute analytic sensitivities.",
+                        "functions": [
+                            {
+                                "name": "weibull_vulnerability",
+                                "signature": "weibull_vulnerability(Psi: float, b: float, c: float) -> float",
+                                "inputs": [
+                                    "Ψ",
+                                    "b",
+                                    "c"
+                                ],
+                                "outputs": [
+                                    "VC(Ψ)"
+                                ],
+                                "side_effects": null,
+                                "uncertain": true,
+                                "evidence": [
+                                    {
+                                        "page": 27,
+                                        "block_id": "p27_weibull",
+                                        "char_span": null,
+                                        "snippet": "Vulnerability curves are Weibull with parameters bX, cX; exact formula form not fully reconstructed here."
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "kirchhoff_effective_factor",
+                                "signature": "kirchhoff_effective_factor(Psi1: float, Psi2: float, VC: callable) -> float",
+                                "inputs": [
+                                    "Ψ1",
+                                    "Ψ2",
+                                    "VC(·)"
+                                ],
+                                "outputs": [
+                                    "f"
+                                ],
+                                "side_effects": null,
+                                "uncertain": true,
+                                "evidence": [
+                                    {
+                                        "page": 27,
+                                        "block_id": "p27_kirchhoff",
+                                        "char_span": null,
+                                        "snippet": "Integral Kirchhoff transform is used for fR,fS,fL definitions (Eqs. S.3.4,S.3.7,S.3.9)."
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "solve_hydraulics",
+                                "signature": "solve_hydraulics(inputs: dict) -> dict",
+                                "inputs": [
+                                    "Ψsoil,i",
+                                    "RR params",
+                                    "kS,kL",
+                                    "H",
+                                    "Gw,ea,sat,RH"
+                                ],
+                                "outputs": [
+                                    "E",
+                                    "Ei",
+                                    "ΨRc,ΨS,ΨL",
+                                    "kc",
+                                    "kc,max",
+                                    "reference state"
+                                ],
+                                "side_effects": null,
+                                "uncertain": true,
+                                "evidence": [
+                                    {
+                                        "page": 27,
+                                        "block_id": "p27_to_p34_solver",
+                                        "char_span": null,
+                                        "snippet": "S.3 specifies the coupled equations but not a particular solver; implementation requires numerical root-finding."
+                                    }
+                                ]
+                            }
+                        ],
+                        "uncertain": false,
+                        "evidence": [
+                            {
+                                "page": 27,
+                                "block_id": "p27_S3_blueprint",
+                                "char_span": null,
+                                "snippet": "Blueprint follows the dependency structure defined by equations in S.3."
+                            }
+                        ]
+                    }
+                ],
+                "tests": [
+                    {
+                        "id": "T1",
+                        "type": "unit",
+                        "target": "kirchhoff_effective_factor limit case Ψ1≈Ψ2",
+                        "expected": "f ≈ VC(Ψ1) as Ψ2→Ψ1",
+                        "reference_figure_table": "Eq. S.3.4 / S.3.7 / S.3.9 piecewise definitions",
+                        "tolerance": "relative error < 1e-6 for small |Ψ1-Ψ2|",
+                        "uncertain": false,
+                        "evidence": [
+                            {
+                                "page": 27,
+                                "block_id": "p27_piecewise_f",
+                                "char_span": null,
+                                "snippet": "Piecewise f definitions imply continuity at Ψ1=Ψ2."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "unresolved_assets": [
+                {
+                    "id": "UA1",
+                    "description": "Full LaTeX reconstruction for analytic derivative chain (Eqs. S.3.11–S.3.62), including helper terms \\mathbb{a},\\mathbb{b},\\mathbb{c},\\mathbb{d},\\mathbb{e} and 𝕘/𝕙/𝕚 blocks.",
+                    "issue": "Current extraction session could not reliably preserve all PDF math layout; only core hydraulics equations are reconstructed cleanly.",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 33,
+                            "block_id": "p33_S3_long_derivatives",
+                            "char_span": null,
+                            "snippet": "Later pages in S.3 contain long derivative expansions with many sub-equations."
+                        }
+                    ]
+                }
+            ],
+            "open_questions": [
+                {
+                    "id": "Q1",
+                    "question": "What is the exact mathematical form of the Weibull vulnerability curves VC_R, VC_S, VC_L used in S.3 (e.g., exp(-(Ψ/b)^c) vs alternative parameterizations/sign conventions)?",
+                    "why_needed": "Implementing embolism factors fR,fS,fL requires the precise VC(Ψ) definition and sign convention for Ψ.",
+                    "likely_location": "Section S.3 text around the Weibull definition and the vulnerability curve equations (S.3.4/S.3.7/S.3.9).",
+                    "evidence": [
+                        {
+                            "page": 27,
+                            "block_id": "p27_weibull_statement",
+                            "char_span": null,
+                            "snippet": "Text states Weibull with parameters bX and cX but full formula not reproduced here."
+                        }
+                    ]
+                },
+                {
+                    "id": "Q2",
+                    "question": "What is the exact definition/value of ϖ in the gravitational term ϖρgH and ϖρgz (unit conversion vs physical constant)?",
+                    "why_needed": "Correct gravitational potential scaling is required to keep Ψ in MPa and avoid magnitude/sign errors.",
+                    "likely_location": "Earlier supplementary sections or notation table; possibly Section S.2 or symbols table.",
+                    "evidence": [
+                        {
+                            "page": 28,
+                            "block_id": "p28_gravity_term",
+                            "char_span": null,
+                            "snippet": "Equations include ϖρgH but the constant ϖ is not explicitly defined in the extracted lines."
+                        }
+                    ]
+                },
+                {
+                    "id": "Q3",
+                    "question": "Which numerical solver (Newton, bisection, fixed-point) and which unknown variable is chosen for root-finding when enforcing both hydraulic and diffusion definitions of E?",
+                    "why_needed": "Implementation needs a stable solve strategy for the coupled nonlinear system with vulnerability-curve feedbacks.",
+                    "likely_location": "Main Methods / numerics description outside S.3; potentially other supplementary sections.",
+                    "evidence": [
+                        {
+                            "page": 29,
+                            "block_id": "p29_coupling_note",
+                            "char_span": null,
+                            "snippet": "S.3 provides equations and derivatives but does not explicitly prescribe a solver."
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "provenance": {
+        "extraction_time": "2026-01-03T02:03:00Z",
+        "model": "GPT-5.2 Thinking",
+        "notes": "C003 extraction focused on Supplement Section S.3 (Xylem Hydraulics). Due to tool instability during extraction, core hydraulics equations and key definitions are reconstructed; the full analytic derivative chain is only partially captured and flagged as unresolved.",
+        "mode": "EXTRACT",
+        "is_partial": true,
+        "chunk": {
+            "chunk_id": "C003",
+            "page_range": [
+                27,
+                38
+            ]
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C003",
+                "title": "Supplement S.3 — Xylem Hydraulics (roots+stem+leaf, conductance definitions, analytic sensitivities)",
+                "page_range": [
+                    27,
+                    38
+                ],
+                "rationale": "Contains the hydraulic network equations, vulnerability-curve embolism factors, canopy conductance definitions, and derivative expressions used by the optimality/partitioning framework.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_S3_heading",
+                        "char_span": null,
+                        "snippet": "S.3 Xylem Hydraulics section begins in this page range."
+                    }
+                ]
+            }
+        ],
+        "next_recommended_chunk_id": "C004"
+    }
+}

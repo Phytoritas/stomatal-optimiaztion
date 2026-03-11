@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: architecture bootstrap
+- Current phase: slice 002 implementation and validation
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. complete the workspace audit from the legacy source tree
-2. choose the target repo profile for `stomatal-optimiaztion`
-3. define the first migration slice, most likely around one domain package rather than the whole workspace
+1. validate the migrated THORP radiation slice with `pytest` and `ruff`
+2. audit the next THORP seam, likely `WeibullVC`
+3. keep the TOMATO and load-cell domains blocked until their source audits are deeper

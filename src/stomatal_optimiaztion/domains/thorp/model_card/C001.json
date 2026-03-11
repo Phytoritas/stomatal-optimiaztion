@@ -1,0 +1,815 @@
+{
+  "doc": {
+    "file_path": "/mnt/data/Potkay et al. - 2021 - Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning.pdf",
+    "page_count": 66,
+    "chunk_id": "C001",
+    "page_range": [
+      19,
+      22
+    ]
+  },
+  "extraction": {
+    "extracted_at": "2026-01-03T03:08:31.202238+00:00",
+    "mode": "CHUNK_EXTRACT",
+    "coverage_note": "C001 covers Notes S1 intro and S.1 (partial): allometric scaling & structural metrics up to Eqs. S.1.3 (inclusive)."
+  },
+  "model": {
+    "model_name": "THORP",
+    "expanded_name": "Tree Hydraulics and Optimal Resource Partitioning",
+    "high_level_goal": "Predict dynamic biomass allocation by coupling whole-tree hydraulics with an optimality framework (details of objective function referenced but not fully defined in this chunk).",
+    "simulation_config": {
+      "time_step_seconds": 21600,
+      "time_step_hours": 6,
+      "control_run_years": 100,
+      "min_run_years_other_sims": 100,
+      "extension_rule": "If growth is slow due to resource limitation, extend simulation until achieving similar total tree dry structural biomass as end of control simulation (~106 g).",
+      "forcing_data": {
+        "source": "NCEP/NCAR Reanalysis 1 (NOAA re-analysis; Kalnay et al., 1996)",
+        "variables": [
+          "T_a",
+          "T_soil",
+          "RH",
+          "P",
+          "u_10",
+          "I_s"
+        ]
+      },
+      "evidence_ids": [
+        "E2_timestep_duration",
+        "E3_boundary_forcing"
+      ]
+    },
+    "components_in_scope": [
+      {
+        "component": "Model overview + run configuration (Notes S1 intro)",
+        "pages": [
+          19,
+          20
+        ]
+      },
+      {
+        "component": "Allometric scaling and structural metrics (S.1)",
+        "pages": [
+          21,
+          22
+        ],
+        "status": "partial"
+      }
+    ],
+    "referenced_components_out_of_scope": [
+      {
+        "component": "Soil hydrology (S.2)",
+        "note": "Mentioned in intro; not extracted in C001."
+      },
+      {
+        "component": "Xylem hydraulics (S.3) and conductance scaling (S.4)",
+        "note": "Mentioned in intro; not extracted in C001."
+      },
+      {
+        "component": "Light interception (S.5) and photosynthesis/stomatal optimization (S.6)",
+        "note": "Mentioned in intro; not extracted in C001."
+      },
+      {
+        "component": "Respiration/senescence (S.7), allocation (S.8), carbon pool dynamics (S.9), simulation descriptions (S.10)",
+        "note": "Mentioned in intro; not extracted in C001."
+      }
+    ],
+    "state_representation": {
+      "carbon_pools": [
+        "C_L",
+        "C_sW",
+        "C_hW",
+        "C_{R,H,i}",
+        "C_{R,V,i}"
+      ],
+      "derived_geometry": [
+        "a_L",
+        "H",
+        "W",
+        "D",
+        "D_t"
+      ],
+      "notes": "Belowground geometry not explicitly modeled beyond carbon pools per soil layer."
+    },
+    "assumptions_and_omissions": [
+      {
+        "assumption": "Model uses a single canopy layer (one leaf carbon pool C_L) but multiple soil/root layers (C_{R,i}).",
+        "type": "structural_simplification",
+        "evidence_ids": [
+          "E11_single_canopy_layer",
+          "E10_root_pools_defined"
+        ]
+      },
+      {
+        "assumption": "Belowground organs are not given an explicit physical representation (e.g., root length/area), beyond root carbon pools per soil layer which characterize uptake potential.",
+        "type": "structural_simplification",
+        "evidence_ids": [
+          "E9_tree_pools_defined"
+        ]
+      },
+      {
+        "assumption": "Empirical form factor ξ and stem carbon density ρ_{cS} are assumed constant in wood carbon-volume relation.",
+        "type": "parameter_constancy",
+        "evidence_ids": [
+          "E13_eq_S11"
+        ]
+      },
+      {
+        "assumption": "Wood volume relations implicitly assume area-preserving branching (da Vinci's rule) and uniform sapwood area along the flow path (pipe model).",
+        "type": "structural_assumption",
+        "evidence_ids": [
+          "E13_eq_S11"
+        ]
+      },
+      {
+        "assumption": "Delayed xylem refilling/permanent xylem damage not represented; immediate/idealized refilling implied.",
+        "type": "process_omission",
+        "evidence_ids": [
+          "E4_ignore_mechs_list",
+          "E5_delayed_refilling_effect"
+        ]
+      },
+      {
+        "assumption": "Plant water storage (hydraulic capacitance) ignored.",
+        "type": "process_omission",
+        "evidence_ids": [
+          "E6_water_storage_ignored"
+        ]
+      },
+      {
+        "assumption": "Nutrients assumed non-limiting; nutrient uptake and partitioning not explicitly simulated.",
+        "type": "process_omission",
+        "evidence_ids": [
+          "E7_nutrients_nonlimiting"
+        ]
+      },
+      {
+        "assumption": "Osmoregulation / detailed NSC metabolism and phloem transport not mechanistically represented in this version; discussed as future module.",
+        "type": "process_omission",
+        "evidence_ids": [
+          "E8_osmoreg_no_effect_on_allocation"
+        ]
+      }
+    ],
+    "equations": [
+      {
+        "eq_id": "S.1.1",
+        "label": "(S.1.1)",
+        "latex": "C_W = \\rho_{cS}\\,\\xi\\,H\\,D^{2}",
+        "description": "Wood structural carbon pool related to stem volume via empirical form factor and carbon density.",
+        "variables": [
+          "C_W",
+          "H",
+          "D"
+        ],
+        "parameters": [
+          "rho_cS",
+          "xi"
+        ],
+        "evidence_ids": [
+          "E13_eq_S11"
+        ]
+      },
+      {
+        "eq_id": "S.1.1_hwood",
+        "label": null,
+        "latex": "C_{hW} = \\rho_{cS}\\,\\xi\\,H\\,D_t^{2}",
+        "description": "Heartwood carbon-volume relation implied by same form as Eq. S.1.1 using transition diameter.",
+        "variables": [
+          "C_hW",
+          "H",
+          "D_t"
+        ],
+        "parameters": [
+          "rho_cS",
+          "xi"
+        ],
+        "evidence_ids": [
+          "E13_eq_S11"
+        ]
+      },
+      {
+        "eq_id": "S.1.2",
+        "label": "(S.1.2)",
+        "latex": "H = b_0\\left(\\frac{D}{D_{\\mathrm{ref}}}\\right)^{c_0}",
+        "description": "Tree height scaling as a power-law function of basal diameter.",
+        "variables": [
+          "H",
+          "D"
+        ],
+        "parameters": [
+          "b0",
+          "c0",
+          "Dref"
+        ],
+        "evidence_ids": [
+          "E15_height_width_scaling_text",
+          "E14_eq_S12_S13"
+        ]
+      },
+      {
+        "eq_id": "S.1.3",
+        "label": "(S.1.3)",
+        "latex": "W = b_1\\left(\\frac{D}{D_{\\mathrm{ref}}}\\right)^{c_1}",
+        "description": "Canopy width scaling as a power-law function of basal diameter.",
+        "variables": [
+          "W",
+          "D"
+        ],
+        "parameters": [
+          "b1",
+          "c1",
+          "Dref"
+        ],
+        "evidence_ids": [
+          "E15_height_width_scaling_text",
+          "E14_eq_S12_S13"
+        ]
+      },
+      {
+        "eq_id": "leaf_area",
+        "label": null,
+        "latex": "a_L = \\chi_L\\,C_L",
+        "description": "Total canopy leaf area equals leaf carbon pool times specific leaf area.",
+        "variables": [
+          "a_L",
+          "C_L"
+        ],
+        "parameters": [
+          "chi_L"
+        ],
+        "evidence_ids": [
+          "E12_leaf_area_eq"
+        ]
+      },
+      {
+        "eq_id": "wood_pool_sum",
+        "label": null,
+        "latex": "C_W = C_{sW} + C_{hW}",
+        "description": "Total wood carbon is the sum of sapwood and heartwood pools.",
+        "variables": [
+          "C_W",
+          "C_sW",
+          "C_hW"
+        ],
+        "parameters": [],
+        "evidence_ids": [
+          "E9_tree_pools_defined"
+        ]
+      },
+      {
+        "eq_id": "root_pool_sum",
+        "label": null,
+        "latex": "C_R = \\sum_i C_{R,i} = \\sum_i \\left(C_{R,H,i} + C_{R,V,i}\\right)",
+        "description": "Total root carbon is the sum over soil layers and their horizontal/vertical root pools.",
+        "variables": [
+          "C_R",
+          "C_{R,i}",
+          "C_{R,H,i}",
+          "C_{R,V,i}"
+        ],
+        "parameters": [],
+        "evidence_ids": [
+          "E10_root_pools_defined"
+        ]
+      }
+    ],
+    "variables": [
+      {
+        "symbol": "C_L",
+        "name": "leaf carbon pool",
+        "units": "mol C",
+        "role": "state",
+        "defined_in_chunk": true,
+        "notes": "Single canopy layer in this implementation.",
+        "evidence_ids": [
+          "E9_tree_pools_defined",
+          "E11_single_canopy_layer"
+        ]
+      },
+      {
+        "symbol": "C_W",
+        "name": "wood carbon pool (total)",
+        "units": "mol C",
+        "role": "state",
+        "defined_in_chunk": true,
+        "notes": "C_W = C_sW + C_hW.",
+        "evidence_ids": [
+          "E9_tree_pools_defined",
+          "E13_eq_S11"
+        ]
+      },
+      {
+        "symbol": "C_sW",
+        "name": "sapwood carbon pool (conductive, respiring)",
+        "units": "mol C",
+        "role": "state",
+        "defined_in_chunk": true,
+        "notes": null,
+        "evidence_ids": [
+          "E9_tree_pools_defined"
+        ]
+      },
+      {
+        "symbol": "C_hW",
+        "name": "heartwood carbon pool (nonconductive, nonrespiring)",
+        "units": "mol C",
+        "role": "state",
+        "defined_in_chunk": true,
+        "notes": null,
+        "evidence_ids": [
+          "E9_tree_pools_defined",
+          "E13_eq_S11"
+        ]
+      },
+      {
+        "symbol": "C_R",
+        "name": "total root carbon pool (integrated over soil layers)",
+        "units": "mol C",
+        "role": "state",
+        "defined_in_chunk": true,
+        "notes": "C_R = Σ_i C_{R,i}.",
+        "evidence_ids": [
+          "E10_root_pools_defined"
+        ]
+      },
+      {
+        "symbol": "C_{R,i}",
+        "name": "root carbon pool in soil layer i",
+        "units": "mol C",
+        "role": "state",
+        "defined_in_chunk": true,
+        "notes": "Decomposed into horizontal and vertical pools.",
+        "evidence_ids": [
+          "E10_root_pools_defined"
+        ]
+      },
+      {
+        "symbol": "C_{R,H,i}",
+        "name": "horizontal root carbon pool in soil layer i",
+        "units": "mol C",
+        "role": "state",
+        "defined_in_chunk": true,
+        "notes": "Represents absorbing (fine) roots + local xylem pathway.",
+        "evidence_ids": [
+          "E10_root_pools_defined"
+        ]
+      },
+      {
+        "symbol": "C_{R,V,i}",
+        "name": "vertical root carbon pool in soil layer i",
+        "units": "mol C",
+        "role": "state",
+        "defined_in_chunk": true,
+        "notes": "Represents transporting roots (xylem), interpreted as a taproot.",
+        "evidence_ids": [
+          "E10_root_pools_defined"
+        ]
+      },
+      {
+        "symbol": "a_L",
+        "name": "total canopy leaf area",
+        "units": "m^2",
+        "role": "derived",
+        "defined_in_chunk": true,
+        "notes": "a_L = χ_L·C_L.",
+        "evidence_ids": [
+          "E12_leaf_area_eq"
+        ]
+      },
+      {
+        "symbol": "H",
+        "name": "tree height",
+        "units": "m",
+        "role": "derived",
+        "defined_in_chunk": true,
+        "notes": "Power-law scaled from basal diameter.",
+        "evidence_ids": [
+          "E15_height_width_scaling_text",
+          "E14_eq_S12_S13"
+        ]
+      },
+      {
+        "symbol": "W",
+        "name": "canopy width",
+        "units": "m",
+        "role": "derived",
+        "defined_in_chunk": true,
+        "notes": "Power-law scaled from basal diameter.",
+        "evidence_ids": [
+          "E15_height_width_scaling_text",
+          "E14_eq_S12_S13"
+        ]
+      },
+      {
+        "symbol": "D",
+        "name": "basal diameter",
+        "units": "m",
+        "role": "derived",
+        "defined_in_chunk": true,
+        "notes": "Used in scaling of H, W, and wood volume relation.",
+        "evidence_ids": [
+          "E9_tree_pools_defined",
+          "E15_height_width_scaling_text",
+          "E13_eq_S11"
+        ]
+      },
+      {
+        "symbol": "D_t",
+        "name": "heartwood–sapwood transition diameter",
+        "units": "m",
+        "role": "derived",
+        "defined_in_chunk": true,
+        "notes": "Used for heartwood volume relation.",
+        "evidence_ids": [
+          "E13_eq_S11"
+        ]
+      },
+      {
+        "symbol": "T_a",
+        "name": "air temperature",
+        "units": "K",
+        "role": "exogenous_input",
+        "defined_in_chunk": true,
+        "notes": "NOAA reanalysis forcing.",
+        "evidence_ids": [
+          "E3_boundary_forcing"
+        ]
+      },
+      {
+        "symbol": "T_{soil}",
+        "name": "soil temperature",
+        "units": "K",
+        "role": "exogenous_input",
+        "defined_in_chunk": true,
+        "notes": "NOAA reanalysis forcing.",
+        "evidence_ids": [
+          "E3_boundary_forcing"
+        ]
+      },
+      {
+        "symbol": "RH",
+        "name": "relative humidity",
+        "units": "-",
+        "role": "exogenous_input",
+        "defined_in_chunk": true,
+        "notes": "NOAA reanalysis forcing.",
+        "evidence_ids": [
+          "E3_boundary_forcing"
+        ]
+      },
+      {
+        "symbol": "P",
+        "name": "precipitation rate",
+        "units": "m s^-1",
+        "role": "exogenous_input",
+        "defined_in_chunk": true,
+        "notes": "NOAA reanalysis forcing.",
+        "evidence_ids": [
+          "E3_boundary_forcing"
+        ]
+      },
+      {
+        "symbol": "u_{10}",
+        "name": "wind speed at 10 m elevation",
+        "units": "m s^-1",
+        "role": "exogenous_input",
+        "defined_in_chunk": true,
+        "notes": "NOAA reanalysis forcing.",
+        "evidence_ids": [
+          "E3_boundary_forcing"
+        ]
+      },
+      {
+        "symbol": "I_s",
+        "name": "incoming solar insolation",
+        "units": "W m^-2",
+        "role": "exogenous_input",
+        "defined_in_chunk": true,
+        "notes": "NOAA reanalysis forcing.",
+        "evidence_ids": [
+          "E3_boundary_forcing"
+        ]
+      },
+      {
+        "symbol": "\\Delta t",
+        "name": "model time step",
+        "units": "s",
+        "role": "numerics",
+        "defined_in_chunk": true,
+        "notes": "Δt = 21600 s (6 hours).",
+        "evidence_ids": [
+          "E2_timestep_duration"
+        ]
+      },
+      {
+        "symbol": "\\Psi_L",
+        "name": "leaf water potential",
+        "units": null,
+        "role": "referenced_only",
+        "defined_in_chunk": false,
+        "notes": "Referenced in discussion of Gain-Risk algorithm and delayed refilling; defined later (S.3/S.6).",
+        "evidence_ids": [
+          "E5_delayed_refilling_effect"
+        ]
+      },
+      {
+        "symbol": "\\lambda",
+        "name": "marginal water-use (Lagrange multiplier)",
+        "units": null,
+        "role": "referenced_only",
+        "defined_in_chunk": false,
+        "notes": "Referenced; definition/equations later in model (S.3/S.6).",
+        "evidence_ids": [
+          "E5_delayed_refilling_effect"
+        ]
+      },
+      {
+        "symbol": "u_L",
+        "name": "leaf allocation fraction",
+        "units": "-",
+        "role": "referenced_only",
+        "defined_in_chunk": false,
+        "notes": "Referenced as allocation fraction; formal definition in allocation section (S.8).",
+        "evidence_ids": [
+          "E8_osmoreg_no_effect_on_allocation"
+        ]
+      },
+      {
+        "symbol": "u_{sW}",
+        "name": "sapwood allocation fraction",
+        "units": "-",
+        "role": "referenced_only",
+        "defined_in_chunk": false,
+        "notes": "Referenced; formal definition in allocation section (S.8).",
+        "evidence_ids": [
+          "E8_osmoreg_no_effect_on_allocation"
+        ]
+      },
+      {
+        "symbol": "u_{R,H}",
+        "name": "horizontal root allocation fraction",
+        "units": "-",
+        "role": "referenced_only",
+        "defined_in_chunk": false,
+        "notes": "Referenced; formal definition in allocation section (S.8).",
+        "evidence_ids": [
+          "E8_osmoreg_no_effect_on_allocation"
+        ]
+      },
+      {
+        "symbol": "u_{R,V}",
+        "name": "vertical root allocation fraction",
+        "units": "-",
+        "role": "referenced_only",
+        "defined_in_chunk": false,
+        "notes": "Referenced; formal definition in allocation section (S.8).",
+        "evidence_ids": [
+          "E8_osmoreg_no_effect_on_allocation"
+        ]
+      },
+      {
+        "symbol": "G",
+        "name": "whole-tree growth rate",
+        "units": null,
+        "role": "referenced_only",
+        "defined_in_chunk": false,
+        "notes": "Referenced in discussion of NSC/phloem-growth module; formal definition later (S.9).",
+        "evidence_ids": [
+          "E8_osmoreg_no_effect_on_allocation"
+        ]
+      }
+    ],
+    "parameters": [
+      {
+        "symbol": "\\chi_L",
+        "name": "specific leaf area (SLA)",
+        "units": "m^2 (mol C)^-1",
+        "default_value": null,
+        "is_constant_assumed": null,
+        "evidence_ids": [
+          "E12_leaf_area_eq"
+        ]
+      },
+      {
+        "symbol": "\rho_{cS}",
+        "name": "stem carbon density",
+        "units": "mol C m^-3",
+        "default_value": null,
+        "is_constant_assumed": true,
+        "evidence_ids": [
+          "E13_eq_S11"
+        ]
+      },
+      {
+        "symbol": "\\xi",
+        "name": "empirical form factor",
+        "units": "-",
+        "default_value": null,
+        "is_constant_assumed": true,
+        "evidence_ids": [
+          "E13_eq_S11"
+        ]
+      },
+      {
+        "symbol": "b_0",
+        "name": "height scaling coefficient",
+        "units": null,
+        "default_value": null,
+        "is_constant_assumed": null,
+        "evidence_ids": [
+          "E15_height_width_scaling_text"
+        ]
+      },
+      {
+        "symbol": "c_0",
+        "name": "height scaling exponent",
+        "units": "-",
+        "default_value": null,
+        "is_constant_assumed": null,
+        "evidence_ids": [
+          "E15_height_width_scaling_text"
+        ]
+      },
+      {
+        "symbol": "b_1",
+        "name": "width scaling coefficient",
+        "units": null,
+        "default_value": null,
+        "is_constant_assumed": null,
+        "evidence_ids": [
+          "E15_height_width_scaling_text"
+        ]
+      },
+      {
+        "symbol": "c_1",
+        "name": "width scaling exponent",
+        "units": "-",
+        "default_value": null,
+        "is_constant_assumed": null,
+        "evidence_ids": [
+          "E15_height_width_scaling_text"
+        ]
+      },
+      {
+        "symbol": "D_{ref}",
+        "name": "reference basal diameter",
+        "units": "m",
+        "default_value": null,
+        "is_constant_assumed": null,
+        "evidence_ids": [
+          "E15_height_width_scaling_text"
+        ]
+      }
+    ],
+    "unresolved_assets": [
+      {
+        "asset": "Table S1 (symbols and units)",
+        "status": "not_in_chunk_pages_19_22",
+        "needed_for": "complete units/defaults for all symbols"
+      },
+      {
+        "asset": "Figure S12 (flowchart/order of computations)",
+        "status": "not_in_chunk_pages_19_22",
+        "needed_for": "full algorithmic step order"
+      }
+    ]
+  },
+  "evidence": [
+    {
+      "evidence_id": "E1_THORP_named",
+      "page": 19,
+      "char_span": [
+        0,
+        271
+      ],
+      "snippet": "19 \n \nNotes S1 – Full model description and simulations \nFULL MODEL DESCRIPTION \n This appendix describes the THORP (Tree Hydraulics and Optimal Resource Partitioning) model."
+    },
+    {
+      "evidence_id": "E2_timestep_duration",
+      "page": 19,
+      "char_span": [
+        100,
+        576
+      ],
+      "snippet": "Symbols and units are summarized in Table S1, and the order of model computations are summarized as a \nflowchart in Figure S12. In this study, the control simulation was run for a total of 100 years at 6-hour \ntime-steps (Δt = 21600 s)"
+    },
+    {
+      "evidence_id": "E3_boundary_forcing",
+      "page": 19,
+      "char_span": [
+        269,
+        840
+      ],
+      "snippet": "based on the resolution of NOAA re-analysis data that was used as atmospheric \nboundary conditions (NCEP/NCAR Reanalysis 1; Kalnay et al., 1996), which are air and soil \ntemperatures, Ta and Tsoil [K], respectively, relative humidity of the air, RH [-], precipitation rates, P [m∙s-\n1], windspeeds at 10 m elevation, u10 [m∙s-1], and incoming solar insolation, Is [W ∙ m-2]."
+    },
+    {
+      "evidence_id": "E4_ignore_mechs_list",
+      "page": 19,
+      "char_span": [
+        1180,
+        1806
+      ],
+      "snippet": "We note that THORP represents key plant mechanisms but ignores others which may serve as \nsecondary drivers of allocation response. Among those, four notable mechanisms are (1) delayed xylem \nrefilling or lack of recovery due to permanent xylem damage, (2) plant water storage, (3) nutrient uptake \nand partitioning, and (4) osmoregulation"
+    },
+    {
+      "evidence_id": "E5_delayed_refilling_effect",
+      "page": 20,
+      "char_span": [
+        0,
+        630
+      ],
+      "snippet": "20 \n \nAdditionally, performing Sperry et al.’s (2017) Gain-Risk algorithm for a delayed-refilling case \nwould require solving the algorithm twice (once to solve for the optimal leaf water potential, ΨL, \nusing the virgin vulnerability curve, and a second time in search of the stomatal conductance that \ncoincides with the same ΨL, except using the nonvirgin vulnerability curve"
+    },
+    {
+      "evidence_id": "E6_water_storage_ignored",
+      "page": 20,
+      "char_span": [
+        880,
+        1302
+      ],
+      "snippet": "(2) THORP ignores plant water storage, since our representation of xylem hydraulics is largely based \non Sperry et al. (1998; which included hydraulic capacitance, but it was set to zero), and since no \nprevious tests of the Gain-Risk algorithm have included plant water storage"
+    },
+    {
+      "evidence_id": "E7_nutrients_nonlimiting",
+      "page": 20,
+      "char_span": [
+        1320,
+        1799
+      ],
+      "snippet": "(3) THORP currently assumes that nutrients are neither limiting nor alter the optimal path for \nallocation (which is the common framework for many past optimality models; e.g. Franklin, \n2007; Mäkelä et al., 2008; McMurtrie et al., 2008). Consequently, we do not explicitly simulate \nnutrient uptake and partitioning."
+    },
+    {
+      "evidence_id": "E8_osmoreg_no_effect_on_allocation",
+      "page": 21,
+      "char_span": [
+        120,
+        730
+      ],
+      "snippet": "(4) A mechanistic representation of osmoregulation (and its links to nonstructural carbohydrate \n(NSC) metabolism and phloem transport) would have no effect on THORP’s predictions of the \nallocation fractions (uL, usW, uR,H, uR,V) at least for the same physiological and environmental \nconditions."
+    },
+    {
+      "evidence_id": "E9_tree_pools_defined",
+      "page": 21,
+      "char_span": [
+        3180,
+        3731
+      ],
+      "snippet": "The simulated tree is represented by two aboveground carbon pools: leaf and wood carbon pools, CL \nand CW [mol C], respectively. The latter is the sum of a hydraulically-conductive and respiring sapwood \npool, CsW [mol C], and nonconductive and non-respiring heartwood pool, ChW [mol C] (CW = CsW + ChW)."
+    },
+    {
+      "evidence_id": "E10_root_pools_defined",
+      "page": 22,
+      "char_span": [
+        0,
+        650
+      ],
+      "snippet": "22 \n \nlayers. The root carbon pool of an individual soil layer is denoted by CR,i [mol C], where the subscript i \nsignifies the index of the soil layer. Each soil layer contains two distinct root pools: (1) a pool responsible \nfor conducting water within the soil layer ‘horizontally’, CR,H,I, and (2) a pool responsible for conducting \nwater among the soil layers ‘vertically’ towards the aboveground portion of the tree, CR,V,I."
+    },
+    {
+      "evidence_id": "E11_single_canopy_layer",
+      "page": 22,
+      "char_span": [
+        876,
+        1006
+      ],
+      "snippet": "It is notable that the model includes multiple root and soil layers (i.e. multiple CR,i), but not  canopy layers (i.e. single CL)."
+    },
+    {
+      "evidence_id": "E12_leaf_area_eq",
+      "page": 22,
+      "char_span": [
+        2244,
+        2710
+      ],
+      "snippet": "The relevant tree dimensions are total canopy leaf area, aL [m2], height, H [m], canopy width, W \n[m], basal diameter, D [m], and the diameter of the heartwood-sapwood transition, Dt [m]. Leaf area is the \nproduct of the leaf carbon pool and the specific leaf area (SLA), ΧL [m2 ∙ (mol C)-1] (aL = ΧL ∙CL)."
+    },
+    {
+      "evidence_id": "E13_eq_S11",
+      "page": 22,
+      "char_span": [
+        2619,
+        3178
+      ],
+      "snippet": "ΧL [m2 ∙ (mol C)-1] (aL = ΧL ∙CL). Wood \ncarbon-volume relations in THORP are similar to those used by Buckley and Roberts (2006a,b) and \nMäkelä (1986).  \n𝐶𝑊 =𝜌𝑐𝑆𝜉𝐻𝐷2     (S.1.1) \nBoth the empirical form factor, ξ [-], and the stem’s carbon density, ρcS [mol C ∙ m-3] are assumed \nconstant."
+    },
+    {
+      "evidence_id": "E14_eq_S12_S13",
+      "page": 22,
+      "char_span": [
+        3514,
+        3989
+      ],
+      "snippet": "Tree height and canopy width, H and W, respectively, are power-law functions of basal diameter, \nD (West et al., 2009) \n𝐻=𝑏0(\n𝐷\n𝐷𝑟𝑒𝑓\n)\n𝑐0\n    (S.1.2) \n𝑊=𝑏1(\n𝐷\n𝐷𝑟𝑒𝑓\n)\n𝑐1\n    (S.1.3)"
+    },
+    {
+      "evidence_id": "E15_height_width_scaling_text",
+      "page": 22,
+      "char_span": [
+        3298,
+        3989
+      ],
+      "snippet": "may also describe heartwood \ncarbon-volume relations (ChW = ρcS∙ξ∙H∙Dt2).  \nTree height and canopy width, H and W, respectively, are power-law functions of basal diameter, \nD (West et al., 2009) \n𝐻=𝑏0(\n𝐷\n𝐷𝑟𝑒𝑓\n)\n𝑐0\n    (S.1.2) \n𝑊=𝑏1(\n𝐷\n𝐷𝑟𝑒𝑓\n)\n𝑐1\n    (S.1.3)"
+    }
+  ]
+}

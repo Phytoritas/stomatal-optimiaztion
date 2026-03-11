@@ -9,9 +9,10 @@
 ## Repo Profile Inference
 
 Target repo profile:
-- python refactoring workspace
-- architecture-first migration repo
-- likely multi-domain or staged monorepo target
+- single Python package rooted at `src/stomatal_optimiaztion/`
+- architecture-first migration repo with staged domain subpackages
+- domain layout: `domains/thorp`, `domains/tomato`, `domains/load_cell`
+- code migration rule: move one bounded seam at a time, keep each seam independently testable
 
 Legacy source profile:
 - umbrella folder containing multiple Python subprojects and generated artifacts
@@ -38,16 +39,17 @@ Legacy source profile:
 - nested package layouts inside `TOMATO` can blur migration boundaries
 - validation commands for the umbrella folder are not yet normalized in this new repo
 
-## Earliest Failed Gate
+## Current Gate Status
 
-Current earliest failed gate: target architecture selection
+- Gate A. Source audit complete for top-level legacy domains
+- Gate B. Target architecture chosen
+- Gate C. Validation plan ready for slice 001
+- Gate D. First slice approved for THORP model-card traceability
 
-Reason:
-- the scaffold exists, but the target decomposition for the new repository is not yet explicit
+## Active First Slice
 
-## Recommended First Slice
-
-Start with a design-only slice:
-- map `THORP` as the first candidate source domain
-- define whether the new repo should host extracted packages or only orchestration and migration docs
-- specify the first smoke and regression hooks before moving code
+Slice 001:
+- source: `THORP/model_card/*.json`, `THORP/src/thorp/implements.py`, and traceability-facing patterns
+- target: `src/stomatal_optimiaztion/domains/thorp/`
+- scope: curated equation metadata, decorator-based traceability, and tests
+- excluded: simulation runtime, MATLAB assets, and generated outputs

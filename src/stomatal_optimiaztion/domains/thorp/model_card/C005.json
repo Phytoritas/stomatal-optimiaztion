@@ -1,0 +1,374 @@
+{
+    "doc": {
+        "id": "Potkay et al. - 2021 - Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning.pdf",
+        "title": "Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning",
+        "year": 2021,
+        "doi": null,
+        "page_count": 66
+    },
+    "model_card": {
+        "name": "Potkay2021_Supplement_S5_LightInterception",
+        "section": "S.5 Light Interception",
+        "task": [
+            "Compute leaf-area-averaged absorbed light (solar insolation) for an individual tree canopy",
+            "Represent overstory shading and within-canopy attenuation using a Beer–Lambert form",
+            "Provide analytic derivatives of absorbed light w.r.t. leaf area, height, and canopy width for later allocation calculations"
+        ],
+        "assumptions": [
+            {
+                "id": "A_S5_1",
+                "text": "The target tree canopy leaf area is uniformly distributed in space; within-canopy light attenuation follows a Beer–Lambert form similar to Buckley & Roberts (2006a,b).",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "S.5 opening paragraph"
+                    }
+                ]
+            },
+            {
+                "id": "A_S5_2",
+                "text": "An overstory canopy of height H_n shades the target tree of height H; the overstory leaf area is approximated as uniformly distributed between H_n and H, with shading applied only when H_n > H via max(0, H_n − H).",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "S.5 description and Eq. (S.5.1)"
+                    }
+                ]
+            },
+            {
+                "id": "A_S5_3",
+                "text": "Perfect plasticity approximation is applied so stand density equals W^{-2}, linking canopy width W to area available per tree.",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "S.5 description (perfect plasticity; W^{-2})"
+                    }
+                ]
+            },
+            {
+                "id": "A_S5_4",
+                "text": "Solar geometry is represented using solar elevation below the zenith Φ, with cos(Φ) and sec(Φ)=1/cos(Φ) applied to beam incidence and path length, respectively.",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "Eq. (S.5.1) (cos and sec terms)"
+                    }
+                ]
+            },
+            {
+                "id": "A_S5_5",
+                "text": "The ratio of total-to-projected leaf area, φ, is treated as a constant; LAI under perfect plasticity is LAI = a_L · φ^{-1} · W^{-2}.",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "Text under Eq. (S.5.1) (φ definition and LAI expression)"
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "E_S5_1",
+                "latex": "I = I_s\\,\\frac{W^2}{a_L}\\,\\cos(\\Phi)\\,\\exp\\left(-K_n\\,\\max(0, H_n-H)\\,\\sec(\\Phi)\\right)\\,\\left(1-\\exp\\left(-\\frac{\\kappa_L\\,a_L}{\\varphi\\,W^2}\\,\\sec(\\Phi)\\right)\\right)",
+                "explanation": "Leaf-area-averaged absorbed light (solar insolation) for the target canopy with overstory shading and within-canopy Beer–Lambert attenuation.",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "Eq. (S.5.1)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S5_2",
+                "latex": "K_n = \\kappa_L\\,\\frac{L_n}{H_n}",
+                "explanation": "Effective extinction coefficient per path length through neighboring (overstory) trees, defined using overstory leaf area index L_n and overstory height H_n.",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "Eq. (S.5.2)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S5_3",
+                "latex": "\\frac{dI}{da_L} = -\\frac{1}{a_L}\\left(I - I_s\\,\\frac{\\kappa_L}{\\varphi}\\,\\exp\\left(-\\left[K_n\\max(0,H_n-H)+\\frac{\\kappa_L a_L}{\\varphi W^2}\\right]\\sec(\\Phi)\\right)\\right)",
+                "explanation": "Derivative of absorbed light with respect to leaf area a_L.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p42.png",
+                        "pointer": "Eq. (S.5.3)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S5_4",
+                "latex": "\\frac{\\partial I}{\\partial H} = \\begin{cases} K_n\\,I\\,\\sec(\\Phi), & H_n > H \\ 0, & H_n \\le H \\end{cases}",
+                "explanation": "Derivative of absorbed light with respect to target height H (only active when overstory is taller than target).",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p42.png",
+                        "pointer": "Eq. (S.5.4)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S5_5",
+                "latex": "\\frac{\\partial I}{\\partial W} = \\frac{2}{W}\\left(I - I_s\\,\\frac{\\kappa_L}{\\varphi}\\,\\exp\\left(-\\left[K_n\\max(0,H_n-H)+\\frac{\\kappa_L a_L}{\\varphi W^2}\\right]\\sec(\\Phi)\\right)\\right)\\sec(\\Phi)",
+                "explanation": "Derivative of absorbed light with respect to canopy width W.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p42.png",
+                        "pointer": "Eq. (S.5.5)"
+                    }
+                ]
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "I",
+                "name": "leaf-area-averaged absorbed light (solar insolation)",
+                "unit": "W m^-2",
+                "definition": "Absorbed light averaged over leaf area of the target tree canopy.",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "Definition line before Eq. (S.5.1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "I_s",
+                "name": "incoming insolation",
+                "unit": "W m^-2",
+                "definition": "Incoming solar insolation incident above the canopy.",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "Text under Eq. (S.5.1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "a_L",
+                "name": "leaf area (target tree)",
+                "unit": "m^2",
+                "definition": "Total leaf area of the target tree canopy.",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "Eq. (S.5.1) (a_L appears explicitly)"
+                    }
+                ]
+            },
+            {
+                "symbol": "W",
+                "name": "canopy width (target tree)",
+                "unit": "m",
+                "definition": "Characteristic canopy width used with perfect plasticity to set stand density as W^{-2}.",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "S.5 text (stand density = W^{-2}) and Eq. (S.5.1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "H",
+                "name": "target tree height",
+                "unit": "m",
+                "definition": "Height of the target tree canopy.",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "S.5 description and Eq. (S.5.1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "H_n",
+                "name": "overstory canopy height",
+                "unit": "m",
+                "definition": "Height of the overstory canopy that shades the target tree.",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "S.5 description and Eq. (S.5.1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\Phi",
+                "name": "solar elevation below zenith",
+                "unit": "dimensionless (radians or degrees as used consistently)",
+                "definition": "Solar elevation angle below the zenith used for incidence (cos) and path length (sec).",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "Text under Eq. (S.5.1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\kappa_L",
+                "name": "canopy extinction coefficient",
+                "unit": "dimensionless",
+                "definition": "Canopy extinction coefficient controlling within-canopy light attenuation.",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "Text under Eq. (S.5.1) and Eq. (S.5.2)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\varphi",
+                "name": "ratio of total-to-projected leaf area",
+                "unit": "dimensionless",
+                "definition": "Ratio of total leaf area to projected leaf area (treated as constant); used to relate a_L and W to LAI under perfect plasticity.",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "Text under Eq. (S.5.1) (φ definition; LAI expression)"
+                    }
+                ]
+            },
+            {
+                "symbol": "L_n",
+                "name": "overstory leaf area index",
+                "unit": "dimensionless",
+                "definition": "Total leaf area index of neighboring (overstory) trees used to define K_n.",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "Text preceding Eq. (S.5.2)"
+                    }
+                ]
+            },
+            {
+                "symbol": "K_n",
+                "name": "effective overstory extinction coefficient per path length",
+                "unit": "m^-1",
+                "definition": "Extinction coefficient per meter through neighboring trees’ canopy (overstory), defined as K_n = κ_L L_n / H_n.",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "Eq. (S.5.2)"
+                    }
+                ]
+            }
+        ],
+        "parameters": [],
+        "algorithm": {
+            "inputs": [
+                "I_s",
+                "a_L",
+                "W",
+                "H",
+                "H_n",
+                "L_n",
+                "kappa_L",
+                "varphi",
+                "Phi"
+            ],
+            "outputs": [
+                "I",
+                "dI_daL",
+                "dI_dH",
+                "dI_dW"
+            ],
+            "steps": [
+                "Compute K_n = kappa_L * (L_n / H_n).",
+                "Compute shading term S = exp( -K_n * max(0, H_n - H) * sec(Phi) ).",
+                "Compute within-canopy attenuation term A = 1 - exp( -(kappa_L * a_L / (varphi * W^2)) * sec(Phi) ).",
+                "Compute I = I_s * (W^2 / a_L) * cos(Phi) * S * A.  (Eq. S.5.1)",
+                "Compute dI/da_L using Eq. (S.5.3).",
+                "Compute ∂I/∂H using Eq. (S.5.4).",
+                "Compute ∂I/∂W using Eq. (S.5.5)."
+            ],
+            "evidence": [
+                {
+                    "page": 41,
+                    "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                    "pointer": "Eqs. (S.5.1)–(S.5.2)"
+                },
+                {
+                    "page": 42,
+                    "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p42.png",
+                    "pointer": "Eqs. (S.5.3)–(S.5.5)"
+                }
+            ]
+        },
+        "datasets": [],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L_S5_1",
+                "text": "Light capture is represented with simplified canopy geometry (uniform leaf distribution and perfect plasticity), and overstory shading is collapsed into an effective extinction term rather than a detailed 3D radiative transfer model.",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "asset": "/mnt/data/user-hHKIbYDX7zdWS2NNY8ESHKGe/08b496d6e7204cb79e53e21795059199/mnt/data/render_p41.png",
+                        "pointer": "S.5 description (model form and assumptions)"
+                    }
+                ]
+            }
+        ]
+    },
+    "provenance": {
+        "extraction_time": "2026-01-03T02:10:00Z",
+        "model": "GPT-5.2 Thinking",
+        "mode": "EXTRACT",
+        "is_partial": false,
+        "chunk": {
+            "chunk_id": "C005",
+            "page_range": [
+                41,
+                42
+            ],
+            "section_start_page": 41,
+            "section_end_page": 42
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C005",
+                "title": "S.5 Light Interception",
+                "page_range": [
+                    41,
+                    42
+                ],
+                "rationale": "Defines absorbed light I via Beer–Lambert + overstory shading and provides analytic derivatives used later for allocation fractions in S.8."
+            },
+            {
+                "chunk_id": "C006",
+                "title": "S.6 Photosynthesis and Gain-Risk Stomata Optimization",
+                "page_range": [
+                    42,
+                    50
+                ],
+                "rationale": "Introduces net assimilation A_n and the stomatal optimization framework that couples photosynthesis with hydraulics; starts immediately after S.5 derivatives on page 42."
+            }
+        ],
+        "next_recommended_chunk_id": "C006"
+    }
+}

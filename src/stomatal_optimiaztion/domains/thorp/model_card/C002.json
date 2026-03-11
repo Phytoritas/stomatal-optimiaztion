@@ -1,0 +1,1367 @@
+{
+    "doc": {
+        "id": "Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning.pdf",
+        "title": "Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning (Supporting Information)",
+        "year": 2021,
+        "doi": null,
+        "page_count": 72
+    },
+    "model_card": {
+        "name": "THORP (soil hydrology module)",
+        "aliases": [
+            "S.2 Soil Hydrology"
+        ],
+        "task": "1-D soil moisture / soil water potential dynamics coupled to root uptake and surface fluxes.",
+        "domain": [
+            "Ecohydrology",
+            "Soil–plant–atmosphere modeling"
+        ],
+        "assumptions": [
+            {
+                "id": "A_S2_1",
+                "text": "1-D vertical Richards equation (x positive upward) with Darcy flux q and source/sink term f.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b17",
+                        "char_span": null,
+                        "snippet": "Soil moisture is modeled by the 1-D vertical form of Richards equation (Richards 1931),"
+                    }
+                ]
+            },
+            {
+                "id": "A_S2_2",
+                "text": "Soil column discretized into N layers (z positive downward), Δz via geometric series; soil depth can be extended when groundwater table is deeper.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b14",
+                        "char_span": null,
+                        "snippet": "The soil column is discretized into multiple layers, indexed i, with thicknesses Δzi. The midpoint depth of each layer, zi, is used. The vertical spacings..."
+                    }
+                ]
+            },
+            {
+                "id": "A_S2_3",
+                "text": "Root-zone horizontal extent approximated by canopy width W when converting uptake to volumetric sink.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b4",
+                        "char_span": null,
+                        "snippet": "where ρ [kg m−3] is density of water, Δzi [m] is the thickness of soil layer i, and W [m] is the width of the canopy, an approximation of the horizontal extent..."
+                    }
+                ]
+            },
+            {
+                "id": "A_S2_4",
+                "text": "All precipitation infiltrates (q1=-P when P>0); when P=0, q1=E_soil.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b24",
+                        "char_span": null,
+                        "snippet": "𝑞1 = { −𝑃, 𝑃 > 0  𝐸𝑠𝑜𝑖𝑙, 𝑃 = 0 (S.2.9)"
+                    }
+                ]
+            },
+            {
+                "id": "A_S2_5",
+                "text": "Default lower boundary is free drainage (qN=-K_soil,N).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b1",
+                        "char_span": null,
+                        "snippet": "At the bottom of the soil column, we use a free drainage boundary condition, where 𝑞𝑁 = −𝐾𝑠𝑜𝑖𝑙,𝑁. (S.2.10)"
+                    }
+                ]
+            },
+            {
+                "id": "A_S2_6",
+                "text": "Hydraulics follow van Genuchten-type relations; K_sat and θ_s decline exponentially with depth.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b5",
+                        "char_span": null,
+                        "snippet": "We model hydraulic conductivity, Ksoil [m s−1], and hydraulic capacitance, Csoil [m3 m−3 MPa−1], using van Genuchten’s (1980) formulation:"
+                    }
+                ]
+            },
+            {
+                "id": "A_S2_7",
+                "text": "Soil evaporation uses a linearized Dalton approach and is zero when e_soil ≤ e_a.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b3",
+                        "char_span": null,
+                        "snippet": "𝐸𝑠𝑜𝑖𝑙 = { 𝑚𝑤𝑔𝑎/(𝜌𝑃𝑎𝑡𝑚)(𝑒𝑠𝑜𝑖𝑙 − 𝑒𝑎), 𝑒𝑠𝑜𝑖𝑙 > 𝑒𝑎  0, 𝑒𝑠𝑜𝑖𝑙 ≤ 𝑒𝑎 (S.2.11)"
+                    }
+                ]
+            },
+            {
+                "id": "A_S2_8",
+                "text": "Implicit finite-difference discretization yields a tridiagonal system solved each time step.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b10",
+                        "char_span": null,
+                        "snippet": "In THORP, we solve Eq. S.2.1 by an implicit finite difference scheme. To do this, we expand Richards equation:"
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "E_S2_1",
+                "latex": "\\frac{\\partial \\theta}{\\partial t}=C_{\\mathrm{soil}}\\frac{\\partial \\Psi_{\\mathrm{soil}}}{\\partial t}=-\\frac{\\partial q}{\\partial x}+f=\\frac{\\partial}{\\partial x}\\!\\left[K_{\\mathrm{soil}}\\!\\left(\\frac{1}{\\varpi \\rho g}\\frac{\\partial \\Psi_{\\mathrm{soil}}}{\\partial x}+1\\right)\\right]+f",
+                "variables": [
+                    "θ",
+                    "C_soil",
+                    "Ψ_soil",
+                    "q",
+                    "x",
+                    "t",
+                    "K_soil",
+                    "ϖ",
+                    "ρ",
+                    "g",
+                    "f"
+                ],
+                "explanation": "Richards equation (mixed form).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b18",
+                        "char_span": null,
+                        "snippet": "∂θ/∂t = Csoil ∂Ψsoil/∂t = −∂q/∂x + f (S.2.1)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_2",
+                "latex": "E=\\sum_{i=1}^{N}E_i",
+                "variables": [
+                    "E",
+                    "E_i",
+                    "N",
+                    "i"
+                ],
+                "explanation": null,
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b28",
+                        "char_span": null,
+                        "snippet": "𝐸 = Σ𝑁𝑖=1 𝐸𝑖 (S.2.2)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_3",
+                "latex": "f_i=-\\frac{m_w a_L E_i}{\\rho \\Delta z_i W^2}",
+                "variables": [
+                    "f_i",
+                    "m_w",
+                    "a_L",
+                    "E_i",
+                    "ρ",
+                    "Δz_i",
+                    "W"
+                ],
+                "explanation": null,
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b3",
+                        "char_span": null,
+                        "snippet": "𝑓𝑖 = − 𝑚𝑤𝑎𝐿𝐸𝑖/(𝜌Δ𝑧𝑖𝑊2) (S.2.3)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_4",
+                "latex": "K_{\\mathrm{soil}}=K_{\\mathrm{soil,sat}}\\,S_e^{1/2}\\left[1-\\left(1-S_e^{1/m_{\\mathrm{VG}}}\\right)^{m_{\\mathrm{VG}}}\\right]^2,\\;\\; m_{\\mathrm{VG}}=1-\\frac{1}{n_{\\mathrm{VG}}}",
+                "variables": [
+                    "K_soil",
+                    "K_soil,sat",
+                    "S_e",
+                    "m_VG",
+                    "n_VG"
+                ],
+                "explanation": "van Genuchten–Mualem style K(Se).",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b6",
+                        "char_span": null,
+                        "snippet": "𝐾𝑠𝑜𝑖𝑙 = 𝐾𝑠𝑜𝑖𝑙,𝑠𝑎𝑡 𝑆𝑒0.5 (S.2.4)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_5",
+                "latex": "\\theta=\\theta_r+(\\theta_s-\\theta_r)S_e",
+                "variables": [
+                    "θ",
+                    "θ_r",
+                    "θ_s",
+                    "S_e"
+                ],
+                "explanation": null,
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b12",
+                        "char_span": null,
+                        "snippet": "𝜃 = 𝜃𝑟 + (𝜃𝑠 − 𝜃𝑟)𝑆𝑒 (S.2.5)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_6",
+                "latex": "S_e=\\begin{cases}\\left[1+(\\alpha_{\\mathrm{VG}}|\\Psi_{\\mathrm{soil}}|)^{n_{\\mathrm{VG}}}\\right]^{-1+1/n_{\\mathrm{VG}}},&\\Psi_{\\mathrm{soil}}\\le 0\\\\1,&\\Psi_{\\mathrm{soil}}>0\\end{cases}",
+                "variables": [
+                    "S_e",
+                    "α_VG",
+                    "Ψ_soil",
+                    "n_VG"
+                ],
+                "explanation": null,
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b14",
+                        "char_span": null,
+                        "snippet": "𝑆𝑒 = { [1 + (𝛼𝑉𝐺|Ψ𝑠𝑜𝑖𝑙|)𝑛𝑉𝐺]−1+1/𝑛𝑉𝐺, Ψ𝑠𝑜𝑖𝑙 ≤ 0  1, Ψ𝑠𝑜𝑖𝑙 > 0 (S.2.6)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_7",
+                "latex": "K_{\\mathrm{soil,sat},i}=K_{\\mathrm{soil,sat},0}\\exp(-z_i/e_K)",
+                "variables": [
+                    "K_soil,sat,i",
+                    "K_soil,sat,0",
+                    "z_i",
+                    "e_K"
+                ],
+                "explanation": null,
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b18",
+                        "char_span": null,
+                        "snippet": "𝐾𝑠𝑜𝑖𝑙,𝑠𝑎𝑡,𝑖 = 𝐾𝑠𝑜𝑖𝑙,𝑠𝑎𝑡,0 𝑒𝑥𝑝(−𝑧𝑖/𝑒𝐾) (S.2.7)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_8",
+                "latex": "\\theta_{s,i}=\\theta_{s,0}\\exp(-z_i/e_n)",
+                "variables": [
+                    "θ_s,i",
+                    "θ_s,0",
+                    "z_i",
+                    "e_n"
+                ],
+                "explanation": null,
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b21",
+                        "char_span": null,
+                        "snippet": "𝜃𝑠,𝑖 = 𝜃𝑠,0 𝑒𝑥𝑝(−𝑧𝑖/𝑒𝑛) (S.2.8)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_9",
+                "latex": "q_1=\\begin{cases}-P,&P>0\\\\E_{\\mathrm{soil}},&P=0\\end{cases}",
+                "variables": [
+                    "q1",
+                    "P",
+                    "E_soil"
+                ],
+                "explanation": null,
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b24",
+                        "char_span": null,
+                        "snippet": "𝑞1 = { −𝑃, 𝑃 > 0  𝐸𝑠𝑜𝑖𝑙, 𝑃 = 0 (S.2.9)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_10",
+                "latex": "q_N=-K_{\\mathrm{soil},N}",
+                "variables": [
+                    "qN",
+                    "K_soil,N",
+                    "N"
+                ],
+                "explanation": null,
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b1",
+                        "char_span": null,
+                        "snippet": "At the bottom of the soil column, we use a free drainage boundary condition, where 𝑞𝑁 = −𝐾𝑠𝑜𝑖𝑙,𝑁. (S.2.10)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_11",
+                "latex": "E_{\\mathrm{soil}}=\\begin{cases}\\dfrac{m_w g_a}{\\rho P_{\\mathrm{atm}}}(e_{\\mathrm{soil}}-e_a),&e_{\\mathrm{soil}}>e_a\\\\0,&e_{\\mathrm{soil}}\\le e_a\\end{cases}",
+                "variables": [
+                    "E_soil",
+                    "m_w",
+                    "g_a",
+                    "ρ",
+                    "P_atm",
+                    "e_soil",
+                    "e_a"
+                ],
+                "explanation": null,
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b4",
+                        "char_span": null,
+                        "snippet": "𝑚𝑤𝑔𝑎/(𝜌𝑃𝑎𝑡𝑚) (S.2.11)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_12",
+                "latex": "RH_{\\mathrm{soil}}=\\exp\\!\\left(\\frac{\\varpi m_w}{\\rho R T_{\\mathrm{soil}}}\\Psi_{\\mathrm{soil},1}\\right)",
+                "variables": [
+                    "RH_soil",
+                    "ϖ",
+                    "m_w",
+                    "ρ",
+                    "R",
+                    "T_soil",
+                    "Ψ_soil,1"
+                ],
+                "explanation": "Philip & de Vries (1957) relation.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b7",
+                        "char_span": null,
+                        "snippet": "𝑅𝐻𝑠𝑜𝑖𝑙 = 𝑒𝑥𝑝 ( 𝜛𝑚𝑤/(𝜌𝑅𝑇𝑠𝑜𝑖𝑙) Ψ𝑠𝑜𝑖𝑙,1 ) (S.2.12)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_13",
+                "latex": "C_{\\mathrm{soil}}\\frac{\\partial \\Psi_{\\mathrm{soil}}}{\\partial t}= \\frac{K_{\\mathrm{soil}}}{\\varpi\\rho g}\\frac{\\partial^2\\Psi_{\\mathrm{soil}}}{\\partial x^2}+\\left(\\frac{K'_{\\mathrm{soil}}}{\\varpi\\rho g}+\\frac{\\partial K_{\\mathrm{soil}}}{\\partial \\Psi_{\\mathrm{soil}}}\\right)\\frac{\\partial \\Psi_{\\mathrm{soil}}}{\\partial x}+\\frac{K_{\\mathrm{soil}}}{K_{\\mathrm{soil,sat}}}K'_{\\mathrm{soil,sat}}+f",
+                "variables": [
+                    "C_soil",
+                    "Ψ_soil",
+                    "K_soil",
+                    "ϖ",
+                    "ρ",
+                    "g",
+                    "x",
+                    "t",
+                    "K'_soil",
+                    "∂K/∂Ψ",
+                    "K_soil,sat",
+                    "K'_soil,sat",
+                    "f"
+                ],
+                "explanation": null,
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b17",
+                        "char_span": null,
+                        "snippet": "𝐶𝜕Ψ𝑠𝑜𝑖𝑙/𝜕𝑡 = 𝐾𝑠𝑜𝑖𝑙/(𝜛𝜌𝑔) 𝜕2Ψ𝑠𝑜𝑖𝑙/𝜕𝑥2 + ( 𝐾𝑠𝑜𝑖𝑙′/(𝜛𝜌𝑔) + ..."
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_14",
+                "latex": "a_i\\Psi_{i-1}^{t+\\Delta t}+b_i\\Psi_i^{t+\\Delta t}+c_i\\Psi_{i+1}^{t+\\Delta t}=d_i",
+                "variables": [
+                    "a_i",
+                    "b_i",
+                    "c_i",
+                    "d_i",
+                    "Ψ_{i-1}",
+                    "Ψ_i",
+                    "Ψ_{i+1}",
+                    "Δt"
+                ],
+                "explanation": null,
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b29",
+                        "char_span": null,
+                        "snippet": "𝑎𝑖Ψ𝑠𝑜𝑖𝑙,𝑖−1𝑡+Δ𝑡 + 𝑏𝑖Ψ𝑠𝑜𝑖𝑙,𝑖𝑡+Δ𝑡 + 𝑐𝑖Ψ𝑠𝑜𝑖𝑙,𝑖+1𝑡+Δ𝑡 = 𝑑𝑖 (S.2.14)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_15",
+                "latex": "a_i=\\left[\\frac{1}{\\varpi\\rho g}\\left(\\frac{K_i}{\\Delta z_i}+K'_i\\right)+\\left(\\frac{\\partial K_i}{\\partial \\Psi_i}\\right)^t\\right]\\frac{1}{\\Delta z_{i-1\\to i}}",
+                "variables": [
+                    "a_i",
+                    "K_i",
+                    "Δz_i",
+                    "K'_i",
+                    "ϖ",
+                    "ρ",
+                    "g",
+                    "∂K/∂Ψ",
+                    "Δz_{i-1→i}"
+                ],
+                "explanation": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b31",
+                        "char_span": null,
+                        "snippet": "𝑎𝑖 = (S.2.15)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_16",
+                "latex": "c_i=\\frac{1}{\\varpi\\rho g}\\frac{K_i}{\\Delta z_i\\,\\Delta z_{i\\to i+1}}",
+                "variables": [
+                    "c_i",
+                    "K_i",
+                    "ϖ",
+                    "ρ",
+                    "g",
+                    "Δz_i",
+                    "Δz_{i→i+1}"
+                ],
+                "explanation": null,
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b39",
+                        "char_span": null,
+                        "snippet": "𝑐𝑖 = 1/(𝜛𝜌𝑔) (S.2.16)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_17",
+                "latex": "b_i=-a_i-c_i-\\frac{C_i}{\\Delta t}",
+                "variables": [
+                    "b_i",
+                    "a_i",
+                    "c_i",
+                    "C_i",
+                    "Δt"
+                ],
+                "explanation": null,
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_b1",
+                        "char_span": null,
+                        "snippet": "𝑏𝑖 = −𝑎𝑖 − 𝑐𝑖 − 𝐶𝑖/Δ𝑡 (S.2.17)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_18",
+                "latex": "d_i=-f_i-\\frac{C_i}{\\Delta t}\\Psi_i^t-\\frac{K_i}{K_{\\mathrm{sat},i}}K'_{\\mathrm{sat},i}",
+                "variables": [
+                    "d_i",
+                    "f_i",
+                    "C_i",
+                    "Δt",
+                    "Ψ_i^t",
+                    "K_i",
+                    "K_sat,i",
+                    "K'_sat,i"
+                ],
+                "explanation": null,
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_b3",
+                        "char_span": null,
+                        "snippet": "𝑑𝑖 = −𝑓𝑖 − 𝐶𝑖/Δ𝑡 Ψ𝑠𝑜𝑖𝑙,𝑖𝑡 − (S.2.18)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_19",
+                "latex": "a_1=0",
+                "variables": [
+                    "a1"
+                ],
+                "explanation": null,
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_b9",
+                        "char_span": null,
+                        "snippet": "𝑎1 = 0 (S.2.19)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_20",
+                "latex": "a_N=\\frac{2}{\\varpi\\rho g}\\frac{K_N}{\\Delta z_N^2}",
+                "variables": [
+                    "aN",
+                    "K_N",
+                    "ϖ",
+                    "ρ",
+                    "g",
+                    "Δz_N"
+                ],
+                "explanation": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_b10",
+                        "char_span": null,
+                        "snippet": "𝑎𝑁 = (S.2.20)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_21",
+                "latex": "c_1=\\frac{2}{\\varpi\\rho g}\\frac{K_1}{\\Delta z_1^2}",
+                "variables": [
+                    "c1",
+                    "K_1",
+                    "ϖ",
+                    "ρ",
+                    "g",
+                    "Δz_1"
+                ],
+                "explanation": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_b14",
+                        "char_span": null,
+                        "snippet": "𝑐1 = (S.2.21)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_22",
+                "latex": "c_N=0",
+                "variables": [
+                    "cN"
+                ],
+                "explanation": null,
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_b18",
+                        "char_span": null,
+                        "snippet": "𝑐𝑁 = 0 (S.2.22)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_23",
+                "latex": "d_1=-f_1-\\frac{C_1}{\\Delta t}\\Psi_1^t-\\frac{K_1}{K_{\\mathrm{sat},1}}K'_{\\mathrm{sat},1}+\\frac{2(q_1+K_1)}{\\Delta z_1}",
+                "variables": [
+                    "d1",
+                    "f1",
+                    "C1",
+                    "Δt",
+                    "Ψ1^t",
+                    "K1",
+                    "Ksat1",
+                    "K'sat1",
+                    "q1",
+                    "Δz1"
+                ],
+                "explanation": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_b19",
+                        "char_span": null,
+                        "snippet": "𝑑1 = −𝑓1 − 𝐶1/Δ𝑡 Ψ𝑠𝑜𝑖𝑙,1𝑡 − (S.2.23)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_24",
+                "latex": "d_N=-f_N-\\frac{C_N}{\\Delta t}\\Psi_N^t-\\frac{K_N}{K_{\\mathrm{sat},N}}K'_{\\mathrm{sat},N}-\\frac{2(q_N+K_N)}{\\Delta z_N}",
+                "variables": [
+                    "dN",
+                    "fN",
+                    "CN",
+                    "Δt",
+                    "ΨN^t",
+                    "KN",
+                    "KsatN",
+                    "K'satN",
+                    "qN",
+                    "ΔzN"
+                ],
+                "explanation": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_b26",
+                        "char_span": null,
+                        "snippet": "𝑑𝑁 = −𝑓𝑁 − 𝐶𝑁/Δ𝑡 Ψ𝑠𝑜𝑖𝑙,𝑁𝑡 − (S.2.24)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_25",
+                "latex": "\\mathbf{A}=\\text{tridiag}(a_i,b_i,c_i)",
+                "variables": [
+                    "A",
+                    "a_i",
+                    "b_i",
+                    "c_i"
+                ],
+                "explanation": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_b35",
+                        "char_span": null,
+                        "snippet": "𝐴 = [ 𝑏1 𝑐1 0 0 0  𝑎2 𝑏2 𝑐2 0 0  0 𝑎3 𝑏3 𝑐3 0  0 0 𝑎4 𝑏4 𝑐4  0 0 0 𝑎5 𝑏5 ] (S.2.25)"
+                    }
+                ]
+            },
+            {
+                "id": "E_S2_26",
+                "latex": "d_N=\\cdots-\\frac{2}{\\varpi\\rho g}\\frac{K_N}{\\Delta z_N}(2\\Psi_{\\mathrm{LBC}})",
+                "variables": [
+                    "dN",
+                    "ϖ",
+                    "ρ",
+                    "g",
+                    "KN",
+                    "ΔzN",
+                    "Ψ_LBC"
+                ],
+                "explanation": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_b49",
+                        "char_span": null,
+                        "snippet": "2 Ψ𝑠𝑜𝑖𝑙,𝐿𝐵𝐶 ) (S.2.26)"
+                    }
+                ]
+            }
+        ],
+        "variables": [
+            {
+                "id": "V_Psi",
+                "symbol": "Ψ_soil,i",
+                "name": "Soil water potential",
+                "units": "MPa",
+                "role": "state",
+                "description": "Primary state solved in the implicit soil hydrology scheme.",
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b22",
+                        "char_span": null,
+                        "snippet": "Ψsoil [MPa], is soil water potential"
+                    }
+                ]
+            },
+            {
+                "id": "V_theta",
+                "symbol": "θ_i",
+                "name": "Volumetric water content",
+                "units": "m³ m⁻³",
+                "role": "derived",
+                "description": "Derived from Ψ via retention curve.",
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b12",
+                        "char_span": null,
+                        "snippet": "𝜃 = 𝜃𝑟 + (𝜃𝑠 − 𝜃𝑟)𝑆𝑒 (S.2.5)"
+                    }
+                ]
+            },
+            {
+                "id": "V_q",
+                "symbol": "q",
+                "name": "Soil water flux",
+                "units": "m s⁻¹",
+                "role": "derived",
+                "description": "Darcy flux in the soil column.",
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b25",
+                        "char_span": null,
+                        "snippet": "q = Ksoil( (1/(ϖρg)) ∂Ψsoil/∂x + 1 )"
+                    }
+                ]
+            },
+            {
+                "id": "V_f",
+                "symbol": "f_i",
+                "name": "Sink/source term",
+                "units": "s⁻¹",
+                "role": "forcing",
+                "description": "Root water uptake (negative) and hydraulic redistribution (positive).",
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b3",
+                        "char_span": null,
+                        "snippet": "𝑓𝑖 = − 𝑚𝑤𝑎𝐿𝐸𝑖/(𝜌Δ𝑧𝑖𝑊2) (S.2.3)"
+                    }
+                ]
+            },
+            {
+                "id": "V_Se",
+                "symbol": "S_e",
+                "name": "Effective saturation",
+                "units": "-",
+                "role": "derived",
+                "description": "Effective saturation used in van Genuchten relations.",
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b14",
+                        "char_span": null,
+                        "snippet": "𝑆𝑒 = { [1 + (𝛼𝑉𝐺|Ψ𝑠𝑜𝑖𝑙|)𝑛𝑉𝐺]−1+1/𝑛𝑉𝐺, Ψ𝑠𝑜𝑖𝑙 ≤ 0  1, Ψ𝑠𝑜𝑖𝑙 > 0 (S.2.6)"
+                    }
+                ]
+            },
+            {
+                "id": "V_K",
+                "symbol": "K_soil,i",
+                "name": "Hydraulic conductivity",
+                "units": "m s⁻¹",
+                "role": "derived",
+                "description": "Unsaturated conductivity computed from S_e and K_sat.",
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b6",
+                        "char_span": null,
+                        "snippet": "𝐾𝑠𝑜𝑖𝑙 = 𝐾𝑠𝑜𝑖𝑙,𝑠𝑎𝑡 𝑆𝑒0.5 (S.2.4)"
+                    }
+                ]
+            },
+            {
+                "id": "V_C",
+                "symbol": "C_i",
+                "name": "Hydraulic capacitance",
+                "units": "m³ m⁻³ MPa⁻¹",
+                "role": "derived",
+                "description": "Capacitance term in mixed-form Richards equation.",
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b21",
+                        "char_span": null,
+                        "snippet": "Csoil [m3 m−3 MPa−1] is hydraulic capacitance"
+                    }
+                ]
+            },
+            {
+                "id": "V_P",
+                "symbol": "P",
+                "name": "Precipitation",
+                "units": "m s⁻¹",
+                "role": "input",
+                "description": "Used for infiltration boundary condition.",
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b2",
+                        "char_span": null,
+                        "snippet": "where P [m s−1] is precipitation and Esoil [m s−1] is soil evaporation."
+                    }
+                ]
+            },
+            {
+                "id": "V_Esoil",
+                "symbol": "E_soil",
+                "name": "Soil evaporation",
+                "units": "m s⁻¹",
+                "role": "derived",
+                "description": "Soil surface evaporation flux.",
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b4",
+                        "char_span": null,
+                        "snippet": "𝑚𝑤𝑔𝑎/(𝜌𝑃𝑎𝑡𝑚) (S.2.11)"
+                    }
+                ]
+            },
+            {
+                "id": "V_q1",
+                "symbol": "q_1",
+                "name": "Top boundary flux",
+                "units": "m s⁻¹",
+                "role": "boundary",
+                "description": "Infiltration or evaporation boundary flux.",
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b24",
+                        "char_span": null,
+                        "snippet": "𝑞1 = { −𝑃, 𝑃 > 0  𝐸𝑠𝑜𝑖𝑙, 𝑃 = 0 (S.2.9)"
+                    }
+                ]
+            },
+            {
+                "id": "V_qN",
+                "symbol": "q_N",
+                "name": "Bottom boundary flux",
+                "units": "m s⁻¹",
+                "role": "boundary",
+                "description": "Free drainage flux by default.",
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b1",
+                        "char_span": null,
+                        "snippet": "At the bottom of the soil column, we use a free drainage boundary condition, where 𝑞𝑁 = −𝐾𝑠𝑜𝑖𝑙,𝑁. (S.2.10)"
+                    }
+                ]
+            },
+            {
+                "id": "V_Ei",
+                "symbol": "E_i",
+                "name": "Layer-wise uptake contribution",
+                "units": "mol H2O m⁻² s⁻¹",
+                "role": "input",
+                "description": "Layer contributions to total transpiration.",
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b28",
+                        "char_span": null,
+                        "snippet": "𝐸 = Σ𝑁𝑖=1 𝐸𝑖 (S.2.2)"
+                    }
+                ]
+            },
+            {
+                "id": "V_z",
+                "symbol": "z_i, Δz_i",
+                "name": "Layer depth and thickness",
+                "units": "m",
+                "role": "index",
+                "description": "Soil discretization geometry.",
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b14",
+                        "char_span": null,
+                        "snippet": "The soil column is discretized into multiple layers, indexed i, with thicknesses Δzi. The midpoint depth of each layer, zi, is used. The vertical spacings..."
+                    }
+                ]
+            },
+            {
+                "id": "V_RH",
+                "symbol": "RH_soil",
+                "name": "Soil pore-space relative humidity",
+                "units": "-",
+                "role": "derived",
+                "description": "Computed from soil water potential for evaporation calculation.",
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b7",
+                        "char_span": null,
+                        "snippet": "𝑅𝐻𝑠𝑜𝑖𝑙 = 𝑒𝑥𝑝 ( 𝜛𝑚𝑤/(𝜌𝑅𝑇𝑠𝑜𝑖𝑙) Ψ𝑠𝑜𝑖𝑙,1 ) (S.2.12)"
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "id": "P_varpi",
+                "symbol": "ϖ",
+                "name": "Pa→MPa conversion",
+                "units": "MPa Pa⁻¹",
+                "value": "10^-6",
+                "description": "Used in pressure-based terms.",
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b23",
+                        "char_span": null,
+                        "snippet": "ϖ [MPa Pa−1] is a conversion factor equal to 10−6 MPa Pa−1"
+                    }
+                ]
+            },
+            {
+                "id": "P_rho",
+                "symbol": "ρ",
+                "name": "Water density",
+                "units": "kg m⁻³",
+                "value": null,
+                "description": "Used in hydraulic and evaporation relations.",
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b23",
+                        "char_span": null,
+                        "snippet": "ϖ [MPa Pa−1] is a conversion factor equal to 10−6 MPa Pa−1"
+                    }
+                ]
+            },
+            {
+                "id": "P_g",
+                "symbol": "g",
+                "name": "Gravity",
+                "units": "m s⁻²",
+                "value": null,
+                "description": "Used in pressure-head conversion.",
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b23",
+                        "char_span": null,
+                        "snippet": "ϖ [MPa Pa−1] is a conversion factor equal to 10−6 MPa Pa−1"
+                    }
+                ]
+            },
+            {
+                "id": "P_alphaVG",
+                "symbol": "α_VG",
+                "name": "van Genuchten α",
+                "units": "(pressure)⁻¹",
+                "value": null,
+                "description": "Retention curve shape parameter.",
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b14",
+                        "char_span": null,
+                        "snippet": "𝑆𝑒 = { [1 + (𝛼𝑉𝐺|Ψ𝑠𝑜𝑖𝑙|)𝑛𝑉𝐺]−1+1/𝑛𝑉𝐺, Ψ𝑠𝑜𝑖𝑙 ≤ 0  1, Ψ𝑠𝑜𝑖𝑙 > 0 (S.2.6)"
+                    }
+                ]
+            },
+            {
+                "id": "P_nVG",
+                "symbol": "n_VG",
+                "name": "van Genuchten n",
+                "units": "-",
+                "value": null,
+                "description": "Retention/conductivity shape parameter.",
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b14",
+                        "char_span": null,
+                        "snippet": "𝑆𝑒 = { [1 + (𝛼𝑉𝐺|Ψ𝑠𝑜𝑖𝑙|)𝑛𝑉𝐺]−1+1/𝑛𝑉𝐺, Ψ𝑠𝑜𝑖𝑙 ≤ 0  1, Ψ𝑠𝑜𝑖𝑙 > 0 (S.2.6)"
+                    }
+                ]
+            },
+            {
+                "id": "P_theta_r",
+                "symbol": "θ_r",
+                "name": "Residual water content",
+                "units": "m³ m⁻³",
+                "value": null,
+                "description": "Retention curve parameter.",
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b12",
+                        "char_span": null,
+                        "snippet": "𝜃 = 𝜃𝑟 + (𝜃𝑠 − 𝜃𝑟)𝑆𝑒 (S.2.5)"
+                    }
+                ]
+            },
+            {
+                "id": "P_Ksat0",
+                "symbol": "K_soil,sat,0",
+                "name": "Surface K_sat",
+                "units": "m s⁻¹",
+                "value": null,
+                "description": "Surface saturated conductivity.",
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b18",
+                        "char_span": null,
+                        "snippet": "𝐾𝑠𝑜𝑖𝑙,𝑠𝑎𝑡,𝑖 = 𝐾𝑠𝑜𝑖𝑙,𝑠𝑎𝑡,0 𝑒𝑥𝑝(−𝑧𝑖/𝑒𝐾) (S.2.7)"
+                    }
+                ]
+            },
+            {
+                "id": "P_eK",
+                "symbol": "e_K",
+                "name": "K_sat decay scale",
+                "units": "m",
+                "value": null,
+                "description": "Depth decay length for K_sat.",
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b19",
+                        "char_span": null,
+                        "snippet": "where eK [m] is the decay scale length for Ksoil,sat with depth."
+                    }
+                ]
+            },
+            {
+                "id": "P_en",
+                "symbol": "e_n",
+                "name": "θ_s decay scale",
+                "units": "m",
+                "value": null,
+                "description": "Depth decay length for θ_s.",
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b22",
+                        "char_span": null,
+                        "snippet": "where en [m] is the decay scale length for θs with depth."
+                    }
+                ]
+            },
+            {
+                "id": "P_Patm",
+                "symbol": "P_atm",
+                "name": "Atmospheric pressure",
+                "units": "kPa",
+                "value": null,
+                "description": "Used in Dalton evaporation.",
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b4",
+                        "char_span": null,
+                        "snippet": "𝑚𝑤𝑔𝑎/(𝜌𝑃𝑎𝑡𝑚) (S.2.11)"
+                    }
+                ]
+            }
+        ],
+        "algorithm": {
+            "overview": "At each time step, compute sink terms and boundary fluxes, evaluate hydraulic properties, assemble a tridiagonal implicit system, solve for Ψ^{t+Δt}, then update θ and fluxes.",
+            "steps": [
+                {
+                    "id": "S1",
+                    "description": "Discretize soil column into N layers (z_i, Δz_i).",
+                    "inputs": [
+                        "N"
+                    ],
+                    "outputs": [
+                        "z_i",
+                        "Δz_i"
+                    ],
+                    "evidence": [
+                        {
+                            "page": 23,
+                            "block_id": "p23_b14",
+                            "char_span": null,
+                            "snippet": "The soil column is discretized into multiple layers, indexed i, with thicknesses Δzi. The midpoint depth of each layer, zi, is used. The vertical spacings..."
+                        }
+                    ]
+                },
+                {
+                    "id": "S2",
+                    "description": "Compute f_i from E_i (Eq. S.2.3) and set boundary fluxes q1,qN (Eqs. S.2.9–S.2.10).",
+                    "inputs": [
+                        "E_i",
+                        "P",
+                        "meteorology"
+                    ],
+                    "outputs": [
+                        "f_i",
+                        "q1",
+                        "qN"
+                    ],
+                    "evidence": [
+                        {
+                            "page": 24,
+                            "block_id": "p24_b3",
+                            "char_span": null,
+                            "snippet": "𝑓𝑖 = − 𝑚𝑤𝑎𝐿𝐸𝑖/(𝜌Δ𝑧𝑖𝑊2) (S.2.3)"
+                        }
+                    ]
+                },
+                {
+                    "id": "S3",
+                    "description": "Evaluate Se, θ, K, C (Eqs. S.2.4–S.2.8).",
+                    "inputs": [
+                        "Ψ^t",
+                        "soil params"
+                    ],
+                    "outputs": [
+                        "Se",
+                        "θ",
+                        "K",
+                        "C"
+                    ],
+                    "evidence": [
+                        {
+                            "page": 24,
+                            "block_id": "p24_b5",
+                            "char_span": null,
+                            "snippet": "We model hydraulic conductivity, Ksoil [m s−1], and hydraulic capacitance, Csoil [m3 m−3 MPa−1], using van Genuchten’s (1980) formulation:"
+                        }
+                    ]
+                },
+                {
+                    "id": "S4",
+                    "description": "Assemble and solve tridiagonal system for Ψ^{t+Δt} (Eqs. S.2.14–S.2.25) with boundary modifications (S.2.19–S.2.26).",
+                    "inputs": [
+                        "a,b,c,d"
+                    ],
+                    "outputs": [
+                        "Ψ^{t+Δt}"
+                    ],
+                    "evidence": [
+                        {
+                            "page": 26,
+                            "block_id": "p26_b35",
+                            "char_span": null,
+                            "snippet": "𝐴 = [ 𝑏1 𝑐1 0 0 0  𝑎2 𝑏2 𝑐2 0 0  0 𝑎3 𝑏3 𝑐3 0  0 0 𝑎4 𝑏4 𝑐4  0 0 0 𝑎5 𝑏5 ] (S.2.25)"
+                        }
+                    ]
+                },
+                {
+                    "id": "S5",
+                    "description": "Update θ^{t+Δt} from Ψ^{t+Δt}.",
+                    "inputs": [
+                        "Ψ^{t+Δt}"
+                    ],
+                    "outputs": [
+                        "θ^{t+Δt}"
+                    ],
+                    "evidence": [
+                        {
+                            "page": 24,
+                            "block_id": "p24_b12",
+                            "char_span": null,
+                            "snippet": "𝜃 = 𝜃𝑟 + (𝜃𝑠 − 𝜃𝑟)𝑆𝑒 (S.2.5)"
+                        }
+                    ]
+                }
+            ]
+        },
+        "datasets": [],
+        "metrics": [],
+        "implementation": {
+            "numerics": {
+                "time_integration": "Implicit finite difference",
+                "space_discretization": "1-D vertical finite difference (N layers)",
+                "solver": "Tridiagonal linear solve",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b10",
+                        "char_span": null,
+                        "snippet": "In THORP, we solve Eq. S.2.1 by an implicit finite difference scheme. To do this, we expand Richards equation:"
+                    }
+                ]
+            },
+            "boundary_conditions": [
+                {
+                    "id": "BC_top",
+                    "type": "flux",
+                    "description": "q1=-P (P>0) else q1=E_soil.",
+                    "uncertain": false,
+                    "evidence": [
+                        {
+                            "page": 24,
+                            "block_id": "p24_b24",
+                            "char_span": null,
+                            "snippet": "𝑞1 = { −𝑃, 𝑃 > 0  𝐸𝑠𝑜𝑖𝑙, 𝑃 = 0 (S.2.9)"
+                        }
+                    ]
+                },
+                {
+                    "id": "BC_bottom_free",
+                    "type": "flux",
+                    "description": "qN=-K_soil,N (free drainage).",
+                    "uncertain": false,
+                    "evidence": [
+                        {
+                            "page": 25,
+                            "block_id": "p25_b1",
+                            "char_span": null,
+                            "snippet": "At the bottom of the soil column, we use a free drainage boundary condition, where 𝑞𝑁 = −𝐾𝑠𝑜𝑖𝑙,𝑁. (S.2.10)"
+                        }
+                    ]
+                },
+                {
+                    "id": "BC_bottom_gw_opt",
+                    "type": "fixed pressure (optional)",
+                    "description": "Replace free drainage with groundwater-table pressure boundary via Eq. S.2.26.",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 26,
+                            "block_id": "p26_b39",
+                            "char_span": null,
+                            "snippet": "In THORP, we introduce a groundwater table of user-specified depth, dWT [m], which sets a lower boundary condition ..."
+                        }
+                    ]
+                }
+            ],
+            "state_variables": [
+                {
+                    "symbol": "Ψ_soil,i",
+                    "units": "MPa"
+                },
+                {
+                    "symbol": "θ_i",
+                    "units": "m³ m⁻³"
+                }
+            ],
+            "inputs": [
+                "E_i",
+                "P",
+                "e_a",
+                "T_soil",
+                "u_10 (for g_a)"
+            ],
+            "outputs": [
+                "Ψ_soil profile",
+                "θ profile",
+                "E_soil",
+                "q1,qN"
+            ],
+            "coupling": [
+                {
+                    "with": "Plant/root uptake module",
+                    "interface": "E_i → f_i; soil Ψ/θ can feed back (not shown here).",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 24,
+                            "block_id": "p24_b0",
+                            "char_span": null,
+                            "snippet": "Here, we define the source-sink term, f, to represent the effect of root water uptake and hydraulic redistribution on soil moisture..."
+                        }
+                    ]
+                }
+            ]
+        },
+        "limitations": [
+            {
+                "id": "L1",
+                "text": "Eq. S.2.4 and Eq. S.2.15 are partially reconstructed due to PDF text extraction loss; verify against original formatting.",
+                "severity": "medium",
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b6",
+                        "char_span": null,
+                        "snippet": "𝐾𝑠𝑜𝑖𝑙 = 𝐾𝑠𝑜𝑖𝑙,𝑠𝑎𝑡 𝑆𝑒0.5 (S.2.4)"
+                    }
+                ]
+            },
+            {
+                "id": "L2",
+                "text": "Saturation vapor pressure and g_a formulations are referenced but not defined in this chunk (see cited equations).",
+                "severity": "low",
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b6",
+                        "char_span": null,
+                        "snippet": "where Patm [kPa] is atmospheric pressure, esoil [kPa] is vapor pressure at the soil surface, and ea [kPa] is vapor pressure in the air..."
+                    }
+                ]
+            }
+        ],
+        "open_questions": [
+            {
+                "id": "Q1",
+                "question": "Confirm exact published exponents in Eq. S.2.4 (K(Se)).",
+                "why_it_matters": "Affects K(Ψ) and infiltration/redistribution.",
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b6",
+                        "char_span": null,
+                        "snippet": "𝐾𝑠𝑜𝑖𝑙 = 𝐾𝑠𝑜𝑖𝑙,𝑠𝑎𝑡 𝑆𝑒0.5 (S.2.4)"
+                    }
+                ]
+            },
+            {
+                "id": "Q2",
+                "question": "Confirm unit-conversion placement of ϖ in Eq. S.2.12 (RH_soil).",
+                "why_it_matters": "Affects RH_soil and E_soil magnitude.",
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b7",
+                        "char_span": null,
+                        "snippet": "𝑅𝐻𝑠𝑜𝑖𝑙 = 𝑒𝑥𝑝 ( 𝜛𝑚𝑤/(𝜌𝑅𝑇𝑠𝑜𝑖𝑙) Ψ𝑠𝑜𝑖𝑙,1 ) (S.2.12)"
+                    }
+                ]
+            }
+        ]
+    },
+    "provenance": {
+        "mode": "EXTRACT",
+        "extracted_at": "2026-01-03T02:41:50.307936Z",
+        "model": "GPT-5.2 Thinking",
+        "source_file": {
+            "path": "/mnt/data/Coupled whole-tree optimality and xylem hydraulics explain dynamic biomass partitioning.pdf"
+        },
+        "chunk": {
+            "chunk_id": "C002",
+            "page_range": [
+                23,
+                26
+            ]
+        },
+        "chunk_plan": [],
+        "next_recommended_chunk_id": null
+    }
+}
