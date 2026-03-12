@@ -188,8 +188,16 @@ The eighteenth slice ports the next bounded forcing seam:
 - keep the `netCDF4` dependency isolated to this boundary and validate with temporary fixtures instead of workspace-global assets
 - leave `SimulationOutputs` blocked as the next simulation seam
 
+## Slice 019: THORP Simulation Outputs
+
+The nineteenth slice ports the next bounded simulation seam:
+- move `SimulationOutputs` from `simulate.py` into a dedicated THORP simulation module
+- preserve the legacy `as_mat_dict()` MAT key mapping without pulling in file export or time-stepping logic
+- keep the boundary limited to result storage so reporting and export adapters can target one canonical output surface
+- leave `_Store` blocked as the next simulation seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, defaults-bundle, `THORPParams`-compatibility, and forcing seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, defaults-bundle, `THORPParams`-compatibility, forcing, and simulation-output seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `SimulationOutputs` or another bounded simulation seam
+3. prepare the next THORP source audit for `_Store` or another bounded simulation seam

@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 018
-- Gate D. Bounded slices 001 through 018 approved for THORP
+- Gate C. Validation plan ready through slice 019
+- Gate D. Bounded slices 001 through 019 approved for THORP
 
 ## Migrated THORP Slices
 
@@ -155,3 +155,9 @@ Slice 018:
 - target: `src/stomatal_optimiaztion/domains/thorp/forcing.py`
 - scope: bounded forcing netCDF ingestion, clipping, scaling, repetition, and solar-angle reconstruction
 - excluded: `SimulationOutputs`, simulation orchestration, and MAT-file export
+
+Slice 019:
+- source: `THORP/src/thorp/simulate.py` (`SimulationOutputs`)
+- target: `src/stomatal_optimiaztion/domains/thorp/simulation.py`
+- scope: bounded simulation-result dataclass plus legacy MAT key mapping
+- excluded: `_Store`, `simulate`, and MAT-file export
