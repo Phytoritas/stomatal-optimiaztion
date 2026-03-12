@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 024
-- Gate D. Bounded slices 001 through 024 approved for THORP
+- Gate C. Validation plan ready through slice 025
+- Gate D. Bounded slices 001 through 024 approved for THORP and slice 025 approved for TOMATO
 
 ## Migrated THORP Slices
 
@@ -191,3 +191,9 @@ Slice 024:
 - target: `src/stomatal_optimiaztion/domains/thorp/cli.py` and `src/stomatal_optimiaztion/domains/thorp/__main__.py`
 - scope: bounded package-local CLI wrapper over migrated `run` and `save_mat` seams
 - excluded: THORP numerical changes and broader workspace entrypoints
+
+Slice 025:
+- source: `TOMATO/tTHORP/src/tthorp/contracts.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/`
+- scope: bounded TOMATO forcing-step contracts, context protocol, and output coercion helpers
+- excluded: pandas-backed interface surfaces, adapters, pipelines, and CLI entrypoints

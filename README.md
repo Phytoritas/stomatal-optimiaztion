@@ -49,6 +49,7 @@ poetry run ruff check .
 - THORP `run` seam is migrated as slice 022.
 - THORP `matlab_io` seam is migrated as slice 023.
 - THORP CLI entrypoint seam is migrated as slice 024.
+- TOMATO `tTHORP` contracts seam is migrated as slice 025.
 
 ## Next validation
-- Run a representative package-local THORP CLI smoke and decide whether the next bounded slice should target THORP hardening or the first TOMATO seam.
+- Migrate the next TOMATO `tTHORP` seam, likely `interface.py`, with behavior-preserving contract checks.

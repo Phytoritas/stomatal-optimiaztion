@@ -236,8 +236,16 @@ The twenty-fourth slice ports the remaining bounded THORP execution seam:
 - wire the migrated `run` seam to the migrated `save_mat` callback without reintroducing legacy imports
 - leave representative end-to-end CLI smoke validation as the next hardening step
 
+## Slice 025: TOMATO tTHORP Contracts
+
+The twenty-fifth slice opens the first bounded TOMATO seam:
+- move `TOMATO/tTHORP/src/tthorp/contracts.py` into the staged `domains/tomato/tthorp` package
+- preserve `EnvStep`, `Context`, `Module`, and output-coercion behavior
+- keep the first TOMATO slice stdlib-only so nested-workspace boundaries are explicit before interface and pipeline migration
+- leave `tTHORP/interface.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, defaults-bundle, `THORPParams`-compatibility, forcing, simulation-output, simulation-store, initial-allometry, run, MATLAB-IO, and CLI seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first TOMATO `tTHORP` contract seam
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare representative package-local CLI smoke validation and the next non-THORP source audit
+3. prepare the next TOMATO source audit for `tTHORP/interface.py`
