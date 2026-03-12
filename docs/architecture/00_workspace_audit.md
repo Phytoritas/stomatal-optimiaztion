@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 029
-- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 029 approved for TOMATO
+- Gate C. Validation plan ready through slice 030
+- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 030 approved for TOMATO
 
 ## Migrated THORP Slices
 
@@ -221,3 +221,9 @@ Slice 029:
 - target: `src/stomatal_optimiaztion/domains/tomato/tthorp/models/tomato_legacy/tomato_model.py`
 - scope: bounded TOMATO legacy-model surface covering reset-state defaults, forcing-row ingestion, output payload shape, density helpers, sample forcing generation, and default adapter execution
 - excluded: the full age-structured growth kernels, partition-policy package migration, and legacy runner or CLI entrypoints
+
+Slice 030:
+- source: `TOMATO/tTHORP/src/tthorp/models/tomato_legacy/run.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/models/tomato_legacy/run.py`
+- scope: bounded TOMATO package-local runner over migrated forcing CSV, adapter, and tabular simulation seams
+- excluded: TOMATO partition-policy package migration, broader package entrypoints, and other legacy subprojects

@@ -11,4 +11,4 @@ Current status:
 - Architecture scaffold seeded
 - Target repo shape finalized as a staged single-package domain workspace
 - Slices 001-024 migrated: THORP bounded runtime, reporting, config, IO, and CLI seams
-- Slices 025-029 migrated: TOMATO `tTHORP` contracts, interface, forcing, adapter, and `TomatoModel` surface seams
+- Slices 025-030 migrated: TOMATO `tTHORP` contracts, interface, forcing, adapter, `TomatoModel`, and runner seams
