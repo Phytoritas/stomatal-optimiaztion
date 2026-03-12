@@ -244,8 +244,16 @@ The twenty-fifth slice opens the first bounded TOMATO seam:
 - keep the first TOMATO slice stdlib-only so nested-workspace boundaries are explicit before interface and pipeline migration
 - leave `tTHORP/interface.py` blocked as the next seam
 
+## Slice 026: TOMATO tTHORP Interface
+
+The twenty-sixth slice opens the next bounded TOMATO seam:
+- move `TOMATO/tTHORP/src/tthorp/interface.py` into the staged `domains/tomato/tthorp` package
+- preserve `PipelineModel.step`, `simulate()`, and `run_flux_step()` behavior over the migrated contracts
+- isolate the new `pandas` dependency to the tabular interface instead of pulling in tomato legacy models or pipelines
+- leave `models/tomato_legacy/forcing_csv.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first TOMATO `tTHORP` contract seam
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first two TOMATO `tTHORP` seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `tTHORP/interface.py`
+3. prepare the next TOMATO source audit for `models/tomato_legacy/forcing_csv.py`
