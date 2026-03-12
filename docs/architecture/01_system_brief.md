@@ -282,18 +282,18 @@ The thirtieth slice opens the next bounded TOMATO seam:
 - move `TOMATO/tTHORP/src/tthorp/models/tomato_legacy/run.py` into the staged `domains/tomato/tthorp` package
 - preserve bounded argument parsing, forcing iteration, default adapter construction, and CSV result writing
 - keep the runner package-local instead of opening a repo-wide TOMATO CLI entrypoint yet
-- leave `components/partitioning/policy.py` blocked as the next seam
+- leave `pipelines/tomato_legacy.py` blocked as the next seam
 
-## Slice 031: TOMATO tTHORP Partitioning Core
+## Slice 032: TOMATO tTHORP THORP-Derived Partition Policies
 
-The thirty-first slice opens the next bounded TOMATO seam:
-- move `organ.py`, `fractions.py`, `policy.py`, and `sink_based.py` into a package-local TOMATO partitioning core
-- preserve allocation-fraction validation, scheme conversion, policy coercion, and default sink-based aliases
-- wire `TomatoModel` to the migrated sink-based policy instead of keeping default partitioning inline
-- leave `components/partitioning/thorp_opt.py` blocked as the next seam
+The thirty-second slice closes the remaining TOMATO partitioning seam:
+- move `thorp_opt.py` and `thorp_policies.py` into the package-local TOMATO partitioning package
+- preserve THORP-backed tomato allocation wrappers, policy invariants, and `thorp_veg` / `thorp_fruit_veg` alias wiring
+- keep `TomatoModel` able to execute THORP-derived policies without breaking the bounded legacy surface
+- leave `pipelines/tomato_legacy.py` blocked as the next seam
 
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first seven TOMATO `tTHORP` seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first eight TOMATO `tTHORP` seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `components/partitioning/thorp_opt.py`
+3. prepare the next TOMATO source audit for `pipelines/tomato_legacy.py`
