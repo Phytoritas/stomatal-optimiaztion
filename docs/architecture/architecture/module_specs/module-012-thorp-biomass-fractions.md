@@ -33,4 +33,4 @@ Migrate the bounded `biomass_fractions` seam so the new package can convert THOR
 
 ## Next Seam
 
-- `huber_value` from `metrics.py`
+- `rooting_depth` from `metrics.py`

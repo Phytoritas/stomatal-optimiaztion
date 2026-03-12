@@ -3,7 +3,10 @@ from numpy.testing import assert_allclose
 
 from stomatal_optimiaztion.domains.thorp.metrics import (
     BiomassFractionSeries,
+    HuberValueParams,
+    HuberValueSeries,
     biomass_fractions,
+    huber_value,
 )
 
 
@@ -80,3 +83,31 @@ def test_biomass_fractions_supports_custom_carbon_fractions() -> None:
         res.rmf,
         np.array([0.128686327077748, 0.1176470588235294, 0.1112828438948995]),
     )
+
+
+def test_huber_value_matches_legacy_snapshot() -> None:
+    res = huber_value(
+        series=HuberValueSeries(
+            c_l_ts=np.array([10.0, 20.0, 25.0]),
+            d_ts=np.array([0.30, 0.45, 0.50]),
+            d_hw_ts=np.array([0.10, 0.20, 0.25]),
+        ),
+        params=HuberValueParams(sla=0.08, xi=0.5),
+    )
+
+    assert_allclose(res, np.array([0.05, 0.05078125, 0.046875]))
+
+
+def test_huber_value_zero_leaf_area_matches_legacy_behavior() -> None:
+    res = huber_value(
+        series=HuberValueSeries(
+            c_l_ts=np.array([0.0, 5.0, 0.0]),
+            d_ts=np.array([0.2, 0.3, 0.0]),
+            d_hw_ts=np.array([0.0, 0.1, 0.0]),
+        ),
+        params=HuberValueParams(sla=0.08, xi=0.5),
+    )
+
+    assert np.isinf(res[0])
+    assert_allclose(res[1], 0.1)
+    assert np.isnan(res[2])
