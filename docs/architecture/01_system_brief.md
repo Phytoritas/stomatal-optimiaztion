@@ -220,8 +220,16 @@ The twenty-second slice ports the next bounded simulation seam:
 - adapt flat `THORPParams` into the migrated dataclass seams without reintroducing legacy coupling
 - leave CLI entrypoints blocked as the next seam
 
+## Slice 023: THORP MATLAB IO
+
+The twenty-third slice ports the next bounded IO seam:
+- move `matlab_io.py` into the migrated THORP package
+- preserve legacy MAT read/write behavior, including parent-directory creation and scipy options
+- keep MAT persistence isolated from `run` so the remaining CLI seam can opt into the writer explicitly
+- leave CLI entrypoints blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, defaults-bundle, `THORPParams`-compatibility, forcing, simulation-output, simulation-store, initial-allometry, and run seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, defaults-bundle, `THORPParams`-compatibility, forcing, simulation-output, simulation-store, initial-allometry, run, and MATLAB-IO seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
 3. prepare the next THORP source audit for the remaining `simulate.py` CLI entrypoint seam
