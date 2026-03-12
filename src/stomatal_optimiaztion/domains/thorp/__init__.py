@@ -3,6 +3,7 @@ from stomatal_optimiaztion.domains.thorp.allocation import (
     AllocationParams,
     allocation_fractions,
 )
+from stomatal_optimiaztion.domains.thorp.cli import build_parser, main
 from stomatal_optimiaztion.domains.thorp.defaults import (
     ThorpDefaultParams,
     default_params,
@@ -73,6 +74,7 @@ __all__ = [
     "BiomassFractions",
     "BiomassFractionSeries",
     "BottomBoundaryCondition",
+    "build_parser",
     "Forcing",
     "GrowthParams",
     "GrowthState",
@@ -107,6 +109,7 @@ __all__ = [
     "iter_equation_refs",
     "load_mat",
     "load_forcing",
+    "main",
     "model_card_document_names",
     "radiation",
     "richards_equation",
