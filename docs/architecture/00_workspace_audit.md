@@ -4,7 +4,7 @@
 
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
-- Audit date: 2026-03-12
+- Audit date: 2026-03-13
 
 ## Repo Profile Inference
 
@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 028
-- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 028 approved for TOMATO
+- Gate C. Validation plan ready through slice 029
+- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 029 approved for TOMATO
 
 ## Migrated THORP Slices
 
@@ -215,3 +215,9 @@ Slice 028:
 - target: `src/stomatal_optimiaztion/domains/tomato/tthorp/models/tomato_legacy/adapter.py`
 - scope: bounded TOMATO step-adapter bridge and pipeline module wiring over injected legacy-model protocols
 - excluded: the full `TomatoModel`, partition-policy packages, pipelines, and CLI entrypoints
+
+Slice 029:
+- source: `TOMATO/tTHORP/src/tthorp/models/tomato_legacy/tomato_model.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/models/tomato_legacy/tomato_model.py`
+- scope: bounded TOMATO legacy-model surface covering reset-state defaults, forcing-row ingestion, output payload shape, density helpers, sample forcing generation, and default adapter execution
+- excluded: the full age-structured growth kernels, partition-policy package migration, and legacy runner or CLI entrypoints

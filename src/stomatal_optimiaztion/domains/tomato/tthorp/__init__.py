@@ -10,6 +10,8 @@ from stomatal_optimiaztion.domains.tomato.tthorp.interface import (
 from stomatal_optimiaztion.domains.tomato.tthorp.models.tomato_legacy import (
     TomatoLegacyAdapter,
     TomatoLegacyModule,
+    TomatoModel,
+    create_sample_input_csv,
     iter_forcing_csv,
     make_tomato_legacy_model,
 )
@@ -29,4 +31,6 @@ __all__ = [
     "TomatoLegacyAdapter",
     "TomatoLegacyModule",
     "make_tomato_legacy_model",
+    "TomatoModel",
+    "create_sample_input_csv",
 ]
