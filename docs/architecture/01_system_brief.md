@@ -324,8 +324,16 @@ The thirty-fifth slice opens the next bounded TOMATO seam:
 - keep the seam package-local instead of opening `pipelines/tomato_dayrun.py` or repo-level script entrypoints
 - leave `pipelines/tomato_dayrun.py` blocked as the next seam
 
+## Slice 036: TOMATO tTHORP Dayrun Pipeline
+
+The thirty-sixth slice opens the next bounded TOMATO seam:
+- move `TOMATO/tTHORP/src/tthorp/pipelines/tomato_dayrun.py` into the staged `domains/tomato/tthorp` package
+- preserve config-driven execution, deterministic artifact writing, metadata JSON emission, and package-level from-config execution
+- keep the seam package-local instead of opening repo-level `scripts/run_pipeline.py` or `scripts/make_features.py`
+- leave `scripts/run_pipeline.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first eleven TOMATO `tTHORP` seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first twelve TOMATO `tTHORP` seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `pipelines/tomato_dayrun.py`
+3. prepare the next TOMATO source audit for `scripts/run_pipeline.py`
