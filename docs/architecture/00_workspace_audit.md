@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 027
-- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 027 approved for TOMATO
+- Gate C. Validation plan ready through slice 028
+- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 028 approved for TOMATO
 
 ## Migrated THORP Slices
 
@@ -209,3 +209,9 @@ Slice 027:
 - target: `src/stomatal_optimiaztion/domains/tomato/tthorp/models/tomato_legacy/forcing_csv.py`
 - scope: bounded TOMATO CSV forcing ingestion, alias normalization, and canonical `EnvStep` reconstruction
 - excluded: tomato legacy adapters, the full `TomatoModel`, pipelines, and CLI entrypoints
+
+Slice 028:
+- source: `TOMATO/tTHORP/src/tthorp/models/tomato_legacy/adapter.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/models/tomato_legacy/adapter.py`
+- scope: bounded TOMATO step-adapter bridge and pipeline module wiring over injected legacy-model protocols
+- excluded: the full `TomatoModel`, partition-policy packages, pipelines, and CLI entrypoints
