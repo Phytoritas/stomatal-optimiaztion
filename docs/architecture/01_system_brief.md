@@ -308,8 +308,16 @@ The thirty-third slice opens the next bounded TOMATO seam:
 - keep the seam package-local instead of opening `core/io.py`, `core/scheduler.py`, or `pipelines/tomato_dayrun.py`
 - leave `core/io.py` blocked as the next seam
 
+## Slice 034: TOMATO tTHORP Shared IO
+
+The thirty-fourth slice opens the next bounded TOMATO seam:
+- move `TOMATO/tTHORP/src/tthorp/core/io.py` into the staged `domains/tomato/tthorp` package
+- preserve directory creation, JSON metadata writing, YAML config parsing, recursive deep-merge behavior, and `extends`-chain loading
+- declare `PyYAML` explicitly as a runtime dependency instead of relying on an undeclared local package
+- leave `core/scheduler.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first nine TOMATO `tTHORP` seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first ten TOMATO `tTHORP` seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `core/io.py`
+3. prepare the next TOMATO source audit for `core/scheduler.py`
