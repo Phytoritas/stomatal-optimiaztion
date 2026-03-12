@@ -124,8 +124,16 @@ The tenth slice ports the next bounded plant-growth seam:
 - keep the interface bounded by a minimal `AllocationParams` dataclass
 - leave `grow` blocked as the next growth-state seam
 
+## Slice 011: THORP Grow
+
+The eleventh slice ports the next bounded growth-state seam:
+- move `grow` from `growth.py` into a dedicated THORP growth module
+- reuse migrated allocation outputs without pulling in the full simulation loop
+- keep the interface bounded by a minimal `GrowthParams` dataclass
+- leave `biomass_fractions` blocked as the next reporting seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, and allocation seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, and grow seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `grow` or another bounded growth-state seam
+3. prepare the next THORP source audit for `biomass_fractions` or another bounded reporting seam

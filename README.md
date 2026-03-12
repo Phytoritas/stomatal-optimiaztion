@@ -33,6 +33,7 @@ poetry run ruff check .
 - THORP `e_from_soil_to_root_collar` is migrated as slice 008.
 - THORP `stomata` is migrated as slice 009.
 - THORP `allocation_fractions` is migrated as slice 010.
+- THORP `grow` is migrated as slice 011.
 
 ## Next validation
-- Migrate the next THORP seam, likely `grow`, with behavior-preserving regression checks.
+- Migrate the next THORP seam, likely `biomass_fractions`, with behavior-preserving regression checks.
