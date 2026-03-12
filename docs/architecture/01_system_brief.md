@@ -156,8 +156,16 @@ The fourteenth slice ports the next bounded reporting seam:
 - keep the interface bounded by a minimal `RootingDepthSeries` dataclass plus migrated `SoilGrid`
 - leave `soil_grid` blocked as the next helper seam
 
+## Slice 015: THORP Soil Grid Helper
+
+The fifteenth slice ports the final bounded `metrics.py` helper seam:
+- move `soil_grid` from `metrics.py` into the migrated THORP metrics module
+- reuse migrated `SoilInitializationParams` and `initial_soil_and_roots`
+- keep the helper bounded to grid reconstruction instead of porting the legacy `THORPParams` bundle
+- leave `default_params` blocked as the next config seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, and rooting-depth seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, and soil-grid seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `soil_grid` or another bounded helper seam
+3. prepare the next THORP source audit for `default_params` or another bounded config seam

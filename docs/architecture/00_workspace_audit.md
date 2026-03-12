@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 014
-- Gate D. Bounded slices 001 through 014 approved for THORP
+- Gate C. Validation plan ready through slice 015
+- Gate D. Bounded slices 001 through 015 approved for THORP
 
 ## Migrated THORP Slices
 
@@ -131,3 +131,9 @@ Slice 014:
 - target: `src/stomatal_optimiaztion/domains/thorp/metrics.py`
 - scope: bounded rooting-depth reporting from migrated root time series and `SoilGrid`
 - excluded: `soil_grid` reconstruction helper and simulation orchestration
+
+Slice 015:
+- source: `THORP/src/thorp/metrics.py` (`soil_grid`)
+- target: `src/stomatal_optimiaztion/domains/thorp/metrics.py`
+- scope: bounded grid-reconstruction helper using migrated soil-initialization params
+- excluded: `default_params`, the legacy `THORPParams` bundle, and simulation orchestration

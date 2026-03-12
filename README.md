@@ -37,6 +37,7 @@ poetry run ruff check .
 - THORP `biomass_fractions` is migrated as slice 012.
 - THORP `huber_value` is migrated as slice 013.
 - THORP `rooting_depth` is migrated as slice 014.
+- THORP `soil_grid` helper is migrated as slice 015.
 
 ## Next validation
-- Migrate the next THORP seam, likely `soil_grid`, with behavior-preserving regression checks.
+- Migrate the next THORP seam, likely `default_params`, with behavior-preserving regression checks.

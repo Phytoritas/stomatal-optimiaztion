@@ -33,4 +33,4 @@ Migrate the bounded `rooting_depth` seam so the new package can report THORP roo
 
 ## Next Seam
 
-- `soil_grid` from `metrics.py`
+- `default_params` from `config.py`
