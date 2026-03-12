@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 034
-- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 034 approved for TOMATO
+- Gate C. Validation plan ready through slice 035
+- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 035 approved for TOMATO
 
 ## Migrated THORP Slices
 
@@ -251,3 +251,9 @@ Slice 034:
 - target: `src/stomatal_optimiaztion/domains/tomato/tthorp/core/`, `tests/test_tomato_tthorp_core_io.py`, `pyproject.toml`, and `poetry.lock`
 - scope: bounded TOMATO shared IO surface covering directory creation, JSON metadata writing, YAML config parsing, recursive config merge, and `extends`-chain loading
 - excluded: `core/scheduler.py`, `pipelines/tomato_dayrun.py`, and repo-level script entrypoints
+
+Slice 035:
+- source: `TOMATO/tTHORP/src/tthorp/core/scheduler.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/core/` and `tests/test_tomato_tthorp_core_scheduler.py`
+- scope: bounded TOMATO shared scheduler surface covering deterministic experiment-key hashing, schedule dataclass construction, and forcing-derived run normalization
+- excluded: `pipelines/tomato_dayrun.py` and repo-level script entrypoints
