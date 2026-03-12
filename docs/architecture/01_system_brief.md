@@ -140,8 +140,16 @@ The twelfth slice ports the next bounded reporting seam:
 - keep the interface bounded by a minimal `BiomassFractionSeries` dataclass
 - leave `huber_value` blocked as the next reporting seam
 
+## Slice 013: THORP Huber Value
+
+The thirteenth slice ports the next bounded reporting seam:
+- move `huber_value` from `metrics.py` into the migrated THORP metrics module
+- reuse migrated growth geometry time-series names without pulling in the legacy `SimulationOutputs` container
+- keep the interface bounded by minimal `HuberValueSeries` and `HuberValueParams` dataclasses
+- leave `rooting_depth` blocked as the next reporting seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, and biomass-fraction seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, and Huber-value seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `huber_value` or another bounded reporting seam
+3. prepare the next THORP source audit for `rooting_depth` or another bounded reporting seam

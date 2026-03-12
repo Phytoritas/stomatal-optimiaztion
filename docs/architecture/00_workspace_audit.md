@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 012
-- Gate D. Bounded slices 001 through 012 approved for THORP
+- Gate C. Validation plan ready through slice 013
+- Gate D. Bounded slices 001 through 013 approved for THORP
 
 ## Migrated THORP Slices
 
@@ -119,3 +119,9 @@ Slice 012:
 - target: `src/stomatal_optimiaztion/domains/thorp/metrics.py`
 - scope: bounded biomass-fraction reporting from carbon-pool time series
 - excluded: `huber_value`, soil-grid helpers, rooting-depth reporting, and simulation orchestration
+
+Slice 013:
+- source: `THORP/src/thorp/metrics.py` (`huber_value`)
+- target: `src/stomatal_optimiaztion/domains/thorp/metrics.py`
+- scope: bounded sapwood-to-leaf area reporting from migrated growth time series
+- excluded: `rooting_depth`, soil-grid reconstruction, and simulation orchestration

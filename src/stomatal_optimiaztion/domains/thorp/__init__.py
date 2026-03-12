@@ -26,6 +26,9 @@ from stomatal_optimiaztion.domains.thorp.metrics import (
     BiomassFractions,
     BiomassFractionSeries,
     biomass_fractions,
+    HuberValueParams,
+    HuberValueSeries,
+    huber_value,
 )
 from stomatal_optimiaztion.domains.thorp.radiation import RadiationResult, radiation
 from stomatal_optimiaztion.domains.thorp.soil_dynamics import (
@@ -52,6 +55,8 @@ __all__ = [
     "BottomBoundaryCondition",
     "GrowthParams",
     "GrowthState",
+    "HuberValueParams",
+    "HuberValueSeries",
     "InitialSoilAndRoots",
     "RadiationResult",
     "RichardsEquationParams",
@@ -69,6 +74,7 @@ __all__ = [
     "e_from_soil_to_root_collar",
     "equation_id_set",
     "grow",
+    "huber_value",
     "initial_soil_and_roots",
     "iter_equation_refs",
     "model_card_document_names",

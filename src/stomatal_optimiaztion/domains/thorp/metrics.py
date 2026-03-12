@@ -22,6 +22,19 @@ class BiomassFractions:
     rmf: NDArray[np.floating]
 
 
+@dataclass(frozen=True, slots=True)
+class HuberValueSeries:
+    c_l_ts: NDArray[np.floating]
+    d_ts: NDArray[np.floating]
+    d_hw_ts: NDArray[np.floating]
+
+
+@dataclass(frozen=True, slots=True)
+class HuberValueParams:
+    sla: float
+    xi: float
+
+
 def biomass_fractions(
     *,
     series: BiomassFractionSeries,
@@ -51,3 +64,17 @@ def biomass_fractions(
         smf=smf.astype(float),
         rmf=rmf.astype(float),
     )
+
+
+def huber_value(
+    *,
+    series: HuberValueSeries,
+    params: HuberValueParams,
+) -> NDArray[np.floating]:
+    """Compute the sapwood-to-leaf area ratio from migrated THORP time series."""
+
+    leaf_area = float(params.sla) * series.c_l_ts
+    sapwood_area = float(params.xi) * (series.d_ts**2 - series.d_hw_ts**2)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        hv = sapwood_area / leaf_area
+    return hv.astype(float)
