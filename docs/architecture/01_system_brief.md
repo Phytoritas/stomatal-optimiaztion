@@ -164,8 +164,16 @@ The fifteenth slice ports the final bounded `metrics.py` helper seam:
 - keep the helper bounded to grid reconstruction instead of porting the legacy `THORPParams` bundle
 - leave `default_params` blocked as the next config seam
 
+## Slice 016: THORP Default Params Bundle
+
+The sixteenth slice ports the next bounded config seam:
+- move the legacy `default_params` logic into a migrated defaults bundle for already ported THORP seams
+- expose canonical defaults for `soil_initialization`, `richards`, `soil_moisture`, `root_uptake`, `stomata`, `allocation`, `growth`, and `huber_value`
+- keep the implementation bounded to migrated parameter dataclasses instead of reintroducing the full legacy `THORPParams` bundle
+- leave `THORPParams` blocked as the next config seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, and soil-grid seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, and defaults-bundle seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `default_params` or another bounded config seam
+3. prepare the next THORP source audit for `THORPParams` or another bounded config seam

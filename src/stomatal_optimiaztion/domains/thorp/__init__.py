@@ -3,6 +3,10 @@ from stomatal_optimiaztion.domains.thorp.allocation import (
     AllocationParams,
     allocation_fractions,
 )
+from stomatal_optimiaztion.domains.thorp.defaults import (
+    ThorpDefaultParams,
+    default_params,
+)
 from stomatal_optimiaztion.domains.thorp.growth import (
     GrowthParams,
     GrowthState,
@@ -72,9 +76,11 @@ __all__ = [
     "SoilHydraulics",
     "SoilInitializationParams",
     "SoilMoistureParams",
+    "ThorpDefaultParams",
     "WeibullVC",
     "allocation_fractions",
     "biomass_fractions",
+    "default_params",
     "e_from_soil_to_root_collar",
     "equation_id_set",
     "grow",
