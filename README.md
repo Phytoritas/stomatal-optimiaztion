@@ -53,6 +53,7 @@ poetry run ruff check .
 - TOMATO `tTHORP` interface seam is migrated as slice 026.
 - TOMATO `tTHORP` forcing CSV seam is migrated as slice 027.
 - TOMATO `tTHORP` adapter seam is migrated as slice 028.
+- TOMATO `tTHORP` `TomatoModel` surface seam is migrated as slice 029.
 
 ## Next validation
-- Migrate the next TOMATO `tTHORP` seam, likely `models/tomato_legacy/tomato_model.py`, with behavior-preserving legacy model-state checks.
+- Migrate the TOMATO `tTHORP` runner seam in `models/tomato_legacy/run.py` and decide whether partition-policy packages need dedicated slices before broader pipeline work.

@@ -181,8 +181,27 @@ def test_make_tomato_legacy_model_runs_with_injected_factory() -> None:
     assert out["theta_substrate"].tolist() == [0.33, 0.33]
 
 
-def test_make_tomato_legacy_model_fails_cleanly_without_model_factory() -> None:
+def test_make_tomato_legacy_model_runs_with_default_tomato_model() -> None:
     model = make_tomato_legacy_model()
+    forcing = [
+        _make_env(t=datetime(2026, 1, 1, 0, 0, 0), dt_s=3600.0),
+        _make_env(t=datetime(2026, 1, 1, 1, 0, 0), dt_s=3600.0),
+    ]
 
-    with pytest.raises(ModuleNotFoundError, match="model_factory"):
-        simulate(model=model, forcing=[_make_env(t=datetime(2026, 1, 1, 0, 0, 0), dt_s=3600.0)])
+    out = simulate(model=model, forcing=forcing)
+
+    assert isinstance(out, pd.DataFrame)
+    assert len(out) == 2
+    for column in [
+        "datetime",
+        "LAI",
+        "total_dry_weight_g_m2",
+        "co2_flux_g_m2_s",
+        "theta_substrate",
+        "water_supply_stress",
+        "e",
+        "g_w",
+        "a_n",
+        "r_d",
+    ]:
+        assert column in out.columns

@@ -10,9 +10,5 @@ Current status:
 - Bootstrap complete
 - Architecture scaffold seeded
 - Target repo shape finalized as a staged single-package domain workspace
-- Slice 001 migrated: THORP model-card traceability assets and helpers
-- Slice 002 migrated: THORP radiation runtime seam
-- Slice 003 migrated: THORP Weibull vulnerability-curve primitive
-- Slice 004 migrated: THORP soil hydraulics dataclass
-- Slice 005 migrated: THORP soil initialization seam
-- Slice 006 migrated: THORP Richards-equation seam
+- Slices 001-024 migrated: THORP bounded runtime, reporting, config, IO, and CLI seams
+- Slices 025-029 migrated: TOMATO `tTHORP` contracts, interface, forcing, adapter, and `TomatoModel` surface seams

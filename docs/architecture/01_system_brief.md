@@ -268,8 +268,16 @@ The twenty-eighth slice opens the next bounded TOMATO seam:
 - use an injected tomato-model protocol so the adapter bridge lands today without forcing the full `tomato_model.py` import surface
 - leave `models/tomato_legacy/tomato_model.py` blocked as the next seam
 
+## Slice 029: TOMATO tTHORP TomatoModel Surface
+
+The twenty-ninth slice opens the next bounded TOMATO seam:
+- move `TOMATO/tTHORP/src/tthorp/models/tomato_legacy/tomato_model.py` into the staged `domains/tomato/tthorp` package as a bounded public model surface
+- preserve `TomatoModel` reset-state defaults, forcing-row ingestion, output payload shape, `set_plant_density()`, and `create_sample_input_csv()` compatibility
+- wire the seam over the migrated `run_flux_step()` placeholder so default adapter execution works without opening the full partition-policy ecosystem or CLI yet
+- leave `models/tomato_legacy/run.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first four TOMATO `tTHORP` seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first five TOMATO `tTHORP` seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `models/tomato_legacy/tomato_model.py`
+3. prepare the next TOMATO source audit for `models/tomato_legacy/run.py`
