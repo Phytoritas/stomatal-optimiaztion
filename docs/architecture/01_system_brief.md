@@ -180,8 +180,16 @@ The seventeenth slice ports the next bounded config seam:
 - keep forcing metadata passive instead of porting `load_forcing` or adding a new runtime dependency
 - leave `load_forcing` blocked as the next forcing seam
 
+## Slice 018: THORP Load Forcing
+
+The eighteenth slice ports the next bounded forcing seam:
+- move `Forcing` and `load_forcing` from `forcing.py` into a dedicated THORP forcing module
+- reuse migrated `THORPParams` compatibility metadata for file paths, scaling, and repeat controls
+- keep the `netCDF4` dependency isolated to this boundary and validate with temporary fixtures instead of workspace-global assets
+- leave `SimulationOutputs` blocked as the next simulation seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, defaults-bundle, and `THORPParams`-compatibility seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, defaults-bundle, `THORPParams`-compatibility, and forcing seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `load_forcing` or another bounded forcing seam
+3. prepare the next THORP source audit for `SimulationOutputs` or another bounded simulation seam

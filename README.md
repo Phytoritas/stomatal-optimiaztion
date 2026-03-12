@@ -40,6 +40,7 @@ poetry run ruff check .
 - THORP `soil_grid` helper is migrated as slice 015.
 - THORP `default_params` is migrated as a bounded defaults bundle in slice 016.
 - THORP `THORPParams` compatibility seam is migrated as slice 017.
+- THORP `load_forcing` seam is migrated as slice 018.
 
 ## Next validation
-- Migrate the next THORP seam, likely `load_forcing`, with behavior-preserving regression checks.
+- Migrate the next THORP seam, likely `SimulationOutputs`, with behavior-preserving regression checks.
