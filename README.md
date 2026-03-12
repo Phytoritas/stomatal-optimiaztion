@@ -59,6 +59,7 @@ poetry run ruff check .
 - TOMATO `tTHORP` THORP-derived partition-policy seam is migrated as slice 032.
 - TOMATO `tTHORP` package-level legacy pipeline seam is migrated as slice 033.
 - TOMATO `tTHORP` shared IO seam is migrated as slice 034.
+- TOMATO `tTHORP` shared scheduler seam is migrated as slice 035.
 
 ## Next validation
-- Audit the TOMATO shared scheduler seam at `core/scheduler.py`.
+- Audit the TOMATO dayrun pipeline seam at `pipelines/tomato_dayrun.py`.
