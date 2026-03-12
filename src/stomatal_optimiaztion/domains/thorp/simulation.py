@@ -78,6 +78,49 @@ class SimulationOutputs:
         }
 
 
+@dataclass(frozen=True, slots=True)
+class InitialAllometry:
+    d: float
+    h: float
+    w: float
+    z_i: float
+    c_l: float
+    c_sw: float
+    c_hw: float
+    d_hw: float
+    c_nsc: float
+    c_r_i: float
+
+
+def _initial_allometry(*, params: THORPParams) -> InitialAllometry:
+    d = 0.015
+    h = params.b0 * (d / params.d_ref) ** params.c0
+    w = params.b1 * (d / params.d_ref) ** params.c1
+    z_i = 3.0
+    la = 0.4 * params.phi * w**2
+    c_l = la / params.sla
+    c_w = params.rho_cw * params.xi * d**2 * h
+    rmf = 0.3
+    c_r_i = (c_l + c_w) * rmf / (1 - rmf)
+    c_sw = 0.94 * c_w
+    c_hw = c_w - c_sw
+    d_hw = (c_hw / (params.rho_cw * params.xi * h)) ** 0.5
+    c_nsc = (0.20 * c_l + 0.04 * c_w) / 0.8
+
+    return InitialAllometry(
+        d=float(d),
+        h=float(h),
+        w=float(w),
+        z_i=float(z_i),
+        c_l=float(c_l),
+        c_sw=float(c_sw),
+        c_hw=float(c_hw),
+        d_hw=float(d_hw),
+        c_nsc=float(c_nsc),
+        c_r_i=float(c_r_i),
+    )
+
+
 class _Store:
     def __init__(
         self,

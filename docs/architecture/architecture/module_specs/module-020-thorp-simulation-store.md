@@ -34,4 +34,4 @@ Migrate the bounded `_Store` seam so the new package can buffer THORP simulation
 
 ## Next Seam
 
-- `_initial_allometry` from `simulate.py`
+- `run` from `simulate.py`

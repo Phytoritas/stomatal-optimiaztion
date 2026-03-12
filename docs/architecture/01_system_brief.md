@@ -204,8 +204,16 @@ The twentieth slice ports the next bounded simulation seam:
 - keep MAT export behind an injected callback instead of pulling the writer into the storage seam
 - leave `_initial_allometry` blocked as the next simulation seam
 
+## Slice 021: THORP Initial Allometry
+
+The twenty-first slice ports the next bounded simulation seam:
+- move `_initial_allometry` from `simulate.py` into the migrated THORP simulation module
+- preserve the legacy initial geometry and carbon-pool formulas
+- expose one explicit output structure so the later `run` seam can consume the helper without anonymous tuples
+- leave `run` blocked as the next simulation seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, defaults-bundle, `THORPParams`-compatibility, forcing, simulation-output, and simulation-store seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, defaults-bundle, `THORPParams`-compatibility, forcing, simulation-output, simulation-store, and initial-allometry seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `_initial_allometry` or another bounded simulation seam
+3. prepare the next THORP source audit for `run` or another bounded simulation seam
