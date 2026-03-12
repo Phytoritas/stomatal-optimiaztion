@@ -1,7 +1,10 @@
 from stomatal_optimiaztion.domains.thorp.hydraulics import (
     RootUptakeParams,
     RootUptakeResult,
+    StomataParams,
+    StomataResult,
     e_from_soil_to_root_collar,
+    stomata,
 )
 from stomatal_optimiaztion.domains.thorp.model_card import (
     equation_id_set,
@@ -33,6 +36,8 @@ __all__ = [
     "RichardsEquationParams",
     "RootUptakeParams",
     "RootUptakeResult",
+    "StomataParams",
+    "StomataResult",
     "SoilGrid",
     "SoilHydraulics",
     "SoilInitializationParams",
@@ -47,4 +52,5 @@ __all__ = [
     "richards_equation",
     "require_equation_ids",
     "soil_moisture",
+    "stomata",
 ]

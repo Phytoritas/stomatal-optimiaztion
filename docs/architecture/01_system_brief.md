@@ -108,8 +108,16 @@ The eighth slice ports the next bounded hydraulics seam:
 - keep the interface bounded by a minimal `RootUptakeParams` dataclass
 - leave `stomata` blocked as the next coupled hydraulics seam
 
+## Slice 009: THORP Stomata
+
+The ninth slice ports the next coupled hydraulics and gas-exchange seam:
+- move `stomata` from `hydraulics.py` into the migrated THORP hydraulics module
+- reuse migrated root-uptake, vulnerability, and traceable photosynthesis primitives
+- keep the interface bounded by a minimal `StomataParams` dataclass
+- leave `allocation_fractions` blocked as the next plant-growth seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, and root-uptake seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, and stomata seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `stomata` or another bounded coupled hydraulics seam
+3. prepare the next THORP source audit for `allocation_fractions` or another bounded plant-growth seam

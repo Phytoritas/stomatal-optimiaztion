@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 008
-- Gate D. Bounded slices 001 through 008 approved for THORP
+- Gate C. Validation plan ready through slice 009
+- Gate D. Bounded slices 001 through 009 approved for THORP
 
 ## Migrated THORP Slices
 
@@ -95,3 +95,9 @@ Slice 008:
 - target: `src/stomatal_optimiaztion/domains/thorp/hydraulics.py`
 - scope: bounded root-uptake hydraulics and resistance bookkeeping
 - excluded: `stomata`, canopy conductance coupling, and the wider optimization stack
+
+Slice 009:
+- source: `THORP/src/thorp/hydraulics.py` (`stomata`)
+- target: `src/stomatal_optimiaztion/domains/thorp/hydraulics.py`
+- scope: bounded stomatal closure, gas-exchange coupling, and derivative bookkeeping
+- excluded: `allocation_fractions`, growth integration, and simulation orchestration
