@@ -12,12 +12,32 @@ from stomatal_optimiaztion.domains.tomato.tthorp.components.partitioning.policy 
 from stomatal_optimiaztion.domains.tomato.tthorp.components.partitioning.sink_based import (
     SinkBasedTomatoPolicy,
 )
+from stomatal_optimiaztion.domains.tomato.tthorp.components.partitioning.thorp_opt import (
+    ThorpAllocationFractions,
+    ThorpObjectiveParams,
+    TomatoPartitionFractions,
+    objective_params_from_thorp,
+    thorp_allocation_fractions,
+    tomato_partitioning,
+)
+from stomatal_optimiaztion.domains.tomato.tthorp.components.partitioning.thorp_policies import (
+    ThorpFruitVegPolicy,
+    ThorpVegetativePolicy,
+)
 
 __all__ = [
     "AllocationFractions",
     "Organ",
     "PartitionPolicy",
     "SinkBasedTomatoPolicy",
+    "ThorpAllocationFractions",
+    "ThorpFruitVegPolicy",
+    "ThorpObjectiveParams",
+    "ThorpVegetativePolicy",
+    "TomatoPartitionFractions",
     "build_partition_policy",
     "coerce_partition_policy",
+    "objective_params_from_thorp",
+    "thorp_allocation_fractions",
+    "tomato_partitioning",
 ]

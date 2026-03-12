@@ -52,9 +52,10 @@ class TomatoModel:
     """Bounded legacy-compatible tomato model surface for staged migration.
 
     This slice preserves the public state, CSV ingestion, output payload, and
-    default adapter construction surface from the legacy `tomato_model.py`.
-    The deeper age-structured growth, full energy-balance solver, and THORP-
-    derived partition-policy seams remain blocked for later slices.
+    default adapter construction surface from the legacy `tomato_model.py`,
+    including TOMATO-local partition-policy execution.
+    The deeper age-structured growth, full energy-balance solver, and wider
+    package-level pipeline seams remain blocked for later slices.
     """
 
     def __init__(

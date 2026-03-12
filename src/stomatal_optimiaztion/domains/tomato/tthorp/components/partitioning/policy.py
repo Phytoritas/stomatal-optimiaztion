@@ -26,17 +26,6 @@ class PartitionPolicy(Protocol):
 
 
 _SINK_BASED_ALIASES = {"sink_based", "sink-based", "sink", "legacy", "default"}
-_THORP_ALIASES = {
-    "thorp_veg",
-    "thorp_vegetative",
-    "thorp_fruit_veg",
-    "thorp_fruitveg",
-    "thorp_4pool",
-    "thorp-opt",
-    "thorp_opt",
-}
-
-
 def build_partition_policy(name: str) -> PartitionPolicy:
     key = str(name).strip().lower()
     if key in _SINK_BASED_ALIASES:
@@ -46,10 +35,19 @@ def build_partition_policy(name: str) -> PartitionPolicy:
 
         return SinkBasedTomatoPolicy()
 
-    if key in _THORP_ALIASES:
-        raise NotImplementedError(
-            f"Partition policy {name!r} is not migrated yet; the THORP-derived tomato policy seam remains blocked."
+    if key in {"thorp_veg", "thorp_vegetative", "thorp-opt", "thorp_opt"}:
+        from stomatal_optimiaztion.domains.tomato.tthorp.components.partitioning.thorp_policies import (
+            ThorpVegetativePolicy,
         )
+
+        return ThorpVegetativePolicy()
+
+    if key in {"thorp_fruit_veg", "thorp_fruitveg", "thorp_4pool"}:
+        from stomatal_optimiaztion.domains.tomato.tthorp.components.partitioning.thorp_policies import (
+            ThorpFruitVegPolicy,
+        )
+
+        return ThorpFruitVegPolicy()
 
     raise ValueError(f"Unknown partition policy name {name!r}.")
 
