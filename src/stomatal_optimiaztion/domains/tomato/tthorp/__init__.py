@@ -15,6 +15,13 @@ from stomatal_optimiaztion.domains.tomato.tthorp.models.tomato_legacy import (
     iter_forcing_csv,
     make_tomato_legacy_model,
 )
+from stomatal_optimiaztion.domains.tomato.tthorp.pipelines import (
+    config_payload_for_exp_key,
+    resolve_forcing_path,
+    resolve_repo_root,
+    run_tomato_legacy_pipeline,
+    summarize_tomato_legacy_metrics,
+)
 
 MODEL_NAME = "tTHORP"
 
@@ -33,4 +40,9 @@ __all__ = [
     "make_tomato_legacy_model",
     "TomatoModel",
     "create_sample_input_csv",
+    "resolve_repo_root",
+    "resolve_forcing_path",
+    "config_payload_for_exp_key",
+    "run_tomato_legacy_pipeline",
+    "summarize_tomato_legacy_metrics",
 ]

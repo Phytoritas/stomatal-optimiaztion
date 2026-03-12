@@ -282,7 +282,15 @@ The thirtieth slice opens the next bounded TOMATO seam:
 - move `TOMATO/tTHORP/src/tthorp/models/tomato_legacy/run.py` into the staged `domains/tomato/tthorp` package
 - preserve bounded argument parsing, forcing iteration, default adapter construction, and CSV result writing
 - keep the runner package-local instead of opening a repo-wide TOMATO CLI entrypoint yet
-- leave `pipelines/tomato_legacy.py` blocked as the next seam
+- leave `components/partitioning/policy.py` blocked as the next seam
+
+## Slice 031: TOMATO tTHORP Partitioning Core
+
+The thirty-first slice opens the next bounded TOMATO seam:
+- move `organ.py`, `fractions.py`, `policy.py`, and `sink_based.py` into the package-local TOMATO partitioning package
+- preserve organ enums, allocation-fraction validation, policy coercion, and the default sink-based tomato partition rule
+- replace inline default tomato allocation fallback inside `TomatoModel` with the migrated partitioning core
+- leave `thorp_opt.py` and `thorp_policies.py` blocked as the next seam
 
 ## Slice 032: TOMATO tTHORP THORP-Derived Partition Policies
 
@@ -292,8 +300,16 @@ The thirty-second slice closes the remaining TOMATO partitioning seam:
 - keep `TomatoModel` able to execute THORP-derived policies without breaking the bounded legacy surface
 - leave `pipelines/tomato_legacy.py` blocked as the next seam
 
+## Slice 033: TOMATO tTHORP Package-Level Legacy Pipeline
+
+The thirty-third slice opens the next bounded TOMATO seam:
+- move `TOMATO/tTHORP/src/tthorp/pipelines/tomato_legacy.py` into the staged `domains/tomato/tthorp` package
+- preserve repo-root and forcing-path resolution, filtered config payloads, default model construction, pipeline execution, and metrics summary behavior
+- keep the seam package-local instead of opening `core/io.py`, `core/scheduler.py`, or `pipelines/tomato_dayrun.py`
+- leave `core/io.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first eight TOMATO `tTHORP` seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first nine TOMATO `tTHORP` seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `pipelines/tomato_legacy.py`
+3. prepare the next TOMATO source audit for `core/io.py`

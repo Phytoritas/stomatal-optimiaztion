@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 032 completed and slice 033 planning
+- Current phase: slice 033 completed and slice 034 planning
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. audit the TOMATO package-level legacy pipeline seam at `pipelines/tomato_legacy.py`
-2. decide how much of `pipelines/tomato_legacy.py` can land without pulling in `core/` helpers prematurely
+1. audit the TOMATO shared IO seam at `core/io.py`
+2. decide how much of `core/io.py` can land without pulling in `core/scheduler.py` or `pipelines/tomato_dayrun.py` prematurely
 3. keep `tGOSM`, `tTDGM`, and `load-cell-data` blocked until their source audits are deeper
