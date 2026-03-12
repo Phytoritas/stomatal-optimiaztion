@@ -212,8 +212,16 @@ The twenty-first slice ports the next bounded simulation seam:
 - expose one explicit output structure so the later `run` seam can consume the helper without anonymous tuples
 - leave `run` blocked as the next simulation seam
 
+## Slice 022: THORP Run Orchestration
+
+The twenty-second slice ports the next bounded simulation seam:
+- move `run` from `simulate.py` into the migrated THORP simulation module
+- preserve the legacy orchestration order across forcing, radiation, stomata, allocation, soil-moisture, growth, and storage seams
+- adapt flat `THORPParams` into the migrated dataclass seams without reintroducing legacy coupling
+- leave CLI entrypoints blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, defaults-bundle, `THORPParams`-compatibility, forcing, simulation-output, simulation-store, and initial-allometry seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, defaults-bundle, `THORPParams`-compatibility, forcing, simulation-output, simulation-store, initial-allometry, and run seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `run` or another bounded simulation seam
+3. prepare the next THORP source audit for the remaining `simulate.py` CLI entrypoint seam

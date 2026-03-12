@@ -8,10 +8,129 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-from stomatal_optimiaztion.domains.thorp.params import THORPParams
-from stomatal_optimiaztion.domains.thorp.soil_initialization import SoilGrid
+from stomatal_optimiaztion.domains.thorp.allocation import (
+    AllocationParams,
+    allocation_fractions,
+)
+from stomatal_optimiaztion.domains.thorp.forcing import Forcing, load_forcing
+from stomatal_optimiaztion.domains.thorp.growth import GrowthParams, grow
+from stomatal_optimiaztion.domains.thorp.hydraulics import (
+    RootUptakeParams,
+    StomataParams,
+    stomata,
+)
+from stomatal_optimiaztion.domains.thorp.params import (
+    THORPParams,
+    thorp_params_from_defaults,
+)
+from stomatal_optimiaztion.domains.thorp.radiation import radiation
+from stomatal_optimiaztion.domains.thorp.soil_dynamics import (
+    RichardsEquationParams,
+    SoilMoistureParams,
+    soil_moisture,
+)
+from stomatal_optimiaztion.domains.thorp.soil_initialization import (
+    SoilGrid,
+    SoilInitializationParams,
+    initial_soil_and_roots,
+)
 
 SaveMatCallback = Callable[[Path, dict[str, Any]], None]
+
+
+@dataclass(frozen=True, slots=True)
+class _RunSeamParams:
+    soil_initialization: SoilInitializationParams
+    soil_moisture: SoilMoistureParams
+    stomata: StomataParams
+    allocation: AllocationParams
+    growth: GrowthParams
+
+
+def _run_seam_params(*, params: THORPParams) -> _RunSeamParams:
+    soil_initialization = SoilInitializationParams(
+        rho=params.rho,
+        g=params.g,
+        z_wt=params.z_wt,
+        z_soil=params.z_soil,
+        n_soil=params.n_soil,
+        bc_bttm=params.bc_bttm,
+        soil=params.soil,
+        vc_r=params.vc_r,
+        beta_r_h=params.beta_r_h,
+        beta_r_v=params.beta_r_v,
+    )
+    richards = RichardsEquationParams(
+        dt=params.dt,
+        rho=params.rho,
+        g=params.g,
+        bc_bttm=params.bc_bttm,
+        z_wt=params.z_wt,
+        p_bttm=params.p_bttm,
+        soil=params.soil,
+    )
+    soil_moisture_params = SoilMoistureParams(
+        richards=richards,
+        m_h2o=params.m_h2o,
+        r_gas=params.r_gas,
+    )
+    root_uptake = RootUptakeParams(
+        beta_r_h=params.beta_r_h,
+        beta_r_v=params.beta_r_v,
+        vc_r=params.vc_r,
+        rho=params.rho,
+        g=params.g,
+    )
+    stomata_params = StomataParams(
+        root_uptake=root_uptake,
+        g_wmin=params.g_wmin,
+        c_prime1=params.c_prime1,
+        c_prime2=params.c_prime2,
+        d_ref=params.d_ref,
+        c0=params.c0,
+        c1=params.c1,
+        b2=params.b2,
+        c2=params.c2,
+        k_l=params.k_l,
+        vc_sw=params.vc_sw,
+        vc_l=params.vc_l,
+        v_cmax_func=params.v_cmax_func,
+        j_max_func=params.j_max_func,
+        gamma_star_func=params.gamma_star_func,
+        k_c_func=params.k_c_func,
+        k_o_func=params.k_o_func,
+        r_d_func=params.r_d_func,
+        var_kappa=params.var_kappa,
+        c_a=params.c_a,
+        o_a=params.o_a,
+    )
+    allocation_params = AllocationParams(
+        sla=params.sla,
+        r_m_sw_func=params.r_m_sw_func,
+        r_m_r_func=params.r_m_r_func,
+        tau_l=params.tau_l,
+        tau_sw=params.tau_sw,
+        tau_r=params.tau_r,
+    )
+    growth_params = GrowthParams(
+        allocation=allocation_params,
+        dt=params.dt,
+        f_c=params.f_c,
+        rho_cw=params.rho_cw,
+        xi=params.xi,
+        b0=params.b0,
+        d_ref=params.d_ref,
+        c0=params.c0,
+        b1=params.b1,
+        c1=params.c1,
+    )
+    return _RunSeamParams(
+        soil_initialization=soil_initialization,
+        soil_moisture=soil_moisture_params,
+        stomata=stomata_params,
+        allocation=allocation_params,
+        growth=growth_params,
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -421,3 +540,235 @@ class _Store:
             r_m_ts=np.asarray(self._r_m, dtype=float),
             u_ts=np.asarray(self._u, dtype=float),
         )
+
+
+def run(
+    params: THORPParams | None = None,
+    *,
+    forcing: Forcing | None = None,
+    max_steps: int | None = None,
+    save_mat_path: str | Path | None = None,
+    save_mat_callback: SaveMatCallback | None = None,
+) -> SimulationOutputs:
+    params = thorp_params_from_defaults() if params is None else params
+    forcing = load_forcing(params=params) if forcing is None else forcing
+    seam_params = _run_seam_params(params=params)
+
+    initial = _initial_allometry(params=params)
+    init = initial_soil_and_roots(
+        params=seam_params.soil_initialization,
+        c_r_i=initial.c_r_i,
+        z_i=initial.z_i,
+    )
+    grid = init.grid
+    n_soil = grid.n_soil
+
+    c_l = initial.c_l
+    c_sw = initial.c_sw
+    c_hw = initial.c_hw
+    c_nsc = initial.c_nsc
+    c_r_h = init.c_r_h
+    c_r_v = init.c_r_v
+    h = initial.h
+    w = initial.w
+    d = initial.d
+    d_hw = initial.d_hw
+    psi_soil_by_layer = init.psi_soil_by_layer
+
+    u_l = 0.0
+    u_r_h = np.zeros(n_soil, dtype=float)
+    u_r_v = np.zeros(n_soil, dtype=float)
+    u_sw = 0.0
+
+    t_allocate = 3600.0 * (24.0 * np.floor(0.0 / 3600.0 / 24.0) + 12.0)
+    store = _Store(
+        params=params,
+        grid=grid,
+        t_bgn=float(forcing.t[0]),
+        t_end=float(forcing.t_end),
+        save_mat_callback=save_mat_callback,
+    )
+    save_path = Path(save_mat_path) if save_mat_path is not None else None
+
+    n_steps = forcing.t.size - 1
+    if max_steps is not None:
+        n_steps = min(n_steps, int(max_steps))
+
+    for step in range(n_steps):
+        t = float(forcing.t[step])
+        t_a = float(forcing.t_a[step])
+        t_soil = float(forcing.t_soil[step])
+        rh = float(forcing.rh[step])
+        precip = float(forcing.precip[step])
+        u10 = float(forcing.u10[step])
+        r_incom = float(forcing.r_incom[step])
+        z_a = float(forcing.z_a[step])
+
+        la_area = float(params.sla * c_l)
+        rad = radiation(
+            r_incom=r_incom,
+            z_a=z_a,
+            la=la_area,
+            w=w,
+            h=h,
+            h_n=params.h_n,
+            kappa_l=params.kappa_l,
+            kappa_n=params.kappa_n,
+            phi=params.phi,
+        )
+        stom = stomata(
+            params=seam_params.stomata,
+            psi_soil_by_layer=psi_soil_by_layer,
+            n_soil=n_soil,
+            dz=grid.dz,
+            z_soil_mid=grid.z_mid,
+            t_a=t_a,
+            rh=rh,
+            r_abs=rad.r_abs,
+            la=la_area,
+            c_r_h=c_r_h,
+            c_r_v=c_r_v,
+            h=h,
+            w=w,
+            d=d,
+            d_hw=d_hw,
+            d_r_abs_d_h=rad.d_r_abs_dh,
+            d_r_abs_d_w=rad.d_r_abs_dw,
+            d_r_abs_d_la=rad.d_r_abs_dla,
+        )
+
+        if t >= t_allocate:
+            alloc = allocation_fractions(
+                params=seam_params.allocation,
+                a_n=stom.a_n,
+                lambda_wue=stom.lambda_wue,
+                d_a_n_d_r_abs=stom.d_a_n_d_r_abs,
+                d_e_d_la=stom.d_e_d_la,
+                d_e_d_d=stom.d_e_d_d,
+                d_e_d_c_r_h=stom.d_e_d_c_r_h,
+                d_e_d_c_r_v=stom.d_e_d_c_r_v,
+                d_r_abs_d_h=rad.d_r_abs_dh,
+                d_r_abs_d_w=rad.d_r_abs_dw,
+                d_r_abs_d_la=rad.d_r_abs_dla,
+                h=h,
+                w=w,
+                d=d,
+                c_w=float(c_sw + c_hw),
+                c_l=c_l,
+                c0=params.c0,
+                c1=params.c1,
+                t_a=t_a,
+                t_soil=t_soil,
+            )
+            u_l = alloc.u_l
+            u_r_h = alloc.u_r_h
+            u_r_v = alloc.u_r_v
+            u_sw = alloc.u_sw
+
+            if float(u_l + np.sum(u_r_h + u_r_v) + u_sw) == 0.0:
+                raise RuntimeError("Allocation fractions sum to zero")
+            t_allocate = float(t_allocate + 24 * 3600.0)
+
+        psi_soil_by_layer, evap = soil_moisture(
+            params=seam_params.soil_moisture,
+            grid=grid,
+            psi_soil_by_layer=psi_soil_by_layer,
+            t_a=t_a,
+            t_soil=t_soil,
+            rh=rh,
+            u10=u10,
+            precip=precip,
+            e_soil=stom.e_soil,
+            la=la_area,
+            w=w,
+        )
+        gstate = grow(
+            params=seam_params.growth,
+            u_l=u_l,
+            u_r_h=u_r_h,
+            u_r_v=u_r_v,
+            u_sw=u_sw,
+            a_n=stom.a_n,
+            r_d=stom.r_d,
+            c_l=c_l,
+            c_r_h=c_r_h,
+            c_r_v=c_r_v,
+            c_sw=c_sw,
+            c_hw=c_hw,
+            c_nsc=c_nsc,
+            t_a=t_a,
+            t_soil=t_soil,
+        )
+
+        c_l = gstate.c_l
+        c_r_h = gstate.c_r_h
+        c_r_v = gstate.c_r_v
+        c_sw = gstate.c_sw
+        c_hw = gstate.c_hw
+        c_nsc = gstate.c_nsc
+        h = gstate.h
+        w = gstate.w
+        d = gstate.d
+        d_hw = gstate.d_hw
+
+        if step == 0:
+            store.initialize(
+                t=t,
+                c_nsc=c_nsc,
+                c_l=c_l,
+                c_sw=c_sw,
+                c_hw=c_hw,
+                c_r_h=c_r_h,
+                c_r_v=c_r_v,
+                d=d,
+                d_hw=d_hw,
+                h=h,
+                w=w,
+                psi_l=stom.psi_l,
+                psi_s=stom.psi_s,
+                psi_rc=stom.psi_rc,
+                psi_rc0=stom.psi_rc0,
+                psi_soil_by_layer=psi_soil_by_layer,
+                r_abs=rad.r_abs,
+                e=stom.e,
+                evap=evap,
+                g_w=stom.g_w,
+                a_n=stom.a_n,
+                r_d=stom.r_d,
+                r_m=gstate.r_m,
+                u=gstate.u,
+            )
+        else:
+            store.maybe_store(
+                t=t,
+                c_nsc=c_nsc,
+                c_l=c_l,
+                c_sw=c_sw,
+                c_hw=c_hw,
+                c_r_h=c_r_h,
+                c_r_v=c_r_v,
+                u_l=u_l,
+                u_sw=u_sw,
+                u_r_h=u_r_h,
+                u_r_v=u_r_v,
+                d=d,
+                d_hw=d_hw,
+                h=h,
+                w=w,
+                psi_l=stom.psi_l,
+                psi_s=stom.psi_s,
+                psi_rc=stom.psi_rc,
+                psi_rc0=stom.psi_rc0,
+                psi_soil_by_layer=psi_soil_by_layer,
+                r_abs=rad.r_abs,
+                e=stom.e,
+                evap=evap,
+                g_w=stom.g_w,
+                a_n=stom.a_n,
+                r_d=stom.r_d,
+                r_m=gstate.r_m,
+                u=gstate.u,
+                save_mat_path=save_path,
+            )
+
+    return store.to_outputs()
