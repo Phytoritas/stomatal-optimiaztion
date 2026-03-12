@@ -26,6 +26,10 @@ from stomatal_optimiaztion.domains.thorp.model_card import (
     model_card_document_names,
     require_equation_ids,
 )
+from stomatal_optimiaztion.domains.thorp.params import (
+    THORPParams,
+    thorp_params_from_defaults,
+)
 from stomatal_optimiaztion.domains.thorp.metrics import (
     BiomassFractions,
     BiomassFractionSeries,
@@ -76,6 +80,7 @@ __all__ = [
     "SoilHydraulics",
     "SoilInitializationParams",
     "SoilMoistureParams",
+    "THORPParams",
     "ThorpDefaultParams",
     "WeibullVC",
     "allocation_fractions",
@@ -95,4 +100,5 @@ __all__ = [
     "soil_moisture",
     "soil_grid",
     "stomata",
+    "thorp_params_from_defaults",
 ]

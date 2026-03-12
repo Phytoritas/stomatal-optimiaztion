@@ -172,8 +172,16 @@ The sixteenth slice ports the next bounded config seam:
 - keep the implementation bounded to migrated parameter dataclasses instead of reintroducing the full legacy `THORPParams` bundle
 - leave `THORPParams` blocked as the next config seam
 
+## Slice 017: THORP Params Compatibility
+
+The seventeenth slice ports the next bounded config seam:
+- move the legacy `THORPParams` dataclass into a dedicated compatibility module
+- reuse the migrated defaults bundle to expose a flat parameter surface for remaining adapters
+- keep forcing metadata passive instead of porting `load_forcing` or adding a new runtime dependency
+- leave `load_forcing` blocked as the next forcing seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, and defaults-bundle seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, defaults-bundle, and `THORPParams`-compatibility seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `THORPParams` or another bounded config seam
+3. prepare the next THORP source audit for `load_forcing` or another bounded forcing seam

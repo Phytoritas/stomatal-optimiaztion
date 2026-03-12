@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 016
-- Gate D. Bounded slices 001 through 016 approved for THORP
+- Gate C. Validation plan ready through slice 017
+- Gate D. Bounded slices 001 through 017 approved for THORP
 
 ## Migrated THORP Slices
 
@@ -143,3 +143,9 @@ Slice 016:
 - target: `src/stomatal_optimiaztion/domains/thorp/defaults.py`
 - scope: bounded default-parameter bundle for already migrated THORP seams
 - excluded: the legacy `THORPParams` dataclass, forcing-path setup, and simulation orchestration
+
+Slice 017:
+- source: `THORP/src/thorp/config.py` (`THORPParams`)
+- target: `src/stomatal_optimiaztion/domains/thorp/params.py`
+- scope: legacy-compatible flat parameter dataclass layered on top of migrated defaults
+- excluded: `load_forcing`, `netCDF4`-backed forcing I/O, and simulation orchestration

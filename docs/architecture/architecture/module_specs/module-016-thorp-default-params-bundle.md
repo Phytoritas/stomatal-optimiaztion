@@ -33,4 +33,4 @@ Migrate the bounded `default_params` seam so the new package can expose canonica
 
 ## Next Seam
 
-- `THORPParams` from `config.py`
+- `load_forcing` from `forcing.py`
