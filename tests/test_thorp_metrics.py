@@ -9,8 +9,15 @@ from stomatal_optimiaztion.domains.thorp.metrics import (
     biomass_fractions,
     huber_value,
     rooting_depth,
+    soil_grid,
 )
-from stomatal_optimiaztion.domains.thorp.soil_initialization import SoilGrid
+from stomatal_optimiaztion.domains.thorp.soil_hydraulics import SoilHydraulics
+from stomatal_optimiaztion.domains.thorp.soil_initialization import (
+    SoilGrid,
+    SoilInitializationParams,
+    initial_soil_and_roots,
+)
+from stomatal_optimiaztion.domains.thorp.vulnerability import WeibullVC
 
 
 def _series() -> BiomassFractionSeries:
@@ -60,6 +67,27 @@ def _rooting_series() -> RootingDepthSeries:
                 [0.05, 0.005, 0.0, 0.05],
             ]
         ),
+    )
+
+
+def _soil_params() -> SoilInitializationParams:
+    return SoilInitializationParams(
+        rho=998.0,
+        g=9.81,
+        z_wt=74.0,
+        z_soil=30.0,
+        n_soil=15,
+        bc_bttm="FreeDrainage",
+        soil=SoilHydraulics(
+            n_vg=2.70,
+            alpha_vg=1.4642,
+            l_vg=0.5,
+            e_z_n=13.6,
+            e_z_k_s_sat=3.2,
+        ),
+        vc_r=WeibullVC(b=1.2949, c=2.6471),
+        beta_r_h=3388.15038831676,
+        beta_r_v=941.1528856435444,
     )
 
 
@@ -199,3 +227,65 @@ def test_rooting_depth_invalid_percentile_raises() -> None:
         assert "percentile" in str(exc)
     else:
         raise AssertionError("rooting_depth should reject percentile <= 0")
+
+
+def test_soil_grid_matches_legacy_snapshot() -> None:
+    grid = soil_grid(params=_soil_params())
+
+    assert_allclose(
+        grid.dz,
+        np.array(
+            [
+                0.09966816,
+                0.13654095,
+                0.18705502,
+                0.25625706,
+                0.35106077,
+                0.48093763,
+                0.65886316,
+                0.90261322,
+                1.23653995,
+                1.69400471,
+                2.32071109,
+                3.17927095,
+                4.35545976,
+                5.96678609,
+                8.17423149,
+            ]
+        ),
+        rtol=1e-7,
+    )
+    assert_allclose(
+        grid.z_bttm,
+        np.array(
+            [
+                0.09966816,
+                0.23620911,
+                0.42326413,
+                0.67952119,
+                1.03058196,
+                1.51151959,
+                2.17038275,
+                3.07299597,
+                4.30953592,
+                6.00354063,
+                8.32425172,
+                11.50352267,
+                15.85898243,
+                21.82576851,
+                30.0,
+            ]
+        ),
+        rtol=1e-7,
+    )
+    assert grid.n_soil == 15
+
+
+def test_soil_grid_matches_migrated_initialization_behavior() -> None:
+    grid = soil_grid(params=_soil_params())
+    init = initial_soil_and_roots(params=_soil_params(), c_r_i=5.0, z_i=3.0)
+
+    assert_allclose(grid.dz, init.grid.dz)
+    assert_allclose(grid.z_bttm, init.grid.z_bttm)
+    assert_allclose(grid.z_mid, init.grid.z_mid)
+    assert_allclose(grid.dz_c, init.grid.dz_c)

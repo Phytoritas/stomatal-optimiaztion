@@ -5,7 +5,11 @@ from dataclasses import dataclass
 import numpy as np
 from numpy.typing import NDArray
 
-from stomatal_optimiaztion.domains.thorp.soil_initialization import SoilGrid
+from stomatal_optimiaztion.domains.thorp.soil_initialization import (
+    SoilGrid,
+    SoilInitializationParams,
+    initial_soil_and_roots,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -86,6 +90,13 @@ def huber_value(
     with np.errstate(divide="ignore", invalid="ignore"):
         hv = sapwood_area / leaf_area
     return hv.astype(float)
+
+
+def soil_grid(*, params: SoilInitializationParams) -> SoilGrid:
+    """Reconstruct the THORP soil grid from migrated soil-initialization params."""
+
+    init = initial_soil_and_roots(params=params, c_r_i=1.0, z_i=1.0)
+    return init.grid
 
 
 def rooting_depth(
