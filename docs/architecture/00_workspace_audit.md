@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 030
-- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 030 approved for TOMATO
+- Gate C. Validation plan ready through slice 031
+- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 031 approved for TOMATO
 
 ## Migrated THORP Slices
 
@@ -227,3 +227,9 @@ Slice 030:
 - target: `src/stomatal_optimiaztion/domains/tomato/tthorp/models/tomato_legacy/run.py`
 - scope: bounded TOMATO package-local runner over migrated forcing CSV, adapter, and tabular simulation seams
 - excluded: TOMATO partition-policy package migration, broader package entrypoints, and other legacy subprojects
+
+Slice 031:
+- source: `TOMATO/tTHORP/src/tthorp/components/partitioning/{organ.py,fractions.py,policy.py,sink_based.py}`
+- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/components/partitioning/`
+- scope: bounded TOMATO partitioning core covering organ enums, allocation-fraction validation, policy coercion, and default sink-based allocation
+- excluded: `thorp_opt.py`, `thorp_policies.py`, and broader cross-domain policy sharing
