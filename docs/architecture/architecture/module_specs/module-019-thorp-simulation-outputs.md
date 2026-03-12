@@ -32,4 +32,4 @@ Migrate the bounded `SimulationOutputs` seam so the new package can expose one c
 
 ## Next Seam
 
-- `_Store` from `simulate.py`
+- `_initial_allometry` from `simulate.py`
