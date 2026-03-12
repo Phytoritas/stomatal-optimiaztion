@@ -16,9 +16,12 @@ from stomatal_optimiaztion.domains.tomato.tthorp.models.tomato_legacy import (
     make_tomato_legacy_model,
 )
 from stomatal_optimiaztion.domains.tomato.tthorp.pipelines import (
+    TomatoDayrunArtifacts,
     config_payload_for_exp_key,
     resolve_forcing_path,
     resolve_repo_root,
+    run_tomato_dayrun,
+    run_tomato_dayrun_from_config,
     run_tomato_legacy_pipeline,
     summarize_tomato_legacy_metrics,
 )
@@ -40,9 +43,12 @@ __all__ = [
     "make_tomato_legacy_model",
     "TomatoModel",
     "create_sample_input_csv",
+    "TomatoDayrunArtifacts",
     "resolve_repo_root",
     "resolve_forcing_path",
     "config_payload_for_exp_key",
+    "run_tomato_dayrun",
+    "run_tomato_dayrun_from_config",
     "run_tomato_legacy_pipeline",
     "summarize_tomato_legacy_metrics",
 ]
