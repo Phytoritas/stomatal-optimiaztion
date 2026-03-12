@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 019
-- Gate D. Bounded slices 001 through 019 approved for THORP
+- Gate C. Validation plan ready through slice 020
+- Gate D. Bounded slices 001 through 020 approved for THORP
 
 ## Migrated THORP Slices
 
@@ -161,3 +161,9 @@ Slice 019:
 - target: `src/stomatal_optimiaztion/domains/thorp/simulation.py`
 - scope: bounded simulation-result dataclass plus legacy MAT key mapping
 - excluded: `_Store`, `simulate`, and MAT-file export
+
+Slice 020:
+- source: `THORP/src/thorp/simulate.py` (`_Store`)
+- target: `src/stomatal_optimiaztion/domains/thorp/simulation.py`
+- scope: bounded simulation-output buffering, cadence handling, and `SimulationOutputs` assembly
+- excluded: `_initial_allometry`, `run`, and MAT-file export implementation

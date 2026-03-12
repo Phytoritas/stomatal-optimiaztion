@@ -196,8 +196,16 @@ The nineteenth slice ports the next bounded simulation seam:
 - keep the boundary limited to result storage so reporting and export adapters can target one canonical output surface
 - leave `_Store` blocked as the next simulation seam
 
+## Slice 020: THORP Simulation Store
+
+The twentieth slice ports the next bounded simulation seam:
+- move `_Store` from `simulate.py` into the migrated THORP simulation module
+- preserve legacy buffering cadence and `SimulationOutputs` assembly behavior
+- keep MAT export behind an injected callback instead of pulling the writer into the storage seam
+- leave `_initial_allometry` blocked as the next simulation seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, defaults-bundle, `THORPParams`-compatibility, forcing, and simulation-output seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, defaults-bundle, `THORPParams`-compatibility, forcing, simulation-output, and simulation-store seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `_Store` or another bounded simulation seam
+3. prepare the next THORP source audit for `_initial_allometry` or another bounded simulation seam

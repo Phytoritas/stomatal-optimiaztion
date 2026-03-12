@@ -57,7 +57,7 @@ from stomatal_optimiaztion.domains.thorp.soil_initialization import (
     SoilInitializationParams,
     initial_soil_and_roots,
 )
-from stomatal_optimiaztion.domains.thorp.simulation import SimulationOutputs
+from stomatal_optimiaztion.domains.thorp.simulation import SimulationOutputs, _Store
 from stomatal_optimiaztion.domains.thorp.vulnerability import WeibullVC
 
 __all__ = [
@@ -87,6 +87,7 @@ __all__ = [
     "THORPParams",
     "ThorpDefaultParams",
     "WeibullVC",
+    "_Store",
     "allocation_fractions",
     "biomass_fractions",
     "default_params",
