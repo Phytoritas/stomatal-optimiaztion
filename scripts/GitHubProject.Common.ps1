@@ -195,20 +195,17 @@ function Get-ProjectFieldInfo {
     return $field
 }
 
-function Ensure-ProjectItem {
+function Get-ProjectItemsConnection {
     param(
-        [Parameter(Mandatory = $true)][string]$Owner,
-        [Parameter(Mandatory = $true)][int]$ProjectNumber,
         [Parameter(Mandatory = $true)][string]$ProjectId,
-        [Parameter(Mandatory = $true)][string]$ItemUrl,
-        [switch]$AddIfMissing = $true
+        [string]$After
     )
 
     $query = (
-        'query($project:ID!) {' ,
+        'query($project:ID!, $after:String) {' ,
         '  node(id:$project) {' ,
         '    ... on ProjectV2 {' ,
-        '      items(first:100) {' ,
+        '      items(first:100, after:$after) {' ,
         '        nodes {' ,
         '          id' ,
         '          content {' ,
@@ -218,17 +215,89 @@ function Ensure-ProjectItem {
         '            ... on DraftIssue { id }' ,
         '          }' ,
         '        }' ,
+        '        pageInfo {' ,
+        '          hasNextPage' ,
+        '          endCursor' ,
+        '        }' ,
         '      }' ,
         '    }' ,
         '  }' ,
         '}'
     ) -join "`n"
 
-    $raw = & gh api graphql -f query=$query -F project=$ProjectId
+    $args = @("api", "graphql", "-f", "query=$query", "-F", "project=$ProjectId")
+    if ($After) {
+        $args += @("-f", "after=$After")
+    }
+
+    $raw = & gh @args
     if (-not $raw) { throw "Could not query project items." }
     $data = $raw | ConvertFrom-Json
-    $existing = $data.data.node.items.nodes | Where-Object { $_.content.url -eq $ItemUrl } | Select-Object -First 1
-    if ($existing) { return $existing.id }
+    $items = $data.data.node.items
+    if (-not $items) { throw "Could not query project items." }
+    return $items
+}
+
+function Find-ProjectItemId {
+    param(
+        [Parameter(Mandatory = $true)][string]$ProjectId,
+        [Parameter(Mandatory = $true)][string]$ItemUrl
+    )
+
+    $after = $null
+    while ($true) {
+        $items = Get-ProjectItemsConnection -ProjectId $ProjectId -After $after
+        $match = $items.nodes | Where-Object { $_.content.url -eq $ItemUrl } | Select-Object -First 1
+        if ($match) {
+            return $match.id
+        }
+
+        $pageInfo = $items.pageInfo
+        $hasNextPage = $false
+        if ($pageInfo) {
+            $hasNextPage = [bool]$pageInfo.hasNextPage
+        }
+        $after = ConvertTo-TrimmedString -Value $pageInfo.endCursor
+        if (-not $hasNextPage -or -not $after) {
+            break
+        }
+    }
+
+    return $null
+}
+
+function Wait-ProjectItemId {
+    param(
+        [Parameter(Mandatory = $true)][string]$ProjectId,
+        [Parameter(Mandatory = $true)][string]$ItemUrl,
+        [int]$Attempts = 5,
+        [int]$DelaySeconds = 1
+    )
+
+    for ($attempt = 1; $attempt -le $Attempts; $attempt++) {
+        $itemId = Find-ProjectItemId -ProjectId $ProjectId -ItemUrl $ItemUrl
+        if ($itemId) {
+            return $itemId
+        }
+        if ($attempt -lt $Attempts) {
+            Start-Sleep -Seconds $DelaySeconds
+        }
+    }
+
+    return $null
+}
+
+function Ensure-ProjectItem {
+    param(
+        [Parameter(Mandatory = $true)][string]$Owner,
+        [Parameter(Mandatory = $true)][int]$ProjectNumber,
+        [Parameter(Mandatory = $true)][string]$ProjectId,
+        [Parameter(Mandatory = $true)][string]$ItemUrl,
+        [switch]$AddIfMissing = $true
+    )
+
+    $existingId = Find-ProjectItemId -ProjectId $ProjectId -ItemUrl $ItemUrl
+    if ($existingId) { return $existingId }
 
     if (-not $AddIfMissing) {
         throw "Item not found in project and -AddIfMissing was not specified: $ItemUrl"
@@ -236,13 +305,11 @@ function Ensure-ProjectItem {
 
     & gh project item-add $ProjectNumber --owner $Owner --url $ItemUrl | Out-Null
 
-    $raw2 = & gh api graphql -f query=$query -F project=$ProjectId
-    $data2 = $raw2 | ConvertFrom-Json
-    $added = $data2.data.node.items.nodes | Where-Object { $_.content.url -eq $ItemUrl } | Select-Object -First 1
-    if (-not $added) {
+    $addedId = Wait-ProjectItemId -ProjectId $ProjectId -ItemUrl $ItemUrl
+    if (-not $addedId) {
         throw "Failed to add project item: $ItemUrl"
     }
-    return $added.id
+    return $addedId
 }
 
 function Set-ProjectFieldValue {
