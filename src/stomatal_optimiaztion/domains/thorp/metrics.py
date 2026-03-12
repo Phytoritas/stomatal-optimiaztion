@@ -5,6 +5,8 @@ from dataclasses import dataclass
 import numpy as np
 from numpy.typing import NDArray
 
+from stomatal_optimiaztion.domains.thorp.soil_initialization import SoilGrid
+
 
 @dataclass(frozen=True, slots=True)
 class BiomassFractionSeries:
@@ -33,6 +35,12 @@ class HuberValueSeries:
 class HuberValueParams:
     sla: float
     xi: float
+
+
+@dataclass(frozen=True, slots=True)
+class RootingDepthSeries:
+    c_r_h_by_layer_ts: NDArray[np.floating]
+    c_r_v_by_layer_ts: NDArray[np.floating]
 
 
 def biomass_fractions(
@@ -78,3 +86,32 @@ def huber_value(
     with np.errstate(divide="ignore", invalid="ignore"):
         hv = sapwood_area / leaf_area
     return hv.astype(float)
+
+
+def rooting_depth(
+    *,
+    series: RootingDepthSeries,
+    grid: SoilGrid,
+    percentile: float,
+) -> NDArray[np.floating]:
+    """Compute the depth above which `percentile` of root biomass is present."""
+
+    if not (0.0 < percentile <= 1.0):
+        raise ValueError("percentile must be in (0, 1].")
+
+    z_bttm = grid.z_bttm.astype(float)
+    root = (series.c_r_h_by_layer_ts + series.c_r_v_by_layer_ts).astype(float)
+    total = np.sum(root, axis=0)
+
+    depth = np.full(total.shape, np.nan, dtype=float)
+    for time_idx in range(total.size):
+        total_root = float(total[time_idx])
+        if total_root <= 0.0:
+            continue
+        cum = np.cumsum(root[:, time_idx])
+        frac = cum / total_root
+        layer_idx = int(np.searchsorted(frac, percentile, side="left"))
+        layer_idx = min(max(layer_idx, 0), z_bttm.size - 1)
+        depth[time_idx] = float(z_bttm[layer_idx])
+
+    return depth.astype(float)

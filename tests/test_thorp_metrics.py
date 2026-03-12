@@ -5,9 +5,12 @@ from stomatal_optimiaztion.domains.thorp.metrics import (
     BiomassFractionSeries,
     HuberValueParams,
     HuberValueSeries,
+    RootingDepthSeries,
     biomass_fractions,
     huber_value,
+    rooting_depth,
 )
+from stomatal_optimiaztion.domains.thorp.soil_initialization import SoilGrid
 
 
 def _series() -> BiomassFractionSeries:
@@ -25,6 +28,36 @@ def _series() -> BiomassFractionSeries:
             [
                 [2.0, 3.0, 4.0],
                 [1.0, 2.0, 3.0],
+            ]
+        ),
+    )
+
+
+def _rooting_grid() -> SoilGrid:
+    return SoilGrid(
+        dz=np.array([0.1, 0.2, 0.3, 0.4]),
+        z_bttm=np.array([0.1, 0.3, 0.6, 1.0]),
+        z_mid=np.array([0.05, 0.2, 0.45, 0.8]),
+        dz_c=np.array([0.05, 0.15, 0.25, 0.35, 0.2]),
+    )
+
+
+def _rooting_series() -> RootingDepthSeries:
+    return RootingDepthSeries(
+        c_r_h_by_layer_ts=np.array(
+            [
+                [0.3, 0.90, 0.0, 0.10],
+                [0.2, 0.01, 0.0, 0.20],
+                [0.05, 0.005, 0.0, 0.25],
+                [0.05, 0.005, 0.0, 0.00],
+            ]
+        ),
+        c_r_v_by_layer_ts=np.array(
+            [
+                [0.2, 0.06, 0.0, 0.10],
+                [0.1, 0.01, 0.0, 0.20],
+                [0.05, 0.005, 0.0, 0.10],
+                [0.05, 0.005, 0.0, 0.05],
             ]
         ),
     )
@@ -111,3 +144,58 @@ def test_huber_value_zero_leaf_area_matches_legacy_behavior() -> None:
     assert np.isinf(res[0])
     assert_allclose(res[1], 0.1)
     assert np.isnan(res[2])
+
+
+def test_rooting_depth_matches_legacy_snapshot() -> None:
+    res = rooting_depth(
+        series=_rooting_series(),
+        grid=_rooting_grid(),
+        percentile=0.95,
+    )
+
+    assert_allclose(res[:2], np.array([1.0, 0.1]))
+    assert np.isnan(res[2])
+    assert_allclose(res[3:], np.array([0.6]))
+
+
+def test_rooting_depth_supports_alternate_percentile() -> None:
+    res = rooting_depth(
+        series=_rooting_series(),
+        grid=_rooting_grid(),
+        percentile=0.5,
+    )
+
+    assert_allclose(res[:2], np.array([0.1, 0.1]))
+    assert np.isnan(res[2])
+    assert_allclose(res[3:], np.array([0.3]))
+
+
+def test_rooting_depth_zero_total_matches_legacy_behavior() -> None:
+    res = rooting_depth(
+        series=RootingDepthSeries(
+            c_r_h_by_layer_ts=np.zeros((3, 2)),
+            c_r_v_by_layer_ts=np.zeros((3, 2)),
+        ),
+        grid=SoilGrid(
+            dz=np.array([0.2, 0.3, 0.5]),
+            z_bttm=np.array([0.2, 0.5, 1.0]),
+            z_mid=np.array([0.1, 0.35, 0.75]),
+            dz_c=np.array([0.1, 0.25, 0.4, 0.25]),
+        ),
+        percentile=0.95,
+    )
+
+    assert np.isnan(res).all()
+
+
+def test_rooting_depth_invalid_percentile_raises() -> None:
+    try:
+        rooting_depth(
+            series=_rooting_series(),
+            grid=_rooting_grid(),
+            percentile=0.0,
+        )
+    except ValueError as exc:
+        assert "percentile" in str(exc)
+    else:
+        raise AssertionError("rooting_depth should reject percentile <= 0")

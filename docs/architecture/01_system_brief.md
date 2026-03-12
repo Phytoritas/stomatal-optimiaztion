@@ -148,8 +148,16 @@ The thirteenth slice ports the next bounded reporting seam:
 - keep the interface bounded by minimal `HuberValueSeries` and `HuberValueParams` dataclasses
 - leave `rooting_depth` blocked as the next reporting seam
 
+## Slice 014: THORP Rooting Depth
+
+The fourteenth slice ports the next bounded reporting seam:
+- move `rooting_depth` from `metrics.py` into the migrated THORP metrics module
+- reuse migrated root time-series names and `SoilGrid` without pulling in the legacy `SimulationOutputs` container
+- keep the interface bounded by a minimal `RootingDepthSeries` dataclass plus migrated `SoilGrid`
+- leave `soil_grid` blocked as the next helper seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, and Huber-value seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, and rooting-depth seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `rooting_depth` or another bounded reporting seam
+3. prepare the next THORP source audit for `soil_grid` or another bounded helper seam
