@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 009
-- Gate D. Bounded slices 001 through 009 approved for THORP
+- Gate C. Validation plan ready through slice 010
+- Gate D. Bounded slices 001 through 010 approved for THORP
 
 ## Migrated THORP Slices
 
@@ -101,3 +101,9 @@ Slice 009:
 - target: `src/stomatal_optimiaztion/domains/thorp/hydraulics.py`
 - scope: bounded stomatal closure, gas-exchange coupling, and derivative bookkeeping
 - excluded: `allocation_fractions`, growth integration, and simulation orchestration
+
+Slice 010:
+- source: `THORP/src/thorp/allocation.py` (`allocation_fractions`)
+- target: `src/stomatal_optimiaztion/domains/thorp/allocation.py`
+- scope: bounded carbon-allocation scoring and fraction normalization
+- excluded: `grow`, whole-plant growth-state updates, and simulation orchestration

@@ -1,3 +1,8 @@
+from stomatal_optimiaztion.domains.thorp.allocation import (
+    AllocationFractions,
+    AllocationParams,
+    allocation_fractions,
+)
 from stomatal_optimiaztion.domains.thorp.hydraulics import (
     RootUptakeParams,
     RootUptakeResult,
@@ -30,6 +35,8 @@ from stomatal_optimiaztion.domains.thorp.soil_initialization import (
 from stomatal_optimiaztion.domains.thorp.vulnerability import WeibullVC
 
 __all__ = [
+    "AllocationFractions",
+    "AllocationParams",
     "BottomBoundaryCondition",
     "InitialSoilAndRoots",
     "RadiationResult",
@@ -43,6 +50,7 @@ __all__ = [
     "SoilInitializationParams",
     "SoilMoistureParams",
     "WeibullVC",
+    "allocation_fractions",
     "e_from_soil_to_root_collar",
     "equation_id_set",
     "initial_soil_and_roots",
