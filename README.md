@@ -51,6 +51,7 @@ poetry run ruff check .
 - THORP CLI entrypoint seam is migrated as slice 024.
 - TOMATO `tTHORP` contracts seam is migrated as slice 025.
 - TOMATO `tTHORP` interface seam is migrated as slice 026.
+- TOMATO `tTHORP` forcing CSV seam is migrated as slice 027.
 
 ## Next validation
-- Migrate the next TOMATO `tTHORP` seam, likely `models/tomato_legacy/forcing_csv.py`, with behavior-preserving CSV forcing checks.
+- Migrate the next TOMATO `tTHORP` seam, likely `models/tomato_legacy/adapter.py`, with behavior-preserving adapter-state checks.

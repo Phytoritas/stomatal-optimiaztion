@@ -7,6 +7,7 @@ from stomatal_optimiaztion.domains.tomato.tthorp.interface import (
     run_flux_step,
     simulate,
 )
+from stomatal_optimiaztion.domains.tomato.tthorp.models.tomato_legacy import iter_forcing_csv
 
 MODEL_NAME = "tTHORP"
 
@@ -19,4 +20,5 @@ __all__ = [
     "PipelineModel",
     "run_flux_step",
     "simulate",
+    "iter_forcing_csv",
 ]

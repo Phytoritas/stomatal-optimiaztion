@@ -252,8 +252,16 @@ The twenty-sixth slice opens the next bounded TOMATO seam:
 - isolate the new `pandas` dependency to the tabular interface instead of pulling in tomato legacy models or pipelines
 - leave `models/tomato_legacy/forcing_csv.py` blocked as the next seam
 
+## Slice 027: TOMATO tTHORP Forcing CSV
+
+The twenty-seventh slice opens the next bounded TOMATO seam:
+- move `TOMATO/tTHORP/src/tthorp/models/tomato_legacy/forcing_csv.py` into the staged `domains/tomato/tthorp` package
+- preserve alias-column normalization, timestep reconstruction, and `EnvStep` emission behavior
+- keep the radiation-to-PAR conversion helper local to the seam instead of opening the broader TOMATO core utility layer
+- leave `models/tomato_legacy/adapter.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first two TOMATO `tTHORP` seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first three TOMATO `tTHORP` seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `models/tomato_legacy/forcing_csv.py`
+3. prepare the next TOMATO source audit for `models/tomato_legacy/adapter.py`
