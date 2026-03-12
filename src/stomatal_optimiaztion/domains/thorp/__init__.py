@@ -62,6 +62,7 @@ from stomatal_optimiaztion.domains.thorp.simulation import (
     SimulationOutputs,
     _Store,
     _initial_allometry,
+    run,
 )
 from stomatal_optimiaztion.domains.thorp.vulnerability import WeibullVC
 
@@ -108,6 +109,7 @@ __all__ = [
     "radiation",
     "richards_equation",
     "rooting_depth",
+    "run",
     "require_equation_ids",
     "soil_moisture",
     "soil_grid",

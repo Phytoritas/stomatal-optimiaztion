@@ -44,6 +44,7 @@ poetry run ruff check .
 - THORP `SimulationOutputs` seam is migrated as slice 019.
 - THORP `_Store` seam is migrated as slice 020.
 - THORP `_initial_allometry` seam is migrated as slice 021.
+- THORP `run` seam is migrated as slice 022.
 
 ## Next validation
-- Migrate the next THORP seam, likely `run`, with behavior-preserving regression checks.
+- Migrate the remaining `simulate.py` CLI entrypoint seam with bounded smoke and regression checks.
