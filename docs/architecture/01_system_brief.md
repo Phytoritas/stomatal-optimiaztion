@@ -116,8 +116,16 @@ The ninth slice ports the next coupled hydraulics and gas-exchange seam:
 - keep the interface bounded by a minimal `StomataParams` dataclass
 - leave `allocation_fractions` blocked as the next plant-growth seam
 
+## Slice 010: THORP Allocation Fractions
+
+The tenth slice ports the next bounded plant-growth seam:
+- move `allocation_fractions` from `allocation.py` into a dedicated THORP allocation module
+- reuse migrated stomatal derivative outputs without pulling in full growth state integration
+- keep the interface bounded by a minimal `AllocationParams` dataclass
+- leave `grow` blocked as the next growth-state seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, and stomata seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, and allocation seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `allocation_fractions` or another bounded plant-growth seam
+3. prepare the next THORP source audit for `grow` or another bounded growth-state seam
