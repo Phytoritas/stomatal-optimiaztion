@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 022
-- Gate D. Bounded slices 001 through 022 approved for THORP
+- Gate C. Validation plan ready through slice 023
+- Gate D. Bounded slices 001 through 023 approved for THORP
 
 ## Migrated THORP Slices
 
@@ -179,3 +179,9 @@ Slice 022:
 - target: `src/stomatal_optimiaztion/domains/thorp/simulation.py`
 - scope: bounded THORP simulation orchestration across forcing, runtime seams, growth, and buffered storage
 - excluded: CLI entrypoints and concrete MAT-file writer implementation
+
+Slice 023:
+- source: `THORP/src/thorp/matlab_io.py`
+- target: `src/stomatal_optimiaztion/domains/thorp/matlab_io.py`
+- scope: bounded MAT-file read/write helpers for legacy THORP payloads
+- excluded: CLI entrypoints and simulation-runner orchestration

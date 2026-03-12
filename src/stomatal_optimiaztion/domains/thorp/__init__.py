@@ -21,6 +21,7 @@ from stomatal_optimiaztion.domains.thorp.hydraulics import (
     e_from_soil_to_root_collar,
     stomata,
 )
+from stomatal_optimiaztion.domains.thorp.matlab_io import load_mat, save_mat
 from stomatal_optimiaztion.domains.thorp.model_card import (
     equation_id_set,
     iter_equation_refs,
@@ -104,6 +105,7 @@ __all__ = [
     "huber_value",
     "initial_soil_and_roots",
     "iter_equation_refs",
+    "load_mat",
     "load_forcing",
     "model_card_document_names",
     "radiation",
@@ -116,4 +118,5 @@ __all__ = [
     "stomata",
     "thorp_params_from_defaults",
     "_initial_allometry",
+    "save_mat",
 ]

@@ -45,6 +45,7 @@ poetry run ruff check .
 - THORP `_Store` seam is migrated as slice 020.
 - THORP `_initial_allometry` seam is migrated as slice 021.
 - THORP `run` seam is migrated as slice 022.
+- THORP `matlab_io` seam is migrated as slice 023.
 
 ## Next validation
 - Migrate the remaining `simulate.py` CLI entrypoint seam with bounded smoke and regression checks.
