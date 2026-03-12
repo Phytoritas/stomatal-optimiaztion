@@ -41,6 +41,7 @@ poetry run ruff check .
 - THORP `default_params` is migrated as a bounded defaults bundle in slice 016.
 - THORP `THORPParams` compatibility seam is migrated as slice 017.
 - THORP `load_forcing` seam is migrated as slice 018.
+- THORP `SimulationOutputs` seam is migrated as slice 019.
 
 ## Next validation
-- Migrate the next THORP seam, likely `SimulationOutputs`, with behavior-preserving regression checks.
+- Migrate the next THORP seam, likely `_Store`, with behavior-preserving regression checks.

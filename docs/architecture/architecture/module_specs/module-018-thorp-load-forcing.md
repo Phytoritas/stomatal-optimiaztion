@@ -33,4 +33,4 @@ Migrate the bounded `load_forcing` seam so the new package can ingest THORP forc
 
 ## Next Seam
 
-- `SimulationOutputs` from `simulate.py`
+- `_Store` from `simulate.py`
