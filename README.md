@@ -8,6 +8,7 @@
 - Legacy source domains from `THORP`, `TOMATO`, and `load-cell-data`
 - Canonical variable names in [`docs/variable_glossary.md`](docs/variable_glossary.md)
 - Curated THORP `model_card` JSON assets for equation traceability
+- Representative THORP forcing netCDF under `data/forcing/`
 
 ## Outputs
 - Architecture artifacts under `docs/architecture/`
@@ -17,6 +18,7 @@
 ## How to run
 ```bash
 poetry install
+poetry run python -m stomatal_optimiaztion.domains.thorp --max-steps 60
 poetry run pytest
 poetry run ruff check .
 ```
@@ -46,6 +48,7 @@ poetry run ruff check .
 - THORP `_initial_allometry` seam is migrated as slice 021.
 - THORP `run` seam is migrated as slice 022.
 - THORP `matlab_io` seam is migrated as slice 023.
+- THORP CLI entrypoint seam is migrated as slice 024.
 
 ## Next validation
-- Migrate the remaining `simulate.py` CLI entrypoint seam with bounded smoke and regression checks.
+- Run a representative package-local THORP CLI smoke and decide whether the next bounded slice should target THORP hardening or the first TOMATO seam.

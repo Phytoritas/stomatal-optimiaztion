@@ -228,8 +228,16 @@ The twenty-third slice ports the next bounded IO seam:
 - keep MAT persistence isolated from `run` so the remaining CLI seam can opt into the writer explicitly
 - leave CLI entrypoints blocked as the next seam
 
+## Slice 024: THORP CLI Entrypoint
+
+The twenty-fourth slice ports the remaining bounded THORP execution seam:
+- move the legacy `if __name__ == "__main__"` wrapper into package-local CLI modules
+- preserve the legacy flags `--max-steps`, `--full`, and `--save-mat`
+- wire the migrated `run` seam to the migrated `save_mat` callback without reintroducing legacy imports
+- leave representative end-to-end CLI smoke validation as the next hardening step
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, defaults-bundle, `THORPParams`-compatibility, forcing, simulation-output, simulation-store, initial-allometry, run, and MATLAB-IO seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, biomass-fraction, Huber-value, rooting-depth, soil-grid, defaults-bundle, `THORPParams`-compatibility, forcing, simulation-output, simulation-store, initial-allometry, run, MATLAB-IO, and CLI seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for the remaining `simulate.py` CLI entrypoint seam
+3. prepare representative package-local CLI smoke validation and the next non-THORP source audit
