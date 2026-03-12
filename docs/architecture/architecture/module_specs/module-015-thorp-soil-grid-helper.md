@@ -33,4 +33,4 @@ Migrate the bounded `soil_grid` helper seam so the new package can reconstruct t
 
 ## Next Seam
 
-- `default_params` from `config.py`
+- `THORPParams` from `config.py`

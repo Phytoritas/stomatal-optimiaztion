@@ -1,41 +1,14 @@
 from __future__ import annotations
 
 import numpy as np
-from numpy.typing import NDArray
 
-from stomatal_optimiaztion.domains.thorp.allocation import AllocationParams
+from stomatal_optimiaztion.domains.thorp.defaults import default_params
 from stomatal_optimiaztion.domains.thorp.growth import GrowthParams, grow
 from stomatal_optimiaztion.domains.thorp.implements import implemented_equations
 
 
-def _r_m_sw_func(t: float | NDArray[np.floating]) -> float | NDArray[np.floating]:
-    return 2.2e-12 * 1.8 ** ((np.asarray(t) - 15.0) / 10.0)
-
-
-def _r_m_r_func(t: float | NDArray[np.floating]) -> float | NDArray[np.floating]:
-    return 7.0e-9 * 1.98 ** ((np.asarray(t) - 15.0) / 10.0)
-
-
 def _growth_params() -> GrowthParams:
-    return GrowthParams(
-        allocation=AllocationParams(
-            sla=0.08,
-            r_m_sw_func=_r_m_sw_func,
-            r_m_r_func=_r_m_r_func,
-            tau_l=9.5e7,
-            tau_sw=1.2e9,
-            tau_r=9.6e7,
-        ),
-        dt=6 * 3600.0,
-        f_c=0.28,
-        rho_cw=1.4e4,
-        xi=0.5,
-        b0=64.6,
-        d_ref=1.0,
-        c0=0.6411,
-        b1=8.5,
-        c1=0.625,
-    )
+    return default_params().growth
 
 
 def test_grow_exposes_expected_equation_ids() -> None:

@@ -1,101 +1,30 @@
 from __future__ import annotations
 
 import numpy as np
-from numpy.typing import NDArray
 
+from stomatal_optimiaztion.domains.thorp.defaults import default_params
 from stomatal_optimiaztion.domains.thorp.hydraulics import (
     RootUptakeParams,
     StomataParams,
     stomata,
 )
 from stomatal_optimiaztion.domains.thorp.implements import implemented_equations
-from stomatal_optimiaztion.domains.thorp.soil_hydraulics import SoilHydraulics
 from stomatal_optimiaztion.domains.thorp.soil_initialization import (
     SoilInitializationParams,
     initial_soil_and_roots,
 )
-from stomatal_optimiaztion.domains.thorp.vulnerability import WeibullVC
 
 
 def _legacy_default_like_initialization_params() -> SoilInitializationParams:
-    return SoilInitializationParams(
-        rho=998.0,
-        g=9.81,
-        z_wt=74.0,
-        z_soil=30.0,
-        n_soil=15,
-        bc_bttm="FreeDrainage",
-        soil=SoilHydraulics(
-            n_vg=2.70,
-            alpha_vg=1.4642,
-            l_vg=0.5,
-            e_z_n=13.6,
-            e_z_k_s_sat=3.2,
-        ),
-        vc_r=WeibullVC(b=1.2949, c=2.6471),
-        beta_r_h=3388.15038831676,
-        beta_r_v=941.1528856435444,
-    )
+    return default_params().soil_initialization
 
 
 def _root_uptake_params() -> RootUptakeParams:
-    return RootUptakeParams(
-        beta_r_h=3388.15038831676,
-        beta_r_v=941.1528856435444,
-        vc_r=WeibullVC(b=1.2949, c=2.6471),
-        rho=998.0,
-        g=9.81,
-    )
-
-
-def _v_cmax_func(t_l: NDArray[np.floating]) -> NDArray[np.floating]:
-    return 60e-6 * np.exp(8e4 * (t_l + 273.15 - 290) / 290 / 8.314 / (t_l + 273.15))
-
-
-def _j_max_func(t_l: NDArray[np.floating]) -> NDArray[np.floating]:
-    return 110e-6 * np.exp(8e4 * (t_l + 273.15 - 290) / 290 / 8.314 / (t_l + 273.15))
-
-
-def _gamma_star_func(t_l: NDArray[np.floating]) -> NDArray[np.floating]:
-    return 36e-6 * 101.325 * np.ones_like(t_l)
-
-
-def _k_c_func(t_l: NDArray[np.floating]) -> NDArray[np.floating]:
-    return 275e-6 * 101.325 * np.ones_like(t_l)
-
-
-def _k_o_func(t_l: NDArray[np.floating]) -> NDArray[np.floating]:
-    return 420000e-6 * 101.325 * np.ones_like(t_l)
-
-
-def _r_d_func(t_l: NDArray[np.floating]) -> NDArray[np.floating]:
-    return 0.01 * _v_cmax_func(t_l)
+    return default_params().root_uptake
 
 
 def _stomata_params() -> StomataParams:
-    return StomataParams(
-        root_uptake=_root_uptake_params(),
-        g_wmin=0.0,
-        c_prime1=0.98,
-        c_prime2=0.90,
-        d_ref=1.0,
-        c0=0.6411,
-        c1=0.625,
-        b2=0.9253,
-        c2=0.9296,
-        k_l=1.6e-2,
-        vc_sw=WeibullVC(b=5.3151, c=0.7951),
-        vc_l=WeibullVC(b=0.8521, c=0.8067),
-        v_cmax_func=_v_cmax_func,
-        j_max_func=_j_max_func,
-        gamma_star_func=_gamma_star_func,
-        k_c_func=_k_c_func,
-        k_o_func=_k_o_func,
-        r_d_func=_r_d_func,
-        var_kappa=6.9e-7,
-        c_a=410e-6 * 101.325,
-        o_a=21.0,
-    )
+    return default_params().stomata
 
 
 def test_stomata_exposes_expected_equation_ids() -> None:

@@ -2,44 +2,24 @@ from __future__ import annotations
 
 import numpy as np
 
+from stomatal_optimiaztion.domains.thorp.defaults import default_params
 from stomatal_optimiaztion.domains.thorp.implements import implemented_equations
 from stomatal_optimiaztion.domains.thorp.soil_dynamics import (
     RichardsEquationParams,
     richards_equation,
 )
-from stomatal_optimiaztion.domains.thorp.soil_hydraulics import SoilHydraulics
 from stomatal_optimiaztion.domains.thorp.soil_initialization import (
     SoilInitializationParams,
     initial_soil_and_roots,
 )
-from stomatal_optimiaztion.domains.thorp.vulnerability import WeibullVC
 
 
 def _legacy_default_like_params() -> SoilInitializationParams:
-    return SoilInitializationParams(
-        rho=998.0,
-        g=9.81,
-        z_wt=74.0,
-        z_soil=30.0,
-        n_soil=15,
-        bc_bttm="FreeDrainage",
-        soil=SoilHydraulics(n_vg=2.70, alpha_vg=1.4642, l_vg=0.5, e_z_n=13.6, e_z_k_s_sat=3.2),
-        vc_r=WeibullVC(b=1.2949, c=2.6471),
-        beta_r_h=3388.15038831676,
-        beta_r_v=941.1528856435444,
-    )
+    return default_params().soil_initialization
 
 
 def _richards_params() -> RichardsEquationParams:
-    return RichardsEquationParams(
-        dt=6 * 3600.0,
-        rho=998.0,
-        g=9.81,
-        bc_bttm="FreeDrainage",
-        z_wt=74.0,
-        p_bttm=998.0 * 9.81 * (30.0 - 74.0) / 1e6,
-        soil=SoilHydraulics(n_vg=2.70, alpha_vg=1.4642, l_vg=0.5, e_z_n=13.6, e_z_k_s_sat=3.2),
-    )
+    return default_params().richards
 
 
 def test_richards_equation_exposes_expected_equation_ids() -> None:

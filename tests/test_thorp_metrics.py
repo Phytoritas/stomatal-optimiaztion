@@ -1,9 +1,9 @@
 import numpy as np
 from numpy.testing import assert_allclose
 
+from stomatal_optimiaztion.domains.thorp.defaults import default_params
 from stomatal_optimiaztion.domains.thorp.metrics import (
     BiomassFractionSeries,
-    HuberValueParams,
     HuberValueSeries,
     RootingDepthSeries,
     biomass_fractions,
@@ -11,13 +11,11 @@ from stomatal_optimiaztion.domains.thorp.metrics import (
     rooting_depth,
     soil_grid,
 )
-from stomatal_optimiaztion.domains.thorp.soil_hydraulics import SoilHydraulics
 from stomatal_optimiaztion.domains.thorp.soil_initialization import (
     SoilGrid,
     SoilInitializationParams,
     initial_soil_and_roots,
 )
-from stomatal_optimiaztion.domains.thorp.vulnerability import WeibullVC
 
 
 def _series() -> BiomassFractionSeries:
@@ -71,24 +69,7 @@ def _rooting_series() -> RootingDepthSeries:
 
 
 def _soil_params() -> SoilInitializationParams:
-    return SoilInitializationParams(
-        rho=998.0,
-        g=9.81,
-        z_wt=74.0,
-        z_soil=30.0,
-        n_soil=15,
-        bc_bttm="FreeDrainage",
-        soil=SoilHydraulics(
-            n_vg=2.70,
-            alpha_vg=1.4642,
-            l_vg=0.5,
-            e_z_n=13.6,
-            e_z_k_s_sat=3.2,
-        ),
-        vc_r=WeibullVC(b=1.2949, c=2.6471),
-        beta_r_h=3388.15038831676,
-        beta_r_v=941.1528856435444,
-    )
+    return default_params().soil_initialization
 
 
 def test_biomass_fractions_matches_legacy_snapshot() -> None:
@@ -153,7 +134,7 @@ def test_huber_value_matches_legacy_snapshot() -> None:
             d_ts=np.array([0.30, 0.45, 0.50]),
             d_hw_ts=np.array([0.10, 0.20, 0.25]),
         ),
-        params=HuberValueParams(sla=0.08, xi=0.5),
+        params=default_params().huber_value,
     )
 
     assert_allclose(res, np.array([0.05, 0.05078125, 0.046875]))
@@ -166,7 +147,7 @@ def test_huber_value_zero_leaf_area_matches_legacy_behavior() -> None:
             d_ts=np.array([0.2, 0.3, 0.0]),
             d_hw_ts=np.array([0.0, 0.1, 0.0]),
         ),
-        params=HuberValueParams(sla=0.08, xi=0.5),
+        params=default_params().huber_value,
     )
 
     assert np.isinf(res[0])
