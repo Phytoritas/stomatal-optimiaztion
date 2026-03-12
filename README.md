@@ -43,6 +43,7 @@ poetry run ruff check .
 - THORP `load_forcing` seam is migrated as slice 018.
 - THORP `SimulationOutputs` seam is migrated as slice 019.
 - THORP `_Store` seam is migrated as slice 020.
+- THORP `_initial_allometry` seam is migrated as slice 021.
 
 ## Next validation
-- Migrate the next THORP seam, likely `_initial_allometry`, with behavior-preserving regression checks.
+- Migrate the next THORP seam, likely `run`, with behavior-preserving regression checks.

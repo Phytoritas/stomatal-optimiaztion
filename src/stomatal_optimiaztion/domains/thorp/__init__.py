@@ -57,7 +57,12 @@ from stomatal_optimiaztion.domains.thorp.soil_initialization import (
     SoilInitializationParams,
     initial_soil_and_roots,
 )
-from stomatal_optimiaztion.domains.thorp.simulation import SimulationOutputs, _Store
+from stomatal_optimiaztion.domains.thorp.simulation import (
+    InitialAllometry,
+    SimulationOutputs,
+    _Store,
+    _initial_allometry,
+)
 from stomatal_optimiaztion.domains.thorp.vulnerability import WeibullVC
 
 __all__ = [
@@ -71,6 +76,7 @@ __all__ = [
     "GrowthState",
     "HuberValueParams",
     "HuberValueSeries",
+    "InitialAllometry",
     "InitialSoilAndRoots",
     "RootingDepthSeries",
     "RadiationResult",
@@ -107,4 +113,5 @@ __all__ = [
     "soil_grid",
     "stomata",
     "thorp_params_from_defaults",
+    "_initial_allometry",
 ]

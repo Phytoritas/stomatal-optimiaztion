@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 020
-- Gate D. Bounded slices 001 through 020 approved for THORP
+- Gate C. Validation plan ready through slice 021
+- Gate D. Bounded slices 001 through 021 approved for THORP
 
 ## Migrated THORP Slices
 
@@ -167,3 +167,9 @@ Slice 020:
 - target: `src/stomatal_optimiaztion/domains/thorp/simulation.py`
 - scope: bounded simulation-output buffering, cadence handling, and `SimulationOutputs` assembly
 - excluded: `_initial_allometry`, `run`, and MAT-file export implementation
+
+Slice 021:
+- source: `THORP/src/thorp/simulate.py` (`_initial_allometry`)
+- target: `src/stomatal_optimiaztion/domains/thorp/simulation.py`
+- scope: bounded initial geometry and carbon-pool helper for THORP startup state
+- excluded: `run`, CLI entrypoints, and simulation orchestration
