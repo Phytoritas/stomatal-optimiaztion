@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 025
-- Gate D. Bounded slices 001 through 024 approved for THORP and slice 025 approved for TOMATO
+- Gate C. Validation plan ready through slice 026
+- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 026 approved for TOMATO
 
 ## Migrated THORP Slices
 
@@ -197,3 +197,9 @@ Slice 025:
 - target: `src/stomatal_optimiaztion/domains/tomato/tthorp/`
 - scope: bounded TOMATO forcing-step contracts, context protocol, and output coercion helpers
 - excluded: pandas-backed interface surfaces, adapters, pipelines, and CLI entrypoints
+
+Slice 026:
+- source: `TOMATO/tTHORP/src/tthorp/interface.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/interface.py`
+- scope: bounded TOMATO pipeline interface, tabular simulation loop, and placeholder flux-step helper
+- excluded: tomato legacy models, CSV forcing loaders, pipelines, and CLI entrypoints
