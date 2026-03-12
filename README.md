@@ -57,6 +57,7 @@ poetry run ruff check .
 - TOMATO `tTHORP` runner seam is migrated as slice 030.
 - TOMATO `tTHORP` partitioning core seam is migrated as slice 031.
 - TOMATO `tTHORP` THORP-derived partition-policy seam is migrated as slice 032.
+- TOMATO `tTHORP` package-level legacy pipeline seam is migrated as slice 033.
 
 ## Next validation
-- Audit the TOMATO package-level legacy pipeline seam at `pipelines/tomato_legacy.py`.
+- Audit the TOMATO shared IO seam at `core/io.py`.
