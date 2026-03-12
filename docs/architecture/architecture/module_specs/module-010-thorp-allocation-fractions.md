@@ -33,4 +33,4 @@ Migrate the bounded `allocation_fractions` seam so the new package can convert m
 
 ## Next Seam
 
-- `grow` from `growth.py`
+- `biomass_fractions` from `metrics.py`

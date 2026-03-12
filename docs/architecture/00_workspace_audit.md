@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 010
-- Gate D. Bounded slices 001 through 010 approved for THORP
+- Gate C. Validation plan ready through slice 011
+- Gate D. Bounded slices 001 through 011 approved for THORP
 
 ## Migrated THORP Slices
 
@@ -107,3 +107,9 @@ Slice 010:
 - target: `src/stomatal_optimiaztion/domains/thorp/allocation.py`
 - scope: bounded carbon-allocation scoring and fraction normalization
 - excluded: `grow`, whole-plant growth-state updates, and simulation orchestration
+
+Slice 011:
+- source: `THORP/src/thorp/growth.py` (`GrowthState`, `grow`)
+- target: `src/stomatal_optimiaztion/domains/thorp/growth.py`
+- scope: bounded growth-state updates, senescence, and geometry reconstruction
+- excluded: `biomass_fractions`, reporting helpers, and simulation orchestration
