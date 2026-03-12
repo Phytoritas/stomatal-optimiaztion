@@ -33,4 +33,4 @@ Migrate the bounded `grow` seam so the new package can update THORP structural c
 
 ## Next Seam
 
-- `biomass_fractions` from `metrics.py`
+- `huber_value` from `metrics.py`

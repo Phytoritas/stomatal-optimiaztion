@@ -132,8 +132,16 @@ The eleventh slice ports the next bounded growth-state seam:
 - keep the interface bounded by a minimal `GrowthParams` dataclass
 - leave `biomass_fractions` blocked as the next reporting seam
 
+## Slice 012: THORP Biomass Fractions
+
+The twelfth slice ports the next bounded reporting seam:
+- move `biomass_fractions` from `metrics.py` into a dedicated THORP metrics module
+- reuse migrated growth time-series names without pulling in the legacy `SimulationOutputs` container
+- keep the interface bounded by a minimal `BiomassFractionSeries` dataclass
+- leave `huber_value` blocked as the next reporting seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, and grow seams
+1. keep `poetry run pytest` green for the migrated model-card, radiation, hydraulic primitives, soil initialization, Richards-equation, soil-moisture, root-uptake, stomata, allocation, grow, and biomass-fraction seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP source audit for `biomass_fractions` or another bounded reporting seam
+3. prepare the next THORP source audit for `huber_value` or another bounded reporting seam

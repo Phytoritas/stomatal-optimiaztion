@@ -22,6 +22,11 @@ from stomatal_optimiaztion.domains.thorp.model_card import (
     model_card_document_names,
     require_equation_ids,
 )
+from stomatal_optimiaztion.domains.thorp.metrics import (
+    BiomassFractions,
+    BiomassFractionSeries,
+    biomass_fractions,
+)
 from stomatal_optimiaztion.domains.thorp.radiation import RadiationResult, radiation
 from stomatal_optimiaztion.domains.thorp.soil_dynamics import (
     RichardsEquationParams,
@@ -42,6 +47,8 @@ from stomatal_optimiaztion.domains.thorp.vulnerability import WeibullVC
 __all__ = [
     "AllocationFractions",
     "AllocationParams",
+    "BiomassFractions",
+    "BiomassFractionSeries",
     "BottomBoundaryCondition",
     "GrowthParams",
     "GrowthState",
@@ -58,6 +65,7 @@ __all__ = [
     "SoilMoistureParams",
     "WeibullVC",
     "allocation_fractions",
+    "biomass_fractions",
     "e_from_soil_to_root_collar",
     "equation_id_set",
     "grow",
