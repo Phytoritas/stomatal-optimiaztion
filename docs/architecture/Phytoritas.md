@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 013 implementation and validation
+- Current phase: slice 014 implementation and validation
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. validate the migrated THORP huber-value slice with `pytest` and `ruff`
-2. audit the next THORP seam, likely `rooting_depth`
+1. validate the migrated THORP rooting-depth slice with `pytest` and `ruff`
+2. audit the next THORP seam, likely `soil_grid`
 3. keep the TOMATO and load-cell domains blocked until their source audits are deeper

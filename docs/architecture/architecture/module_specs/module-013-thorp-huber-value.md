@@ -33,4 +33,4 @@ Migrate the bounded `huber_value` seam so the new package can report THORP sapwo
 
 ## Next Seam
 
-- `rooting_depth` from `metrics.py`
+- `soil_grid` from `metrics.py`

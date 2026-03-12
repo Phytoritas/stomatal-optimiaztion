@@ -29,6 +29,8 @@ from stomatal_optimiaztion.domains.thorp.metrics import (
     HuberValueParams,
     HuberValueSeries,
     huber_value,
+    RootingDepthSeries,
+    rooting_depth,
 )
 from stomatal_optimiaztion.domains.thorp.radiation import RadiationResult, radiation
 from stomatal_optimiaztion.domains.thorp.soil_dynamics import (
@@ -58,6 +60,7 @@ __all__ = [
     "HuberValueParams",
     "HuberValueSeries",
     "InitialSoilAndRoots",
+    "RootingDepthSeries",
     "RadiationResult",
     "RichardsEquationParams",
     "RootUptakeParams",
@@ -80,6 +83,7 @@ __all__ = [
     "model_card_document_names",
     "radiation",
     "richards_equation",
+    "rooting_depth",
     "require_equation_ids",
     "soil_moisture",
     "stomata",
