@@ -33,4 +33,4 @@ Migrate the bounded `THORPParams` seam so the new package can expose a legacy-co
 
 ## Next Seam
 
-- `load_forcing` from `forcing.py`
+- `SimulationOutputs` from `simulate.py`

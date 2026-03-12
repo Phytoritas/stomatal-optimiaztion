@@ -7,6 +7,7 @@ from stomatal_optimiaztion.domains.thorp.defaults import (
     ThorpDefaultParams,
     default_params,
 )
+from stomatal_optimiaztion.domains.thorp.forcing import Forcing, load_forcing
 from stomatal_optimiaztion.domains.thorp.growth import (
     GrowthParams,
     GrowthState,
@@ -64,6 +65,7 @@ __all__ = [
     "BiomassFractions",
     "BiomassFractionSeries",
     "BottomBoundaryCondition",
+    "Forcing",
     "GrowthParams",
     "GrowthState",
     "HuberValueParams",
@@ -92,6 +94,7 @@ __all__ = [
     "huber_value",
     "initial_soil_and_roots",
     "iter_equation_refs",
+    "load_forcing",
     "model_card_document_names",
     "radiation",
     "richards_equation",
