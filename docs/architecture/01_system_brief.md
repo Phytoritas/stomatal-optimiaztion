@@ -260,8 +260,16 @@ The twenty-seventh slice opens the next bounded TOMATO seam:
 - keep the radiation-to-PAR conversion helper local to the seam instead of opening the broader TOMATO core utility layer
 - leave `models/tomato_legacy/adapter.py` blocked as the next seam
 
+## Slice 028: TOMATO tTHORP Adapter
+
+The twenty-eighth slice opens the next bounded TOMATO seam:
+- move `TOMATO/tTHORP/src/tthorp/models/tomato_legacy/adapter.py` into the staged `domains/tomato/tthorp` package
+- preserve `TomatoLegacyAdapter`, `TomatoLegacyModule`, and `make_tomato_legacy_model()` behavior over the migrated `interface` and `forcing_csv` seams
+- use an injected tomato-model protocol so the adapter bridge lands today without forcing the full `tomato_model.py` import surface
+- leave `models/tomato_legacy/tomato_model.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first three TOMATO `tTHORP` seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first four TOMATO `tTHORP` seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `models/tomato_legacy/adapter.py`
+3. prepare the next TOMATO source audit for `models/tomato_legacy/tomato_model.py`

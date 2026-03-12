@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 027 implementation and validation
+- Current phase: slice 028 implementation and validation
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. validate the migrated TOMATO `tTHORP` forcing CSV slice with `pytest` and `ruff`
-2. audit the next TOMATO seam, likely `models/tomato_legacy/adapter.py`
+1. validate the migrated TOMATO `tTHORP` adapter slice with `pytest` and `ruff`
+2. audit the next TOMATO seam, likely `models/tomato_legacy/tomato_model.py`
 3. keep `tGOSM`, `tTDGM`, and `load-cell-data` blocked until their source audits are deeper
