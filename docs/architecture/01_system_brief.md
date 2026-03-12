@@ -276,8 +276,16 @@ The twenty-ninth slice opens the next bounded TOMATO seam:
 - wire the seam over the migrated `run_flux_step()` placeholder so default adapter execution works without opening the full partition-policy ecosystem or CLI yet
 - leave `models/tomato_legacy/run.py` blocked as the next seam
 
+## Slice 030: TOMATO tTHORP Runner Seam
+
+The thirtieth slice opens the next bounded TOMATO seam:
+- move `TOMATO/tTHORP/src/tthorp/models/tomato_legacy/run.py` into the staged `domains/tomato/tthorp` package
+- preserve bounded argument parsing, forcing iteration, default adapter construction, and CSV result writing
+- keep the runner package-local instead of opening a repo-wide TOMATO CLI entrypoint yet
+- leave `components/partitioning/policy.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first five TOMATO `tTHORP` seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first six TOMATO `tTHORP` seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `models/tomato_legacy/run.py`
+3. prepare the next TOMATO source audit for `components/partitioning/policy.py`

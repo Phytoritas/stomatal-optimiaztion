@@ -54,6 +54,7 @@ poetry run ruff check .
 - TOMATO `tTHORP` forcing CSV seam is migrated as slice 027.
 - TOMATO `tTHORP` adapter seam is migrated as slice 028.
 - TOMATO `tTHORP` `TomatoModel` surface seam is migrated as slice 029.
+- TOMATO `tTHORP` runner seam is migrated as slice 030.
 
 ## Next validation
-- Migrate the TOMATO `tTHORP` runner seam in `models/tomato_legacy/run.py` and decide whether partition-policy packages need dedicated slices before broader pipeline work.
+- Audit the TOMATO partition-policy seam at `components/partitioning/policy.py` and decide how to stage sink-based versus THORP-derived policy slices.
