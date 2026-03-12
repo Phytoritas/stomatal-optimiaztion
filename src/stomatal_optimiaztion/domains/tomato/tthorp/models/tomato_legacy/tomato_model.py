@@ -9,6 +9,10 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from stomatal_optimiaztion.domains.tomato.tthorp.components.partitioning import (
+    PartitionPolicy,
+    coerce_partition_policy,
+)
 from stomatal_optimiaztion.domains.tomato.tthorp.contracts import EnvStep
 from stomatal_optimiaztion.domains.tomato.tthorp.interface import run_flux_step
 
@@ -49,18 +53,18 @@ class TomatoModel:
 
     This slice preserves the public state, CSV ingestion, output payload, and
     default adapter construction surface from the legacy `tomato_model.py`.
-    The deeper age-structured growth, full energy-balance solver, and broader
-    partition-policy ecosystem remain blocked for later slices.
+    The deeper age-structured growth, full energy-balance solver, and THORP-
+    derived partition-policy seams remain blocked for later slices.
     """
 
     def __init__(
         self,
         fixed_lai: float | None = None,
-        partition_policy: object | str | None = None,
+        partition_policy: PartitionPolicy | str | None = None,
         allocation_scheme: str = "4pool",
     ) -> None:
         self.fixed_lai = fixed_lai
-        self.partition_policy = partition_policy
+        self.partition_policy = coerce_partition_policy(partition_policy)
         self.allocation_scheme = str(allocation_scheme)
 
         self.lambda_v = 2.45e6

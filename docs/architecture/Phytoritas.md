@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 030 completed and slice 031 planning
+- Current phase: slice 031 completed and slice 032 planning
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. audit the TOMATO partition-policy seam starting at `components/partitioning/policy.py`
-2. decide whether sink-based and THORP-derived partition policies should land as one bounded package migration or multiple slices
+1. audit the TOMATO THORP-derived partitioning helper seam at `components/partitioning/thorp_opt.py`
+2. decide whether `thorp_opt.py` and `thorp_policies.py` should land as one bounded slice or remain separate
 3. keep `tGOSM`, `tTDGM`, and `load-cell-data` blocked until their source audits are deeper
