@@ -35,4 +35,5 @@ Current status:
 - Slice 066 migrated: THORP IO namespace seam
 - Slice 067 migrated: THORP model namespace seam
 - Slice 068 migrated: THORP params compatibility seam
-- Next blocked artifact: THORP package-level smoke validation note
+- Slice 069 recorded: THORP package-level smoke validation note
+- Next blocked artifact: second-domain comparison note for shared utility justification

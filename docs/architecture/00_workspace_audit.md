@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 068
-- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
+- Gate C. Validation plan ready through slice 069
+- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slice 069 recorded as THORP package-level smoke evidence, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -455,3 +455,9 @@ Slice 068:
 - target: `src/stomatal_optimiaztion/domains/thorp/params.py` and `tests/test_thorp_params_compatibility.py`
 - scope: bounded THORP compatibility surface covering legacy grouped exports plus flat `default_params()` over the migrated params module
 - excluded: package-level smoke validation, root package export redesign, and shared utility abstraction decisions
+
+Slice 069:
+- source: migrated `src/stomatal_optimiaztion/domains/thorp/__init__.py` plus restored THORP compatibility wrappers
+- target: `tests/test_smoke.py` and `docs/architecture/review/thorp-package-smoke-validation-note.md`
+- scope: bounded package-level validation evidence covering root THORP imports, compatibility wrapper presence, and smoke-suite limits
+- excluded: deeper numerical regression redesign and cross-domain shared utility decisions
