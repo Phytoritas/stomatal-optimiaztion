@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 086 restored the instantaneous optimum helper and left the steady-state helper as the next bounded gap
+- Current phase: slice 087 closed the remaining root GOSM control-analysis helper layer and opened the first root TDGM runtime seam as the next bounded gap
 
 ## Scope
 
@@ -100,6 +100,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 ## Immediate Next Actions
 
 1. keep the current validation gates green as root `GOSM` and `TDGM` slices land
-2. continue from the bounded GOSM runtime helpers into the steady-state seam at `GOSM/src/gosm/model/steady_state.py`
-3. keep using the same package-first discipline when opening the remaining root `GOSM` and then root `TDGM` runtime seams
+2. continue from the completed root `GOSM` helper wave into the first root `TDGM` runtime seam at `TDGM/src/tdgm/turgor_growth.py`
+3. keep using the same package-first discipline as the root `TDGM` runtime seams land
 4. keep shared utilities blocked until a concrete cross-domain helper emerges

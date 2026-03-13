@@ -53,4 +53,5 @@ Current status:
 - Slice 084 migrated: root GOSM future-work helper seam
 - Slice 085 migrated: root GOSM stomatal-model comparison seam
 - Slice 086 migrated: root GOSM instantaneous optimum seam
-- Current open architecture gaps: root GOSM steady-state helper seam
+- Slice 087 migrated: root GOSM steady-state helper seam
+- Current open architecture gaps: root TDGM turgor-driven growth seam
