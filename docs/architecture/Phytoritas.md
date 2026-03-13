@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 054 completed and slice 055 planning
+- Current phase: slice 055 completed and slice 056 planning
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. audit the `load-cell-data` sweep seam at `loadcell_pipeline/sweep.py`
-2. preserve the config-plus-IO-plus-aggregation-plus-thresholds-plus-preprocessing-plus-events-plus-fluxes-plus-cli-plus-workflow package boundary while deciding how parameter search should build on the migrated batch workflow
+1. audit the `load-cell-data` end-to-end runner seam at `loadcell_pipeline/run_all.py`
+2. preserve the config-plus-IO-plus-aggregation-plus-thresholds-plus-preprocessing-plus-events-plus-fluxes-plus-cli-plus-workflow-plus-sweep package boundary while deciding how the top-level runner should compose raw preprocessing and migrated orchestration seams
 3. keep `load-cell-data` blocked until its source audit is deeper
