@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 042 completed and slice 043 planning
+- Current phase: slice 043 completed and slice 044 planning
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. audit the TOMATO `tGOSM` interface seam at `src/tgosm/interface.py`
-2. decide how far the `tGOSM` placeholder optimizer can land without reopening wider optimizer dependencies too early
-3. keep `tTDGM` and `load-cell-data` blocked until their source audits are deeper
+1. audit the TOMATO `tTDGM` contracts seam at `src/ttdgm/contracts.py`
+2. decide whether `tTDGM` should mirror the same contract/interface-first migration order now established for `tTHORP` and `tGOSM`
+3. keep `load-cell-data` blocked until its source audit is deeper

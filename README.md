@@ -67,6 +67,7 @@ poetry run ruff check .
 - TOMATO `tTHORP` simulation plotting script seam is migrated as slice 040.
 - TOMATO `tTHORP` allocation-comparison plotting script seam is migrated as slice 041.
 - TOMATO `tGOSM` contracts seam is migrated as slice 042.
+- TOMATO `tGOSM` interface seam is migrated as slice 043.
 
 ## Next validation
-- Audit the TOMATO `tGOSM` interface seam at `src/tgosm/interface.py`.
+- Audit the TOMATO `tTDGM` contracts seam at `src/ttdgm/contracts.py`.
