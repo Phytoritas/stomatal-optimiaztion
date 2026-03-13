@@ -41,4 +41,5 @@ Current status:
 - Slice 072 migrated: root TDGM model-card and traceability foundation
 - Slice 073 migrated: root GOSM parameter-defaults seam
 - Slice 074 migrated: root GOSM radiation kernel seam
-- Current open architecture gaps: root GOSM allometry helper seam
+- Slice 075 migrated: root GOSM allometry helper seam
+- Current open architecture gaps: root GOSM NPP/GPP helper seam
