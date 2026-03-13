@@ -771,8 +771,15 @@ The ninety-second slice closes the current root `TDGM` runtime wave:
 - preserve MATLAB-output loading, forcing-temperature alignment, and the synthetic `g_rate_from_eq_ts == g_rate_ts` reconstruction contract
 - keep the seam postprocess-bounded and leave the repository in monitor mode until a new bounded architecture gap is identified
 
+## Slice 093: MATLAB Source Parity Audit
+
+The ninety-third slice reopens the architecture against the original MATLAB source:
+- audit the original `THORP`, `GOSM`, and `TDGM` `.m` source directly rather than only the already-porting legacy Python seams
+- classify core source as covered, replaced, out-of-scope, or still missing in the staged Python repo
+- reopen only two bounded helper gaps: the root `GOSM` steady-state inversion helper and the root `TDGM` initial mean-allocation helper
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. re-audit the remaining legacy source only if a new bounded gap is opened after the current root TDGM wave closes
+3. migrate the reopened root `GOSM` steady-state inversion helper as the next bounded slice
