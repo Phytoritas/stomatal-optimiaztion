@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 069 completed and shared-utility-justification planning
+- Current phase: slice 070 completed and architecture gaps cleared
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. confirm the THORP package-level smoke note is recorded against the updated smoke suite
-2. add the second-domain comparison note as the next bounded artifact
-3. keep shared utilities blocked until the comparison shows a real cross-domain seam
+1. keep the current validation gates green as new work lands
+2. reopen the gap register only when a new structural uncertainty appears
+3. keep shared utilities blocked until a concrete cross-domain helper emerges
