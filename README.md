@@ -93,6 +93,7 @@ poetry run ruff check .
 - THORP IO namespace seam is migrated as slice 066.
 - THORP model namespace seam is migrated as slice 067.
 - THORP params compatibility seam is migrated as slice 068.
+- THORP package-level smoke validation note is recorded as slice 069.
 
 ## Next validation
-- Add the THORP package-level smoke validation note to close the remaining validation gap.
+- Add the second-domain comparison note before opening any shared utility layer.

@@ -588,8 +588,16 @@ The sixty-eighth slice closes the remaining bounded THORP namespace-wrapper gap:
 - keep the seam compatibility-bounded without reintroducing the legacy `config.py` module layout
 - leave package-level smoke validation as the next artifact
 
+## Slice 069: THORP Package-Level Smoke Validation
+
+The sixty-ninth slice closes the remaining THORP validation gap:
+- extend the repo smoke suite so it exercises the migrated THORP root package and restored compatibility wrappers together
+- record a review note that states the smoke-covered surface and the still out-of-scope numerical depth
+- keep the slice validation-bounded without widening into new runtime abstractions
+- leave the second-domain comparison note as the next artifact
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the THORP package-level smoke validation note as the next artifact
+3. prepare the second-domain comparison note as the next artifact
