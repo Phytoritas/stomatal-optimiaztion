@@ -356,8 +356,16 @@ The thirty-ninth slice opens the next bounded TOMATO seam:
 - preserve forcing-column normalization, default fallback values, and the legacy-shaped output DataFrame contract
 - leave `scripts/plot_simulation_png.py` blocked as the next seam
 
+## Slice 040: TOMATO tTHORP Simulation Plotting Script
+
+The fortieth slice opens the next bounded TOMATO seam:
+- move `TOMATO/tTHORP/scripts/plot_simulation_png.py` into the repo-local `scripts/` surface
+- preserve CLI parsing, CSV subsampling, four-panel simulation-summary plotting, and printed output-path behavior
+- keep `matplotlib` as an optional plotting dependency instead of widening the core package runtime
+- leave `scripts/plot_allocation_compare_png.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first fifteen TOMATO `tTHORP` seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first sixteen TOMATO `tTHORP` seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `scripts/plot_simulation_png.py`
+3. prepare the next TOMATO source audit for `scripts/plot_allocation_compare_png.py`

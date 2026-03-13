@@ -64,6 +64,7 @@ poetry run ruff check .
 - TOMATO `tTHORP` repo-level pipeline script seam is migrated as slice 037.
 - TOMATO `tTHORP` feature-builder script seam is migrated as slice 038.
 - TOMATO `tTHORP` THORP reference adapter seam is migrated as slice 039.
+- TOMATO `tTHORP` simulation plotting script seam is migrated as slice 040.
 
 ## Next validation
-- Audit the TOMATO simulation plotting seam at `scripts/plot_simulation_png.py`.
+- Audit the TOMATO allocation-comparison plotting seam at `scripts/plot_allocation_compare_png.py`.

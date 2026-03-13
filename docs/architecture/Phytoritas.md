@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 039 completed and slice 040 planning
+- Current phase: slice 040 completed and slice 041 planning
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. audit the TOMATO simulation plotting seam at `scripts/plot_simulation_png.py`
-2. decide whether plotting dependencies should remain optional repo-level tooling or move into the migrated package surface
+1. audit the TOMATO allocation-comparison plotting seam at `scripts/plot_allocation_compare_png.py`
+2. decide whether the remaining plotting helpers can share a bounded repo-level plotting convention without creating a premature shared package
 3. keep `tGOSM`, `tTDGM`, and `load-cell-data` blocked until their source audits are deeper
