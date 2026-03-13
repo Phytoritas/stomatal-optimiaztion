@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 081 repaired the last small root GOSM utility dependency before the hydraulics kernel and left the hydraulic-growth kernel as the next gap
+- Current phase: slice 082 opened the hydraulic-growth kernel and left the first fully wired root GOSM runtime path as the next gap
 
 ## Scope
 
@@ -100,6 +100,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 ## Immediate Next Actions
 
 1. keep the current validation gates green as root `GOSM` and `TDGM` slices land
-2. continue from the bounded GOSM runtime helpers into the next hydraulic-growth runtime seam at `GOSM/src/gosm/model/hydraulics.py`
+2. continue from the bounded GOSM runtime helpers into the next fully wired runtime seam at `GOSM/src/gosm/model/pipeline.py`
 3. keep using the same package-first discipline when opening root `TDGM` runtime seams after `GOSM`
 4. keep shared utilities blocked until a concrete cross-domain helper emerges
