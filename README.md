@@ -20,6 +20,8 @@
 poetry install
 poetry run python -m stomatal_optimiaztion.domains.thorp --max-steps 60
 poetry run python scripts/render_gosm_control_example.py --output-dir out/gosm/control_example
+poetry run python scripts/render_gosm_sensitivity_figures.py --legacy-example-dir "../00. Stomatal Optimization/GOSM/example"
+poetry run python scripts/render_gosm_manuscript_panels.py --output-dir out/gosm/manuscript_panels
 poetry run pytest
 poetry run ruff check .
 ```
@@ -123,6 +125,7 @@ poetry run ruff check .
 - Root TDGM initial mean-allocation helper is migrated as slice 095.
 - Legacy example and figure parity audit is recorded as slice 096 and reopens bounded workflow-reproduction gaps for root `GOSM`, `THORP`, and `TDGM`.
 - Root GOSM control example figure workflow is migrated as slice 097.
+- Root GOSM sensitivity and manuscript figure workflows are migrated as slice 098.
 
 ## Next validation
-- Move next to root `GOSM` sensitivity/manuscript figure workflows, then reuse or generalize the figure bundle pattern for root `THORP` and `TDGM`.
+- Move next to root `THORP` example figure workflows, then reuse or generalize the figure bundle pattern for root `TDGM`.

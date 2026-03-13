@@ -1,0 +1,77 @@
+version: 1
+meta:
+  id: gosm_compare_true_vs_imag
+  title: Root GOSM sensitivity comparison
+  journal_target: Nature Plants
+  family: gosm_example
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_composite
+  description: Compare legacy true-versus-imaginary conductance-loss sensitivity responses.
+layout:
+  rows: 2
+  cols: 2
+x_axis:
+  label: Minimum experienced soil water potential, -psi_soil^min [MPa]
+panels:
+  - id: a
+    title: Total conductance to CO2
+    metric_key: g_c
+    y_label: g_c [mol m^-2 s^-1]
+    limits: [0.0, 0.2]
+    scale: linear
+    show_xlabels: false
+  - id: b
+    title: Marginal water-use efficiency
+    metric_key: lambda
+    y_label: lambda [mol mol^-1]
+    limits: [0.0002, 0.02]
+    scale: log
+    show_xlabels: false
+  - id: c
+    title: Growth rate
+    metric_key: growth
+    y_label: G [umol C s^-1]
+    limits: [0.0, 30.0]
+    scale: linear
+    show_xlabels: true
+  - id: d
+    title: NSC storage
+    metric_key: c_nsc
+    y_label: C [mol]
+    limits: [0.0, 300.0]
+    scale: linear
+    show_xlabels: true
+styling:
+  scenarios:
+    "true":
+      steady_label: True conductance loss
+      steady_color: '#005F73'
+      steady_linestyle: '-'
+      steady_linewidth_pt: 2.4
+      instant_label_prefix: True conductance loss
+      instant_cmap: Blues
+      instant_linestyle: '-.'
+      instant_linewidth_pt: 1.1
+      instant_alpha: 0.9
+    "imag":
+      steady_label: Venturas et al. (2018)
+      steady_color: '#9B2226'
+      steady_linestyle: ':'
+      steady_linewidth_pt: 2.2
+      instant_label_prefix: Venturas et al. (2018)
+      instant_cmap: Oranges
+      instant_linestyle: '--'
+      instant_linewidth_pt: 1.0
+      instant_alpha: 0.9
+figure:
+  width_mm: 180
+  height_mm: 145
+theme:
+  name: nature_plants_like
+  tokens: ../themes/nature_plants_like_tokens.yaml
+export:
+  formats:
+    - png
+    - pdf
+  dpi: 300
+  transparent: false
