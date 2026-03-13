@@ -19,4 +19,5 @@ Current status:
 - Slice 050 migrated: `load-cell-data` preprocessing seam
 - Slice 051 migrated: `load-cell-data` event-detection seam
 - Slice 052 migrated: `load-cell-data` flux-decomposition seam
-- Next blocked seam: `load-cell-data` pipeline CLI seam at `loadcell_pipeline/cli.py`
+- Slice 053 migrated: `load-cell-data` pipeline CLI seam
+- Next blocked seam: `load-cell-data` workflow seam at `loadcell_pipeline/workflow.py`

@@ -2,6 +2,11 @@ from stomatal_optimiaztion.domains.load_cell.aggregation import (
     daily_summary,
     resample_flux_timeseries,
 )
+from stomatal_optimiaztion.domains.load_cell.cli import (
+    build_parser,
+    main,
+    run_pipeline,
+)
 from stomatal_optimiaztion.domains.load_cell.config import (
     PipelineConfig,
     load_config,
@@ -31,10 +36,12 @@ from stomatal_optimiaztion.domains.load_cell.thresholds import (
 
 __all__ = [
     "auto_detect_step_thresholds",
+    "build_parser",
     "compute_fluxes_per_second",
     "daily_summary",
     "detect_and_correct_outliers",
     "group_events",
+    "main",
     "PipelineConfig",
     "label_points_by_derivative",
     "label_points_by_derivative_hysteresis",
@@ -43,6 +50,7 @@ __all__ = [
     "merge_close_events",
     "merge_close_events_with_df",
     "read_load_cell_csv",
+    "run_pipeline",
     "smooth_weight",
     "write_multi_resolution_results",
     "write_results",
