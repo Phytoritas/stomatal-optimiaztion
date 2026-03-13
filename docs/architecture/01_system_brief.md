@@ -673,8 +673,15 @@ The seventy-eighth slice extends the bounded root `GOSM` runtime package with th
 - preserve `Eq.S1.1` through `Eq.S1.9` tagging plus NSC limitation, respiration, growth, and compact/full NSC-rate behavior
 - keep the seam helper-bounded and leave `conductance_temperature.py`, hydraulics kernels, and pipeline orchestration blocked
 
+## Slice 079: Root GOSM Conductance Temperature Kernel
+
+The seventy-ninth slice opens the first coupled root `GOSM` runtime kernel:
+- move `GOSM/src/gosm/model/conductance_temperature.py` into the staged `domains/gosm/model/` package
+- preserve `Eq.S3.1` and `Eq.S3.3` through `Eq.S3.10` tagging plus the leaf-temperature Newton solve, conductance outputs, latent heat, and derivative propagation
+- keep the seam kernel-bounded and leave `carbon_assimilation.py`, hydraulics kernels, and pipeline orchestration blocked
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate `GOSM/src/gosm/model/conductance_temperature.py` as the next bounded GOSM coupled runtime seam
+3. migrate `GOSM/src/gosm/model/carbon_assimilation.py` as the next bounded GOSM biochemical kernel

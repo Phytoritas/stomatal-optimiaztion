@@ -103,6 +103,7 @@ poetry run ruff check .
 - Root GOSM NPP/GPP helper seam is migrated as slice 076.
 - Root GOSM optimal-control helper seam is migrated as slice 077.
 - Root GOSM carbon-dynamics helper seam is migrated as slice 078.
+- Root GOSM conductance-temperature kernel is migrated as slice 079.
 
 ## Next validation
-- Migrate the root GOSM conductance-temperature kernel.
+- Migrate the root GOSM carbon-assimilation kernel.

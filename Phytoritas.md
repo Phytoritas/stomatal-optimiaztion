@@ -45,4 +45,5 @@ Current status:
 - Slice 076 migrated: root GOSM NPP/GPP helper seam
 - Slice 077 migrated: root GOSM optimal-control helper seam
 - Slice 078 migrated: root GOSM carbon-dynamics helper seam
-- Current open architecture gaps: root GOSM conductance-temperature kernel
+- Slice 079 migrated: root GOSM conductance-temperature kernel
+- Current open architecture gaps: root GOSM carbon-assimilation kernel

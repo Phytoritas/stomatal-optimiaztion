@@ -9,6 +9,9 @@ from stomatal_optimiaztion.domains.gosm.model.carbon_dynamics import (
     sigma_nsc_limitation,
     total_respiration,
 )
+from stomatal_optimiaztion.domains.gosm.model.conductance_temperature import (
+    conductances_and_temperature,
+)
 from stomatal_optimiaztion.domains.gosm.model.npp_gpp import (
     steady_state_npp_gpp_ratio,
     target_npp_gpp_ratio,
@@ -27,6 +30,7 @@ __all__ = [
     "growth_rate",
     "growth_respiration",
     "chi_w",
+    "conductances_and_temperature",
     "eta_dot",
     "eta_from_marginals",
     "lagrangian",
