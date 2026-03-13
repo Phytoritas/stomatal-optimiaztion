@@ -332,8 +332,16 @@ The thirty-sixth slice opens the next bounded TOMATO seam:
 - keep the seam package-local instead of opening repo-level `scripts/run_pipeline.py` or `scripts/make_features.py`
 - leave `scripts/run_pipeline.py` blocked as the next seam
 
+## Slice 037: TOMATO tTHORP Repo-Level Pipeline Script
+
+The thirty-seventh slice opens the next bounded TOMATO seam:
+- move `TOMATO/tTHORP/scripts/run_pipeline.py` into the repo-local `scripts/` surface
+- preserve CLI argument parsing, config loading, output-dir resolution, deterministic artifact naming, and printed JSON summaries
+- keep the seam bounded to the pipeline-runner script instead of opening `scripts/make_features.py` or broader automation entrypoints
+- leave `scripts/make_features.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first twelve TOMATO `tTHORP` seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first thirteen TOMATO `tTHORP` seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `scripts/run_pipeline.py`
+3. prepare the next TOMATO source audit for `scripts/make_features.py`

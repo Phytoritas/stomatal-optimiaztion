@@ -61,6 +61,7 @@ poetry run ruff check .
 - TOMATO `tTHORP` shared IO seam is migrated as slice 034.
 - TOMATO `tTHORP` shared scheduler seam is migrated as slice 035.
 - TOMATO `tTHORP` dayrun pipeline seam is migrated as slice 036.
+- TOMATO `tTHORP` repo-level pipeline script seam is migrated as slice 037.
 
 ## Next validation
-- Audit the TOMATO repo-level pipeline script seam at `scripts/run_pipeline.py`.
+- Audit the TOMATO feature-builder script seam at `scripts/make_features.py`.

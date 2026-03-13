@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 036
-- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 036 approved for TOMATO
+- Gate C. Validation plan ready through slice 037
+- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 037 approved for TOMATO
 
 ## Migrated THORP Slices
 
@@ -263,3 +263,9 @@ Slice 036:
 - target: `src/stomatal_optimiaztion/domains/tomato/tthorp/pipelines/` and `tests/test_tomato_tthorp_dayrun.py`
 - scope: bounded TOMATO dayrun orchestration surface covering config-driven execution, deterministic output artifact paths, metadata emission, and package-level from-config entrypoints
 - excluded: repo-level `scripts/run_pipeline.py` and `scripts/make_features.py`
+
+Slice 037:
+- source: `TOMATO/tTHORP/scripts/run_pipeline.py`
+- target: `scripts/run_pipeline.py` and `tests/test_tomato_tthorp_run_pipeline_script.py`
+- scope: bounded TOMATO repo-level pipeline script surface covering CLI argument parsing, config loading, output-dir resolution, deterministic result artifact naming, and printed JSON summaries
+- excluded: `scripts/make_features.py` and broader non-TOMATO entrypoints
