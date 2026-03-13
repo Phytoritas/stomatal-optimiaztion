@@ -564,8 +564,16 @@ The sixty-fifth slice opens the next bounded THORP namespace-wrapper seam:
 - keep the seam wrapper-bounded without widening into new shared utility abstractions
 - leave `THORP/src/thorp/io/__init__.py` blocked as the next seam
 
+## Slice 066: THORP IO Namespace
+
+The sixty-sixth slice opens the next bounded THORP namespace-wrapper seam:
+- move `THORP/src/thorp/io/__init__.py` into the staged `domains/thorp/io/` package
+- preserve the grouped convenience imports for forcing and MATLAB compatibility helpers
+- keep the seam wrapper-bounded without widening into new I/O abstractions
+- leave `THORP/src/thorp/model/__init__.py` blocked as the next seam
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP namespace-wrapper audit for `THORP/src/thorp/io/__init__.py`
+3. prepare the next THORP namespace-wrapper audit for `THORP/src/thorp/model/__init__.py`

@@ -90,6 +90,7 @@ poetry run ruff check .
 - THORP stable `sim` runner seam is migrated as slice 063.
 - THORP equation-registry seam is migrated as slice 064.
 - THORP utilities namespace seam is migrated as slice 065.
+- THORP IO namespace seam is migrated as slice 066.
 
 ## Next validation
-- Audit the THORP IO namespace seam at `THORP/src/thorp/io/__init__.py`.
+- Audit the THORP model namespace seam at `THORP/src/thorp/model/__init__.py`.

@@ -32,4 +32,5 @@ Current status:
 - Slice 063 migrated: THORP stable `sim` runner seam
 - Slice 064 migrated: THORP equation-registry seam
 - Slice 065 migrated: THORP utilities namespace seam
-- Next blocked seam: THORP IO namespace seam at `THORP/src/thorp/io/__init__.py`
+- Slice 066 migrated: THORP IO namespace seam
+- Next blocked seam: THORP model namespace seam at `THORP/src/thorp/model/__init__.py`
