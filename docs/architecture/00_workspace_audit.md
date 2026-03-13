@@ -517,3 +517,9 @@ Slice 078:
 - target: `src/stomatal_optimiaztion/domains/gosm/model/` and `tests/test_gosm_carbon_dynamics.py`
 - scope: bounded root `GOSM` runtime seam covering NSC limitation, respiration, growth, and compact/full NSC-rate helpers plus equation-tag preservation
 - excluded: `GOSM/src/gosm/model/conductance_temperature.py`, hydraulics or carbon-assimilation kernels, and root `TDGM` runtime seams
+
+Slice 079:
+- source: `GOSM/src/gosm/model/conductance_temperature.py` and `GOSM/src/gosm/model/__init__.py`
+- target: `src/stomatal_optimiaztion/domains/gosm/model/` and `tests/test_gosm_conductance_temperature.py`
+- scope: bounded root `GOSM` runtime seam covering the coupled leaf-temperature solve, conductance outputs, latent heat, and derivative propagation plus equation-tag preservation
+- excluded: `GOSM/src/gosm/model/carbon_assimilation.py`, hydraulics or pipeline kernels, and root `TDGM` runtime seams
