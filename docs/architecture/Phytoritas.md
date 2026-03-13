@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 050 completed and slice 051 planning
+- Current phase: slice 051 completed and slice 052 planning
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. audit the `load-cell-data` event-detection seam at `loadcell_pipeline/events.py`
-2. preserve the config-plus-IO-plus-aggregation-plus-thresholds-plus-preprocessing package boundary while deciding whether event detection should precede flux decomposition and workflow seams
+1. audit the `load-cell-data` flux-decomposition seam at `loadcell_pipeline/fluxes.py`
+2. preserve the config-plus-IO-plus-aggregation-plus-thresholds-plus-preprocessing-plus-events package boundary while deciding how flux decomposition should precede workflow seams
 3. keep `load-cell-data` blocked until its source audit is deeper

@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 050
-- Gate D. Bounded slices 001 through 024 approved for THORP, slices 025 through 045 approved for TOMATO, and slices 046 through 050 approved for `load-cell-data`
+- Gate C. Validation plan ready through slice 051
+- Gate D. Bounded slices 001 through 024 approved for THORP, slices 025 through 045 approved for TOMATO, and slices 046 through 051 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -347,3 +347,9 @@ Slice 050:
 - target: `src/stomatal_optimiaztion/domains/load_cell/preprocessing.py`, package exports, and `tests/test_load_cell_preprocessing.py`
 - scope: bounded `load-cell-data` preprocessing surface covering impulsive outlier correction, moving-average and Savitzky-Golay smoothing, and derivative reconstruction
 - excluded: `loadcell_pipeline/events.py`, flux decomposition, workflow, CLI, and dashboard entrypoints
+
+Slice 051:
+- source: `load-cell-data/loadcell_pipeline/events.py`
+- target: `src/stomatal_optimiaztion/domains/load_cell/events.py`, package exports, and `tests/test_load_cell_events.py`
+- scope: bounded `load-cell-data` event surface covering derivative labeling, hysteresis labeling, event grouping, short-event filtering, and close-event merge semantics
+- excluded: `loadcell_pipeline/fluxes.py`, workflow, CLI, and dashboard entrypoints
