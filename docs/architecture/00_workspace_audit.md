@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 059
-- Gate D. Bounded slices 001 through 024 approved for THORP, slices 025 through 045 approved for TOMATO, and slices 046 through 059 approved for `load-cell-data`
+- Gate C. Validation plan ready through slice 060
+- Gate D. Bounded slices 001 through 024 approved for THORP, slices 025 through 045 approved for TOMATO, and slices 046 through 060 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -401,3 +401,9 @@ Slice 059:
 - target: `scripts/real_data_benchmark.py` and `tests/test_load_cell_real_data_benchmark_script.py`
 - scope: bounded `load-cell-data` repo-level benchmark harness covering matched-file batch runs, summary/comparison/failure CSV outputs, and overlap-window diffs
 - excluded: `src/preprocess_incremental.py`, viewer/server tooling, and dashboard entrypoints
+
+Slice 060:
+- source: `load-cell-data/src/preprocess_incremental.py`
+- target: `scripts/preprocess_incremental.py`, `tests/test_load_cell_preprocess_incremental_script.py`, `pyproject.toml`, and `poetry.lock`
+- scope: bounded `load-cell-data` incremental preprocess harness covering marker-backed raw-file skips, canonical parquet upserts, transpiration parquet outputs, viewer cache refresh, and repo-level CLI defaults
+- excluded: `src/preprocess_compare_server.py`, `src/build_preprocess_compare_viewer.py`, and broader compare-viewer UX changes

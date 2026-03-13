@@ -84,6 +84,7 @@ poetry run ruff check .
 - `load-cell-data` raw ALMEMO preprocessing seam is migrated as slice 057.
 - `load-cell-data` synthetic validation harness seam is migrated as slice 058.
 - `load-cell-data` real-data benchmark harness seam is migrated as slice 059.
+- `load-cell-data` incremental preprocess harness seam is migrated as slice 060.
 
 ## Next validation
-- Audit the `load-cell-data` preprocess-compare incremental tooling seam at `src/preprocess_incremental.py`.
+- Audit the `load-cell-data` preprocess-compare local server seam at `src/preprocess_compare_server.py`.
