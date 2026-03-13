@@ -428,8 +428,16 @@ The forty-eighth slice opens the next bounded `load-cell-data` seam:
 - keep the seam aggregation-bounded without widening into threshold detection, preprocessing, workflow, or CLI surfaces
 - leave `load-cell-data/loadcell_pipeline/thresholds.py` blocked as the next seam
 
+## Slice 049: load-cell-data Thresholds
+
+The forty-ninth slice opens the next bounded `load-cell-data` seam:
+- move `load-cell-data/loadcell_pipeline/thresholds.py` into the staged `domains/load_cell` package
+- preserve robust derivative-distribution threshold detection, valid-mask fallback, and physical sign constraints
+- keep the seam threshold-bounded without widening into preprocessing, workflow, or CLI surfaces
+- leave `load-cell-data/loadcell_pipeline/preprocessing.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first three `load-cell-data` bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first four `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/thresholds.py`
+3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/preprocessing.py`
