@@ -2,7 +2,6 @@ version: 1
 meta:
   id: tdgm_turgor_allocation
   title: TDGM turgor allocation regression
-  journal_target: Nature Plants
   family: tdgm_example
   support_level: thin_wrapper
   render_strategy: plotkit_style_single_panel

@@ -2,7 +2,6 @@ version: 1
 meta:
   id: thorp_mass_fractions
   title: Root THORP reduced-precipitation mass fraction figure
-  journal_target: Nature Plants
   family: thorp_example
   support_level: thin_wrapper
   render_strategy: plotkit_style_main_text_figure

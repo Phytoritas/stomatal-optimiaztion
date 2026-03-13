@@ -2,7 +2,6 @@ version: 1
 meta:
   id: tdgm_source_vs_sink_growth
   title: TDGM source-versus-sink growth comparison
-  journal_target: Nature Plants
   family: tdgm_example
   support_level: thin_wrapper
   render_strategy: plotkit_style_three_panel

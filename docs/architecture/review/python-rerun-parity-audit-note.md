@@ -50,7 +50,7 @@ Out of scope for this note:
 - `powershell -Command "$env:GOSM_RUN_SLOW='1'; .\.venv\Scripts\python.exe -m pytest tests/test_gosm_rerun_sensitivity_p_soil_min.py -k imag -W error::RuntimeWarning"`
 - result: `1 passed, 1 deselected`
 - `.\.venv\Scripts\python.exe scripts\render_root_rerun_parity_figures.py --output-dir out/rerun_parity`
-- result: `THORP`, `GOSM`, and `TDGM` comparison bundles written under `out/rerun_parity/` with PNG, PDF, CSV, spec, resolved spec, tokens, and metadata artifacts
+- result: `THORP`, `GOSM`, and `TDGM` comparison bundles written under `out/rerun_parity/` with only the comparison PNG overlays and paired CSV data exports
 - `.\.venv\Scripts\python.exe -m pytest`
 - result: `432 passed, 1 skipped`
 - `.\.venv\Scripts\ruff.exe check .`

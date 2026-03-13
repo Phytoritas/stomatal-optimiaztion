@@ -14,24 +14,30 @@ import yaml
 class FigureBundleArtifacts:
     output_dir: Path
     data_csv_path: Path
-    spec_copy_path: Path
-    resolved_spec_path: Path
-    tokens_copy_path: Path
-    metadata_path: Path
     png_path: Path
-    pdf_path: Path
+    spec_copy_path: Path | None = None
+    resolved_spec_path: Path | None = None
+    tokens_copy_path: Path | None = None
+    metadata_path: Path | None = None
+    pdf_path: Path | None = None
 
     def to_summary(self) -> dict[str, Any]:
-        return {
+        summary = {
             "output_dir": str(self.output_dir),
             "data_csv": str(self.data_csv_path),
-            "spec_copy": str(self.spec_copy_path),
-            "resolved_spec": str(self.resolved_spec_path),
-            "tokens_copy": str(self.tokens_copy_path),
-            "metadata": str(self.metadata_path),
             "png": str(self.png_path),
-            "pdf": str(self.pdf_path),
         }
+        optional_paths = {
+            "spec_copy": self.spec_copy_path,
+            "resolved_spec": self.resolved_spec_path,
+            "tokens_copy": self.tokens_copy_path,
+            "metadata": self.metadata_path,
+            "pdf": self.pdf_path,
+        }
+        for key, path in optional_paths.items():
+            if path is not None:
+                summary[key] = str(path)
+        return summary
 
 
 def load_yaml(path: Path) -> dict[str, Any]:

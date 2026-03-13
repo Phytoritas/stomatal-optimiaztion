@@ -25,7 +25,7 @@ Make root `THORP`, `GOSM`, and `TDGM` rerun parity directly inspectable through 
 
 ## Requirements
 
-1. render reproducible PNG/PDF comparison bundles with copied spec, resolved spec, tokens, data CSV, and metadata
+1. render reproducible PNG comparison graphs with paired data CSV exports for each rerun parity case
 2. overlay Python rerun outputs against the corresponding legacy MATLAB payload for each root architecture
 3. keep the graph workflow compatible with the existing root rerun tests and bounded fast validation scope
 4. expose one repo-level script that writes comparison outputs under `out/rerun_parity/`

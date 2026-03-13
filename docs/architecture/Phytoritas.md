@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 106 adds Plotkit-style root rerun parity graph bundles on top of the closed `THORP`, `GOSM`, and `TDGM` MATLAB-output parity wave, then returns the architecture to monitor mode
+- Current phase: slice 106 keeps Plotkit-style root rerun parity comparison outputs available as minimal `PNG + CSV` bundles on top of the closed `THORP`, `GOSM`, and `TDGM` MATLAB-output parity wave, then returns the architecture to monitor mode
 
 ## Scope
 
