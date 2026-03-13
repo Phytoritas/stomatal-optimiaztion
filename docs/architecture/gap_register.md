@@ -2,6 +2,6 @@
 
 | ID | Gap | Impact | Required Artifact |
 | --- | --- | --- | --- |
-| G-074 | Root GOSM radiation kernel is still missing from the migrated repo | Blocks the first bounded runtime migration after the GOSM parameter-defaults seam | `docs/architecture/architecture/module_specs/module-074-gosm-radiation-kernel.md` |
+| G-075 | Root GOSM allometry helper seam is still missing from the migrated repo | Blocks the next small structural runtime seam after the migrated radiation kernel | `docs/architecture/architecture/module_specs/module-075-gosm-allometry-helper.md` |
 
-Current open gaps: G-074.
+Current open gaps: G-075.
