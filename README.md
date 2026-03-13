@@ -115,6 +115,7 @@ poetry run ruff check .
 - Root TDGM turgor-driven growth seam is migrated as slice 088.
 - Root TDGM phloem-transport seam is migrated as slice 089.
 - Root TDGM coupling seam is migrated as slice 090.
+- Root TDGM equation-registry seam is migrated as slice 091.
 
 ## Next validation
-- Migrate the root TDGM equation-registry seam.
+- Migrate the root TDGM THORP-G postprocess seam.

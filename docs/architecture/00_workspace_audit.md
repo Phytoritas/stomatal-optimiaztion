@@ -589,3 +589,9 @@ Slice 090:
 - target: `src/stomatal_optimiaztion/domains/tdgm/` and `tests/test_tdgm_coupling.py`
 - scope: bounded root `TDGM` runtime seam covering the `Eq.S.3.*` coupling helpers, the one-step THORP-G wrapper, and allocation-history smoothing behavior
 - excluded: `TDGM/src/tdgm/equation_registry.py`, `TDGM/src/tdgm/thorp_g_postprocess.py`, and external forcing or MATLAB-output loaders
+
+Slice 091:
+- source: `TDGM/src/tdgm/equation_registry.py`
+- target: `src/stomatal_optimiaztion/domains/tdgm/equation_registry.py` and `tests/test_tdgm_equation_registry.py`
+- scope: bounded root `TDGM` traceability seam covering no-argument registry assembly across the migrated PTM, turgor-growth, and coupling modules
+- excluded: `TDGM/src/tdgm/thorp_g_postprocess.py`, root package import-surface rewiring, and MATLAB-control-data validation
