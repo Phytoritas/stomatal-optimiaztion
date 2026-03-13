@@ -548,8 +548,16 @@ The sixty-third slice opens the next bounded THORP compatibility seam:
 - keep the seam wrapper-bounded without widening into THORP numerical kernels or package-wide export redesign
 - leave `THORP/src/thorp/equation_registry.py` blocked as the next seam
 
+## Slice 064: THORP Equation Registry
+
+The sixty-fourth slice opens the next bounded THORP compatibility seam:
+- move `THORP/src/thorp/equation_registry.py` into the staged `domains/thorp/` package
+- preserve module-bound annotated-callable discovery and one-call equation mapping over the migrated THORP runtime modules
+- keep the seam compatibility-bounded without redesigning the existing traceability helper layer
+- leave `THORP/src/thorp/utils/__init__.py` blocked as the next seam
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP compatibility audit for `THORP/src/thorp/equation_registry.py`
+3. prepare the next THORP namespace-wrapper audit for `THORP/src/thorp/utils/__init__.py`
