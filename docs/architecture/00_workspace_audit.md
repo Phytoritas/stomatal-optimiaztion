@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 058
-- Gate D. Bounded slices 001 through 024 approved for THORP, slices 025 through 045 approved for TOMATO, and slices 046 through 058 approved for `load-cell-data`
+- Gate C. Validation plan ready through slice 059
+- Gate D. Bounded slices 001 through 024 approved for THORP, slices 025 through 045 approved for TOMATO, and slices 046 through 059 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -395,3 +395,9 @@ Slice 058:
 - target: `src/stomatal_optimiaztion/domains/load_cell/synthetic_test.py`, package exports, and `tests/test_load_cell_synthetic_test.py`
 - scope: bounded `load-cell-data` synthetic validation harness covering deterministic dataset generation, truth totals, end-to-end pipeline validation, and tolerance checks
 - excluded: `real_data_benchmark.py`, dashboard entrypoints, and viewer/reporting artifacts
+
+Slice 059:
+- source: `load-cell-data/real_data_benchmark.py`
+- target: `scripts/real_data_benchmark.py` and `tests/test_load_cell_real_data_benchmark_script.py`
+- scope: bounded `load-cell-data` repo-level benchmark harness covering matched-file batch runs, summary/comparison/failure CSV outputs, and overlap-window diffs
+- excluded: `src/preprocess_incremental.py`, viewer/server tooling, and dashboard entrypoints
