@@ -241,6 +241,51 @@ def initial_mean_allocation_fractions(
 
 
 @implements("Eq.S.3.7")
+def update_mean_allocation_fractions(
+    *,
+    u_l_mean: float,
+    u_l: float,
+    u_r_h_mean: np.ndarray,
+    u_r_h: np.ndarray,
+    u_r_v_mean: np.ndarray,
+    u_r_v: np.ndarray,
+    u_sw_mean: float,
+    u_sw: float,
+    dt_allocate: float,
+) -> tuple[float, float, np.ndarray, np.ndarray]:
+    """Update THORP-G memory-filtered mean allocation fractions."""
+
+    t_mem = 14 * 24 * 3600.0
+    k_mem = -float(np.log(0.01)) / t_mem
+
+    u_r_h_mean = np.asarray(u_r_h_mean, dtype=float)
+    u_r_v_mean = np.asarray(u_r_v_mean, dtype=float)
+    u_r_h = np.asarray(u_r_h, dtype=float)
+    u_r_v = np.asarray(u_r_v, dtype=float)
+
+    nan_count = int(
+        np.isnan(u_l)
+        + np.isnan(u_sw)
+        + np.sum(np.isnan(u_r_h)).item()
+        + np.sum(np.isnan(u_r_v)).item()
+    )
+    if nan_count != 0:
+        return float(u_l_mean), float(u_sw_mean), u_r_h_mean, u_r_v_mean
+
+    u_l_mean = float(u_l_mean + k_mem * (float(u_l) - float(u_l_mean)) * dt_allocate)
+    u_sw_mean = float(u_sw_mean + k_mem * (float(u_sw) - float(u_sw_mean)) * dt_allocate)
+    u_r_h_mean = (u_r_h_mean + k_mem * (u_r_h - u_r_h_mean) * dt_allocate).astype(float)
+    u_r_v_mean = (u_r_v_mean + k_mem * (u_r_v - u_r_v_mean) * dt_allocate).astype(float)
+
+    sum_u_mean = float(np.sum(u_r_h_mean + u_r_v_mean) + u_l_mean + u_sw_mean)
+    u_l_mean = float(u_l_mean / sum_u_mean)
+    u_sw_mean = float(u_sw_mean / sum_u_mean)
+    u_r_h_mean = (u_r_h_mean / sum_u_mean).astype(float)
+    u_r_v_mean = (u_r_v_mean / sum_u_mean).astype(float)
+    return float(u_l_mean), float(u_sw_mean), u_r_h_mean, u_r_v_mean
+
+
+@implements("Eq.S.3.7")
 def allocation_fraction_from_history(
     *,
     v_i_ts: np.ndarray,

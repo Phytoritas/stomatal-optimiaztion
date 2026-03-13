@@ -30,3 +30,8 @@ include = ["src/stomatal_optimiaztion/domains/thorp/model_card/*.json"]
 pytest = "^9.0.2"
 ruff = "^0.15.5"
 
+[tool.pytest.ini_options]
+markers = [
+    "slow: long-running legacy parity regressions",
+]
+

@@ -33,6 +33,7 @@ from stomatal_optimiaztion.domains.tdgm.coupling import (
     nsc_limitation_growth,
     realized_growth_rate,
     tree_volume_from_carbon_pools,
+    update_mean_allocation_fractions,
 )
 from stomatal_optimiaztion.domains.tdgm.thorp_g_postprocess import (
     ThorpGCouplingPostprocessOutputs,
@@ -74,6 +75,7 @@ __all__ = [
     "nsc_limitation_growth",
     "realized_growth_rate",
     "tree_volume_from_carbon_pools",
+    "update_mean_allocation_fractions",
     "ThorpGCouplingPostprocessOutputs",
     "ThorpGMatOutputs",
     "forcing_t_a_at_times",

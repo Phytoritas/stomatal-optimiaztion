@@ -86,6 +86,24 @@ def test_initial_mean_allocation_fractions_match_matlab_biomass_partitioning() -
     assert np.isclose(u_sw_mean + u_l_mean + np.sum(u_r_h_mean) + np.sum(u_r_v_mean), 1.0)
 
 
+def test_update_mean_allocation_fractions_relaxes_and_preserves_unity() -> None:
+    u_l_mean, u_sw_mean, u_r_h_mean, u_r_v_mean = tdgm.update_mean_allocation_fractions(
+        u_l_mean=0.3,
+        u_l=0.4,
+        u_r_h_mean=np.array([0.04, 0.12]),
+        u_r_h=np.array([0.05, 0.15]),
+        u_r_v_mean=np.array([0.08, 0.16]),
+        u_r_v=np.array([0.07, 0.13]),
+        u_sw_mean=0.3,
+        u_sw=0.2,
+        dt_allocate=24 * 3600.0,
+    )
+
+    assert np.isclose(u_l_mean + u_sw_mean + np.sum(u_r_h_mean) + np.sum(u_r_v_mean), 1.0)
+    assert u_l_mean > 0.3
+    assert u_sw_mean < 0.3
+
+
 def test_tdgm_coupling_exports_equation_tags() -> None:
     assert implemented_equations(tdgm.tree_volume_from_carbon_pools) == ("Eq.S.3.3",)
     assert implemented_equations(tdgm.allocation_fraction_from_history) == ("Eq.S.3.7",)

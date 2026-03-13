@@ -130,6 +130,11 @@ poetry run ruff check .
 - Root GOSM sensitivity and manuscript figure workflows are migrated as slice 098.
 - Root THORP main-text example figure workflows are migrated as slice 099.
 - Root TDGM supplementary offline and THORP-G example figure workflows are migrated as slice 100.
+- Root THORP fast Python rerun parity is locked against `THORP_data_0.6RH.mat` in slice 101.
+- Root GOSM legacy rerun helpers and fast MATLAB-output parity tests are restored in slice 102.
+- Root TDGM `thorp_g` runtime surface and fast MATLAB-output parity tests are restored in slice 103.
+- Root Python rerun parity audit is recorded in slice 104.
 
 ## Next validation
-- Keep `pytest`, `ruff`, and the Plotkit example renderers green while the architecture remains in monitor mode.
+- Keep `pytest`, `ruff`, the fast root rerun parity tests, and the Plotkit example renderers green while the architecture remains in monitor mode.
+- Run the opt-in slow `GOSM` `imag` conductance-loss parity branch when root `gosm` hydraulics or stomatal logic changes.
