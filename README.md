@@ -113,6 +113,7 @@ poetry run ruff check .
 - Root GOSM instantaneous optimum seam is migrated as slice 086.
 - Root GOSM steady-state helper seam is migrated as slice 087.
 - Root TDGM turgor-driven growth seam is migrated as slice 088.
+- Root TDGM phloem-transport seam is migrated as slice 089.
 
 ## Next validation
-- Migrate the root TDGM phloem-transport seam.
+- Migrate the root TDGM coupling seam.

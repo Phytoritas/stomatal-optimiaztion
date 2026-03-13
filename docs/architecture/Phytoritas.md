@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 088 opened the first root TDGM runtime seam and left the PTM kernel as the next bounded gap
+- Current phase: slice 089 restored the PTM kernel and left the TDGM coupling primitives as the next bounded gap
 
 ## Scope
 
@@ -100,6 +100,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 ## Immediate Next Actions
 
 1. keep the current validation gates green as root `GOSM` and `TDGM` slices land
-2. continue from the first root `TDGM` runtime seam into the PTM kernel at `TDGM/src/tdgm/ptm.py`
+2. continue from the PTM kernel into the TDGM coupling seam at `TDGM/src/tdgm/coupling.py`
 3. keep using the same package-first discipline as the remaining root `TDGM` runtime seams land
 4. keep shared utilities blocked until a concrete cross-domain helper emerges

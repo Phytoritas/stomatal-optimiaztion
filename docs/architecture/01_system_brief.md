@@ -743,8 +743,15 @@ The eighty-eighth slice opens the first numerical root `TDGM` runtime seam:
 - preserve `Eq_S2.12` and `Eq_S2.16` tagging plus scalar/vector whole-tree growth-rate behavior
 - keep the seam kernel-bounded and leave `ptm.py` as the next runtime seam
 
+## Slice 089: Root TDGM Phloem Transport
+
+The eighty-ninth slice restores the bounded root `TDGM` PTM kernel:
+- move `TDGM/src/tdgm/ptm.py` into the staged `domains/tdgm/` package
+- preserve the `Eq_S1.*` tagging, sucrose-viscosity helper, apex-concentration behavior, and physiological NaN guard branch
+- keep the seam kernel-bounded and leave `coupling.py` as the next runtime seam
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate `TDGM/src/tdgm/ptm.py` as the next bounded root TDGM runtime seam
+3. migrate `TDGM/src/tdgm/coupling.py` as the next bounded root TDGM runtime seam

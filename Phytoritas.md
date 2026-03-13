@@ -55,4 +55,5 @@ Current status:
 - Slice 086 migrated: root GOSM instantaneous optimum seam
 - Slice 087 migrated: root GOSM steady-state helper seam
 - Slice 088 migrated: root TDGM turgor-driven growth seam
-- Current open architecture gaps: root TDGM phloem-transport seam
+- Slice 089 migrated: root TDGM phloem-transport seam
+- Current open architecture gaps: root TDGM coupling seam
