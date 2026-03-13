@@ -9,6 +9,9 @@ from stomatal_optimiaztion.domains.gosm.model.carbon_dynamics import (
     sigma_nsc_limitation,
     total_respiration,
 )
+from stomatal_optimiaztion.domains.gosm.model.carbon_assimilation import (
+    carbon_assimilation,
+)
 from stomatal_optimiaztion.domains.gosm.model.conductance_temperature import (
     conductances_and_temperature,
 )
@@ -27,6 +30,7 @@ from stomatal_optimiaztion.domains.gosm.model.optimal_control import (
 from stomatal_optimiaztion.domains.gosm.model.radiation import radiation_absorbed
 
 __all__ = [
+    "carbon_assimilation",
     "growth_rate",
     "growth_respiration",
     "chi_w",

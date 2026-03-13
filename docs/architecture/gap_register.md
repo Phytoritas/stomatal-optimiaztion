@@ -2,6 +2,6 @@
 
 | ID | Gap | Impact | Required Artifact |
 | --- | --- | --- | --- |
-| G-080 | Root GOSM carbon-assimilation kernel is still missing from the migrated repo | Blocks the next coupled biochemical runtime kernel after the migrated conductance-temperature seam | `docs/architecture/architecture/module_specs/module-080-gosm-carbon-assimilation-kernel.md` |
+| G-081 | Root GOSM hydraulics kernel is still missing from the migrated repo | Blocks the next coupled hydraulic-growth runtime kernel after the migrated carbon-assimilation seam | `docs/architecture/architecture/module_specs/module-081-gosm-hydraulics-kernel.md` |
 
-Current open gaps: G-080.
+Current open gaps: G-081.

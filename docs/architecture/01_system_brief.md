@@ -680,8 +680,15 @@ The seventy-ninth slice opens the first coupled root `GOSM` runtime kernel:
 - preserve `Eq.S3.1` and `Eq.S3.3` through `Eq.S3.10` tagging plus the leaf-temperature Newton solve, conductance outputs, latent heat, and derivative propagation
 - keep the seam kernel-bounded and leave `carbon_assimilation.py`, hydraulics kernels, and pipeline orchestration blocked
 
+## Slice 080: Root GOSM Carbon Assimilation Kernel
+
+The eightieth slice extends the coupled root `GOSM` runtime with the next biochemical kernel:
+- move `GOSM/src/gosm/model/carbon_assimilation.py` into the staged `domains/gosm/model/` package
+- preserve `Eq.S4.1` through `Eq.S4.18` tagging plus the bounded assimilation solve, respiratory terms, and marginal-WUE calculation
+- keep the seam kernel-bounded and leave `hydraulics.py`, full pipeline orchestration, and root `TDGM` runtime seams blocked
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate `GOSM/src/gosm/model/carbon_assimilation.py` as the next bounded GOSM biochemical kernel
+3. migrate `GOSM/src/gosm/model/hydraulics.py` as the next bounded GOSM hydraulic-growth kernel
