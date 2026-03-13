@@ -43,4 +43,5 @@ Current status:
 - Slice 074 migrated: root GOSM radiation kernel seam
 - Slice 075 migrated: root GOSM allometry helper seam
 - Slice 076 migrated: root GOSM NPP/GPP helper seam
-- Current open architecture gaps: root GOSM optimal-control helper seam
+- Slice 077 migrated: root GOSM optimal-control helper seam
+- Current open architecture gaps: root GOSM carbon-dynamics helper seam
