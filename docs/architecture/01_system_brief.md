@@ -859,6 +859,13 @@ The one-hundred-fourth slice records the repository-level rerun audit:
 - record which root architectures now support direct rerun versus legacy MATLAB output comparison
 - return the architecture to monitor mode once the rerun wave is closed
 
+## Slice 105: GOSM Warning-Free Rerun Hardening
+
+The one-hundred-fifth slice hardens the root `GOSM` rerun path:
+- suppress only the transient numerical warnings that occur in zero-transpiration and infeasible-branch calculations while keeping MATLAB-equivalent outputs unchanged
+- promote `RuntimeWarning` to regression failures for the fast control and sensitivity rerun tests
+- verify that the opt-in slow `imag` conductance-loss branch is also warning-free when explicitly enabled
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams

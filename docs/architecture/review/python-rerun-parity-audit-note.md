@@ -29,16 +29,21 @@ Out of scope for this note:
    - `Growth_Opt_Stomata__test_sensitivity__c_a.mat`
    - `Growth_Opt_Stomata__test_sensitivity__P_soil.mat`
    - `Growth_Opt_Stomata__test_sensitivity__P_soil_min__true_k_loss.mat`
-3. Root `GOSM` also exposes the legacy `imag` conductance-loss rerun path. That branch remains opt-in behind `GOSM_RUN_SLOW=1` to keep the default validation loop bounded, and it was executed once during this audit to confirm that the slower path still reproduces the legacy MATLAB payload.
-4. Root `TDGM` rerun parity required restoring the legacy `tdgm.thorp_g` runtime surface. With that seam restored, the current Python runtime matches ten representative THORP-G MATLAB scenarios for the time axis and the first three stored points after `max_steps=60`.
-5. Within the documented fast-rerun scope, no open root architecture gap remains.
+3. Root `GOSM` reruns are now warning-free for the fast control and sensitivity paths. The rerun regressions promote `RuntimeWarning` to test failures, so the current `hydraulics`, `conductance_temperature`, stomata-model, and example helper branches no longer emit transient NumPy warnings during parity checks.
+4. Root `GOSM` also exposes the legacy `imag` conductance-loss rerun path. That branch remains opt-in behind `GOSM_RUN_SLOW=1` to keep the default validation loop bounded, and it was executed under `warnings-as-errors` to confirm that the slower path still reproduces the legacy MATLAB payload without emitting `RuntimeWarning`.
+5. Root `TDGM` rerun parity required restoring the legacy `tdgm.thorp_g` runtime surface. With that seam restored, the current Python runtime matches ten representative THORP-G MATLAB scenarios for the time axis and the first three stored points after `max_steps=60`.
+6. Within the documented fast-rerun scope, no open root architecture gap remains.
 
 ## Validation Executed
 
 - `.\.venv\Scripts\python.exe -m pytest tests/test_thorp_rerun_parity.py tests/test_gosm_rerun_control.py tests/test_gosm_rerun_sensitivity_environmental_conditions.py tests/test_gosm_rerun_sensitivity_p_soil_min.py tests/test_tdgm_thorp_g_rerun_parity.py`
 - result: `16 passed, 1 skipped`
 - the skipped test is the opt-in slow `GOSM` `imag` conductance-loss rerun branch
+- `.\.venv\Scripts\python.exe -m pytest tests/test_gosm_rerun_control.py tests/test_gosm_rerun_sensitivity_environmental_conditions.py tests/test_gosm_rerun_sensitivity_p_soil_min.py -W error::RuntimeWarning`
+- result: `5 passed, 1 skipped`
 - `powershell -Command "$env:GOSM_RUN_SLOW='1'; .\.venv\Scripts\python.exe -m pytest tests/test_gosm_rerun_sensitivity_p_soil_min.py -k imag"`
+- result: `1 passed, 1 deselected`
+- `powershell -Command "$env:GOSM_RUN_SLOW='1'; .\.venv\Scripts\python.exe -m pytest tests/test_gosm_rerun_sensitivity_p_soil_min.py -k imag -W error::RuntimeWarning"`
 - result: `1 passed, 1 deselected`
 - `.\.venv\Scripts\python.exe -m pytest`
 - result: `428 passed, 1 skipped`
@@ -48,7 +53,7 @@ Out of scope for this note:
 ## Result
 
 - root `THORP`: direct Python rerun vs legacy MATLAB output comparison available and passing
-- root `GOSM`: direct Python rerun vs legacy MATLAB output comparison available and passing for the default fast control and sensitivity set, with the slower `imag` conductance-loss branch manually verified as well
+- root `GOSM`: direct Python rerun vs legacy MATLAB output comparison available and passing for the default fast control and sensitivity set, warning-free under `warnings-as-errors`, with the slower `imag` conductance-loss branch manually verified the same way
 - root `TDGM`: direct Python rerun vs legacy MATLAB output comparison available and passing for the fast THORP-G regression set
 
 ## Next Actions

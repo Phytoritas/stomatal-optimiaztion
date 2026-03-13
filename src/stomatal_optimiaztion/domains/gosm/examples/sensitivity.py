@@ -60,8 +60,9 @@ def _leaf_water_potential_vector(
     beta_l: float,
     k_l: float,
 ) -> np.ndarray:
-    log_arg_l = np.exp(-alpha_l * beta_l) + np.exp(-alpha_l * psi_s_vec) - np.exp(-alpha_l * psi_s_vec + alpha_l * e_vec / k_l)
-    psi_l_complex = psi_s_vec - e_vec / k_l + beta_l + (1 / alpha_l) * np.log(log_arg_l.astype(complex))
+    with np.errstate(divide="ignore", invalid="ignore", over="ignore"):
+        log_arg_l = np.exp(-alpha_l * beta_l) + np.exp(-alpha_l * psi_s_vec) - np.exp(-alpha_l * psi_s_vec + alpha_l * e_vec / k_l)
+        psi_l_complex = psi_s_vec - e_vec / k_l + beta_l + (1 / alpha_l) * np.log(log_arg_l.astype(complex))
     psi_l_vec = np.real(psi_l_complex)
     psi_l_vec[np.abs(np.imag(psi_l_complex)) > 0] = -np.inf
     return psi_l_vec

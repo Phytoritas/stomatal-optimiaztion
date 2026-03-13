@@ -134,7 +134,9 @@ poetry run ruff check .
 - Root GOSM legacy rerun helpers and fast MATLAB-output parity tests are restored in slice 102.
 - Root TDGM `thorp_g` runtime surface and fast MATLAB-output parity tests are restored in slice 103.
 - Root Python rerun parity audit is recorded in slice 104.
+- Root GOSM rerun kernels and helpers are hardened so the parity regressions run warning-free in slice 105.
 
 ## Next validation
 - Keep `pytest`, `ruff`, the fast root rerun parity tests, and the Plotkit example renderers green while the architecture remains in monitor mode.
+- Keep the fast root `GOSM` rerun tests warning-free and run the opt-in slow `imag` branch whenever root `gosm` hydraulics or stomatal logic changes.
 - Run the opt-in slow `GOSM` `imag` conductance-loss parity branch when root `gosm` hydraulics or stomatal logic changes.

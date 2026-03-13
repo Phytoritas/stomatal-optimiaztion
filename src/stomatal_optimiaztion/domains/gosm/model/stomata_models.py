@@ -55,8 +55,9 @@ def _leaf_water_potential(
     beta_l: float,
     k_l: float,
 ) -> np.ndarray:
-    log_arg = np.exp(-alpha_l * beta_l) + np.exp(-alpha_l * psi_s_vec) - np.exp(-alpha_l * psi_s_vec + alpha_l * e_vec / k_l)
-    psi_l_complex = psi_s_vec - e_vec / k_l + beta_l + (1 / alpha_l) * np.log(log_arg.astype(complex))
+    with np.errstate(divide="ignore", invalid="ignore", over="ignore"):
+        log_arg = np.exp(-alpha_l * beta_l) + np.exp(-alpha_l * psi_s_vec) - np.exp(-alpha_l * psi_s_vec + alpha_l * e_vec / k_l)
+        psi_l_complex = psi_s_vec - e_vec / k_l + beta_l + (1 / alpha_l) * np.log(log_arg.astype(complex))
     psi_l = np.real(psi_l_complex)
     psi_l[np.abs(np.imag(psi_l_complex)) > 0] = -np.inf
     return psi_l
@@ -85,31 +86,32 @@ def _psi_l_and_d_psi_l_d_e(
 ) -> tuple[np.ndarray, np.ndarray]:
     psi_l_vec = _leaf_water_potential(e_vec=e_vec, psi_s_vec=psi_s_vec, alpha_l=alpha_l, beta_l=beta_l, k_l=k_l)
 
-    d_psi_rc_d_e_vec = -la / k_r + la / alpha_r / (rho * g * z * k_r / 1e6 + la * e_vec) * (
-        (rho * g * z * k_r / 1e6) / (rho * g * z * k_r / 1e6 + la * e_vec)
-        * np.exp(-alpha_r * psi_rc_vec + alpha_r * beta_r - alpha_r * rho * g * z / 1e6 - alpha_r * la * e_vec / k_r)
-        - (
-            (rho * g * z * k_r / 1e6) / (rho * g * z * k_r / 1e6 + la * e_vec) + alpha_r * la * e_vec / k_r
+    with np.errstate(divide="ignore", invalid="ignore", over="ignore"):
+        d_psi_rc_d_e_vec = -la / k_r + la / alpha_r / (rho * g * z * k_r / 1e6 + la * e_vec) * (
+            (rho * g * z * k_r / 1e6) / (rho * g * z * k_r / 1e6 + la * e_vec)
+            * np.exp(-alpha_r * psi_rc_vec + alpha_r * beta_r - alpha_r * rho * g * z / 1e6 - alpha_r * la * e_vec / k_r)
+            - (
+                (rho * g * z * k_r / 1e6) / (rho * g * z * k_r / 1e6 + la * e_vec) + alpha_r * la * e_vec / k_r
+            )
+            * np.exp(-alpha_r * psi_rc_vec + alpha_r * beta_r)
         )
-        * np.exp(-alpha_r * psi_rc_vec + alpha_r * beta_r)
-    )
 
-    d_psi_s_d_e_vec = d_psi_rc_d_e_vec - la / k_sw + la / alpha_sw / (rho * g * h * k_sw / 1e6 + la * e_vec) * (
-        (
-            (rho * g * h * k_sw / 1e6) / (rho * g * h * k_sw / 1e6 + la * e_vec) - alpha_sw * e_vec * d_psi_rc_d_e_vec
+        d_psi_s_d_e_vec = d_psi_rc_d_e_vec - la / k_sw + la / alpha_sw / (rho * g * h * k_sw / 1e6 + la * e_vec) * (
+            (
+                (rho * g * h * k_sw / 1e6) / (rho * g * h * k_sw / 1e6 + la * e_vec) - alpha_sw * e_vec * d_psi_rc_d_e_vec
+            )
+            * np.exp(-alpha_sw * psi_s_vec + alpha_sw * beta_sw - alpha_sw * rho * g * h / 1e6 - alpha_sw * la * e_vec / k_sw)
+            - (
+                (rho * g * h * k_sw / 1e6) / (rho * g * h * k_sw / 1e6 + la * e_vec)
+                + alpha_sw * la * e_vec / k_sw
+                - alpha_sw * e_vec * d_psi_rc_d_e_vec
+            )
+            * np.exp(-alpha_sw * psi_s_vec + alpha_sw * beta_sw)
         )
-        * np.exp(-alpha_sw * psi_s_vec + alpha_sw * beta_sw - alpha_sw * rho * g * h / 1e6 - alpha_sw * la * e_vec / k_sw)
-        - (
-            (rho * g * h * k_sw / 1e6) / (rho * g * h * k_sw / 1e6 + la * e_vec)
-            + alpha_sw * la * e_vec / k_sw
-            - alpha_sw * e_vec * d_psi_rc_d_e_vec
-        )
-        * np.exp(-alpha_sw * psi_s_vec + alpha_sw * beta_sw)
-    )
 
-    d_psi_l_d_e_vec = (d_psi_s_d_e_vec - 1 / k_l) * (1 + np.exp(-alpha_l * (psi_l_vec - beta_l))) - d_psi_s_d_e_vec * np.exp(
-        -alpha_l * (psi_l_vec - beta_l) - alpha_l * e_vec / k_l
-    )
+        d_psi_l_d_e_vec = (d_psi_s_d_e_vec - 1 / k_l) * (1 + np.exp(-alpha_l * (psi_l_vec - beta_l))) - d_psi_s_d_e_vec * np.exp(
+            -alpha_l * (psi_l_vec - beta_l) - alpha_l * e_vec / k_l
+        )
     return psi_l_vec, d_psi_l_d_e_vec
 
 
@@ -213,15 +215,17 @@ def stomata_sperry_2017(
         g=g,
     )
 
-    k_canopy_vec = -1 / d_psi_l_d_e_vec
+    with np.errstate(divide="ignore", invalid="ignore"):
+        k_canopy_vec = -1 / d_psi_l_d_e_vec
     k_canopy_max = float(k_canopy_vec[e_vec == 0][0])
     try:
         a_n_max = float(np.nanmax(a_n_vec))
     except ValueError:
         return StomataModelSolution(g_c=float("nan"), lambda_wue=float("nan"))
 
-    d2_psi_l_d_e2_vec = np.concatenate(([0.0], np.diff(d_psi_l_d_e_vec) / np.diff(e_vec)))
-    sperry_lambda_wue_vec = -a_n_max / k_canopy_max * d2_psi_l_d_e2_vec / (d_psi_l_d_e_vec**2)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        d2_psi_l_d_e2_vec = np.concatenate(([0.0], np.diff(d_psi_l_d_e_vec) / np.diff(e_vec)))
+        sperry_lambda_wue_vec = -a_n_max / k_canopy_max * d2_psi_l_d_e2_vec / (d_psi_l_d_e_vec**2)
     sperry_hc_vec = a_n_max * (1.0 - k_canopy_vec / k_canopy_max)
 
     diff = sperry_lambda_wue_vec - lambda_wue_vec
@@ -280,8 +284,9 @@ def stomata_anderegg_2018(
     beta_1 = 4e-6
     beta_2 = 0.0
     beta_3 = 0.0
-    anderegg_hc_vec = (beta_1 / 2.0) * psi_l_vec**2 + beta_2 * psi_l_vec + beta_3
-    anderegg_lambda_wue_vec = d_psi_l_d_e_vec * (beta_1 * psi_l_vec + beta_2)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        anderegg_hc_vec = (beta_1 / 2.0) * psi_l_vec**2 + beta_2 * psi_l_vec + beta_3
+        anderegg_lambda_wue_vec = d_psi_l_d_e_vec * (beta_1 * psi_l_vec + beta_2)
 
     diff = anderegg_lambda_wue_vec - lambda_wue_vec
     if not np.any(g_c_vec[g_c_vec > 0]):
@@ -409,14 +414,15 @@ def stomata_eller_2018(
     d_psi_l_d_e_vec = np.asarray(d_psi_l_d_e_vec, dtype=float)
     d_psi_l_d_e_vec[psi_l_vec == -np.inf] = -np.inf
 
-    k_canopy_vec = -1 / d_psi_l_d_e_vec
-    k_canopy_vec[d_psi_l_d_e_vec == -np.inf] = 0
+    with np.errstate(divide="ignore", invalid="ignore"):
+        k_canopy_vec = -1 / d_psi_l_d_e_vec
+        k_canopy_vec[d_psi_l_d_e_vec == -np.inf] = 0
 
-    k_canopy_max = 1.0 / (1 / k_sw + 1 / k_r + 1 / (la * k_l))
-    d2_psi_l_d_e2_vec = np.concatenate(([0.0], np.diff(d_psi_l_d_e_vec) / np.diff(e_vec)))
+        k_canopy_max = 1.0 / (1 / k_sw + 1 / k_r + 1 / (la * k_l))
+        d2_psi_l_d_e2_vec = np.concatenate(([0.0], np.diff(d_psi_l_d_e_vec) / np.diff(e_vec)))
 
-    eller_lambda_wue_vec = lambda_wue_vec * (1 - k_canopy_vec / k_canopy_max) - d2_psi_l_d_e2_vec / (d_psi_l_d_e_vec**2) * a_n_vec / k_canopy_max
-    eller_hc_vec = a_n_vec * (1.0 - k_canopy_vec / k_canopy_max)
+        eller_lambda_wue_vec = lambda_wue_vec * (1 - k_canopy_vec / k_canopy_max) - d2_psi_l_d_e2_vec / (d_psi_l_d_e_vec**2) * a_n_vec / k_canopy_max
+        eller_hc_vec = a_n_vec * (1.0 - k_canopy_vec / k_canopy_max)
 
     diff = eller_lambda_wue_vec - lambda_wue_vec
     if not np.any(g_c_vec[g_c_vec > 0]):

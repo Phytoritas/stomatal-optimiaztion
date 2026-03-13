@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import warnings
 
 import numpy as np
 import pytest
@@ -46,11 +47,13 @@ def test_sensitivity_p_soil_min_true_k_loss_matches_matlab_baseline() -> None:
     baseline_path = DEFAULT_LEGACY_GOSM_EXAMPLE_DIR / "Growth_Opt_Stomata__test_sensitivity__P_soil_min__true_k_loss.mat"
     mat = scipy.io.loadmat(str(baseline_path))
 
-    out = run_sensitivity_p_soil_min_conductance_loss(
-        param_test=mat["PARAM_TEST"],
-        eta_test=mat["eta_test"],
-        conductance_loss="true",
-    )
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", RuntimeWarning)
+        out = run_sensitivity_p_soil_min_conductance_loss(
+            param_test=mat["PARAM_TEST"],
+            eta_test=mat["eta_test"],
+            conductance_loss="true",
+        )
 
     assert _matlab_str(out["PARAM"]) == _matlab_str(mat["PARAM"])
     assert _legend_list(out["study_legend"]) == _legend_list(mat["study_legend"])
@@ -82,11 +85,13 @@ def test_sensitivity_p_soil_min_imag_k_loss_matches_matlab_baseline() -> None:
     baseline_path = DEFAULT_LEGACY_GOSM_EXAMPLE_DIR / "Growth_Opt_Stomata__test_sensitivity__P_soil_min__imag_k_loss.mat"
     mat = scipy.io.loadmat(str(baseline_path))
 
-    out = run_sensitivity_p_soil_min_conductance_loss(
-        param_test=mat["PARAM_TEST"],
-        eta_test=mat["eta_test"],
-        conductance_loss="imag",
-    )
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", RuntimeWarning)
+        out = run_sensitivity_p_soil_min_conductance_loss(
+            param_test=mat["PARAM_TEST"],
+            eta_test=mat["eta_test"],
+            conductance_loss="imag",
+        )
 
     assert _matlab_str(out["PARAM"]) == _matlab_str(mat["PARAM"])
     assert _legend_list(out["study_legend"]) == _legend_list(mat["study_legend"])
