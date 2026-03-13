@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 052 completed and slice 053 planning
+- Current phase: slice 053 completed and slice 054 planning
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. audit the `load-cell-data` pipeline CLI seam at `loadcell_pipeline/cli.py`
-2. preserve the config-plus-IO-plus-aggregation-plus-thresholds-plus-preprocessing-plus-events-plus-fluxes package boundary while deciding how the package-level pipeline should precede workflow seams
+1. audit the `load-cell-data` workflow seam at `loadcell_pipeline/workflow.py`
+2. preserve the config-plus-IO-plus-aggregation-plus-thresholds-plus-preprocessing-plus-events-plus-fluxes-plus-cli package boundary while deciding how batch workflow should build on the migrated package-level pipeline
 3. keep `load-cell-data` blocked until its source audit is deeper
