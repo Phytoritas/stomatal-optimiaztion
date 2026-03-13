@@ -583,3 +583,9 @@ Slice 089:
 - target: `src/stomatal_optimiaztion/domains/tdgm/` and `tests/test_tdgm_ptm.py`
 - scope: bounded root `TDGM` runtime seam covering the PTM concentration kernel, sucrose-viscosity helper, and equation-tag preservation
 - excluded: `TDGM/src/tdgm/coupling.py`, `TDGM/src/tdgm/equation_registry.py`, and `TDGM/src/tdgm/thorp_g_postprocess.py`
+
+Slice 090:
+- source: `TDGM/src/tdgm/coupling.py` and `TDGM/src/tdgm/__init__.py`
+- target: `src/stomatal_optimiaztion/domains/tdgm/` and `tests/test_tdgm_coupling.py`
+- scope: bounded root `TDGM` runtime seam covering the `Eq.S.3.*` coupling helpers, the one-step THORP-G wrapper, and allocation-history smoothing behavior
+- excluded: `TDGM/src/tdgm/equation_registry.py`, `TDGM/src/tdgm/thorp_g_postprocess.py`, and external forcing or MATLAB-output loaders

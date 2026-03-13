@@ -750,8 +750,15 @@ The eighty-ninth slice restores the bounded root `TDGM` PTM kernel:
 - preserve the `Eq_S1.*` tagging, sucrose-viscosity helper, apex-concentration behavior, and physiological NaN guard branch
 - keep the seam kernel-bounded and leave `coupling.py` as the next runtime seam
 
+## Slice 090: Root TDGM Coupling
+
+The ninetieth slice restores the bounded root `TDGM` THORP-G coupling layer:
+- move `TDGM/src/tdgm/coupling.py` into the staged `domains/tdgm/` package
+- preserve the `Eq.S.3.*` tagging, one-step THORP-G wrapper, and allocation-history smoothing behavior
+- keep the seam kernel-bounded and leave `equation_registry.py` as the next traceability seam
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate `TDGM/src/tdgm/coupling.py` as the next bounded root TDGM runtime seam
+3. migrate `TDGM/src/tdgm/equation_registry.py` as the next bounded root TDGM traceability seam
