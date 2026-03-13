@@ -20,6 +20,19 @@ from stomatal_optimiaztion.domains.tdgm.ptm import (
     mu_sucrose,
     phloem_transport_concentration,
 )
+from stomatal_optimiaztion.domains.tdgm.coupling import (
+    ThorpGCouplingStepInputs,
+    ThorpGCouplingStepOutputs,
+    allocation_fraction_derivative,
+    allocation_fraction_from_history,
+    compute_thorp_g_coupling_step,
+    immobile_nsc_from_total,
+    michaelis_menten_coefficient_nsc,
+    mobile_nsc_from_phloem_concentration,
+    nsc_limitation_growth,
+    realized_growth_rate,
+    tree_volume_from_carbon_pools,
+)
 from stomatal_optimiaztion.domains.tdgm.turgor_growth import (
     turgor_driven_growth_rate,
 )
@@ -39,5 +52,16 @@ __all__ = [
     "require_equation_ids",
     "mu_sucrose",
     "phloem_transport_concentration",
+    "ThorpGCouplingStepInputs",
+    "ThorpGCouplingStepOutputs",
+    "allocation_fraction_derivative",
+    "allocation_fraction_from_history",
+    "compute_thorp_g_coupling_step",
+    "immobile_nsc_from_total",
+    "michaelis_menten_coefficient_nsc",
+    "mobile_nsc_from_phloem_concentration",
+    "nsc_limitation_growth",
+    "realized_growth_rate",
+    "tree_volume_from_carbon_pools",
     "turgor_driven_growth_rate",
 ]
