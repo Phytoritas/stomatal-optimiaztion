@@ -41,6 +41,7 @@ from stomatal_optimiaztion.domains.gosm.model.pipeline import (
 )
 from stomatal_optimiaztion.domains.gosm.model.radiation import radiation_absorbed
 from stomatal_optimiaztion.domains.gosm.model.steady_state import (
+    solve_mult_phi_given_assumed_nsc,
     steady_state_nsc_and_cue,
 )
 from stomatal_optimiaztion.domains.gosm.model.stomata_models import (
@@ -90,6 +91,7 @@ __all__ = [
     "stomata_prentice_2014",
     "stomata_sperry_2017",
     "stomata_wang_2020",
+    "solve_mult_phi_given_assumed_nsc",
     "steady_state_nsc_and_cue",
     "update_carbon_assimilation_growth",
 ]

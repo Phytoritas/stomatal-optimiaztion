@@ -118,6 +118,7 @@ poetry run ruff check .
 - Root TDGM equation-registry seam is migrated as slice 091.
 - Root TDGM THORP-G postprocess seam is migrated as slice 092.
 - MATLAB source parity audit is recorded as slice 093 and reopens only the bounded gaps that remain against the original THORP, GOSM, and TDGM `.m` source.
+- Root GOSM steady-state inversion helper is migrated as slice 094.
 
 ## Next validation
-- Migrate the root GOSM steady-state inversion helper from the original MATLAB source.
+- Migrate the root TDGM initial mean-allocation helper from the supplementary MATLAB source.

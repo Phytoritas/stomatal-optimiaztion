@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from dataclasses import replace
+
 import numpy as np
 
 from stomatal_optimiaztion.domains.gosm.params.defaults import BaselineInputs
@@ -314,3 +316,127 @@ def steady_state_nsc_and_cue(
         eta_ss,
         c_nsc_ss_vec,
     )
+
+
+def solve_mult_phi_given_assumed_nsc(
+    *,
+    c_nsc_assumed: float,
+    r_m_known: float,
+    g_known: float,
+    inputs: BaselineInputs,
+    lambda_wue_vec: np.ndarray,
+    g0_vec: np.ndarray,
+    d_g0_d_e_vec: np.ndarray,
+    a_n_vec: np.ndarray,
+    e_vec: np.ndarray,
+    g_c_vec: np.ndarray,
+    vpd_vec: np.ndarray,
+    psi_s_vec: np.ndarray,
+    psi_rc_vec: np.ndarray,
+    max_iters: int = 100,
+) -> tuple[float, float, float, float, float, float]:
+    """Solve the MATLAB mult-phi inversion helper for a fixed assumed NSC state."""
+
+    c_nsc_assumed = float(c_nsc_assumed)
+    r_m_known = float(r_m_known)
+    g_known = float(g_known)
+    if r_m_known <= 0:
+        raise ValueError("r_m_known must be > 0")
+    if g_known <= 0:
+        raise ValueError("g_known must be > 0")
+
+    theta_r_assumed = float(np.asarray(inputs.theta_r(c_nsc_assumed), dtype=float))
+    theta_g_assumed = float(np.asarray(inputs.theta_g(c_nsc_assumed), dtype=float))
+    if theta_r_assumed <= 0 or theta_g_assumed <= 0:
+        raise ValueError("Assumed NSC state must yield positive theta_r and theta_g")
+
+    r_m_0_target = r_m_known / theta_r_assumed
+    g0_known = g_known / theta_g_assumed
+
+    r_m_w_15_i = float(np.asarray(inputs.r_m_w(15.0), dtype=float)) * r_m_0_target / r_m_known
+    r_m_r_15_i = float(np.asarray(inputs.r_m_r(15.0), dtype=float)) * r_m_0_target / r_m_known
+
+    def r_m_w_func(t_a: np.ndarray | float) -> np.ndarray:
+        t_a = np.asarray(t_a, dtype=float)
+        return r_m_w_15_i * 1.8 ** ((t_a - 15.0) / 10.0)
+
+    def r_m_r_func(t_a: np.ndarray | float) -> np.ndarray:
+        t_a = np.asarray(t_a, dtype=float)
+        return r_m_r_15_i * 1.98 ** ((t_a - 15.0) / 10.0)
+
+    adjusted_inputs = replace(inputs, r_m_w=r_m_w_func, r_m_r=r_m_r_func)
+
+    search_grid = np.logspace(-10, 10, 5)
+    previous_bounds: tuple[float, float] | None = None
+    best_result: tuple[float, float, float, float, float, float] | None = None
+
+    for _ in range(max_iters):
+        objective_vec = np.full(search_grid.shape, np.nan, dtype=float)
+        result_vec: list[tuple[float, float, float, float, float, float] | None] = [None] * search_grid.size
+
+        for idx, mult_phi in enumerate(search_grid):
+            result = steady_state_nsc_and_cue(
+                inputs=adjusted_inputs,
+                lambda_wue_vec=lambda_wue_vec,
+                g0_vec=mult_phi * g0_vec,
+                d_g0_d_e_vec=mult_phi * d_g0_d_e_vec,
+                a_n_vec=a_n_vec,
+                e_vec=e_vec,
+                g_c_vec=g_c_vec,
+                vpd_vec=vpd_vec,
+                psi_s_vec=psi_s_vec,
+                psi_rc_vec=psi_rc_vec,
+            )
+
+            g0_ss = float(result[3])
+            objective_vec[idx] = (g0_ss - g0_known) / g0_known
+            result_vec[idx] = (
+                float(mult_phi),
+                float(result[9]),
+                float(result[2]),
+                float(result[10]),
+                g0_ss,
+                float(result[4]),
+            )
+
+        finite_mask = np.isfinite(objective_vec)
+        if not np.any(finite_mask):
+            raise RuntimeError("Steady-state inversion search found only NaN branches")
+
+        best_idx = int(np.nanargmin(np.abs(objective_vec)))
+        best_result = result_vec[best_idx]
+        assert best_result is not None
+
+        if np.any(np.abs(objective_vec[finite_mask]) < 3e-3):
+            break
+
+        bounds_span = abs(search_grid[-1] - search_grid[0]) / search_grid[0]
+        if bounds_span < 1e-2:
+            break
+
+        finite_objective = objective_vec[finite_mask]
+        if np.nanmax(finite_objective) < 0 or np.nanmin(finite_objective) > 0:
+            raise RuntimeError("Steady-state inversion search lost a sign change")
+
+        sign_change_idx = [
+            idx
+            for idx in range(search_grid.size - 1)
+            if np.isfinite(objective_vec[idx])
+            and np.isfinite(objective_vec[idx + 1])
+            and np.sign(objective_vec[idx]) != np.sign(objective_vec[idx + 1])
+        ]
+        if not sign_change_idx:
+            raise RuntimeError("Steady-state inversion search could not bracket the root")
+
+        pivot_idx = min(sign_change_idx, key=lambda idx: abs(objective_vec[idx]))
+        new_bounds = (float(search_grid[pivot_idx]), float(search_grid[pivot_idx + 1]))
+        if previous_bounds == new_bounds:
+            raise RuntimeError("Steady-state inversion search bounds stopped shrinking")
+
+        previous_bounds = new_bounds
+        search_grid = np.logspace(np.log10(new_bounds[0]), np.log10(new_bounds[1]), search_grid.size)
+
+    if best_result is None:
+        raise RuntimeError("Steady-state inversion search failed to produce a result")
+
+    return best_result

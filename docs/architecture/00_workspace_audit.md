@@ -607,3 +607,9 @@ Slice 093:
 - target: `docs/architecture/review/matlab-source-parity-audit-note.md`
 - scope: direct MATLAB-to-Python parity audit that classifies each core source as covered, replaced, out-of-scope, or still missing
 - excluded: broad new implementation before bounded gaps are isolated
+
+Slice 094:
+- source: `GOSM/example/FUNCTION_Solve_mult_phi_given_assumed_NSC.m`
+- target: `src/stomatal_optimiaztion/domains/gosm/model/steady_state.py` and `tests/test_gosm_steady_state_inversion.py`
+- scope: bounded root `GOSM` helper seam covering the MATLAB-style `mult_phi` logspace search for a fixed assumed NSC state
+- excluded: `Growth_Opt_Stomata.m` and the figure/sensitivity scripts under `GOSM/example/`

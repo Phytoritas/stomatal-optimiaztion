@@ -778,8 +778,15 @@ The ninety-third slice reopens the architecture against the original MATLAB sour
 - classify core source as covered, replaced, out-of-scope, or still missing in the staged Python repo
 - reopen only two bounded helper gaps: the root `GOSM` steady-state inversion helper and the root `TDGM` initial mean-allocation helper
 
+## Slice 094: Root GOSM Steady-State Inversion Helper
+
+The ninety-fourth slice closes the last remaining core root `GOSM` MATLAB helper gap:
+- move `GOSM/example/FUNCTION_Solve_mult_phi_given_assumed_NSC.m` into the staged `domains/gosm/model/` package
+- preserve the MATLAB-style logspace search, respiration rescaling, and `E_vect = 0:1e-5:1e-2` regression contract
+- keep the seam helper-bounded and leave only the small supplementary root `TDGM` initial mean-allocation helper gap open
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate the reopened root `GOSM` steady-state inversion helper as the next bounded slice
+3. migrate the reopened root `TDGM` initial mean-allocation helper as the next bounded slice
