@@ -44,7 +44,7 @@ Legacy source profile:
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
 - Gate C. Validation plan ready through slice 061
-- Gate D. Bounded slices 001 through 024 approved for THORP, slices 025 through 045 approved for TOMATO, and slices 046 through 061 approved for `load-cell-data`
+- Gate D. Bounded slices 001 through 024 approved for THORP, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -413,3 +413,9 @@ Slice 061:
 - target: `scripts/preprocess_compare_server.py` and `tests/test_load_cell_preprocess_compare_server_script.py`
 - scope: bounded `load-cell-data` local server surface covering health/export/preprocess/cancel APIs, transpiration export computation, static viewer serving, and repo-level CLI defaults
 - excluded: `src/build_preprocess_compare_viewer.py`, viewer asset generation, and broader web-framework adoption
+
+Slice 062:
+- source: `load-cell-data/src/build_preprocess_compare_viewer.py`
+- target: `scripts/build_preprocess_compare_viewer.py` and `tests/test_load_cell_build_preprocess_compare_viewer_script.py`
+- scope: bounded `load-cell-data` static viewer-builder surface covering canonical day discovery, transpiration fallback loading, static asset writing, and per-day JSON generation
+- excluded: broader UI redesign, new frontend packaging, and next-domain seam selection

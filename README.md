@@ -86,6 +86,7 @@ poetry run ruff check .
 - `load-cell-data` real-data benchmark harness seam is migrated as slice 059.
 - `load-cell-data` incremental preprocess harness seam is migrated as slice 060.
 - `load-cell-data` preprocess-compare local server seam is migrated as slice 061.
+- `load-cell-data` static preprocess-compare viewer seam is migrated as slice 062.
 
 ## Next validation
-- Audit the `load-cell-data` static preprocess-compare viewer seam at `src/build_preprocess_compare_viewer.py`.
+- Re-audit the remaining legacy workspace outside `load-cell-data/src/` to select the next bounded seam.

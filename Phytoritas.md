@@ -28,4 +28,5 @@ Current status:
 - Slice 059 migrated: `load-cell-data` real-data benchmark harness seam
 - Slice 060 migrated: `load-cell-data` incremental preprocess harness seam
 - Slice 061 migrated: `load-cell-data` preprocess-compare local server seam
-- Next blocked seam: `load-cell-data` static preprocess-compare viewer seam at `src/build_preprocess_compare_viewer.py`
+- Slice 062 migrated: `load-cell-data` static preprocess-compare viewer seam
+- Next blocked seam: post-`load-cell-data` workspace re-audit to select the next bounded legacy seam
