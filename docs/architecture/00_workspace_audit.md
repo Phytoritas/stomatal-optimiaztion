@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 069
-- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slice 069 recorded as THORP package-level smoke evidence, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
+- Gate C. Validation plan ready through slice 070
+- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slice 069 recorded as THORP package-level smoke evidence, slice 070 recorded as the cross-domain utility comparison decision, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -461,3 +461,9 @@ Slice 069:
 - target: `tests/test_smoke.py` and `docs/architecture/review/thorp-package-smoke-validation-note.md`
 - scope: bounded package-level validation evidence covering root THORP imports, compatibility wrapper presence, and smoke-suite limits
 - excluded: deeper numerical regression redesign and cross-domain shared utility decisions
+
+Slice 070:
+- source: migrated THORP, TOMATO `tTHORP`, and `load_cell` utility-like seams
+- target: `docs/architecture/system/second-domain-utility-comparison-note.md`
+- scope: bounded architecture decision note comparing utility pressure across domains and deciding whether `shared/` should stay blocked
+- excluded: new shared code extraction and fresh domain refactors

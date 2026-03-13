@@ -596,8 +596,16 @@ The sixty-ninth slice closes the remaining THORP validation gap:
 - keep the slice validation-bounded without widening into new runtime abstractions
 - leave the second-domain comparison note as the next artifact
 
+## Slice 070: Second-Domain Utility Comparison
+
+The seventieth slice closes the final open architecture gap:
+- compare utility-like seams across THORP, TOMATO `tTHORP`, and `load_cell`
+- record whether a shared utility layer is justified today
+- keep `shared/` blocked because the current contracts, dependencies, and reuse pressure still diverge by domain
+- leave the architecture in monitor mode until a new structural uncertainty appears
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the second-domain comparison note as the next artifact
+3. monitor for new structural uncertainty before opening another slice
