@@ -792,8 +792,16 @@ The ninety-fifth slice closes the last helper gap reopened by the MATLAB parity 
 - preserve the fixed stem-leaf-root split and biomass-proportional horizontal/vertical root partitioning contract
 - keep the seam helper-bounded and leave the current THORP/GOSM/TDGM model-kernel wave parity-complete within the documented audit scope
 
+## Slice 096: Legacy Example Parity Audit
+
+The ninety-sixth slice reopens the architecture beyond model kernels:
+- audit the original `THORP`, `GOSM`, and `TDGM` example and figure assets directly
+- distinguish closed model-kernel parity from still-open example and manuscript figure workflows
+- define Plotkit-style workflow parity in terms of numeric series, panel contract, and reproducible exports rather than MATLAB pixel identity
+- leave root `GOSM` control example reproduction as the next bounded example slice
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. stay in monitor mode unless a new MATLAB parity mismatch or workflow-reproduction goal is opened
+3. land root `GOSM` control example reproduction as the first Plotkit-style publication-figure slice
