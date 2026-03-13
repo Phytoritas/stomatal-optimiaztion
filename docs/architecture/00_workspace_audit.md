@@ -601,3 +601,9 @@ Slice 092:
 - target: `src/stomatal_optimiaztion/domains/tdgm/thorp_g_postprocess.py` and `tests/test_tdgm_thorp_g_postprocess.py`
 - scope: bounded root `TDGM` runtime bridge seam covering MATLAB-output loading, forcing-temperature alignment, and synthetic THORP-G postprocess reconstruction
 - excluded: external example control datasets, fresh THORP execution, and broader workflow tooling
+
+Slice 093:
+- source: original MATLAB source inventories under `THORP/example/`, `GOSM/example/`, and `TDGM/example/`
+- target: `docs/architecture/review/matlab-source-parity-audit-note.md`
+- scope: direct MATLAB-to-Python parity audit that classifies each core source as covered, replaced, out-of-scope, or still missing
+- excluded: broad new implementation before bounded gaps are isolated

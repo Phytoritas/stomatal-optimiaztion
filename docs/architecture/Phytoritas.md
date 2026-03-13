@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 092 restored the TDGM THORP-G postprocess bridge and closed the current root TDGM migration wave
+- Current phase: slice 093 re-opened the architecture against the original MATLAB source and isolated two remaining bounded helper gaps in root GOSM and TDGM
 
 ## Scope
 
@@ -100,6 +100,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 ## Immediate Next Actions
 
 1. keep the current validation gates green as root `GOSM` and `TDGM` slices land
-2. keep the validation gates green while the current root `TDGM` wave remains closed
-3. reopen the gap register only when a new remaining legacy seam or structural uncertainty is identified
+2. close the reopened root `GOSM` helper gap at `GOSM/example/FUNCTION_Solve_mult_phi_given_assumed_NSC.m`
+3. close the reopened root `TDGM` helper gap at `TDGM/example/Supplementary Code __THORP_code_v1.4/FUNCTION_Initial_Mean_Allocation_Fractions.m`
 4. keep shared utilities blocked until a concrete cross-domain helper emerges
