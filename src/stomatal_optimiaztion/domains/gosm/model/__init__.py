@@ -20,6 +20,10 @@ from stomatal_optimiaztion.domains.gosm.model.future_work import (
     growth_from_turgor_profile,
 )
 from stomatal_optimiaztion.domains.gosm.model.hydraulics import hydraulics
+from stomatal_optimiaztion.domains.gosm.model.instantaneous import (
+    InstantaneousSolution,
+    update_carbon_assimilation_growth,
+)
 from stomatal_optimiaztion.domains.gosm.model.npp_gpp import (
     steady_state_npp_gpp_ratio,
     target_npp_gpp_ratio,
@@ -56,6 +60,7 @@ __all__ = [
     "conductances_and_temperature",
     "growth_from_turgor_profile",
     "hydraulics",
+    "InstantaneousSolution",
     "eta_dot",
     "eta_from_marginals",
     "augmented_lagrangian",
@@ -82,4 +87,5 @@ __all__ = [
     "stomata_prentice_2014",
     "stomata_sperry_2017",
     "stomata_wang_2020",
+    "update_carbon_assimilation_growth",
 ]

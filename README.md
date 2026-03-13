@@ -110,6 +110,7 @@ poetry run ruff check .
 - Root GOSM runtime pipeline seam is migrated as slice 083.
 - Root GOSM future-work helper seam is migrated as slice 084.
 - Root GOSM stomatal-model comparison seam is migrated as slice 085.
+- Root GOSM instantaneous optimum seam is migrated as slice 086.
 
 ## Next validation
-- Migrate the root GOSM instantaneous optimum seam.
+- Migrate the root GOSM steady-state helper seam.
