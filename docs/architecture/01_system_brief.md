@@ -638,8 +638,15 @@ The seventy-third slice opens the first bounded root `GOSM` numerical seam:
 - preserve `BaselineInputs.matlab_default()`, legacy alias properties, and bundled callable parameter functions
 - keep the seam parameter-bounded and leave runtime kernels under `gosm.model` blocked
 
+## Slice 074: Root GOSM Radiation Kernel
+
+The seventy-fourth slice opens the first bounded root `GOSM` runtime kernel:
+- move `GOSM/src/gosm/model/radiation.py` into the staged `domains/gosm/model/` package
+- preserve `Eq.S3.2` tagging, zenith-angle clamping, and the negative-radiation guardrail
+- keep the seam runtime-kernel-bounded and leave `allometry.py`, `hydraulics.py`, and higher-order orchestration blocked
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the GOSM parameter-defaults seam, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate `GOSM/src/gosm/model/radiation.py` as the first bounded GOSM runtime kernel
+3. migrate `GOSM/src/gosm/model/allometry.py` as the next bounded GOSM structural seam

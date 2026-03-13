@@ -45,8 +45,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 073
-- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slice 069 recorded as THORP package-level smoke evidence, slice 070 recorded as the cross-domain utility comparison decision, slices 071 through 073 approved for root `GOSM` and `TDGM` package foundations plus the first GOSM numerical seam, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
+- Gate C. Validation plan ready through slice 074
+- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slice 069 recorded as THORP package-level smoke evidence, slice 070 recorded as the cross-domain utility comparison decision, slices 071 through 074 approved for root `GOSM` and `TDGM` foundations plus the first GOSM runtime seams, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -487,3 +487,9 @@ Slice 073:
 - target: `src/stomatal_optimiaztion/domains/gosm/params/`, root GOSM package exports, and `tests/test_gosm_params_defaults.py`
 - scope: bounded root `GOSM` numerical seam covering `BaselineInputs.matlab_default()`, legacy alias properties, and bundled callable parameter functions
 - excluded: runtime modules under `GOSM/src/gosm/model/`, example adapters, and root `TDGM` runtime seams
+
+Slice 074:
+- source: `GOSM/src/gosm/model/radiation.py` and `GOSM/src/gosm/model/__init__.py`
+- target: `src/stomatal_optimiaztion/domains/gosm/model/` and `tests/test_gosm_radiation.py`
+- scope: bounded root `GOSM` runtime seam covering leaf-area-specific absorbed-radiation computation, zenith-angle clamping, negative-radiation guardrails, and equation-tag preservation
+- excluded: `GOSM/src/gosm/model/allometry.py`, wider `gosm.model` exports, and downstream hydraulics or pipeline seams
