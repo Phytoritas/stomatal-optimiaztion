@@ -3,6 +3,7 @@ from stomatal_optimiaztion.domains.gosm.implements import (
     implements,
     qualname,
 )
+from stomatal_optimiaztion.domains.gosm.utils.math import polylog2
 from stomatal_optimiaztion.domains.gosm.model_card import (
     equation_id_set,
     iter_equation_refs,
@@ -28,6 +29,7 @@ __all__ = [
     "load_model_card",
     "model_card_dir",
     "model_card_document_names",
+    "polylog2",
     "qualname",
     "require_equation_ids",
 ]

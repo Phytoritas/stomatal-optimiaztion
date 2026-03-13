@@ -529,3 +529,9 @@ Slice 080:
 - target: `src/stomatal_optimiaztion/domains/gosm/model/` and `tests/test_gosm_carbon_assimilation.py`
 - scope: bounded root `GOSM` runtime seam covering the bounded assimilation solve, respiratory terms, and marginal-WUE calculation plus equation-tag preservation
 - excluded: `GOSM/src/gosm/model/hydraulics.py`, full pipeline orchestration, and root `TDGM` runtime seams
+
+Slice 081:
+- source: `GOSM/src/gosm/utils/math.py` and `GOSM/src/gosm/utils/__init__.py`
+- target: `src/stomatal_optimiaztion/domains/gosm/utils/` and `tests/test_gosm_math.py`
+- scope: bounded root `GOSM` utility seam covering `polylog2()` and the `gosm.utils` export surface required by later hydraulics formulas
+- excluded: `GOSM/src/gosm/model/hydraulics.py`, wider runtime kernels, and root `TDGM` runtime seams
