@@ -729,8 +729,15 @@ The eighty-sixth slice restores the fixed-eta, fixed-NSC operating-point helper:
 - preserve `Eq.S2.4a` and `Eq.S2.4b` tagging plus the zero-crossing interpolation branch, all-negative-conductance branch, and lambda-zero bisection fallback
 - keep the seam control-bounded and leave `steady_state.py` as the next analysis seam
 
+## Slice 087: Root GOSM Steady-State Helper
+
+The eighty-seventh slice closes the remaining root `GOSM` control-analysis helper layer:
+- move `GOSM/src/gosm/model/steady_state.py` into the staged `domains/gosm/model/` package
+- preserve `Eq.S1.9` and `Eq.S2.4b` tagging plus the vectorized Newton branch, quadratic NSC shortcut, and no-crossing/no-anchor contracts
+- keep the seam analysis-bounded and leave root `TDGM` `turgor_growth.py` as the next runtime seam
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate `GOSM/src/gosm/model/steady_state.py` as the next bounded GOSM analysis seam
+3. migrate `TDGM/src/tdgm/turgor_growth.py` as the next bounded root TDGM runtime seam
