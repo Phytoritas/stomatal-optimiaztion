@@ -500,8 +500,16 @@ The fifty-seventh slice opens the next bounded `load-cell-data` seam:
 - reconnect the migrated `run_all` seam to the concrete preprocessing implementation without widening into synthetic validation harnesses in the same slice
 - leave `load-cell-data/loadcell_pipeline/synthetic_test.py` blocked as the next seam
 
+## Slice 058: load-cell-data Synthetic Validation Harness
+
+The fifty-eighth slice opens the next bounded `load-cell-data` seam:
+- move `load-cell-data/loadcell_pipeline/synthetic_test.py` into the staged `domains/load_cell` package
+- preserve deterministic synthetic dataset generation, truth totals, and end-to-end tolerance checks over the migrated `run_pipeline()` surface
+- keep the seam validation-harness-bounded without widening into repo-level real-data benchmarks in the same slice
+- leave `load-cell-data/real_data_benchmark.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first twelve `load-cell-data` bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first thirteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/synthetic_test.py`
+3. prepare the next `load-cell-data` source audit for `real_data_benchmark.py`

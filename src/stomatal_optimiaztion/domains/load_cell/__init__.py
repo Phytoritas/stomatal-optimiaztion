@@ -47,6 +47,11 @@ from stomatal_optimiaztion.domains.load_cell.thresholds import (
 from stomatal_optimiaztion.domains.load_cell.sweep import (
     run_sweep,
 )
+from stomatal_optimiaztion.domains.load_cell.synthetic_test import (
+    generate_synthetic_dataset,
+    main as synthetic_test_main,
+    run_synthetic_pipeline,
+)
 from stomatal_optimiaztion.domains.load_cell.workflow import (
     config_signature,
     run_workflow,
@@ -70,6 +75,7 @@ __all__ = [
     "main",
     "merge_duplicate_timestamps",
     "PipelineConfig",
+    "generate_synthetic_dataset",
     "label_points_by_derivative",
     "label_points_by_derivative_hysteresis",
     "resample_flux_timeseries",
@@ -83,9 +89,11 @@ __all__ = [
     "run_all",
     "run_pipeline",
     "run_sweep",
+    "run_synthetic_pipeline",
     "run_workflow",
     "smooth_weight",
     "standardize_almemo_columns",
+    "synthetic_test_main",
     "write_multi_resolution_results",
     "write_results",
 ]

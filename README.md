@@ -82,6 +82,7 @@ poetry run ruff check .
 - `load-cell-data` sweep seam is migrated as slice 055.
 - `load-cell-data` end-to-end runner seam is migrated as slice 056.
 - `load-cell-data` raw ALMEMO preprocessing seam is migrated as slice 057.
+- `load-cell-data` synthetic validation harness seam is migrated as slice 058.
 
 ## Next validation
-- Audit the `load-cell-data` synthetic validation harness seam at `loadcell_pipeline/synthetic_test.py`.
+- Audit the `load-cell-data` real-data benchmark harness seam at `real_data_benchmark.py`.
