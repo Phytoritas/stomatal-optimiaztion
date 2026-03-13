@@ -65,4 +65,5 @@ Current status:
 - Slice 096 recorded: legacy example and figure parity audit for root THORP, GOSM, and TDGM
 - Slice 097 migrated: root GOSM control example figure workflow
 - Slice 098 migrated: root GOSM sensitivity and manuscript figure workflows
-- Current open architecture gaps: `G-098` and `G-099` for the remaining example and figure workflow wave
+- Slice 099 migrated: root THORP main-text example figure workflows plus a narrow shared Plotkit bundle helper
+- Current open architecture gap: `G-099` for the remaining root TDGM example and figure workflow wave

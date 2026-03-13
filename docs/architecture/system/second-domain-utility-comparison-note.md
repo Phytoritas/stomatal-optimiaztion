@@ -6,38 +6,38 @@ Decide whether the migrated repository now justifies a shared cross-domain utili
 
 ## Domains Compared
 
+### GOSM
+
+- `domains/gosm/examples/control_figure.py`, `sensitivity_figures.py`, and `manuscript_panels.py` already needed a figure-bundle contract with CSV/spec/tokens/metadata exports plus fixed digest evidence.
+- the original GOSM implementation kept that helper layer domain-local in `domains/gosm/examples/_plotkit.py`.
+
 ### THORP
 
-- `domains/thorp/forcing.py` is a domain runtime seam that reconstructs solar-angle and repeated forcing fields from THORP-specific netCDF structure.
-- `domains/thorp/matlab_io.py` is a legacy MATLAB compatibility seam tied to THORP output contracts.
-- `domains/thorp/params.py` is a flat physiology/config compatibility surface for THORP callers.
+- `domains/thorp/examples/figure_workflows.py` now reproduces five legacy MATLAB main-text figures and needs the same bundle contract as GOSM.
+- `domains/thorp/examples/adapter.py` and `empirical.py` are still THORP-specific and should remain domain-local.
 
-### TOMATO tTHORP
+### Non-plotting domains
 
-- `domains/tomato/tthorp/core/io.py` handles config inheritance, YAML loading, JSON metadata emission, and output-directory setup for TOMATO pipelines.
-- `domains/tomato/tthorp/core/util_units.py` is a very small PAR conversion utility scoped to TOMATO feature building.
-
-### load_cell
-
-- `domains/load_cell/config.py` is a pipeline-config loader for CSV preprocessing and event-detection parameters.
-- `domains/load_cell/io.py` is a pandas-heavy ingestion/output seam for 1-second reindexing, interpolation flags, and multi-resolution artifact writing.
+- `domains/tomato/tthorp/core/io.py`, `domains/load_cell/io.py`, and `domains/thorp/forcing.py` still solve domain-specific runtime or ETL contracts rather than cross-domain helper contracts.
 
 ## Comparison
 
-1. The names overlap at a superficial level, but the contracts do not. THORP `forcing.py` and TOMATO `core/io.py` both touch files, yet one is model-runtime forcing reconstruction and the other is pipeline-config orchestration.
-2. The dependencies do not align. THORP utility-like seams are built around `netCDF4`, `scipy.io`, and physiological parameter objects, while `load_cell` utilities are pandas-centered ETL seams and TOMATO utilities are YAML/JSON pipeline helpers.
-3. The reuse pressure is still weak. Only TOMATO currently needs `ensure_dir` and config merge helpers; only load-cell needs tabular multi-resolution writers; only THORP needs MATLAB and forcing compatibility layers.
+1. The original "do not share utilities yet" decision stayed correct for runtime IO/config helpers, because those contracts still do not align across THORP, TOMATO, and `load_cell`.
+2. The reopened example-parity wave created a new cross-domain overlap: both root `GOSM` and root `THORP` now need the same figure-bundle helper primitives for Plotkit-style exports.
+3. That overlap is narrow and concrete. The shared concepts are only `FigureBundleArtifacts`, YAML loading, axis theming, output-path resolution, and frame digest hashing.
 
 ## Decision
 
-Do not introduce `src/stomatal_optimiaztion/shared/` yet.
+Do not introduce a broad `src/stomatal_optimiaztion/shared/` package layer yet.
 
-Keep utility-like seams inside their current domains until at least one concrete helper is used by two migrated domains without adapter glue or contract distortion.
+Introduce only a narrow shared plotting helper module, `src/stomatal_optimiaztion/shared_plotkit.py`, because the second domain has now crossed the reopen trigger with an identical figure-bundle contract.
+
+Keep all non-plotting utility-like seams inside their domains until a second concrete reuse case appears without adapter glue or contract distortion.
 
 ## Reopen Trigger
 
 Revisit a shared utility layer only if one of the following becomes true:
 
-- the same helper implementation is copied or reimplemented across two migrated domains
+- a second non-plotting helper implementation is copied or reimplemented across two migrated domains
 - a new cross-domain adapter repeatedly normalizes the same file/config contract
-- tests start requiring duplicate fixtures or assertions for one identical helper concept
+- the current shared plotting helper starts attracting unrelated config, IO, or runtime responsibilities

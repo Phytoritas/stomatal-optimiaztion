@@ -51,7 +51,7 @@ Reference figure assets found in the legacy workspace:
 
 Current repo status:
 - the root `thorp` runtime is migrated
-- the repo does not yet provide a root `THORP` example-data builder or Plotkit-style figure workflow
+- the repo now provides a root `THORP` example-data adapter plus Plotkit-style figure workflows for the five main-text figures
 
 ### Root GOSM example assets
 
@@ -72,7 +72,7 @@ Reference data and figure assets found in the legacy workspace:
 
 Current repo status:
 - the root `gosm` runtime is migrated
-- the repo does not yet provide a root `GOSM` example-data builder, manuscript-figure builder, or Plotkit-style publication figure workflow
+- the repo now provides root `GOSM` control, sensitivity, and manuscript Plotkit-style figure workflows with digest-locked metadata
 
 ### Root TDGM example assets
 
@@ -89,16 +89,17 @@ Current repo status:
 ## Findings
 
 1. The earlier MATLAB source parity audit was correct for model kernels, but it explicitly left the example and manuscript figure workflows outside scope.
-2. The user has now reopened the program with a broader workflow-reproduction goal, so the gap register must distinguish model parity from example parity.
-3. `GOSM` is the best first bounded example slice because it has both a reusable control `.mat` artifact and a legacy figure export that can anchor numeric-series parity.
+2. The user reopened the program with a broader workflow-reproduction goal, so the gap register had to distinguish model parity from example parity.
+3. The root `GOSM` wave provided the first reusable Plotkit-style figure-bundle contract, and root `THORP` confirmed that the contract is now cross-domain rather than GOSM-local.
+4. Root `THORP` example parity is now closed against the real legacy `.mat` payloads plus the empirical tables embedded in the original MATLAB scripts.
 
 ## Open Gaps
 
-1. Root `THORP` example figure workflows under `PLOT_data.m` and `PLOT_data_*.m`.
-2. Root `TDGM` supplementary analysis and THORP-G figure workflows under both example directories.
+1. Root `TDGM` supplementary analysis and THORP-G figure workflows under both example directories.
 
 ## Next Actions
 
 1. `slice 097` closed the root `GOSM` control-example figure workflow with Plotkit-style, spec-first exports
 2. `slice 098` closed the remaining root `GOSM` sensitivity and manuscript figure workflows
-3. move next to root `THORP` example figure workflows, then root `TDGM`
+3. `slice 099` closed the root `THORP` main-text example figure workflows with real legacy-data digest locking and visual spot checks
+4. move next to root `TDGM`
