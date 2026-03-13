@@ -116,6 +116,7 @@ poetry run ruff check .
 - Root TDGM phloem-transport seam is migrated as slice 089.
 - Root TDGM coupling seam is migrated as slice 090.
 - Root TDGM equation-registry seam is migrated as slice 091.
+- Root TDGM THORP-G postprocess seam is migrated as slice 092.
 
 ## Next validation
-- Migrate the root TDGM THORP-G postprocess seam.
+- Re-audit remaining legacy source for the next bounded architecture wave.

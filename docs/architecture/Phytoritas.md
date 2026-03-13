@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 091 restored the TDGM equation-registry assembly and left the THORP-G postprocess seam as the next bounded gap
+- Current phase: slice 092 restored the TDGM THORP-G postprocess bridge and closed the current root TDGM migration wave
 
 ## Scope
 
@@ -100,6 +100,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 ## Immediate Next Actions
 
 1. keep the current validation gates green as root `GOSM` and `TDGM` slices land
-2. continue from the equation-registry helper into the TDGM THORP-G postprocess seam at `TDGM/src/tdgm/thorp_g_postprocess.py`
-3. keep using the same package-first discipline as the remaining root `TDGM` runtime seams land
+2. keep the validation gates green while the current root `TDGM` wave remains closed
+3. reopen the gap register only when a new remaining legacy seam or structural uncertainty is identified
 4. keep shared utilities blocked until a concrete cross-domain helper emerges

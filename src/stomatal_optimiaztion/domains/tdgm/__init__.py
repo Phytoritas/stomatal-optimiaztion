@@ -33,6 +33,15 @@ from stomatal_optimiaztion.domains.tdgm.coupling import (
     realized_growth_rate,
     tree_volume_from_carbon_pools,
 )
+from stomatal_optimiaztion.domains.tdgm.thorp_g_postprocess import (
+    ThorpGCouplingPostprocessOutputs,
+    ThorpGMatOutputs,
+    forcing_t_a_at_times,
+    load_thorp_g_mat_outputs,
+    phloem_sucrose_concentration_from_psi_s,
+    postprocess_thorp_g_coupling,
+    temperature_limitation_growth,
+)
 from stomatal_optimiaztion.domains.tdgm.turgor_growth import (
     turgor_driven_growth_rate,
 )
@@ -63,5 +72,12 @@ __all__ = [
     "nsc_limitation_growth",
     "realized_growth_rate",
     "tree_volume_from_carbon_pools",
+    "ThorpGCouplingPostprocessOutputs",
+    "ThorpGMatOutputs",
+    "forcing_t_a_at_times",
+    "load_thorp_g_mat_outputs",
+    "phloem_sucrose_concentration_from_psi_s",
+    "postprocess_thorp_g_coupling",
+    "temperature_limitation_growth",
     "turgor_driven_growth_rate",
 ]

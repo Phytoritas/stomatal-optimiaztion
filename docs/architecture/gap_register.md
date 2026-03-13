@@ -2,6 +2,6 @@
 
 | ID | Gap | Impact | Required Artifact |
 | --- | --- | --- | --- |
-| G-092 | Root TDGM THORP-G postprocess seam is still missing from the migrated repo | Blocks the final TDGM runtime bridge that derives coupling terms from stored THORP-G control outputs and closes the current root TDGM migration wave | `docs/architecture/architecture/module_specs/module-092-tdgm-thorp-g-postprocess.md` |
+| None | No open architecture gaps remain in the current audit | The root `TDGM` wave is closed after the THORP-G postprocess bridge landed; keep monitor mode until a new bounded uncertainty appears | `n/a` |
 
-Current open gaps: G-092.
+Current open gaps: none.
