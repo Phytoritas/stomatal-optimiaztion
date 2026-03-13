@@ -1,0 +1,68 @@
+version: 1
+meta:
+  id: tdgm_thorp_g_rerun_parity_case
+  title: Root TDGM THORP-G rerun parity against legacy MATLAB
+  journal_target: Nature Plants
+  family: rerun_parity
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_overlay
+  description: Overlay the current Python TDGM THORP-G rerun against a legacy MATLAB scenario.
+layout:
+  rows: 2
+  cols: 2
+  hspace: 0.30
+  wspace: 0.28
+panel_order:
+  - height
+  - diameter
+  - assimilation
+  - transpiration
+panels:
+  height:
+    title: Height
+    x_label: Time [day]
+    y_label: Height, H [m]
+    scale: linear
+    y_padding_fraction: 0.08
+  diameter:
+    title: Stem diameter
+    x_label: Time [day]
+    y_label: Stem diameter, D [m]
+    scale: linear
+    y_padding_fraction: 0.08
+  assimilation:
+    title: Net assimilation
+    x_label: Time [day]
+    y_label: Net assimilation, A_n [umol m^-2 s^-1]
+    scale: linear
+    y_padding_fraction: 0.10
+  transpiration:
+    title: Transpiration
+    x_label: Time [day]
+    y_label: Transpiration, E [mmol m^-2 s^-1]
+    scale: linear
+    y_padding_fraction: 0.10
+styling:
+  sources:
+    python:
+      label: Python rerun
+      color: "#005F73"
+      linestyle: "-"
+      marker: "o"
+      linewidth_pt: 1.9
+    legacy:
+      label: Legacy MATLAB
+      color: "#8D99AE"
+      linestyle: "--"
+      marker: "s"
+      linewidth_pt: 1.5
+figure:
+  width_mm: 180
+  height_mm: 128
+theme:
+  name: nature_plants_like
+  tokens: ../themes/nature_plants_like_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false

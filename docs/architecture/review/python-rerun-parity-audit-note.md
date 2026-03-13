@@ -32,7 +32,11 @@ Out of scope for this note:
 3. Root `GOSM` reruns are now warning-free for the fast control and sensitivity paths. The rerun regressions promote `RuntimeWarning` to test failures, so the current `hydraulics`, `conductance_temperature`, stomata-model, and example helper branches no longer emit transient NumPy warnings during parity checks.
 4. Root `GOSM` also exposes the legacy `imag` conductance-loss rerun path. That branch remains opt-in behind `GOSM_RUN_SLOW=1` to keep the default validation loop bounded, and it was executed under `warnings-as-errors` to confirm that the slower path still reproduces the legacy MATLAB payload without emitting `RuntimeWarning`.
 5. Root `TDGM` rerun parity required restoring the legacy `tdgm.thorp_g` runtime surface. With that seam restored, the current Python runtime matches ten representative THORP-G MATLAB scenarios for the time axis and the first three stored points after `max_steps=60`.
-6. Within the documented fast-rerun scope, no open root architecture gap remains.
+6. Root rerun parity is now directly inspectable without reading pytest internals. `scripts/render_root_rerun_parity_figures.py` renders Plotkit-style overlay bundles under `out/rerun_parity/` for:
+   - `THORP` fast control parity
+   - `GOSM` control plus fast sensitivity cases
+   - `TDGM` THORP-G fast scenario set
+7. Within the documented fast-rerun scope, no open root architecture gap remains.
 
 ## Validation Executed
 
@@ -45,8 +49,10 @@ Out of scope for this note:
 - result: `1 passed, 1 deselected`
 - `powershell -Command "$env:GOSM_RUN_SLOW='1'; .\.venv\Scripts\python.exe -m pytest tests/test_gosm_rerun_sensitivity_p_soil_min.py -k imag -W error::RuntimeWarning"`
 - result: `1 passed, 1 deselected`
+- `.\.venv\Scripts\python.exe scripts\render_root_rerun_parity_figures.py --output-dir out/rerun_parity`
+- result: `THORP`, `GOSM`, and `TDGM` comparison bundles written under `out/rerun_parity/` with PNG, PDF, CSV, spec, resolved spec, tokens, and metadata artifacts
 - `.\.venv\Scripts\python.exe -m pytest`
-- result: `428 passed, 1 skipped`
+- result: `432 passed, 1 skipped`
 - `.\.venv\Scripts\ruff.exe check .`
 - result: `passed`
 
@@ -55,9 +61,11 @@ Out of scope for this note:
 - root `THORP`: direct Python rerun vs legacy MATLAB output comparison available and passing
 - root `GOSM`: direct Python rerun vs legacy MATLAB output comparison available and passing for the default fast control and sensitivity set, warning-free under `warnings-as-errors`, with the slower `imag` conductance-loss branch manually verified the same way
 - root `TDGM`: direct Python rerun vs legacy MATLAB output comparison available and passing for the fast THORP-G regression set
+- root rerun parity graph bundles: reproducible Plotkit-style overlays available under `out/rerun_parity/`
 
 ## Next Actions
 
 1. keep the rerun parity tests green whenever root hydraulic or growth kernels change
 2. rerun the opt-in slow `GOSM` `imag` conductance-loss branch when touching root `gosm` hydraulics or stomatal-model logic
-3. leave the architecture in monitor mode until a new bounded rerun or workflow gap appears
+3. rerender `scripts/render_root_rerun_parity_figures.py` whenever root rerun kernels or example helpers change
+4. leave the architecture in monitor mode until a new bounded rerun or workflow gap appears
