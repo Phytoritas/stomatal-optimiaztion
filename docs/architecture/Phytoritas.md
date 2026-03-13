@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 059 completed and slice 060 planning
+- Current phase: slice 060 completed and slice 061 planning
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. audit the `load-cell-data` preprocess-compare incremental tooling seam at `src/preprocess_incremental.py`
-2. preserve the config-plus-IO-plus-aggregation-plus-thresholds-plus-preprocessing-plus-events-plus-fluxes-plus-cli-plus-workflow-plus-sweep-plus-runner-plus-raw-preprocess-plus-synthetic-harness-plus-real-benchmark boundary while deciding how compare-viewer preprocessing tooling should land on the migrated pipeline
-3. keep `load-cell-data` blocked until its source audit is deeper
+1. audit the `load-cell-data` preprocess-compare local server seam at `src/preprocess_compare_server.py`
+2. preserve the config-plus-IO-plus-aggregation-plus-thresholds-plus-preprocessing-plus-events-plus-fluxes-plus-cli-plus-workflow-plus-sweep-plus-runner-plus-raw-preprocess-plus-synthetic-harness-plus-real-benchmark-plus-incremental-preprocess boundary while deciding how the compare viewer and export API should land on the migrated repo
+3. keep `load-cell-data` blocked until its server-plus-viewer source audit is deeper

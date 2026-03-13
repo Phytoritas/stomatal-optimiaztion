@@ -516,8 +516,16 @@ The fifty-ninth slice opens the next bounded `load-cell-data` seam:
 - keep the seam benchmark-harness-bounded without widening into preprocess-compare viewer/server tooling in the same slice
 - leave `load-cell-data/src/preprocess_incremental.py` blocked as the next seam
 
+## Slice 060: load-cell-data Incremental Preprocess Harness
+
+The sixtieth slice opens the next bounded `load-cell-data` seam:
+- move `load-cell-data/src/preprocess_incremental.py` into the repo-local `scripts/` surface
+- preserve marker-backed raw skip logic, canonical parquet upsert, transpiration parquet emission, optional viewer cache refresh, and repo-level CLI defaults
+- keep the seam incremental-tooling-bounded without widening into the preprocess-compare server or static viewer builder in the same slice
+- leave `load-cell-data/src/preprocess_compare_server.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first fourteen `load-cell-data` bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first fifteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next `load-cell-data` source audit for `src/preprocess_incremental.py`
+3. prepare the next `load-cell-data` source audit for `src/preprocess_compare_server.py`
