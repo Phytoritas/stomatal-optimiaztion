@@ -11,6 +11,7 @@ from stomatal_optimiaztion.domains.gosm.model_card import (
     model_card_document_names,
     require_equation_ids,
 )
+from stomatal_optimiaztion.domains.gosm.params import BaselineInputs
 from stomatal_optimiaztion.domains.gosm.traceability import (
     EquationMapping,
     build_mapping,
@@ -19,6 +20,7 @@ from stomatal_optimiaztion.domains.gosm.traceability import (
 
 __all__ = [
     "EquationMapping",
+    "BaselineInputs",
     "__version__",
     "build_mapping",
     "equation_id_set",

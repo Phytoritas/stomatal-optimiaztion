@@ -631,8 +631,15 @@ The seventy-second slice opens the parallel root `TDGM` package foundation:
 - preserve packaged equation-id access and decorator-based traceability metadata helpers
 - keep the seam package-foundation-bounded and leave PTM, turgor-growth, coupling, and THORP-G runtime imports blocked
 
+## Slice 073: Root GOSM Parameter Defaults
+
+The seventy-third slice opens the first bounded root `GOSM` numerical seam:
+- move `GOSM/src/gosm/params/defaults.py` into a staged `domains/gosm/params/` package
+- preserve `BaselineInputs.matlab_default()`, legacy alias properties, and bundled callable parameter functions
+- keep the seam parameter-bounded and leave runtime kernels under `gosm.model` blocked
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the GOSM parameter-defaults seam, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate `GOSM/src/gosm/params/defaults.py` as the first bounded numerical seam
+3. migrate `GOSM/src/gosm/model/radiation.py` as the first bounded GOSM runtime kernel

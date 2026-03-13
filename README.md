@@ -97,6 +97,7 @@ poetry run ruff check .
 - Second-domain utility comparison note is recorded as slice 070.
 - Root GOSM model-card and traceability foundation is migrated as slice 071.
 - Root TDGM model-card and traceability foundation is migrated as slice 072.
+- Root GOSM parameter-defaults seam is migrated as slice 073.
 
 ## Next validation
-- Migrate the root GOSM parameter-defaults seam.
+- Migrate the root GOSM radiation kernel seam.

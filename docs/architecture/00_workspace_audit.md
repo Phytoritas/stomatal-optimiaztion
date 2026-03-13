@@ -45,8 +45,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 072
-- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slice 069 recorded as THORP package-level smoke evidence, slice 070 recorded as the cross-domain utility comparison decision, slices 071 through 072 approved for root `GOSM` and `TDGM` package foundations, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
+- Gate C. Validation plan ready through slice 073
+- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slice 069 recorded as THORP package-level smoke evidence, slice 070 recorded as the cross-domain utility comparison decision, slices 071 through 073 approved for root `GOSM` and `TDGM` package foundations plus the first GOSM numerical seam, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -481,3 +481,9 @@ Slice 072:
 - target: `src/stomatal_optimiaztion/domains/tdgm/`, packaged model-card assets, and `tests/test_tdgm_{model_card,traceability,import_surface}.py`
 - scope: bounded root `TDGM` foundation surface covering packaged model-card access, equation-id validation, and decorator-based traceability metadata helpers
 - excluded: `TDGM/src/tdgm/ptm.py`, `TDGM/src/tdgm/turgor_growth.py`, `TDGM/src/tdgm/coupling.py`, THORP-G runtime adapters, and root `GOSM` numerical seams
+
+Slice 073:
+- source: `GOSM/src/gosm/params/defaults.py` and `GOSM/src/gosm/params/__init__.py`
+- target: `src/stomatal_optimiaztion/domains/gosm/params/`, root GOSM package exports, and `tests/test_gosm_params_defaults.py`
+- scope: bounded root `GOSM` numerical seam covering `BaselineInputs.matlab_default()`, legacy alias properties, and bundled callable parameter functions
+- excluded: runtime modules under `GOSM/src/gosm/model/`, example adapters, and root `TDGM` runtime seams

@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 072 opened the root TDGM foundation and left the first GOSM runtime seam as the next gap
+- Current phase: slice 073 opened the first root GOSM numerical seam and left the first GOSM runtime kernel as the next gap
 
 ## Scope
 
@@ -100,6 +100,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 ## Immediate Next Actions
 
 1. keep the current validation gates green as root `GOSM` and `TDGM` slices land
-2. move from root package foundations into the first bounded numerical seam at `GOSM/src/gosm/params/defaults.py`
-3. use the same package-first discipline when opening root `TDGM` runtime seams after `GOSM`
+2. move from root package foundations into the first bounded runtime kernel at `GOSM/src/gosm/model/radiation.py`
+3. keep using the same package-first discipline when opening root `TDGM` runtime seams after `GOSM`
 4. keep shared utilities blocked until a concrete cross-domain helper emerges
