@@ -412,8 +412,16 @@ The forty-sixth slice opens the first bounded `load-cell-data` seam:
 - keep the slice config-first and avoid widening into ingestion, preprocessing, workflow, or CLI seams yet
 - leave `load-cell-data/loadcell_pipeline/io.py` blocked as the next seam
 
+## Slice 047: load-cell-data IO
+
+The forty-seventh slice opens the next bounded `load-cell-data` seam:
+- move `load-cell-data/loadcell_pipeline/io.py` into the staged `domains/load_cell` package
+- preserve raw CSV ingestion, duplicate-timestamp handling, interpolation flags, and single/multi-resolution artifact writing behavior
+- keep optional Excel export behavior explicit without widening into aggregation, preprocessing, workflow, or CLI seams
+- leave `load-cell-data/loadcell_pipeline/aggregation.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first `load-cell-data` bounded seam
+1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first two `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/io.py`
+3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/aggregation.py`
