@@ -1,0 +1,657 @@
+{
+    "doc": {
+        "id": "Potkay and Feng - 2023 - Do stomata optimize turgor-driven growth A new framework for integrating stomata response with whol_appendix.pdf",
+        "title": "Do stomata optimize turgor-driven growth? A new framework for integrating stomata response with whole-tree carbon and hydraulics (Supporting Information)",
+        "year": 2023,
+        "doi": null,
+        "page_count": 62
+    },
+    "model_card": {
+        "name": "S10 Model limitations and potential improvements",
+        "aliases": [
+            "S10.1 Assumed steady-state xylem hydraulics and xylem-phloem coupling",
+            "S10.2 A more complex model formulation for future development",
+            "S10.3 Nutrient limitations"
+        ],
+        "task": [
+            "Enumerate key simplifications/limitations in the presented GOSM framework",
+            "Describe potential future model extensions (xylem-phloem transport, explicit turgor/osmotic distributions, nutrient-use optimization coupling)"
+        ],
+        "domain": [
+            "plant hydraulics",
+            "stomatal optimization",
+            "turgor-driven growth",
+            "xylem-phloem transport",
+            "nutrient limitation"
+        ],
+        "assumptions": [
+            {
+                "id": "A1",
+                "text": "Xylem sapflow is assumed steady-state, and xylem and phloem water potentials in the stem are assumed equal (negligible radial resistance).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 44,
+                        "block_id": "p44_s10_1_open",
+                        "char_span": null,
+                        "snippet": "A limitation to our model is our two simplifications that xylem sapflow is in steady-state (Eq. S5.1&2) and xylem and phloem water potentials in the stem are assumed equal (i.e., negligible radial resistance)"
+                    }
+                ]
+            },
+            {
+                "id": "A2",
+                "text": "Potential osmotic potential (pi0) under non-stressed conditions is estimated via an empirical linear regression with stem water potential (R^2=0.44), then used to compute potential turgor (P0) and potential growth (G0), with NSC-limited growth approximated post hoc by multiplying by sigma_g.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 45,
+                        "block_id": "p45_s10_1_pi0_P0_G0",
+                        "char_span": null,
+                        "snippet": "we predict a potential π without NSC-limitations (π0; Eq. S6.3-4) from an empirical linear regression... (R^2 = 0.44). Once π0 is estimated... predict a potential P... (P0; Eq. S6.2)... (G0; Eq. 7)... G = G0 multiplied by σg"
+                    }
+                ]
+            },
+            {
+                "id": "A3",
+                "text": "Pressure-volume (P-V) curve approaches are considered inappropriate for future GOSM versions to describe stem turgor and water content because they cannot capture coordination among NSCs, osmotic potential, turgor, and water content over longer timescales.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_s10_2_pv_curves",
+                        "char_span": null,
+                        "snippet": "Since P-V curves cannot capture this dependency, P-V curves should not be used in future versions of the GOSM to describe stem turgor and water content."
+                    }
+                ]
+            },
+            {
+                "id": "A4",
+                "text": "Stomatal and nutrient optimizations are implicitly treated as independent by assuming they operate over different timescales (not currently modeled jointly).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 47,
+                        "block_id": "p47_s10_3_timescales",
+                        "char_span": null,
+                        "snippet": "We have implicitly assumed stomata and nutrients operate over different timescales and thus their optimizations may be treated independently."
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "Eq.S10.1",
+                "latex": "G=\\tilde{\\phi}(T_a)\\,\\frac{c_w}{u_s}\\int_{0}^{1}\\max\\big(P(\\tilde{z})-\\Gamma,\\,0\\big)\\,d\\tilde{z}",
+                "variables": [
+                    "G",
+                    "\\tilde{\\phi}(T_a)",
+                    "c_w",
+                    "u_s",
+                    "P(\\tilde{z})",
+                    "\\Gamma",
+                    "\\tilde{z}"
+                ],
+                "explanation": "Proposed future formulation where growth rate depends on true stem (inner-bark/phloem) turgor P rather than potential turgor P0.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 45,
+                        "block_id": "p45_eq_s10_1",
+                        "char_span": null,
+                        "snippet": "G = \\tilde{\\phi}(T_a) (c_w/u_s) \\int_0^1 max(P(\\tilde{z})-\\Gamma,0) d\\tilde{z}  (S10.1)"
+                    }
+                ],
+                "candidates": [],
+                "selected": "Eq.S10.1",
+                "selection_reason": "Single explicit equation labeled (S10.1) in this chunk."
+            },
+            {
+                "id": "Eq.S10.2",
+                "latex": "\\mathcal{L}\\big(P,\\dot{C},\\eta_1,\\eta_2,\\ldots,\\eta_N,\\dot{X}_1,\\dot{X}_2,\\ldots,\\dot{X}_N,t\\big)=G(P,t)-\\sum_{i=1}^{N}\\eta_i\\left[\\dot{X}_i-F_i\\big(A_n,E,X_1,X_2,\\ldots,X_N,t\\big)\\right]",
+                "variables": [
+                    "\\mathcal{L}(\\cdot)",
+                    "P",
+                    "\\dot{C}",
+                    "\\eta_i",
+                    "\\dot{X}_i",
+                    "X_i",
+                    "N",
+                    "G(P,t)",
+                    "F_i(\\cdot)",
+                    "A_n",
+                    "E",
+                    "t"
+                ],
+                "explanation": "Augmented Lagrangian for a more complex future model with multiple dynamic pools (water/NSCs) and associated constraints.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_eq_s10_2",
+                        "char_span": null,
+                        "snippet": "the augmented Lagrangian (Eq. S2.2) for the optimization problem becomes ... (S10.2)"
+                    }
+                ],
+                "candidates": [],
+                "selected": "Eq.S10.2",
+                "selection_reason": "Single explicit equation labeled (S10.2) in this chunk."
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "P",
+                "name": "turgor pressure (inner-bark/phloem)",
+                "unit": null,
+                "definition": "In the proposed complex formulation, P refers to inner-bark/phloem turgor rather than stem water potential used in the current simplified model.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 45,
+                        "block_id": "p45_s10_2_P_definition",
+                        "char_span": null,
+                        "snippet": "Here, P would specifically refer to inner-bark/phloem turgor..."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\pi",
+                "name": "osmotic potential",
+                "unit": null,
+                "definition": "Discussed as part of distributions that underlie growth and mortality predictions; proposed future model aims to predict actual \\pi (rather than potential maximum \\pi0).",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 45,
+                        "block_id": "p45_s10_1_pi_P_distributions",
+                        "char_span": null,
+                        "snippet": "explicit modeling of P and π distributions and tissue water content... enable prediction of the actual... π, P, and G instead of π0, P0, and G0"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\mathcal{L}",
+                "name": "augmented Lagrangian",
+                "unit": null,
+                "definition": "Objective function augmented with constraints for multiple dynamic pools in the proposed complex model.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "L"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_eq_s10_2",
+                        "char_span": null,
+                        "snippet": "the augmented Lagrangian ... becomes (S10.2)"
+                    }
+                ]
+            },
+            {
+                "symbol": "X_i",
+                "name": "i-th dynamic pool state",
+                "unit": null,
+                "definition": "Pools of water, active NSCs, and inactive NSCs for each organ in the proposed complex model; the dynamics are constrained by Fi.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 47,
+                        "block_id": "p47_s10_2_pool_list",
+                        "char_span": null,
+                        "snippet": "X1, X2, ... XN are the pools of water, active NSCs, and inactive NSCs of each organ..."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\eta_i",
+                "name": "Lagrangian multiplier for i-th pool constraint",
+                "unit": null,
+                "definition": "Multiplier associated with the dynamic constraint for the i-th pool in the proposed complex model.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 47,
+                        "block_id": "p47_s10_2_eta_definition",
+                        "char_span": null,
+                        "snippet": "N is the number of these water and NSC pools, and ηi, Ẋi, and Fi ... are Lagrangian multiplier, dXi/dt, and the dynamic constraint for the ith pool"
+                    }
+                ]
+            },
+            {
+                "symbol": "F_i(\\cdot)",
+                "name": "dynamic constraint function for i-th pool",
+                "unit": null,
+                "definition": "Right-hand side of the i-th pool dynamics in the proposed complex model; depends on assimilation, transpiration, pool states, and time.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_eq_s10_2",
+                        "char_span": null,
+                        "snippet": "ηi[ Ẋi − Fi(An, E, X1, X2, ... XN, t) ]"
+                    }
+                ]
+            },
+            {
+                "symbol": "c_w",
+                "name": "constant in growth integral",
+                "unit": null,
+                "definition": "Appears in Eq. S10.1 as a multiplicative factor; definition is not provided in this chunk.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 45,
+                        "block_id": "p45_eq_s10_1",
+                        "char_span": null,
+                        "snippet": "G = \\tilde{\\phi}(T_a) (c_w/u_s) \\int_0^1 ..."
+                    }
+                ]
+            },
+            {
+                "symbol": "u_s",
+                "name": "constant in growth integral",
+                "unit": null,
+                "definition": "Appears in Eq. S10.1 as a divisor with c_w; definition is not provided in this chunk.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 45,
+                        "block_id": "p45_eq_s10_1",
+                        "char_span": null,
+                        "snippet": "G = \\tilde{\\phi}(T_a) (c_w/u_s) \\int_0^1 ..."
+                    }
+                ]
+            }
+        ],
+        "parameters": [],
+        "algorithm": {
+            "inputs": [
+                "A_n",
+                "E",
+                "X_1,\\ldots,X_N",
+                "t"
+            ],
+            "outputs": [
+                "G",
+                "P",
+                "\\pi",
+                "X_1,\\ldots,X_N"
+            ],
+            "steps": [
+                "Distinguish xylem and inner-bark/phloem water potentials (relaxing the equal-potential assumption) to explicitly predict inner-bark/phloem turgor P.",
+                "Model growth directly from P using Eq. S10.1 rather than via potential quantities (P0, G0) with post hoc NSC limitation multipliers.",
+                "Introduce multiple dynamic pools (water, active NSCs, inactive NSCs) with constraints Ẋi = Fi(An, E, X1..XN, t) and associated multipliers ηi, yielding the augmented Lagrangian in Eq. S10.2."
+            ],
+            "pseudocode": null,
+            "evidence": [
+                {
+                    "page": 45,
+                    "block_id": "p45_s10_2_relax_assumptions",
+                    "char_span": null,
+                    "snippet": "could distinguish between xylem and inner-bark/phloem water potentials and thus explicitly predict such P... relax our assumptions that xylem and phloem water potentials are equal..."
+                },
+                {
+                    "page": 46,
+                    "block_id": "p46_s10_2_multipliers",
+                    "char_span": null,
+                    "snippet": "it would introduce a new Lagrangian multiplier... for each pool of water, active NSCs, and inactive NSCs... augmented Lagrangian... becomes (S10.2)"
+                }
+            ]
+        },
+        "datasets": [],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L1",
+                "text": "Steady-state sapflow and equal xylem-phloem stem water potentials (negligible radial resistance) simplify the model but preclude explicit predictions of tissue water content and detailed P/π distributions.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 44,
+                        "block_id": "p44_s10_1_open",
+                        "char_span": null,
+                        "snippet": "xylem sapflow is in steady-state... xylem and phloem water potentials... assumed equal..."
+                    }
+                ]
+            },
+            {
+                "id": "L2",
+                "text": "Potential quantities (π0, P0, G0) are derived using an empirical regression and then adjusted post hoc for NSC limitation (via σg), rather than predicting actual π, P, and G endogenously.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 45,
+                        "block_id": "p45_s10_1_pi0_P0_G0",
+                        "char_span": null,
+                        "snippet": "predict a potential π... (π0)... linear regression... then... predict a potential P... (P0)... potential growth rate... (G0)... estimate... G as G0 multiplied by σg"
+                    }
+                ]
+            },
+            {
+                "id": "L3",
+                "text": "P-V curve approaches cannot capture NSC–osmotic–turgor coordination over longer timescales and are therefore discouraged for future GOSM versions.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 46,
+                        "block_id": "p46_s10_2_pv_curves",
+                        "char_span": null,
+                        "snippet": "P-V curves should not be used in future versions of the GOSM to describe stem turgor and water content."
+                    }
+                ]
+            },
+            {
+                "id": "L4",
+                "text": "Nutrient status is not represented; treating stomatal and nutrient optimization independently may fail when long-term acclimation (e.g., under elevated CO2) couples stomatal behavior with nutrient-use and biomass allocation.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 47,
+                        "block_id": "p47_s10_3_nutrients_missing",
+                        "char_span": null,
+                        "snippet": "Another limitation of our GOSM is it does not presently describe plants’ nutrient status..."
+                    },
+                    {
+                        "page": 48,
+                        "block_id": "p48_s10_3_not_separable",
+                        "char_span": null,
+                        "snippet": "the timescales for optimizing stomata and nutrient-use cannot be treated separately... we maximize growth over a tree’s entire lifetime (Eq. 1)"
+                    }
+                ]
+            },
+            {
+                "id": "L5",
+                "text": "The proposed xylem-phloem transport extension would greatly increase complexity by requiring many pools and multipliers (example: N=13 pools even for a minimal 3-organ system), placing it beyond the scope of the current study.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 47,
+                        "block_id": "p47_s10_2_N13",
+                        "char_span": null,
+                        "snippet": "this minimal model... would require the simultaneous solution of N = 13 pools, N = 13 Lagrangian multipliers..."
+                    }
+                ]
+            }
+        ],
+        "implementation": {
+            "model_scope": "This chunk documents limitations of the current GOSM formulation (steady-state hydraulics; simplified xylem-phloem coupling; empirical potential π0/P0/G0 pathway; no nutrients) and outlines conceptual future extensions (explicit P-based growth and multi-pool optimization via Eq. S10.1–S10.2).",
+            "state_variables": [],
+            "exogenous_inputs": [],
+            "control_inputs": [],
+            "outputs_observables": [],
+            "io_contract": {
+                "input_schema": null,
+                "output_schema": null,
+                "data_types": [],
+                "evidence": [
+                    {
+                        "page": 44,
+                        "block_id": "p44_s10_header",
+                        "char_span": null,
+                        "snippet": "S10 Model limitations and potential improvements"
+                    }
+                ]
+            },
+            "dependency_graph": {
+                "nodes": [
+                    "G",
+                    "P",
+                    "\\pi",
+                    "A_n",
+                    "E",
+                    "X_1..X_N",
+                    "\\eta_1..\\eta_N",
+                    "F_1..F_N",
+                    "\\mathcal{L}"
+                ],
+                "edges": [
+                    {
+                        "from": "P",
+                        "to": "G",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "A_n",
+                        "to": "F_i",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "E",
+                        "to": "F_i",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "X_i",
+                        "to": "\\mathcal{L}",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "\\eta_i",
+                        "to": "\\mathcal{L}",
+                        "type": "equation"
+                    }
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 45,
+                        "block_id": "p45_eq_s10_1",
+                        "char_span": null,
+                        "snippet": "G = ... max(P(\\tilde{z})-\\Gamma,0) ... (S10.1)"
+                    },
+                    {
+                        "page": 46,
+                        "block_id": "p46_eq_s10_2",
+                        "char_span": null,
+                        "snippet": "\\mathcal{L}(...) = G(P,t) - \\sum ... [\\dot{X}_i - F_i(A_n,E,X_1,...,X_N,t)] (S10.2)"
+                    }
+                ]
+            },
+            "numerics": {
+                "time_step": null,
+                "time_grid": null,
+                "integration_method": null,
+                "solver": null,
+                "convergence_criteria": null,
+                "stability_notes": "No numerical solver details are provided in this limitations/future-work section.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 47,
+                        "block_id": "p47_s10_2_scope",
+                        "char_span": null,
+                        "snippet": "This approach... is far more complex than is required to test our current hypotheses and is thus beyond the scope of this study"
+                    }
+                ]
+            },
+            "initial_conditions": [],
+            "boundary_conditions": [],
+            "preprocessing": {
+                "steps": [],
+                "missing_value_policy": null,
+                "unit_conversions": [],
+                "filters_smoothing": [],
+                "uncertain": true,
+                "evidence": []
+            },
+            "calibration": {
+                "estimated_parameters": [],
+                "objective": null,
+                "constraints": null,
+                "optimizer": null,
+                "train_validation_protocol": null,
+                "uncertain": true,
+                "evidence": []
+            },
+            "code_blueprint": {
+                "language": null,
+                "modules": [],
+                "functions": [],
+                "tests": []
+            },
+            "unresolved_assets": [
+                {
+                    "type": "equation",
+                    "label": "Definitions for c_w and u_s in Eq. S10.1",
+                    "page": 45,
+                    "issue": "Eq. S10.1 introduces c_w and u_s but their meanings/units are not defined in this chunk.",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 45,
+                            "block_id": "p45_eq_s10_1",
+                            "char_span": null,
+                            "snippet": "G = \\tilde{\\phi}(T_a) (c_w/u_s) \\int_0^1 ..."
+                        }
+                    ]
+                },
+                {
+                    "type": "algorithm",
+                    "label": "Explicit dynamics Fi for pools Xi in Eq. S10.2",
+                    "page": 46,
+                    "issue": "Eq. S10.2 references constraints Ẋi = Fi(An, E, X1..XN, t) but does not specify Fi forms or pool definitions beyond illustrative examples.",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 46,
+                            "block_id": "p46_eq_s10_2",
+                            "char_span": null,
+                            "snippet": "ηi[ Ẋi − Fi(An, E, X1, X2, ... XN, t) ]"
+                        }
+                    ]
+                }
+            ],
+            "open_questions": [
+                {
+                    "id": "Q1",
+                    "question": "What are the definitions and units of c_w and u_s in Eq. S10.1 (and how do they relate to the earlier Eq. 7/S6.1 formulation)?",
+                    "why_needed": "Implementing Eq. S10.1 requires dimensional consistency and correct parameter interpretation.",
+                    "likely_location": "Earlier equations (Eq. 7, S6.1) or parameter/notation tables in other sections.",
+                    "evidence": [
+                        {
+                            "page": 45,
+                            "block_id": "p45_eq_s10_1",
+                            "char_span": null,
+                            "snippet": "G = \\tilde{\\phi}(T_a) (c_w/u_s) \\int_0^1 ..."
+                        }
+                    ]
+                },
+                {
+                    "id": "Q2",
+                    "question": "How is the normalized coordinate \\tilde{z} defined in Eq. S10.1, and what is the spatial meaning of P(\\tilde{z}) and the threshold \\Gamma?",
+                    "why_needed": "Correct discretization/integration of the growth integral requires the spatial coordinate and threshold definition.",
+                    "likely_location": "Earlier derivations referenced as 'nearly identical to Eq. 7 & S6.1' or any notation section.",
+                    "evidence": [
+                        {
+                            "page": 45,
+                            "block_id": "p45_eq_s10_1",
+                            "char_span": null,
+                            "snippet": "∫0^1 max(P(\\tilde{z}) − \\Gamma, 0) d\\tilde{z}"
+                        }
+                    ]
+                },
+                {
+                    "id": "Q3",
+                    "question": "For the proposed complex formulation (Eq. S10.2), what specific pools Xi are included, and what are the explicit forms of Fi governing their dynamics?",
+                    "why_needed": "Eq. S10.2 is not executable without concrete state definitions and dynamical equations.",
+                    "likely_location": "Referenced xylem-phloem transport models/citations (e.g., Daudet et al., Hölttä et al., De Schepper & Steppe) or any associated model code.",
+                    "evidence": [
+                        {
+                            "page": 47,
+                            "block_id": "p47_s10_2_pool_list",
+                            "char_span": null,
+                            "snippet": "X1, X2, ... XN are the pools of water, active NSCs, and inactive NSCs of each organ..."
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "provenance": {
+        "extraction_time": "2026-01-17T04:41:10Z",
+        "model": "GPT-5.2 Thinking",
+        "notes": "MODE=EXTRACT for chunk C009 covering S10.1–S10.3 (limitations and potential improvements). Extracted from the S10 header on page 44 through the end of S10.3 on page 48.",
+        "mode": "EXTRACT",
+        "is_partial": true,
+        "chunk": {
+            "chunk_id": "C009",
+            "page_range": [
+                44,
+                48
+            ]
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C009",
+                "page_range": [
+                    44,
+                    48
+                ],
+                "section_titles": [
+                    "S10 Model limitations and potential improvements",
+                    "S10.1 Assumed steady-state xylem hydraulics and xylem-phloem coupling",
+                    "S10.2 A more complex model formulation for future development",
+                    "S10.3 Nutrient limitations"
+                ],
+                "focus_tags": [
+                    "appendix",
+                    "limitations",
+                    "theory",
+                    "equations"
+                ],
+                "priority": 1,
+                "rationale": "Captures stated simplifying assumptions, limitations, and formal extensions (Eq. S10.1–S10.2) that affect how the executable model should be interpreted and what is required for future generalization.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 44,
+                        "block_id": "p44_s10_header",
+                        "char_span": null,
+                        "snippet": "S10 Model limitations and potential improvements"
+                    },
+                    {
+                        "page": 45,
+                        "block_id": "p45_eq_s10_1",
+                        "char_span": null,
+                        "snippet": "(S10.1)"
+                    },
+                    {
+                        "page": 46,
+                        "block_id": "p46_eq_s10_2",
+                        "char_span": null,
+                        "snippet": "(S10.2)"
+                    },
+                    {
+                        "page": 47,
+                        "block_id": "p47_s10_3_header",
+                        "char_span": null,
+                        "snippet": "S10.3 Nutrient limitations"
+                    }
+                ]
+            }
+        ],
+        "next_recommended_chunk_id": "C010"
+    }
+}

@@ -1,0 +1,1119 @@
+{
+    "doc": {
+        "id": "Potkay and Feng - 2023 - Do stomata optimize turgor-driven growth A new framework for integrating stomata response with whol_appendix.pdf",
+        "title": "Do stomata optimize turgor-driven growth? A new framework for integrating stomata response with whole-tree carbon and hydraulics (Supporting Information)",
+        "year": 2023,
+        "doi": null,
+        "page_count": 62
+    },
+    "model_card": {
+        "name": "S7 Stomata optimization by alternative definitions of fitness",
+        "aliases": [
+            "instantaneous stomatal optimization (AOH models)",
+            "hydraulic-cost-based optimization models"
+        ],
+        "task": [
+            "Predict stomatal conductance (gc) under alternative instantaneous optimality hypotheses",
+            "Compute model-specific hydraulic cost (Theta) and marginal cost of water (chi_w) for comparison to growth-optimizing predictions"
+        ],
+        "domain": [
+            "stomatal optimization",
+            "plant hydraulics",
+            "photosynthesis–transpiration coupling"
+        ],
+        "assumptions": [
+            {
+                "id": "A1",
+                "text": "Alternative models are treated as instantaneous optimization problems expressed using a hydraulic cost term Theta, leading to a first-order optimality condition d/dgc [An - Theta] = 0.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 38,
+                        "block_id": "p38_s7_intro_eq",
+                        "char_span": null,
+                        "snippet": "Hence, they solve the instantaneous maximization problem ... d/dgc [An − Θ] = 0, (S7.1)"
+                    }
+                ]
+            },
+            {
+                "id": "A2",
+                "text": "Each model is solved numerically such that the model-specific marginal cost of water (chi_w) equals the marginal carbon profit of water (lambda; referenced Eq. S4.11).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_s7_solver_rule",
+                        "char_span": null,
+                        "snippet": "We solve each model’s optimization numerically such that the marginal cost of water, χw ... equals the marginal carbon profit of water, λ (Eq. S4.11)."
+                    }
+                ]
+            },
+            {
+                "id": "A3",
+                "text": "Some models require derivatives of leaf water potential with respect to transpiration; second derivatives (d2 psiL / dE2) are computed numerically when needed.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_s7_sperry_second_deriv",
+                        "char_span": null,
+                        "snippet": "∂2ψL/∂E2 was calculated numerically."
+                    },
+                    {
+                        "page": 41,
+                        "block_id": "p41_s7_eller_second_deriv",
+                        "char_span": null,
+                        "snippet": "∂2ψL/∂E2 was calculated numerically."
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "Eq.S7.1",
+                "latex": "\\frac{d}{dg_c}\\left[A_n-\\Theta\\right]=0",
+                "variables": [
+                    "g_c",
+                    "A_n",
+                    "\\Theta"
+                ],
+                "explanation": "Generic instantaneous optimality condition for hydraulic-cost formulations.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 38,
+                        "block_id": "p38_s7_intro_eq",
+                        "char_span": null,
+                        "snippet": "d/dgc [An − Θ] = 0, (S7.1)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.2",
+                "latex": "\\frac{d}{dg_c}\\left[\\frac{E+\\beta V_{c,\\max}}{A_n}\\right]=0",
+                "variables": [
+                    "g_c",
+                    "E",
+                    "\\beta",
+                    "V_{c,\\max}",
+                    "A_n"
+                ],
+                "explanation": "Prentice et al. (2014) Least Cost Optimization condition (minimize summed costs of transpiration and carboxylation).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_eq_s7_2",
+                        "char_span": null,
+                        "snippet": "d/dgc [(E+βVc,max)/An] = 0, (S7.2)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.3",
+                "latex": "\\chi_w=\\frac{A_n}{E+\\beta V_{c,\\max}}",
+                "variables": [
+                    "\\chi_w",
+                    "A_n",
+                    "E",
+                    "\\beta",
+                    "V_{c,\\max}"
+                ],
+                "explanation": "Marginal cost of water implied by Least Cost Optimization (Wang et al., 2020).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_eq_s7_3",
+                        "char_span": null,
+                        "snippet": "χw = An/(E+βVc,max), (S7.3)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.4",
+                "latex": "\\Theta=\\int_{0}^{E}\\frac{A_n'}{E'+\\beta V_{c,\\max}'}\\,dE'",
+                "variables": [
+                    "\\Theta",
+                    "E",
+                    "A_n'",
+                    "E'",
+                    "\\beta",
+                    "V_{c,\\max}'"
+                ],
+                "explanation": "Equivalent hydraulic cost for Prentice et al. (2014), computed via numerical integration of chi_w over E.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_eq_s7_4",
+                        "char_span": null,
+                        "snippet": "Θ = ∫0^E An' dE'/(E'+βV'c,max). (S7.4)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.5",
+                "latex": "\\frac{d}{dg_c}\\left[\\frac{A_n}{A_{\\max}}-\\frac{k_{c,\\max}-k_c}{k_{c,\\max}}\\right]=0",
+                "variables": [
+                    "g_c",
+                    "A_n",
+                    "A_{\\max}",
+                    "k_{c,\\max}",
+                    "k_c"
+                ],
+                "explanation": "Sperry et al. (2017) Gain–Risk Optimization condition (normalized gain minus normalized hydraulic risk).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_eq_s7_5",
+                        "char_span": null,
+                        "snippet": "d/dgc [An/Amax − (kc,max−kc)/kc,max] = 0, (S7.5)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.6",
+                "latex": "\\Theta=A_{\\max}\\left(\\frac{k_{c,\\max}-k_c}{k_{c,\\max}}\\right)",
+                "variables": [
+                    "\\Theta",
+                    "A_{\\max}",
+                    "k_{c,\\max}",
+                    "k_c"
+                ],
+                "explanation": "Hydraulic cost in Sperry et al. (2017) expressed directly in conductance-loss form.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_eq_s7_6",
+                        "char_span": null,
+                        "snippet": "Θ = Amax (kc,max−kc)/kc,max. (S7.6)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.7",
+                "latex": "\\chi_w=-\\frac{\\partial k_c}{\\partial E}\\,\\frac{A_{\\max}}{k_{c,\\max}}",
+                "variables": [
+                    "\\chi_w",
+                    "k_c",
+                    "E",
+                    "A_{\\max}",
+                    "k_{c,\\max}"
+                ],
+                "explanation": "Marginal cost of water for Sperry et al. (2017) from differentiating the hydraulic cost.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_eq_s7_7",
+                        "char_span": null,
+                        "snippet": "χw = − (∂kc/∂E) Amax/kc,max, (S7.7)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.8",
+                "latex": "\\chi_w=-\\frac{A_{\\max}}{k_{c,\\max}}\\,\\frac{\\frac{\\partial^2\\psi_L}{\\partial E^2}}{\\left(\\frac{\\partial\\psi_L}{\\partial E}\\right)^2}",
+                "variables": [
+                    "\\chi_w",
+                    "A_{\\max}",
+                    "k_{c,\\max}",
+                    "\\psi_L",
+                    "E"
+                ],
+                "explanation": "Expanded form for chi_w in terms of derivatives of leaf water potential with respect to E.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_eq_s7_8",
+                        "char_span": null,
+                        "snippet": "χw = −Amax/kc,max * (∂2ψL/∂E2)/(∂ψL/∂E)2, (S7.8)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.9",
+                "latex": "\\frac{d}{dg_c}\\left[A_n-A_n\\left(\\frac{k_{\\text{plant}}-k_c}{k_{\\text{plant}}}\\right)\\right]=0",
+                "variables": [
+                    "g_c",
+                    "A_n",
+                    "k_{\\text{plant}}",
+                    "k_c"
+                ],
+                "explanation": "Eller et al. (2018) optimization interpreted for multi-organ hydraulics (following Wang et al., 2020).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 41,
+                        "block_id": "p41_eq_s7_9",
+                        "char_span": null,
+                        "snippet": "d/dgc [An − An((kplant−kc)/kplant)] = 0, (S7.9)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.10",
+                "latex": "k_{\\text{plant}}=\\frac{1}{\\frac{1}{k_R}+\\frac{1}{k_S}+\\frac{1}{a_L k_L}}",
+                "variables": [
+                    "k_{\\text{plant}}",
+                    "k_R",
+                    "k_S",
+                    "a_L",
+                    "k_L"
+                ],
+                "explanation": "Whole-plant conductance from root, stem, and leaf conductances in series (leaf scaled by aL).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 41,
+                        "block_id": "p41_eq_s7_10",
+                        "char_span": null,
+                        "snippet": "kplant = 1/(1/kR + 1/kS + 1/(aL kL)). (S7.10)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.11",
+                "latex": "\\Theta=A_n\\left(\\frac{k_{\\text{plant}}-k_c}{k_{\\text{plant}}}\\right)",
+                "variables": [
+                    "\\Theta",
+                    "A_n",
+                    "k_{\\text{plant}}",
+                    "k_c"
+                ],
+                "explanation": "Hydraulic cost in Eller et al. (2018) expressed in terms of conductance loss.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 41,
+                        "block_id": "p41_eq_s7_11",
+                        "char_span": null,
+                        "snippet": "Θ = An ((kplant−kc)/kplant). (S7.11)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.12a",
+                "latex": "\\chi_w=\\lambda\\left(\\frac{k_{\\text{plant}}-k_c}{k_{\\text{plant}}}\\right)-\\frac{A_n}{k_{\\text{plant}}}\\frac{\\partial k_c}{\\partial E}=\\lambda\\left(\\frac{k_{\\text{plant}}-k_c}{k_{\\text{plant}}}\\right)-\\frac{A_n}{k_{\\text{plant}}}\\,\\frac{\\frac{\\partial^2\\psi_L}{\\partial E^2}}{\\left(\\frac{\\partial\\psi_L}{\\partial E}\\right)^2}",
+                "variables": [
+                    "\\chi_w",
+                    "\\lambda",
+                    "k_{\\text{plant}}",
+                    "k_c",
+                    "A_n",
+                    "E",
+                    "\\psi_L"
+                ],
+                "explanation": "Marginal cost of water for Eller et al. (2018) from differentiating Eq. S7.11 (requires d2 psiL/dE2 numerically).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 41,
+                        "block_id": "p41_eq_s7_12a",
+                        "char_span": null,
+                        "snippet": "χw = λ((kplant−kc)/kplant) − (An/kplant) ∂kc/∂E = λ((kplant−kc)/kplant) − (An/kplant) (∂2ψL/∂E2)/(∂ψL/∂E)2, (S7.12)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.12b",
+                "latex": "\\Theta=\\frac{\\beta_1}{2}\\,\\psi_L^2+\\beta_2\\,\\psi_L+\\beta_3",
+                "variables": [
+                    "\\Theta",
+                    "\\beta_1",
+                    "\\psi_L",
+                    "\\beta_2",
+                    "\\beta_3"
+                ],
+                "explanation": "Anderegg et al. (2018) hydraulic cost as a quadratic function of leaf water potential. (Note: the document labels this also as S7.12.)",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 41,
+                        "block_id": "p41_eq_s7_12b",
+                        "char_span": null,
+                        "snippet": "Θ = (β1/2) ψL^2 + β2 ψL + β3, (S7.12)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.13",
+                "latex": "\\chi_w=(\\beta_1\\psi_L+\\beta_2)\\,\\frac{\\partial\\psi_L}{\\partial E}",
+                "variables": [
+                    "\\chi_w",
+                    "\\beta_1",
+                    "\\psi_L",
+                    "\\beta_2",
+                    "E"
+                ],
+                "explanation": "Anderegg et al. (2018) marginal cost of water from chain rule applied to Eq. S7.12b.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 42,
+                        "block_id": "p42_eq_s7_13",
+                        "char_span": null,
+                        "snippet": "χw = (β1 ψL + β2) ∂ψL/∂E, (S7.13)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.14",
+                "latex": "\\frac{dA_n}{dg_c}=0",
+                "variables": [
+                    "A_n",
+                    "g_c"
+                ],
+                "explanation": "Dewar et al. (2018) hypothesis: optimize net assimilation without explicit hydraulic cost term.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 42,
+                        "block_id": "p42_eq_s7_14",
+                        "char_span": null,
+                        "snippet": "dAn/dgc = 0, (S7.14)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.15",
+                "latex": "\\chi_w=-\\frac{A_n}{\\psi_L-\\psi_{L,\\text{crit}}}\\,\\frac{\\partial\\psi_L}{\\partial E}",
+                "variables": [
+                    "\\chi_w",
+                    "A_n",
+                    "\\psi_L",
+                    "\\psi_{L,\\text{crit}}",
+                    "E"
+                ],
+                "explanation": "Shadow cost comparable to marginal cost of water for Dewar et al. (2018) CAP model.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 42,
+                        "block_id": "p42_eq_s7_15",
+                        "char_span": null,
+                        "snippet": "χw = − An/(ψL − ψL,crit) * ∂ψL/∂E, (S7.15)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.16",
+                "latex": "\\Theta=-\\int_{0}^{E}\\frac{A_n'}{\\psi_L'-\\psi_{L,\\text{crit}}'}\\,\\frac{\\partial\\psi_L}{\\partial E}\\,dE'=\\int_{0}^{\\psi_L}\\frac{A_n'}{\\psi_L'-\\psi_{L,\\text{crit}}'}\\,d\\psi_L'",
+                "variables": [
+                    "\\Theta",
+                    "E",
+                    "A_n'",
+                    "\\psi_L'",
+                    "\\psi_{L,\\text{crit}}'"
+                ],
+                "explanation": "Equivalent hydraulic cost computed by numerical integration for the Dewar et al. (2018) CAP model.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 42,
+                        "block_id": "p42_eq_s7_16",
+                        "char_span": null,
+                        "snippet": "Θ = −∫0^E An' (∂ψL/∂E) dE'/(ψL'−ψL,crit') = ∫0^{ψL} An' dψ'/(ψL'−ψL,crit'), (S7.16)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.17",
+                "latex": "\\Theta=A_n\\,\\frac{E}{E_{\\text{crit}}}",
+                "variables": [
+                    "\\Theta",
+                    "A_n",
+                    "E",
+                    "E_{\\text{crit}}"
+                ],
+                "explanation": "Wang et al. (2020) definition of hydraulic cost scaled by the maximum achievable transpiration rate.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 42,
+                        "block_id": "p42_eq_s7_17",
+                        "char_span": null,
+                        "snippet": "Θ = An * E/Ecrit, (S7.17)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S7.18",
+                "latex": "\\chi_w=\\frac{E}{E_{\\text{crit}}}\\,\\lambda+\\frac{A_n}{E_{\\text{crit}}}",
+                "variables": [
+                    "\\chi_w",
+                    "E",
+                    "E_{\\text{crit}}",
+                    "\\lambda",
+                    "A_n"
+                ],
+                "explanation": "Marginal cost of water implied by Wang et al. (2020) after differentiating Eq. S7.17.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 42,
+                        "block_id": "p42_eq_s7_18",
+                        "char_span": null,
+                        "snippet": "χw = (E/Ecrit) λ + An/Ecrit, (S7.18)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "g_c",
+                "name": "stomatal conductance (control variable)",
+                "unit": null,
+                "definition": "Stomatal conductance optimized by each instantaneous model.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "gc"
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 38,
+                        "block_id": "p38_s7_intro_eq",
+                        "char_span": null,
+                        "snippet": "d/dgc [An − Θ] = 0, (S7.1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "A_n",
+                "name": "net photosynthetic carbon assimilation rate",
+                "unit": null,
+                "definition": "Net assimilation used as the benefit term in optimization objectives.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "An"
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_s7_cf_text",
+                        "char_span": null,
+                        "snippet": "maximize photosynthetic carbon assimilation, An ..."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\Theta",
+                "name": "hydraulic cost",
+                "unit": null,
+                "definition": "Sum of direct carbon costs associated with highly negative water potentials (model-specific definition).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Theta"
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_s7_solver_rule",
+                        "char_span": null,
+                        "snippet": "where Θ represents the sum of direct carbon costs associated with highly negative water potentials."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\chi_w",
+                "name": "marginal cost of water",
+                "unit": null,
+                "definition": "Model-specific marginal water cost; solved such that chi_w equals lambda (Eq. S4.11).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "chi_w",
+                    "χw"
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_s7_solver_rule",
+                        "char_span": null,
+                        "snippet": "marginal cost of water, χw ... equals ... λ (Eq. S4.11)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\lambda",
+                "name": "marginal carbon profit of water",
+                "unit": null,
+                "definition": "Marginal carbon profit of water referenced from Eq. S4.11 and used as a solution criterion (chi_w = lambda).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "lambda"
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_s7_solver_rule",
+                        "char_span": null,
+                        "snippet": "equals the marginal carbon profit of water, λ (Eq. S4.11)"
+                    }
+                ]
+            },
+            {
+                "symbol": "E",
+                "name": "transpiration rate",
+                "unit": null,
+                "definition": "Transpiration appearing in cost terms and in derivatives defining conductances and water potentials.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_s7_cf_text",
+                        "char_span": null,
+                        "snippet": "excessive transpiration, E ..."
+                    }
+                ]
+            },
+            {
+                "symbol": "V_{c,\\max}",
+                "name": "maximum carboxylation capacity",
+                "unit": null,
+                "definition": "Maximum carboxylation capacity used in Least Cost Optimization cost ratio term.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Vc,max"
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_eq_s7_2",
+                        "char_span": null,
+                        "snippet": "E + βVc,max"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\psi_L",
+                "name": "leaf water potential",
+                "unit": "MPa",
+                "definition": "Leaf water potential referenced from Section S5 and used in risk/cost functions and their derivatives.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "psiL"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 42,
+                        "block_id": "p42_s7_ander_text",
+                        "char_span": null,
+                        "snippet": "leaf water potential, ψL ... was defined in Eq. S5.11"
+                    }
+                ]
+            },
+            {
+                "symbol": "E_{\\text{crit}}",
+                "name": "maximal achievable transpiration rate (hydraulic failure point)",
+                "unit": null,
+                "definition": "Maximum achievable transpiration rate for given conditions; represents point of hydraulic failure/runaway embolism.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Ecrit"
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 42,
+                        "block_id": "p42_s7_wang_ecrit",
+                        "char_span": null,
+                        "snippet": "Ecrit = max[E(ψL)] and represents the point of hydraulic failure and runaway embolism"
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "name": "\\mu_w",
+                "unit": "mol mol^-1",
+                "default": 0.001,
+                "estimation": "Set for model comparison under default environmental conditions (Table 3).",
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_s7_cf_mu",
+                        "char_span": null,
+                        "snippet": "we have set μw equal to 1∙10-3 mol∙mol-1 ..."
+                    }
+                ]
+            },
+            {
+                "name": "\\beta",
+                "unit": null,
+                "default": 145,
+                "estimation": "Set based on Smith et al. (2019) and Lavergne et al. (2020a).",
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_s7_prentice_beta",
+                        "char_span": null,
+                        "snippet": "Here, we set β = 145 ..."
+                    }
+                ]
+            },
+            {
+                "name": "\\psi_{L,\\text{crit}}",
+                "unit": "MPa",
+                "default": -2,
+                "estimation": "Set following Dewar et al. (2018) for CAP model.",
+                "evidence": [
+                    {
+                        "page": 42,
+                        "block_id": "p42_s7_dewar_psicrit",
+                        "char_span": null,
+                        "snippet": "We set ψL,crit = -2 MPa following Dewar et al. (2018)."
+                    }
+                ]
+            },
+            {
+                "name": "\\beta_1",
+                "unit": "mol m^-2 s^-1 MPa^-2",
+                "default": 0.000004,
+                "estimation": "Set from Zenes et al. (2020) estimate for Pinus ponderosa (as used here).",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "block_id": "p41_s7_ander_beta1",
+                        "char_span": null,
+                        "snippet": "Here, we set β1 = 4∙10-6 mol∙m-2∙s-1∙MPa-2 ..."
+                    }
+                ]
+            },
+            {
+                "name": "\\beta_2",
+                "unit": "mol m^-2 s^-1 MPa^-1",
+                "default": 0,
+                "estimation": "Set to zero for model comparison (notion of minimum cost of zero; and covariation considerations).",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "block_id": "p41_s7_ander_beta2",
+                        "char_span": null,
+                        "snippet": "Additionally, we set β2 = 0 mol∙m-2∙s-1∙MPa-1 ..."
+                    }
+                ]
+            },
+            {
+                "name": "\\beta_3",
+                "unit": "mol m^-2 s^-1",
+                "default": 0,
+                "estimation": "Set to zero for model comparison (minimum cost of zero).",
+                "evidence": [
+                    {
+                        "page": 41,
+                        "block_id": "p41_s7_ander_beta3",
+                        "char_span": null,
+                        "snippet": "we set β3 = 0 mol∙m-2∙s-1 for model comparison ..."
+                    }
+                ]
+            }
+        ],
+        "algorithm": {
+            "inputs": [
+                "Environmental conditions (used to compute An(gc), E(gc), psiL(E), and lambda; referenced earlier sections)",
+                "Hydraulic relations and derivatives: dpsiL/dE (Eq. S5.12) and where needed d2psiL/dE2 (numerical)",
+                "Model choice among S7.1–S7.7"
+            ],
+            "outputs": [
+                "Optimal stomatal conductance g_c*",
+                "Hydraulic cost Theta (model-specific)",
+                "Marginal cost of water chi_w (model-specific)"
+            ],
+            "steps": [
+                "For a candidate gc (or equivalently E), compute An and E under the photosynthesis–stomata coupling used in the framework (referenced earlier sections).",
+                "Compute psiL and required derivatives with respect to E via hydraulics (Eq. S5.11–S5.12; and numerical d2psiL/dE2 where required).",
+                "Compute model-specific chi_w using the corresponding equation: Cowan&Farquhar (constant mu_w), Prentice (Eq. S7.3), Sperry (Eq. S7.7–S7.8), Eller (Eq. S7.12a), Anderegg (Eq. S7.13), Dewar CAP shadow cost (Eq. S7.15), Wang (Eq. S7.18).",
+                "Solve numerically for gc such that chi_w(gc) = lambda(gc) (referenced Eq. S4.11).",
+                "Compute the model-specific hydraulic cost Theta for reporting/comparison (e.g., E-linear, conductance-loss forms, quadratic psiL, CAP integral, or An*E/Ecrit)."
+            ],
+            "pseudocode": null,
+            "evidence": [
+                {
+                    "page": 39,
+                    "block_id": "p39_s7_solver_rule",
+                    "char_span": null,
+                    "snippet": "solve ... numerically such that ... χw ... equals ... λ"
+                }
+            ]
+        },
+        "datasets": [],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L1",
+                "text": "Several models are instantaneous approximations; e.g., Cowan & Farquhar (1977) ignores soil-moisture depletion dynamics over short periods and uses a constant chi_w (mu_w).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_s7_cf_assumption",
+                        "char_span": null,
+                        "snippet": "assumed that these dynamics could be ignored ... marginal cost of water, χw, is an unspecified constant ... μw"
+                    }
+                ]
+            },
+            {
+                "id": "L2",
+                "text": "Some chi_w expressions require numerical evaluation of second derivatives (d2 psiL / dE2), which can be sensitive to discretization and noise.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 40,
+                        "block_id": "p40_s7_sperry_second_deriv",
+                        "char_span": null,
+                        "snippet": "∂2ψL/∂E2 was calculated numerically."
+                    }
+                ]
+            },
+            {
+                "id": "L3",
+                "text": "The document labels two different equations as (S7.12): the Eller et al. marginal cost expression and the Anderegg et al. quadratic hydraulic cost. This requires disambiguation in implementation.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 41,
+                        "block_id": "p41_eq_s7_12a",
+                        "char_span": null,
+                        "snippet": "(S7.12)"
+                    },
+                    {
+                        "page": 41,
+                        "block_id": "p41_eq_s7_12b",
+                        "char_span": null,
+                        "snippet": "(S7.12)"
+                    }
+                ]
+            }
+        ],
+        "implementation": {
+            "model_scope": "Section S7 specifies alternative instantaneous stomatal optimization models and their implied hydraulic costs and marginal costs of water for comparison against the growth-optimizing framework (Section S2).",
+            "state_variables": [],
+            "exogenous_inputs": [],
+            "control_inputs": [
+                "g_c"
+            ],
+            "outputs_observables": [
+                "g_c*",
+                "\\Theta",
+                "\\chi_w"
+            ],
+            "io_contract": {
+                "input_schema": null,
+                "output_schema": null,
+                "data_types": [],
+                "evidence": []
+            },
+            "dependency_graph": {
+                "nodes": [
+                    "g_c",
+                    "E",
+                    "A_n",
+                    "\\psi_L",
+                    "d\\psi_L/dE",
+                    "d^2\\psi_L/dE^2",
+                    "\\lambda",
+                    "\\chi_w",
+                    "\\Theta",
+                    "E_{\\text{crit}}"
+                ],
+                "edges": [
+                    {
+                        "from": "g_c",
+                        "to": "E",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "g_c",
+                        "to": "A_n",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "E",
+                        "to": "\\psi_L",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "\\psi_L",
+                        "to": "d\\psi_L/dE",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "d\\psi_L/dE",
+                        "to": "d^2\\psi_L/dE^2",
+                        "type": "numerical"
+                    },
+                    {
+                        "from": "A_n",
+                        "to": "\\lambda",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "A_n",
+                        "to": "\\chi_w",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "E",
+                        "to": "\\chi_w",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "\\chi_w",
+                        "to": "g_c",
+                        "type": "root_find"
+                    }
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_s7_solver_rule",
+                        "char_span": null,
+                        "snippet": "solve ... numerically such that ... χw ... equals ... λ"
+                    }
+                ]
+            },
+            "numerics": {
+                "time_step": null,
+                "time_grid": null,
+                "integration_method": "Numerical integration for Theta in E-integral formulations (explicitly stated for Prentice model; also used for CAP equivalent cost).",
+                "solver": "Numerical solve for chi_w = lambda (root-finding over gc/E).",
+                "convergence_criteria": null,
+                "stability_notes": "Requires stable numerical estimation of d2psiL/dE2 for some models.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 39,
+                        "block_id": "p39_s7_prentice_theta",
+                        "char_span": null,
+                        "snippet": "calculated a hydraulic cost ... by numerical integration"
+                    },
+                    {
+                        "page": 40,
+                        "block_id": "p40_s7_sperry_second_deriv",
+                        "char_span": null,
+                        "snippet": "∂2ψL/∂E2 was calculated numerically."
+                    }
+                ]
+            },
+            "initial_conditions": [],
+            "boundary_conditions": [],
+            "preprocessing": {
+                "steps": [],
+                "missing_value_policy": null,
+                "unit_conversions": [],
+                "filters_smoothing": [],
+                "uncertain": true,
+                "evidence": []
+            },
+            "calibration": {
+                "estimated_parameters": [],
+                "objective": null,
+                "constraints": null,
+                "optimizer": null,
+                "train_validation_protocol": null,
+                "uncertain": true,
+                "evidence": []
+            },
+            "code_blueprint": {
+                "language": null,
+                "modules": [],
+                "functions": [],
+                "tests": []
+            },
+            "unresolved_assets": [
+                {
+                    "type": "equation",
+                    "label": "Eq. S4.11 (lambda definition)",
+                    "page": 39,
+                    "issue": "Section S7 uses lambda as the marginal carbon profit of water and solves chi_w=lambda, but lambda’s explicit formula is in Eq. S4.11 (not included in this chunk).",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 39,
+                            "block_id": "p39_s7_solver_rule",
+                            "char_span": null,
+                            "snippet": "equals ... λ (Eq. S4.11)"
+                        }
+                    ]
+                },
+                {
+                    "type": "equation",
+                    "label": "Hydraulics relations (Eq. S5.11–S5.12) and dpsiL/dE",
+                    "page": 40,
+                    "issue": "Several models require dpsiL/dE (Eq. S5.12) and some require d2psiL/dE2 computed numerically from those relations.",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 40,
+                            "block_id": "p40_s7_sperry_second_deriv",
+                            "char_span": null,
+                            "snippet": "where ∂ψL/∂E is defined by Eq. S5.12"
+                        }
+                    ]
+                },
+                {
+                    "type": "definition",
+                    "label": "Photosynthesis–stomata coupling providing An(gc) and E(gc)",
+                    "page": 38,
+                    "issue": "This chunk defines optimality conditions and costs, but implementation requires upstream definitions relating An and E to gc under environmental drivers.",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 39,
+                            "block_id": "p39_s7_models_context",
+                            "char_span": null,
+                            "snippet": "detail these optimization models ... solve ... numerically ..."
+                        }
+                    ]
+                }
+            ],
+            "open_questions": [
+                {
+                    "id": "Q1",
+                    "question": "What numerical root-finding strategy (variable choice: gc vs E) and derivative step sizes were used to compute d2psiL/dE2 robustly across conditions?",
+                    "why_needed": "Sperry/Eller formulations depend on d2psiL/dE2; numerical stability can affect predicted optima.",
+                    "likely_location": "Implementation details, code, or methods notes (not included in S7 text).",
+                    "evidence": [
+                        {
+                            "page": 40,
+                            "block_id": "p40_s7_sperry_second_deriv",
+                            "char_span": null,
+                            "snippet": "∂2ψL/∂E2 was calculated numerically."
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "provenance": {
+        "extraction_time": "2026-01-17T00:00:00Z",
+        "model": "GPT-5.2 Thinking",
+        "notes": "MODE=EXTRACT for chunk C007 covering Section S7 (alternative instantaneous stomatal optimization models) including equations S7.1–S7.18. The source document labels two distinct equations as (S7.12); extracted here as Eq.S7.12a (Eller chi_w) and Eq.S7.12b (Anderegg Theta) to avoid ambiguity while preserving the original labels.",
+        "mode": "EXTRACT",
+        "is_partial": true,
+        "chunk": {
+            "chunk_id": "C007",
+            "page_range": [
+                38,
+                42
+            ]
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C007",
+                "page_range": [
+                    38,
+                    42
+                ],
+                "section_titles": [
+                    "S7 Stomata optimization by alternative definitions of fitness",
+                    "S7.1 Cowan and Farquhar (1977)",
+                    "S7.2 Prentice et al. (2014)",
+                    "S7.3 Sperry et al. (2017)",
+                    "S7.4 Eller et al. (2018)",
+                    "S7.5 Anderegg et al. (2018)",
+                    "S7.6 Dewar et al. (2018)",
+                    "S7.7 Wang et al. (2020)"
+                ],
+                "focus_tags": [
+                    "model",
+                    "equations",
+                    "optimization",
+                    "hydraulic_cost"
+                ],
+                "priority": 1,
+                "rationale": "Defines alternative stomatal optimality hypotheses (AOH models) and their hydraulic cost/marginal cost forms used for comparison to growth optimization.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 38,
+                        "block_id": "p38_s7_header",
+                        "char_span": null,
+                        "snippet": "S7 Stomata optimization by alternative definitions of fitness"
+                    }
+                ]
+            }
+        ],
+        "next_recommended_chunk_id": "C008"
+    }
+}

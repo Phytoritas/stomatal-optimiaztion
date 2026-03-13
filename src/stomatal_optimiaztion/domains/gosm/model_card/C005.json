@@ -1,0 +1,1498 @@
+{
+    "doc": {
+        "id": "Potkay and Feng - 2023 - Do stomata optimize turgor-driven growth A new framework for integrating stomata response with whol_appendix.pdf",
+        "title": "Do stomata optimize turgor-driven growth?: A new framework for integrating stomata response with whole-plant hydraulics and carbon balance (New Phytologist Supporting Information)",
+        "year": 2023,
+        "doi": null,
+        "page_count": 62
+    },
+    "model_card": {
+        "name": "S5 Xylem hydraulics",
+        "aliases": [
+            "steady-state xylem hydraulics (negligible capacitance)"
+        ],
+        "task": [
+            "compute steady-state xylem water potentials (root collar, stem apex) from transpiration",
+            "compute sensitivities dψ/dE needed for stomatal growth optimization",
+            "optionally compute leaf water potential for comparison to other stomatal models"
+        ],
+        "domain": [
+            "plant hydraulics",
+            "stomatal optimization dependencies",
+            "steady-state water transport"
+        ],
+        "assumptions": [
+            {
+                "id": "A1",
+                "text": "Xylem water potentials throughout the tree are assumed steady-state for a given transpiration rate; this corresponds to negligible hydraulic capacitance (tissue water content in steady-state).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b1",
+                        "char_span": null,
+                        "snippet": "Xylem water potentials throughout the tree are assumed in steady-state for a given transpiration rate... hydraulics system with negligible capacitance."
+                    }
+                ]
+            },
+            {
+                "id": "A2",
+                "text": "In steady-state, the total water flux through the tree (aL·E) is conserved through both roots and stem and is modeled by Darcy’s law along normalized coordinates z~ (stem) and d~ (roots).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b2",
+                        "char_span": null,
+                        "snippet": "In steady-state, the total amount of water conducted through the tree, aL∙E, is conserved through both the roots and the stem, and this flux is given by Darcy’s law,"
+                    }
+                ]
+            },
+            {
+                "id": "A3",
+                "text": "Conductive fractions for stem and soil-root systems are exponential sigmoidal (logistic) functions of water potential.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b1",
+                        "char_span": null,
+                        "snippet": "The conductive fractions, VCR and VCS, are both functions of water potential and described here by exponential sigmoidal equations,"
+                    }
+                ]
+            },
+            {
+                "id": "A4",
+                "text": "Leaf hydraulics are not required for the growth optimization algorithm, but leaf water potential ψL is computed for comparisons to other stomatal models.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b3",
+                        "char_span": null,
+                        "snippet": "growth optimization algorithm... does not explicitly require considering xylem transport through leaves... we present the calculations for the leaf water potential, ψL"
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "Eq.S5.1",
+                "latex": "\\frac{\\partial \\psi}{\\partial \\tilde{z}}=\\frac{a_L E}{k_S\\,V_{C,S}(\\psi)}+\\varpi\\,\\rho\\,g\\,H",
+                "variables": [
+                    "\\psi",
+                    "\\tilde{z}",
+                    "a_L",
+                    "E",
+                    "k_S",
+                    "V_{C,S}(\\psi)",
+                    "\\varpi",
+                    "\\rho",
+                    "g",
+                    "H"
+                ],
+                "explanation": "Stem (aboveground woody biomass) steady-state Darcy-law relation along normalized axial coordinate.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_eqS5_1",
+                        "char_span": null,
+                        "snippet": "(S5.1)  ∂ψ/∂z̃ = aL E / (kS VCS(ψ)) + ϖ ρ g H"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S5.2",
+                "latex": "\\frac{\\partial \\psi}{\\partial \\tilde{d}}=\\frac{a_L E}{k_R\\,V_{C,R}(\\psi)}+\\varpi\\,\\rho\\,g\\,Z",
+                "variables": [
+                    "\\psi",
+                    "\\tilde{d}",
+                    "a_L",
+                    "E",
+                    "k_R",
+                    "V_{C,R}(\\psi)",
+                    "\\varpi",
+                    "\\rho",
+                    "g",
+                    "Z"
+                ],
+                "explanation": "Soil-root steady-state Darcy-law relation along normalized depth coordinate.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_eqS5_2",
+                        "char_span": null,
+                        "snippet": "(S5.2)  ∂ψ/∂d̃ = aL E / (kR VCR(ψ)) + ϖ ρ g Z"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S5.3",
+                "latex": "V_{C,S}(\\psi)=\\frac{1}{1+\\exp\\left[-\\alpha_S\\,(\\psi-\\beta_S)\\right]}",
+                "variables": [
+                    "V_{C,S}(\\psi)",
+                    "\\psi",
+                    "\\alpha_S",
+                    "\\beta_S"
+                ],
+                "explanation": "Stem conductive fraction (relative to maximum) as a logistic function of water potential.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_eqS5_3",
+                        "char_span": null,
+                        "snippet": "(S5.3)  VCS(ψ) = 1 / (1 + exp[-αS(ψ-βS)])"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S5.4",
+                "latex": "V_{C,R}(\\psi)=\\frac{1}{1+\\exp\\left[-\\alpha_R\\,(\\psi-\\beta_R)\\right]}",
+                "variables": [
+                    "V_{C,R}(\\psi)",
+                    "\\psi",
+                    "\\alpha_R",
+                    "\\beta_R"
+                ],
+                "explanation": "Soil-root conductive fraction (relative to maximum) as a logistic function of water potential.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_eqS5_4",
+                        "char_span": null,
+                        "snippet": "(S5.4)  VCR(ψ) = 1 / (1 + exp[-αR(ψ-βR)])"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S5.5",
+                "latex": "\\psi(\\tilde{z})=-\\frac{1}{\\alpha_S}\\ln\\left[\\frac{(\\chi_S+a_L E)\\exp\\left(-\\alpha_S(\\psi_S+\\beta_S)-\\alpha_S\\frac{(\\chi_S+a_L E)\\tilde{z}}{k_S}\\right)}{(\\chi_S+a_L E)\\exp(-\\alpha_S\\beta_S)+a_L E\\exp(-\\alpha_S\\psi_S)\\left\\{1-\\exp\\left[-\\alpha_S\\frac{(\\chi_S+a_L E)\\tilde{z}}{k_S}\\right]\\right\\}}\\right]",
+                "variables": [
+                    "\\psi(\\tilde{z})",
+                    "\\alpha_S",
+                    "\\chi_S",
+                    "a_L",
+                    "E",
+                    "\\psi_S",
+                    "\\beta_S",
+                    "k_S",
+                    "\\tilde{z}"
+                ],
+                "explanation": "Analytic distribution of stem xylem water potential along z~ derived by combining Eq.S5.1 and Eq.S5.3 and integrating.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_eqS5_5",
+                        "char_span": null,
+                        "snippet": "(S5.5)  ψ(z̃)=-(1/αS) ln[ ... ]"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S5.6",
+                "latex": "\\psi_{Rc}=\\psi_{soil}-\\frac{\\chi_R+a_L E}{k_R}+\\beta_R+\\frac{1}{\\alpha_R}\\ln\\left[\\frac{(\\chi_R+a_L E)\\exp(-\\alpha_R\\beta_R)+a_L E\\exp(-\\alpha_R\\psi_{soil})-a_L E\\exp\\left(-\\alpha_R\\psi_{soil}+\\alpha_R\\frac{\\chi_R+a_L E}{k_R}\\right)}{\\chi_R+a_L E}\\right]",
+                "variables": [
+                    "\\psi_{Rc}",
+                    "\\psi_{soil}",
+                    "\\chi_R",
+                    "a_L",
+                    "E",
+                    "k_R",
+                    "\\beta_R",
+                    "\\alpha_R"
+                ],
+                "explanation": "Root-collar xylem water potential solution from boundary conditions and integrated soil-root system.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_eqS5_6",
+                        "char_span": null,
+                        "snippet": "(S5.6)  ψRc = ψsoil - (χR+aLE)/kR + βR + (1/αR) ln[ ... ]"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S5.7",
+                "latex": "\\psi_S=\\psi_{Rc}-\\frac{\\chi_S+a_L E}{k_S}+\\beta_S+\\frac{1}{\\alpha_S}\\ln\\left[\\frac{(\\chi_S+a_L E)\\exp(-\\alpha_S\\beta_S)+a_L E\\exp(-\\alpha_S\\psi_{Rc})-a_L E\\exp\\left(-\\alpha_S\\psi_{Rc}+\\alpha_S\\frac{\\chi_S+a_L E}{k_S}\\right)}{\\chi_S+a_L E}\\right]",
+                "variables": [
+                    "\\psi_S",
+                    "\\psi_{Rc}",
+                    "\\chi_S",
+                    "a_L",
+                    "E",
+                    "k_S",
+                    "\\beta_S",
+                    "\\alpha_S"
+                ],
+                "explanation": "Stem-apex xylem water potential solution from boundary conditions and integrated stem system.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_eqS5_7",
+                        "char_span": null,
+                        "snippet": "(S5.7)  ψS = ψRc - (χS+aLE)/kS + βS + (1/αS) ln[ ... ]"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S5.8",
+                "latex": "\\frac{\\partial \\psi_{Rc}}{\\partial E}=-\\frac{a_L}{k_R}+\\frac{a_L}{\\alpha_R(\\chi_R+a_L E)}\\left[\\frac{\\chi_R}{\\chi_R+a_L E}\\exp\\left(-\\alpha_R(\\psi_{Rc}-\\beta_R)-\\alpha_R\\frac{\\chi_R+a_L E}{k_R}\\right)-\\left(\\frac{\\chi_R}{\\chi_R+a_L E}+\\alpha_R\\frac{a_L E}{k_R}\\right)\\exp\\left(-\\alpha_R(\\psi_{Rc}-\\beta_R)\\right)\\right]",
+                "variables": [
+                    "\\partial \\psi_{Rc}/\\partial E",
+                    "a_L",
+                    "k_R",
+                    "\\alpha_R",
+                    "\\chi_R",
+                    "E",
+                    "\\psi_{Rc}",
+                    "\\beta_R"
+                ],
+                "explanation": "Sensitivity of root-collar water potential to transpiration; obtained by differentiating Eq.S5.6 w.r.t. E.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_eqS5_8",
+                        "char_span": null,
+                        "snippet": "(S5.8)  ∂ψRc/∂E = -aL/kR + aL/[αR(χR+aLE)] [ ... ]"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S5.9",
+                "latex": "\\frac{\\partial \\psi_S}{\\partial E}=\\frac{\\partial \\psi_{Rc}}{\\partial E}-\\frac{a_L}{k_S}+\\frac{a_L}{\\alpha_S(\\chi_S+a_L E)}\\Bigg[\\left(\\frac{\\chi_S}{\\chi_S+a_L E}-\\alpha_S E\\frac{\\partial \\psi_{Rc}}{\\partial E}\\right)\\exp\\left(-\\alpha_S(\\psi_S-\\beta_S)-\\alpha_S\\frac{\\chi_S+a_L E}{k_S}\\right)-\\left(\\frac{\\chi_S}{\\chi_S+a_L E}+\\alpha_S\\frac{a_L E}{k_S}-\\alpha_S E\\frac{\\partial \\psi_{Rc}}{\\partial E}\\right)\\exp\\left(-\\alpha_S(\\psi_S-\\beta_S)\\right)\\Bigg]",
+                "variables": [
+                    "\\partial \\psi_S/\\partial E",
+                    "\\partial \\psi_{Rc}/\\partial E",
+                    "a_L",
+                    "k_S",
+                    "\\alpha_S",
+                    "\\chi_S",
+                    "E",
+                    "\\psi_S",
+                    "\\beta_S"
+                ],
+                "explanation": "Sensitivity of stem-apex water potential to transpiration; obtained by differentiating Eq.S5.7 w.r.t. E.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_eqS5_9",
+                        "char_span": null,
+                        "snippet": "(S5.9)  ∂ψS/∂E = ∂ψRc/∂E - aL/kS + aL/[αS(χS+aLE)] [ ... ]"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S5.10",
+                "latex": "V_{C,L}(\\psi)=\\frac{1}{1+\\exp\\left[-\\alpha_L\\,(\\psi-\\beta_L)\\right]}",
+                "variables": [
+                    "V_{C,L}(\\psi)",
+                    "\\psi",
+                    "\\alpha_L",
+                    "\\beta_L"
+                ],
+                "explanation": "Leaf conductive fraction (relative to maximum) for computing leaf water potential in comparisons.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_eqS5_10",
+                        "char_span": null,
+                        "snippet": "(S5.10)  VCL(ψ) = 1 / (1 + exp[-αL(ψ-βL)])"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S5.11",
+                "latex": "\\psi_L=\\psi_S-\\frac{E}{k_L}+\\beta_L+\\frac{1}{\\alpha_L}\\ln\\left[\\exp(-\\alpha_L\\beta_L)+\\exp(-\\alpha_L\\psi_S)-\\exp\\left(-\\alpha_L\\psi_S+\\alpha_L\\frac{E}{k_L}\\right)\\right]",
+                "variables": [
+                    "\\psi_L",
+                    "\\psi_S",
+                    "E",
+                    "k_L",
+                    "\\beta_L",
+                    "\\alpha_L"
+                ],
+                "explanation": "Leaf water potential (gravitational terms removed) analogous to Eq.S5.6–S5.7 for leaves.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_eqS5_11",
+                        "char_span": null,
+                        "snippet": "(S5.11)  ψL = ψS - E/kL + βL + (1/αL) ln[ ... ]"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S5.12",
+                "latex": "\\frac{\\partial \\psi_L}{\\partial E}=\\left(\\frac{\\partial \\psi_S}{\\partial E}-\\frac{1}{k_L}\\right)\\left[1+\\exp\\left(-\\alpha_L(\\psi_L-\\beta_L)\\right)\\right]-\\frac{\\partial \\psi_S}{\\partial E}\\exp\\left(-\\alpha_L(\\psi_L-\\beta_L)-\\alpha_L\\frac{E}{k_L}\\right)",
+                "variables": [
+                    "\\partial \\psi_L/\\partial E",
+                    "\\partial \\psi_S/\\partial E",
+                    "k_L",
+                    "\\alpha_L",
+                    "\\psi_L",
+                    "\\beta_L",
+                    "E"
+                ],
+                "explanation": "Sensitivity of leaf water potential to transpiration; leaf-analog of Eq.S5.8–S5.9 with gravity removed.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_eqS5_12",
+                        "char_span": null,
+                        "snippet": "(S5.12)  ∂ψL/∂E = (∂ψS/∂E - 1/kL)[1+exp(-αL(ψL-βL))] - (∂ψS/∂E)exp(...)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "\\psi",
+                "name": "water potential along stem/root domains",
+                "unit": "MPa",
+                "definition": "Water potential along either \\tilde{z} (stem) or \\tilde{d} (roots).",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b4",
+                        "char_span": null,
+                        "snippet": "\\psi is the water potential [MPa] along the domains of either z̃ or d̃"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\psi_{soil}",
+                "name": "soil water potential",
+                "unit": "MPa",
+                "definition": "Soil water potential used as a boundary condition for the soil-root system.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ψsoil"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b5",
+                        "char_span": null,
+                        "snippet": "soil water potentials, ψsoil [MPa]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\psi_{Rc}",
+                "name": "xylem water potential at the root collar",
+                "unit": "MPa",
+                "definition": "Root-collar xylem water potential; solved such that fluxes are conserved between organs.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ψRc"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b5",
+                        "char_span": null,
+                        "snippet": "xylem water potentials at the root collar... ψRc"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\psi_S",
+                "name": "xylem water potential at the stem apex",
+                "unit": "MPa",
+                "definition": "Stem-apex xylem water potential; solved such that fluxes are conserved between organs.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ψS"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b5",
+                        "char_span": null,
+                        "snippet": "xylem water potentials... the stem apex, ψRc and ψS, respectively [MPa]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\psi_L",
+                "name": "leaf water potential",
+                "unit": "MPa",
+                "definition": "Leaf water potential used for comparison to other stomatal models (not used by the growth model).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ψL"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b6",
+                        "char_span": null,
+                        "snippet": "we present the calculations for the leaf water potential, ψL [MPa]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\tilde{z}",
+                "name": "normalized axial distance from stem apex",
+                "unit": null,
+                "definition": "Unitless axial distance from the stem-apex normalized by H: \\tilde{z}=z/H; increasing downward.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "z̃"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b7",
+                        "char_span": null,
+                        "snippet": "z̃ is the unitless axial distance from the stem-apex normalized by H (z̃ = z/H...); note that increasing values... are downward"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\tilde{d}",
+                "name": "normalized distance from root collar (depth)",
+                "unit": null,
+                "definition": "Unitless distance from the root collar normalized by Z: \\tilde{d}=d/Z; increasing downward.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "d̃"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b8",
+                        "char_span": null,
+                        "snippet": "d̃ is the unitless distance from the root collar normalized by Z (d̃ = d/Z...); note that increasing values... are downward"
+                    }
+                ]
+            },
+            {
+                "symbol": "H",
+                "name": "tree height",
+                "unit": "m",
+                "definition": "Tree height used in the stem gravitational term and normalization of \\tilde{z}.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b9",
+                        "char_span": null,
+                        "snippet": "where H is tree height [m]"
+                    }
+                ]
+            },
+            {
+                "symbol": "Z",
+                "name": "rooting depth",
+                "unit": "m",
+                "definition": "Rooting depth used in the soil-root gravitational term and normalization of \\tilde{d}.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b9",
+                        "char_span": null,
+                        "snippet": "Z is the rooting depth [m]"
+                    }
+                ]
+            },
+            {
+                "symbol": "k_S",
+                "name": "maximum stem conductance",
+                "unit": "mol H2O second^-1 MPa^-1",
+                "definition": "Maximum conductance of the stem system.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "kS"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b10",
+                        "char_span": null,
+                        "snippet": "kS and kR are the maximum conductances [mol H2O∙s-1∙MPa-1] of the stem and soil-root systems"
+                    }
+                ]
+            },
+            {
+                "symbol": "k_R",
+                "name": "maximum soil-root conductance",
+                "unit": "mol H2O second^-1 MPa^-1",
+                "definition": "Maximum conductance of the soil-root system.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "kR"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b10",
+                        "char_span": null,
+                        "snippet": "kS and kR are the maximum conductances [mol H2O∙s-1∙MPa-1] of the stem and soil-root systems"
+                    }
+                ]
+            },
+            {
+                "symbol": "k_L",
+                "name": "maximum leaf conductance per leaf area",
+                "unit": "mol H2O meter^-2 second^-1 MPa^-1",
+                "definition": "Maximum leaf conductance per unit leaf area used in leaf water potential equation.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "kL"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_b2",
+                        "char_span": null,
+                        "snippet": "kL is the maximum leaf conductance per leaf area [mol H2O∙m-2∙s-1∙MPa-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "V_{C,S}(\\psi)",
+                "name": "stem conductive fraction",
+                "unit": null,
+                "definition": "Conductive fraction of the stem system relative to maximum; logistic in \\psi.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "VCS"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b3",
+                        "char_span": null,
+                        "snippet": "VCS(ψ) = 1/(1+exp[-αS(ψ-βS)])"
+                    }
+                ]
+            },
+            {
+                "symbol": "V_{C,R}(\\psi)",
+                "name": "soil-root conductive fraction",
+                "unit": null,
+                "definition": "Conductive fraction of the soil-root system relative to maximum; logistic in \\psi.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "VCR"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b4",
+                        "char_span": null,
+                        "snippet": "VCR(ψ) = 1/(1+exp[-αR(ψ-βR)])"
+                    }
+                ]
+            },
+            {
+                "symbol": "V_{C,L}(\\psi)",
+                "name": "leaf conductive fraction",
+                "unit": null,
+                "definition": "Leaf conductive fraction (relative to maximum) used for ψL calculation; logistic in \\psi.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "VCL"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_b1",
+                        "char_span": null,
+                        "snippet": "VCL(ψ) = 1/(1+exp[-αL(ψ-βL)])"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\alpha_S",
+                "name": "stem vulnerability curve shape parameter",
+                "unit": "MPa^-1",
+                "definition": "Logistic (exponential sigmoidal) shape parameter for stem conductive fraction.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "αS"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b2",
+                        "char_span": null,
+                        "snippet": "αS and αR are shape parameters [MPa-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\beta_S",
+                "name": "stem water potential at 50% conductance loss",
+                "unit": "MPa",
+                "definition": "Potential at which stems have lost half of their conductance.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "βS"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b2",
+                        "char_span": null,
+                        "snippet": "βS and βR are the potentials at which stems and roots have lost half of their conductance [MPa]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\alpha_R",
+                "name": "root vulnerability curve shape parameter",
+                "unit": "MPa^-1",
+                "definition": "Logistic (exponential sigmoidal) shape parameter for root conductive fraction.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "αR"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b2",
+                        "char_span": null,
+                        "snippet": "αS and αR are shape parameters [MPa-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\beta_R",
+                "name": "root water potential at 50% conductance loss",
+                "unit": "MPa",
+                "definition": "Potential at which roots have lost half of their conductance.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "βR"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b2",
+                        "char_span": null,
+                        "snippet": "βS and βR are the potentials at which stems and roots have lost half of their conductance [MPa]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\alpha_L",
+                "name": "leaf vulnerability curve shape parameter",
+                "unit": "MPa^-1",
+                "definition": "Logistic (exponential sigmoidal) shape parameter for leaf conductive fraction.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "αL"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_b3",
+                        "char_span": null,
+                        "snippet": "αL is a shape parameter [MPa-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\beta_L",
+                "name": "leaf water potential at 50% conductance loss",
+                "unit": "MPa",
+                "definition": "Potential at which a leaf has lost half of its conductance.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "βL"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_b3",
+                        "char_span": null,
+                        "snippet": "βL is the potential at which a leaf has lost half of its conductance [MPa]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\varpi",
+                "name": "Pa-to-MPa conversion factor",
+                "unit": "MPa Pa^-1",
+                "definition": "Factor converting from Pa to MPa (given as 10^-6 MPa·Pa^-1).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ϖ"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b0",
+                        "char_span": null,
+                        "snippet": "ϖ is a factor that converts from Pa to MPa (ϖ = 10-6 MPa∙Pa-1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\rho",
+                "name": "density of water",
+                "unit": "kg m^-3",
+                "definition": "Density of water used in gravitational term.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ρ"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b0",
+                        "char_span": null,
+                        "snippet": "ρ is the density of water [kg∙m-3]"
+                    }
+                ]
+            },
+            {
+                "symbol": "g",
+                "name": "acceleration due to gravity",
+                "unit": "m s^-2",
+                "definition": "Acceleration due to gravity used in gravitational potential term.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b0",
+                        "char_span": null,
+                        "snippet": "g is the acceleration due to gravity [m∙s-2]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\chi_S",
+                "name": "stem gravitational shorthand",
+                "unit": "mol H2O second^-1",
+                "definition": "Shorthand for \\varpi·\\rho·g·H·kS.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "χS"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b5",
+                        "char_span": null,
+                        "snippet": "χS is shorthand for ϖ∙ρ∙g∙H∙kS and has units of [mol H2O∙s-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\chi_R",
+                "name": "root gravitational shorthand",
+                "unit": "mol H2O second^-1",
+                "definition": "Shorthand for \\varpi·\\rho·g·Z·kR.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "χR"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b6",
+                        "char_span": null,
+                        "snippet": "χR is shorthand for ϖ∙ρ∙g∙Z∙kR and has units of [mol H2O∙s-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "k_c",
+                "name": "canopy conductance (inverse form referenced)",
+                "unit": null,
+                "definition": "Referenced as kc = -∂E/∂ψL.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b7",
+                        "char_span": null,
+                        "snippet": "inverse of the canopy conductance (kc = -∂E/∂ψL)"
+                    }
+                ]
+            },
+            {
+                "symbol": "E",
+                "name": "transpiration rate (as used in this section)",
+                "unit": null,
+                "definition": "Transpiration rate used to define total flux aL·E and to compute ψ potentials and sensitivities.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b2",
+                        "char_span": null,
+                        "snippet": "total amount of water conducted through the tree, aL∙E"
+                    }
+                ]
+            },
+            {
+                "symbol": "a_L",
+                "name": "leaf area (as used in this section)",
+                "unit": null,
+                "definition": "Scaling factor converting E to total tree flux aL·E.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "aL"
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b2",
+                        "char_span": null,
+                        "snippet": "total amount of water conducted through the tree, aL∙E"
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "name": "H",
+                "unit": "m",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b9",
+                        "char_span": null,
+                        "snippet": "H is tree height [m]"
+                    }
+                ]
+            },
+            {
+                "name": "Z",
+                "unit": "m",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b9",
+                        "char_span": null,
+                        "snippet": "Z is the rooting depth [m]"
+                    }
+                ]
+            },
+            {
+                "name": "kS",
+                "unit": "mol H2O second^-1 MPa^-1",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b10",
+                        "char_span": null,
+                        "snippet": "kS and kR are the maximum conductances [mol H2O∙s-1∙MPa-1]"
+                    }
+                ]
+            },
+            {
+                "name": "kR",
+                "unit": "mol H2O second^-1 MPa^-1",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b10",
+                        "char_span": null,
+                        "snippet": "kS and kR are the maximum conductances [mol H2O∙s-1∙MPa-1]"
+                    }
+                ]
+            },
+            {
+                "name": "kL",
+                "unit": "mol H2O meter^-2 second^-1 MPa^-1",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_b2",
+                        "char_span": null,
+                        "snippet": "kL is the maximum leaf conductance per leaf area [mol H2O∙m-2∙s-1∙MPa-1]"
+                    }
+                ]
+            },
+            {
+                "name": "αS",
+                "unit": "MPa^-1",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b2",
+                        "char_span": null,
+                        "snippet": "αS and αR are shape parameters [MPa-1]"
+                    }
+                ]
+            },
+            {
+                "name": "βS",
+                "unit": "MPa",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b2",
+                        "char_span": null,
+                        "snippet": "βS and βR are the potentials at which stems and roots have lost half of their conductance [MPa]"
+                    }
+                ]
+            },
+            {
+                "name": "αR",
+                "unit": "MPa^-1",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b2",
+                        "char_span": null,
+                        "snippet": "αS and αR are shape parameters [MPa-1]"
+                    }
+                ]
+            },
+            {
+                "name": "βR",
+                "unit": "MPa",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b2",
+                        "char_span": null,
+                        "snippet": "βS and βR are the potentials at which stems and roots have lost half of their conductance [MPa]"
+                    }
+                ]
+            },
+            {
+                "name": "αL",
+                "unit": "MPa^-1",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_b3",
+                        "char_span": null,
+                        "snippet": "αL is a shape parameter [MPa-1]"
+                    }
+                ]
+            },
+            {
+                "name": "βL",
+                "unit": "MPa",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_b3",
+                        "char_span": null,
+                        "snippet": "βL is the potential at which a leaf has lost half of its conductance [MPa]"
+                    }
+                ]
+            },
+            {
+                "name": "ϖ",
+                "unit": "MPa Pa^-1",
+                "default": 1e-6,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b0",
+                        "char_span": null,
+                        "snippet": "ϖ = 10-6 MPa∙Pa-1"
+                    }
+                ]
+            }
+        ],
+        "algorithm": {
+            "inputs": [
+                "E",
+                "\\psi_{soil}",
+                "H",
+                "Z",
+                "k_S",
+                "k_R",
+                "\\alpha_S",
+                "\\beta_S",
+                "\\alpha_R",
+                "\\beta_R",
+                "a_L"
+            ],
+            "outputs": [
+                "\\psi_{Rc}",
+                "\\psi_S",
+                "\\partial \\psi_{Rc}/\\partial E",
+                "\\partial \\psi_S/\\partial E",
+                "\\psi_L",
+                "\\partial \\psi_L/\\partial E"
+            ],
+            "steps": [
+                "Compute conductive fractions V_{C,S}(\\psi) and V_{C,R}(\\psi) from Eq.S5.3–S5.4 (logistic vulnerability curves).",
+                "Solve for \\psi_{Rc} using Eq.S5.6 given \\psi_{soil} and E (and parameters k_R, \\alpha_R, \\beta_R, \\chi_R).",
+                "Solve for \\psi_S using Eq.S5.7 given \\psi_{Rc} and E (and parameters k_S, \\alpha_S, \\beta_S, \\chi_S).",
+                "Compute sensitivities \\partial\\psi_{Rc}/\\partial E and \\partial\\psi_S/\\partial E using Eq.S5.8–S5.9.",
+                "If comparing to other stomatal models, compute leaf conductive fraction V_{C,L}(\\psi) (Eq.S5.10), leaf water potential \\psi_L (Eq.S5.11), and \\partial\\psi_L/\\partial E (Eq.S5.12)."
+            ],
+            "pseudocode": null,
+            "evidence": [
+                {
+                    "page": 33,
+                    "block_id": "p33_b8",
+                    "char_span": null,
+                    "snippet": "we require solutions for... ∂ψRc/∂E and ∂ψS/∂E... defined by differentiating Eq. S5.6&7 with respect to E"
+                }
+            ]
+        },
+        "datasets": [],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L1",
+                "text": "Boundary conditions as written include an apparent inconsistency for \\psi(\\tilde{z}=1) mapping to both \\psi_{Rc} and \\psi_S; treat boundary statement as potentially errant unless clarified elsewhere.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b4",
+                        "char_span": null,
+                        "snippet": "note that ψ(d̃ = 1) = ψsoil, ψ(z̃ = 1) = ψ(d̃ = 0) = ψRc, and ψ(z̃ = 1) = ψS"
+                    }
+                ]
+            }
+        ],
+        "implementation": {
+            "model_scope": "Steady-state xylem hydraulics for roots and stem with vulnerability curves; analytic solutions for \\psi_{Rc}, \\psi_S, and their sensitivities to transpiration. Optional leaf \\psi_L module for model comparisons.",
+            "state_variables": [],
+            "exogenous_inputs": [
+                "\\psi_{soil}"
+            ],
+            "control_inputs": [],
+            "outputs_observables": [
+                "\\psi_{Rc}",
+                "\\psi_S",
+                "\\psi_L",
+                "\\partial \\psi_{Rc}/\\partial E",
+                "\\partial \\psi_S/\\partial E",
+                "\\partial \\psi_L/\\partial E"
+            ],
+            "io_contract": {
+                "input_schema": null,
+                "output_schema": null,
+                "data_types": [],
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b5",
+                        "char_span": null,
+                        "snippet": "soil water potentials, ψsoil [MPa], and xylem water potentials... ψRc and ψS"
+                    }
+                ]
+            },
+            "dependency_graph": {
+                "nodes": [
+                    "E",
+                    "a_L",
+                    "\\psi_{soil}",
+                    "\\psi_{Rc}",
+                    "\\psi_S",
+                    "\\psi_L",
+                    "k_S",
+                    "k_R",
+                    "k_L",
+                    "V_{C,S}(\\psi)",
+                    "V_{C,R}(\\psi)",
+                    "V_{C,L}(\\psi)",
+                    "\\alpha_S",
+                    "\\beta_S",
+                    "\\alpha_R",
+                    "\\beta_R",
+                    "\\alpha_L",
+                    "\\beta_L",
+                    "\\chi_S",
+                    "\\chi_R"
+                ],
+                "edges": [
+                    {
+                        "from": "E",
+                        "to": "\\psi_{Rc}",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "\\psi_{soil}",
+                        "to": "\\psi_{Rc}",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "\\psi_{Rc}",
+                        "to": "\\psi_S",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "E",
+                        "to": "\\psi_S",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "\\psi_S",
+                        "to": "\\psi_L",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "E",
+                        "to": "\\partial \\psi_{Rc}/\\partial E",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "\\partial \\psi_{Rc}/\\partial E",
+                        "to": "\\partial \\psi_S/\\partial E",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "\\partial \\psi_S/\\partial E",
+                        "to": "\\partial \\psi_L/\\partial E",
+                        "type": "equation"
+                    }
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b8",
+                        "char_span": null,
+                        "snippet": "∂ψRc/∂E and ∂ψS/∂E... defined by differentiating Eq. S5.6&7 with respect to E"
+                    }
+                ]
+            },
+            "numerics": {
+                "time_step": null,
+                "time_grid": null,
+                "integration_method": null,
+                "solver": "closed-form algebraic evaluation (Eq.S5.6–S5.12)",
+                "convergence_criteria": null,
+                "stability_notes": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 33,
+                        "block_id": "p33_b9",
+                        "char_span": null,
+                        "snippet": "we derive solutions for xylem water potentials at the root collar and the stem apex"
+                    }
+                ]
+            },
+            "initial_conditions": [],
+            "boundary_conditions": [
+                {
+                    "name": "water potential boundary conditions (as written)",
+                    "formulation": "ψ(\\tilde{d}=1)=ψsoil; ψ(\\tilde{z}=1)=ψ(\\tilde{d}=0)=ψRc; ψ(\\tilde{z}=1)=ψS",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 32,
+                            "block_id": "p32_b4",
+                            "char_span": null,
+                            "snippet": "ψ(d̃ = 1) = ψsoil, ψ(z̃ = 1) = ψ(d̃ = 0) = ψRc, and ψ(z̃ = 1) = ψS"
+                        }
+                    ]
+                }
+            ],
+            "preprocessing": {
+                "steps": [],
+                "missing_value_policy": null,
+                "unit_conversions": [],
+                "filters_smoothing": [],
+                "uncertain": true,
+                "evidence": []
+            },
+            "calibration": {
+                "estimated_parameters": [],
+                "objective": null,
+                "constraints": null,
+                "optimizer": null,
+                "train_validation_protocol": null,
+                "uncertain": true,
+                "evidence": []
+            },
+            "code_blueprint": {
+                "language": null,
+                "modules": [],
+                "functions": [],
+                "tests": []
+            },
+            "unresolved_assets": [
+                {
+                    "type": "equation",
+                    "label": "Boundary conditions for \\tilde{z} endpoints",
+                    "page": 32,
+                    "issue": "Boundary statement assigns \\psi(\\tilde{z}=1) to both \\psi_{Rc} and \\psi_S; clarify correct endpoint mapping for \\psi_S (e.g., whether \\tilde{z}=0 is intended).",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 32,
+                            "block_id": "p32_b4",
+                            "char_span": null,
+                            "snippet": "ψ(z̃ = 1) = ψ(d̃ = 0) = ψRc, and ψ(z̃ = 1) = ψS"
+                        }
+                    ]
+                }
+            ],
+            "open_questions": [
+                {
+                    "id": "Q1",
+                    "question": "What is the correct boundary condition for \\psi_S in terms of \\tilde{z} (is it \\psi(\\tilde{z}=0)=\\psi_S rather than \\psi(\\tilde{z}=1)=\\psi_S)?",
+                    "why_needed": "Implementing Eq.S5.5–S5.7 requires consistent endpoint definitions for stem coordinate \\tilde{z}.",
+                    "likely_location": "Either a typo here or clarified in Potkay et al. (2021a) SI section S.3 or later sections.",
+                    "evidence": [
+                        {
+                            "page": 32,
+                            "block_id": "p32_b4",
+                            "char_span": null,
+                            "snippet": "ψ(z̃ = 1) = ψ(d̃ = 0) = ψRc, and ψ(z̃ = 1) = ψS"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "provenance": {
+        "extraction_time": "2026-01-17T03:41:58Z",
+        "model": "GPT-5.2 Thinking",
+        "notes": "C005 extracts S5 Xylem hydraulics equations and definitions (pages 32–34). Page 32 includes trailing Eq.S4.19 from prior section; excluded from model_card as out-of-scope for S5.",
+        "mode": "EXTRACT",
+        "is_partial": true,
+        "chunk": {
+            "chunk_id": "C005",
+            "page_range": [
+                32,
+                34
+            ]
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C001",
+                "page_range": [
+                    19,
+                    21
+                ],
+                "section_titles": [
+                    "Notes S1 / S1 Whole-tree carbon dynamics"
+                ],
+                "focus_tags": [
+                    "model",
+                    "equations"
+                ],
+                "priority": 1,
+                "rationale": "Defines NSC storage dynamics and respiration/growth closures used by later optimization.",
+                "uncertain": false,
+                "evidence": []
+            },
+            {
+                "chunk_id": "C002",
+                "page_range": [
+                    22,
+                    26
+                ],
+                "section_titles": [
+                    "S2 Growth optimization"
+                ],
+                "focus_tags": [
+                    "theory",
+                    "equations",
+                    "algorithm"
+                ],
+                "priority": 1,
+                "rationale": "Derives optimality conditions (η, χw=λ) linking stomata to growth optimization.",
+                "uncertain": false,
+                "evidence": []
+            },
+            {
+                "chunk_id": "C003",
+                "page_range": [
+                    27,
+                    28
+                ],
+                "section_titles": [
+                    "S3 Leaf temperature and stomatal conductances"
+                ],
+                "focus_tags": [
+                    "equations"
+                ],
+                "priority": 2,
+                "rationale": "Defines TL and conductance relationships required for E and An dependencies.",
+                "uncertain": false,
+                "evidence": []
+            },
+            {
+                "chunk_id": "C004",
+                "page_range": [
+                    29,
+                    31
+                ],
+                "section_titles": [
+                    "S4 Leaf and canopy-level carbon assimilation"
+                ],
+                "focus_tags": [
+                    "equations"
+                ],
+                "priority": 2,
+                "rationale": "Defines An and λ=dAn/dE used by χw=λ condition.",
+                "uncertain": false,
+                "evidence": []
+            },
+            {
+                "chunk_id": "C005",
+                "page_range": [
+                    32,
+                    34
+                ],
+                "section_titles": [
+                    "S5 Xylem hydraulics"
+                ],
+                "focus_tags": [
+                    "equations",
+                    "algorithm"
+                ],
+                "priority": 1,
+                "rationale": "Provides analytic solutions for ψRc, ψS and their sensitivities to E used in optimization, plus optional ψL module.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 32,
+                        "block_id": "p32_b1",
+                        "char_span": null,
+                        "snippet": "S5 Xylem hydraulics"
+                    }
+                ]
+            }
+        ],
+        "next_recommended_chunk_id": "C006"
+    }
+}

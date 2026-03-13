@@ -1,0 +1,1365 @@
+{
+    "doc": {
+        "id": "Potkay and Feng - 2023 - Do stomata optimize turgor-driven growth A new framework for integrating stomata response with whol_appendix.pdf",
+        "title": "Do stomata optimize turgor-driven growth? A new framework for integrating stomata response with whole-tree carbon and hydraulics (Supporting Information)",
+        "year": 2023,
+        "doi": null,
+        "page_count": 62
+    },
+    "model_card": {
+        "name": "S6 Turgor-limited potential growth",
+        "aliases": [
+            "sink-limited potential growth rate G0",
+            "whole-stem Lockhart scaling (Potkay et al. 2021b)"
+        ],
+        "task": [
+            "Compute sink-limited potential growth rate G0 driven by turgor",
+            "Compute sensitivity dG0/dE needed for stomatal growth optimization"
+        ],
+        "domain": [
+            "plant hydraulics",
+            "turgor-driven growth",
+            "stomatal optimization"
+        ],
+        "assumptions": [
+            {
+                "id": "A1",
+                "text": "Whole-stem growth can be represented by scaling the Lockhart (1965) turgor-driven expansion equation to the whole-stem scale (allometric architecture assumptions).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_h_s6",
+                        "char_span": null,
+                        "snippet": "The sink-limited potential growth rate has been formulated by Potkay et al. (2021b) who scaled the Lockhart (1965) equation for turgor-driven cell expansion to the whole-stem scale"
+                    }
+                ]
+            },
+            {
+                "id": "A2",
+                "text": "Inner bark (phloem) water potential is approximated by xylem water potential via xylem–phloem coupling (water-potential equilibrium).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 35,
+                        "block_id": "p35_para_coupling",
+                        "char_span": null,
+                        "snippet": "xylem-phloem coupling enables water-potential equilibrium ... thus we may approximate the inner bark potential as the xylem potential."
+                    }
+                ]
+            },
+            {
+                "id": "A3",
+                "text": "Osmotic potential (π and π0) is treated as axially uniform within the stem as a first-order approximation.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 35,
+                        "block_id": "p35_para_pi_uniform",
+                        "char_span": null,
+                        "snippet": "we approximate π (and π0 in Eq. S6.2) as axially uniform within the stem as a first-order approximation"
+                    }
+                ]
+            },
+            {
+                "id": "A4",
+                "text": "Non-NSC-limited osmotic potential π0 is estimated empirically from Scots pine regressions linking ψS to phloem sap molality mp and then π0 via a van ’t Hoff relation (osmolytes behave like sucrose).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 36,
+                        "block_id": "p36_eq_s6_3",
+                        "char_span": null,
+                        "snippet": "mp = cm,1 − cm,2 ψS (S6.3)"
+                    },
+                    {
+                        "page": 36,
+                        "block_id": "p36_eq_s6_4",
+                        "char_span": null,
+                        "snippet": "π0 = −ϖρRTa (cΠ,1 mp + cΠ,2 mp^2), (S6.4)"
+                    }
+                ]
+            },
+            {
+                "id": "A5",
+                "text": "To remove the discontinuity from max(·,0) in Eq. S6.1, integration is performed only over the axial domain where P0(z̃) ≥ Γ using a threshold location z̃+.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_eq_s6_5",
+                        "char_span": null,
+                        "snippet": "change the bounds of integration ... integrate only over the z̃ domain for which P0(z̃) ≥ Γ ... (S6.5)"
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "Eq.S6.1",
+                "latex": "G_0 = \\tilde{\\phi}(T_a)\\,\\frac{C_W}{u_S}\\,\\int_{0}^{1}\\max\\big(P_0(\\tilde{z})-\\Gamma,\\,0\\big)\\,d\\tilde{z}",
+                "variables": [
+                    "G_0",
+                    "\\tilde{\\phi}",
+                    "T_a",
+                    "C_W",
+                    "u_S",
+                    "P_0",
+                    "\\tilde{z}",
+                    "\\Gamma"
+                ],
+                "explanation": "Definition of sink-limited potential growth rate as whole-stem integral of excess turgor above threshold.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_eq_s6_1",
+                        "char_span": null,
+                        "snippet": "G0 = \\tilde{\\phi}(Ta) (CW/uS) \\int_0^1 max(P0(\\tilde{z}) − \\Gamma, 0) d\\tilde{z}, (S6.1)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S6.2",
+                "latex": "P_0(\\tilde{z}) = \\psi(\\tilde{z}) - \\pi_0",
+                "variables": [
+                    "P_0",
+                    "\\psi",
+                    "\\tilde{z}",
+                    "\\pi_0"
+                ],
+                "explanation": "Potential (NSC-unlimited) turgor pressure is water potential minus osmotic potential (NSC-unlimited).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 35,
+                        "block_id": "p35_eq_s6_2",
+                        "char_span": null,
+                        "snippet": "P0(\\tilde{z}) = \\psi(\\tilde{z}) − \\pi0, (S6.2)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S6.3",
+                "latex": "m_p = c_{m,1} - c_{m,2}\\,\\psi_S",
+                "variables": [
+                    "m_p",
+                    "c_{m,1}",
+                    "c_{m,2}",
+                    "\\psi_S"
+                ],
+                "explanation": "Empirical regression for phloem sap molality vs stem-apex water potential (Scots pine).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 36,
+                        "block_id": "p36_eq_s6_3",
+                        "char_span": null,
+                        "snippet": "mp = cm,1 − cm,2 ψS, (S6.3)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S6.4",
+                "latex": "\\pi_0 = -\\varpi\\rho R T_a\\,\\big(c_{\\Pi,1} m_p + c_{\\Pi,2} m_p^2\\big)",
+                "variables": [
+                    "\\pi_0",
+                    "\\varpi",
+                    "\\rho",
+                    "R",
+                    "T_a",
+                    "c_{\\Pi,1}",
+                    "c_{\\Pi,2}",
+                    "m_p"
+                ],
+                "explanation": "Nonlinear van 't Hoff-type formula for osmotic potential (osmolytes behave like sucrose).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 36,
+                        "block_id": "p36_eq_s6_4",
+                        "char_span": null,
+                        "snippet": "π0 = −ϖρRTa (cΠ,1 mp + cΠ,2 mp^2), (S6.4)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S6.5",
+                "latex": "G_0 = \\tilde{\\phi}(T_a)\\,\\frac{C_W}{u_S}\\,\\int_{\\tilde{z}^{+}}^{1}\\big(P_0(\\tilde{z})-\\Gamma\\big)\\,d\\tilde{z}",
+                "variables": [
+                    "G_0",
+                    "\\tilde{\\phi}",
+                    "T_a",
+                    "C_W",
+                    "u_S",
+                    "\\tilde{z}^{+}",
+                    "P_0",
+                    "\\Gamma"
+                ],
+                "explanation": "Reformulation integrating only where P0 ≥ Γ to avoid max(·,0) discontinuity.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_eq_s6_5",
+                        "char_span": null,
+                        "snippet": "G0 = \\tilde{\\phi}(Ta) (CW/uS) \\int_{\\tilde{z}^+}^{1} P0(\\tilde{z}) − \\Gamma\\, d\\tilde{z}, (S6.5)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S6.6",
+                "latex": "\\tilde{z}^{+}=\\min\\left\\{\\max\\left\\{\\frac{k_S}{\\chi_S+a_L E}\\left[\\Gamma+\\pi_0-\\psi_S+\\frac{1}{\\alpha_S}\\ln\\left(\\frac{(\\chi_S+a_L E)e^{-\\alpha_S\\beta_S}+a_L E\\,e^{-\\alpha_S(\\Gamma+\\pi_0)}}{(\\chi_S+a_L E)e^{-\\alpha_S\\beta_S}+a_L E\\,e^{-\\alpha_S\\psi_S}}\\right)\\right],\\,0\\right\\},\\,1\\right\\}",
+                "variables": [
+                    "\\tilde{z}^{+}",
+                    "k_S",
+                    "\\chi_S",
+                    "a_L",
+                    "E",
+                    "\\Gamma",
+                    "\\pi_0",
+                    "\\psi_S",
+                    "\\alpha_S",
+                    "\\beta_S"
+                ],
+                "explanation": "Threshold axial location where P0 equals Γ, clipped to [0,1].",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_eq_s6_6",
+                        "char_span": null,
+                        "snippet": "\\tilde{z}^+ = min{max{ ... },0},1}. (S6.6)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S6.7",
+                "latex": "G_0=\\tilde{\\phi}\\,\\frac{C_W}{u_S}\\left\\{(1-\\tilde{z}^{+})\\left[\\beta_S-\\pi_0-\\Gamma-\\frac{1}{\\alpha_S}\\ln\\left(\\frac{\\chi_S}{a_L E}+1\\right)\\right]+\\frac{k_S\\,\\Omega(\\tilde{z}^{+})}{\\alpha_S^{2}(\\chi_S+a_L E)}\\right\\}",
+                "variables": [
+                    "G_0",
+                    "\\tilde{\\phi}",
+                    "C_W",
+                    "u_S",
+                    "\\tilde{z}^{+}",
+                    "\\beta_S",
+                    "\\pi_0",
+                    "\\Gamma",
+                    "\\alpha_S",
+                    "\\chi_S",
+                    "a_L",
+                    "E",
+                    "k_S",
+                    "\\Omega"
+                ],
+                "explanation": "Analytical expression for G0 after combining Eq. S6.2&5 with stem hydraulics (Eq. S5.6 referenced).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_eq_s6_7",
+                        "char_span": null,
+                        "snippet": "an analytical expression for the sink-limited potential growth rate is given by ... (S6.7)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S6.8",
+                "latex": "\\Omega(\\tilde{z}^{+})=\\operatorname{Li}_2\\!\u005b2-\\Lambda(1)\\u005d-\\operatorname{Li}_2\\!\\u005b2-\\Lambda(\\tilde{z}^{+})\\u005d-\\frac{1}{2}\\operatorname{Li}_2\\!\\u005b2\\Lambda(1)-\\Lambda(1)^2\\u005d+\\frac{1}{2}\\operatorname{Li}_2\\!\\u005b2\\Lambda(\\tilde{z}^{+})-\\Lambda(\\tilde{z}^{+})^2\\u005d",
+                "variables": [
+                    "\\Omega",
+                    "\\operatorname{Li}_2",
+                    "\\Lambda",
+                    "\\tilde{z}^{+}"
+                ],
+                "explanation": "Defines Ω in terms of the dilogarithm (polylogarithm of order 2).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_eq_s6_8",
+                        "char_span": null,
+                        "snippet": "Ω(\\tilde{z}^+) = Li2[2 − Λ(1)] − Li2[2 − Λ(\\tilde{z}^+)] − 1/2 Li2[2Λ(1) − Λ(1)^2] + 1/2 Li2[2Λ(\\tilde{z}^+) − Λ(\\tilde{z}^+)^2], (S6.8)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S6.9",
+                "latex": "\\operatorname{Li}_2(x)=\\int_{x}^{0}\\frac{\\ln(1-x')}{x'}\\,dx'",
+                "variables": [
+                    "\\operatorname{Li}_2",
+                    "x",
+                    "x'"
+                ],
+                "explanation": "Integral definition of the dilogarithm used in Eq. S6.8.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_eq_s6_9",
+                        "char_span": null,
+                        "snippet": "Li2(x) = ∫_x^0 ln(1 − x′)/x′ dx′, (S6.9)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S6.10",
+                "latex": "\\Lambda(\\tilde{z})=\\exp\\left\\u005b\\tilde{z}\\,\\frac{\\alpha_S}{k_S}(\\chi_S+a_L E)\\u005d\\left\\u005b1+\\left(\\frac{\\chi_S}{a_L E}+1\\right)\\exp\\big(\\alpha_S(\\psi_S-\\beta_S)\\big)\\right\\u005d",
+                "variables": [
+                    "\\Lambda",
+                    "\\tilde{z}",
+                    "\\alpha_S",
+                    "k_S",
+                    "\\chi_S",
+                    "a_L",
+                    "E",
+                    "\\psi_S",
+                    "\\beta_S"
+                ],
+                "explanation": "Auxiliary function Λ(z̃) used in Ω(z̃+) and in dG0/dE.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_eq_s6_10",
+                        "char_span": null,
+                        "snippet": "Λ(\\tilde{z}) = exp[\\tilde{z} (\\alphaS/kS)(χS + aL E)] {1 + (χS/(aL E) + 1) exp[αS(ψS − βS)]}. (S6.10)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S6.11",
+                "latex": "\\frac{\\partial G_0}{\\partial E}=\\tilde{\\phi}\\,\\frac{C_W}{u_S}\\left\\{ -\\frac{\\partial\\tilde{z}^{+}}{\\partial E}\\left\\u005b\\beta_S-\\pi_0-\\Gamma-\\frac{1}{\\alpha_S}\\ln\\left(\\frac{\\chi_S}{a_L E}+1\\right)\\right\\u005d+(1-\\tilde{z}^{+})\\left\\u005b\\frac{\\chi_S}{\\alpha_S E(\\chi_S+a_L E)}-\\frac{\\partial\\pi_0}{\\partial\\psi_S}\\frac{\\partial\\psi_S}{\\partial E}\\right\\u005d-\\frac{a_L k_S\\Omega}{\\alpha_S^2(\\chi_S+a_L E)^2}+\\frac{k_S\\ln\\u005b\\Lambda(1)-1\\u005d}{\\alpha_S^2(\\chi_S+a_L E)\\Lambda(1)}\\frac{\\partial\\Lambda(1)}{\\partial E}-\\frac{k_S\\ln\\u005b\\Lambda(\\tilde{z}^{+})-1\\u005d}{\\alpha_S^2(\\chi_S+a_L E)\\Lambda(\\tilde{z}^{+})}\\frac{\\partial\\Lambda(\\tilde{z}^{+})}{\\partial E}\\right\\}",
+                "variables": [
+                    "\\partial G_0/\\partial E",
+                    "\\tilde{\\phi}",
+                    "C_W",
+                    "u_S",
+                    "\\tilde{z}^{+}",
+                    "\\beta_S",
+                    "\\pi_0",
+                    "\\Gamma",
+                    "\\alpha_S",
+                    "\\chi_S",
+                    "a_L",
+                    "E",
+                    "\\psi_S",
+                    "\\Omega",
+                    "k_S",
+                    "\\Lambda"
+                ],
+                "explanation": "Sensitivity of sink-limited potential growth with respect to transpiration rate E.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 38,
+                        "block_id": "p38_eq_s6_11",
+                        "char_span": null,
+                        "snippet": "∂G0/∂E = \\tilde{\\phi} (CW/uS) { ... }, (S6.11)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S6.12",
+                "latex": "\\frac{\\partial\\pi_0}{\\partial\\psi_S}=\\frac{\\partial\\pi_0}{\\partial m_p}\\frac{\\partial m_p}{\\partial\\psi_S}=c_{m,2}\\,\\varpi\\rho R T\\,\\big(c_{\\Pi,1}+2c_{\\Pi,2}m_p\\big)",
+                "variables": [
+                    "\\partial\\pi_0/\\partial\\psi_S",
+                    "\\pi_0",
+                    "\\psi_S",
+                    "m_p",
+                    "c_{m,2}",
+                    "\\varpi",
+                    "\\rho",
+                    "R",
+                    "T",
+                    "c_{\\Pi,1}",
+                    "c_{\\Pi,2}"
+                ],
+                "explanation": "Derivative of π0 with respect to stem-apex water potential (via Eqs S6.3–S6.4).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 38,
+                        "block_id": "p38_eq_s6_12",
+                        "char_span": null,
+                        "snippet": "∂π0/∂ψS = cm,2 ϖρRT (cΠ,1 + 2cΠ,2 mp), (S6.12)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S6.13",
+                "latex": "\\frac{\\partial\\tilde{z}^{+}}{\\partial E}=\\begin{cases}0, & \\tilde{z}^{+}=0 \\\\ \\frac{1}{\\chi_S+a_L E}\\left\\{k_S\\left(\\frac{\\partial\\pi_0}{\\partial\\psi_S}-1\\right)\\frac{\\partial\\psi_S}{\\partial E}-a_L\\tilde{z}^{+}+\\frac{k_S}{\\alpha_S}\\left\\u005b\\frac{a_L e^{-\\alpha_S\\beta_S}+a_L\\left(1-\\alpha_S E\\frac{\\partial\\pi_0}{\\partial\\psi_S}\\frac{\\partial\\psi_S}{\\partial E}\\right)e^{-\\alpha_S\\Gamma-\\alpha_S\\pi_0}}{(\\chi_S+a_L E)e^{-\\alpha_S\\beta_S}+a_L E e^{-\\alpha_S\\Gamma-\\alpha_S\\pi_0}}-\\frac{a_L e^{-\\alpha_S\\beta_S}+a_L\\left(1-\\alpha_S E\\frac{\\partial\\psi_S}{\\partial E}\\right)e^{-\\alpha_S\\psi_S}}{(\\chi_S+a_L E)e^{-\\alpha_S\\beta_S}+a_L E e^{-\\alpha_S\\psi_S}}\\right\\u005b\\right\\}\\right\\}, & 0<\\tilde{z}^{+}<1 \\\\ 0, & \\tilde{z}^{+}=1\\end{cases}",
+                "variables": [
+                    "\\partial\\tilde{z}^{+}/\\partial E",
+                    "\\tilde{z}^{+}",
+                    "E",
+                    "\\chi_S",
+                    "a_L",
+                    "k_S",
+                    "\\alpha_S",
+                    "\\beta_S",
+                    "\\Gamma",
+                    "\\pi_0",
+                    "\\psi_S",
+                    "\\partial\\pi_0/\\partial\\psi_S",
+                    "\\partial\\psi_S/\\partial E"
+                ],
+                "explanation": "Piecewise derivative of the threshold location z̃+ with respect to E (by differentiating Eq. S6.6).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 38,
+                        "block_id": "p38_eq_s6_13",
+                        "char_span": null,
+                        "snippet": "∂\\tilde{z}^+/∂E is defined by differentiating Eq. S6.6 ... (S6.13)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S6.14",
+                "latex": "\\frac{\\partial\\Lambda(1)}{\\partial E}=\\frac{\\exp\\left\\u005b\\frac{\\alpha_S}{k_S}(\\chi_S+a_L E)\\u005d}{E}\\left\\{\\frac{1}{a_L}\\left\\u005b(\\chi_S+a_L E)\\alpha_S\\frac{\\partial\\psi_S}{\\partial E}-\\frac{\\chi_S}{E}\\right\\u005d\\exp\\big(\\alpha_S(\\psi_S-\\beta_S)\\big)+\\frac{\\alpha_S}{k_S}\\left\\u005ba_L E+(\\chi_S+a_L E)\\exp\\big(\\alpha_S(\\psi_S-\\beta_S)\\big)\\right\\u005d\\right\\}",
+                "variables": [
+                    "\\partial\\Lambda(1)/\\partial E",
+                    "\\Lambda",
+                    "\\alpha_S",
+                    "k_S",
+                    "\\chi_S",
+                    "a_L",
+                    "E",
+                    "\\psi_S",
+                    "\\beta_S",
+                    "\\partial\\psi_S/\\partial E"
+                ],
+                "explanation": "Derivative of Λ(1) with respect to E from differentiating Eq. S6.10.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 38,
+                        "block_id": "p38_eq_s6_14",
+                        "char_span": null,
+                        "snippet": "∂Λ(1)/∂E ... (S6.14)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S6.15",
+                "latex": "\\frac{\\partial\\Lambda(\\tilde{z}^{+})}{\\partial E}=\\frac{\\exp\\left\\u005b\\tilde{z}^{+}\\frac{\\alpha_S}{k_S}(\\chi_S+a_L E)\\u005d}{a_L E}\\left\\{\\left\\u005b(\\chi_S+a_L E)\\alpha_S\\frac{\\partial\\psi_S}{\\partial E}-\\frac{\\chi_S}{E}\\right\\u005d\\exp\\big(\\alpha_S(\\psi_S-\\beta_S)\\big)+\\frac{\\alpha_S}{k_S}\\left\\u005ba_L E+(\\chi_S+a_L E)\\exp\\big(\\alpha_S(\\psi_S-\\beta_S)\\big)\\right\\u005d\\left\\u005b(\\chi_S+a_L E)\\frac{\\partial\\tilde{z}^{+}}{\\partial E}+a_L\\tilde{z}^{+}\\right\\u005d\\right\\}",
+                "variables": [
+                    "\\partial\\Lambda(\\tilde{z}^{+})/\\partial E",
+                    "\\Lambda",
+                    "\\tilde{z}^{+}",
+                    "\\alpha_S",
+                    "k_S",
+                    "\\chi_S",
+                    "a_L",
+                    "E",
+                    "\\psi_S",
+                    "\\beta_S",
+                    "\\partial\\psi_S/\\partial E",
+                    "\\partial\\tilde{z}^{+}/\\partial E"
+                ],
+                "explanation": "Derivative of Λ(z̃+) with respect to E from differentiating Eq. S6.10.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 38,
+                        "block_id": "p38_eq_s6_15",
+                        "char_span": null,
+                        "snippet": "∂Λ(\\tilde{z}+)/∂E ... (S6.15)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "G_0",
+                "name": "sink-limited potential growth rate",
+                "unit": "mol C second^-1",
+                "definition": "Potential whole-stem growth rate limited by turgor (not by NSC substrate), integrated along the stem.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "G0"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_h_s6",
+                        "char_span": null,
+                        "snippet": "sink-limited potential growth rate, G0 [mol C·s-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "E",
+                "name": "leaf-area specific transpiration rate",
+                "unit": "mol H2O meter^-2 second^-1",
+                "definition": "Leaf-area specific transpiration rate used as the driver of water potential gradients and thus turgor.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_para_inputs",
+                        "char_span": null,
+                        "snippet": "G0 may be written as a function defined solely by the leaf-area specific transpiration rate, E [mol H2O·m-2·s-1] ..."
+                    }
+                ]
+            },
+            {
+                "symbol": "a_L",
+                "name": "leaf area",
+                "unit": "meter^2",
+                "definition": "Leaf area used in scaling transpiration and hydraulic terms.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_para_inputs",
+                        "char_span": null,
+                        "snippet": "the leaf area, aL [m2]"
+                    }
+                ]
+            },
+            {
+                "symbol": "T_a",
+                "name": "air temperature",
+                "unit": "kelvin",
+                "definition": "Air temperature used for temperature dependence of extensibility and osmotic potential.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Ta"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_eq_s6_1",
+                        "char_span": null,
+                        "snippet": "Ta is the air temperature [K]"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_W",
+                "name": "woody stem biomass in carbon equivalents",
+                "unit": "mol C",
+                "definition": "Woody stem biomass expressed in carbon equivalents.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "CW"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_eq_s6_1",
+                        "char_span": null,
+                        "snippet": "CW is the woody stem biomass in C equivalents [mol C]"
+                    }
+                ]
+            },
+            {
+                "symbol": "u_S",
+                "name": "fraction of growth allocated to woody stem growth",
+                "unit": null,
+                "definition": "Allocation fraction mapping whole-tree growth to woody stem growth.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "uS"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_eq_s6_1",
+                        "char_span": null,
+                        "snippet": "uS is the fraction of growth allocated to woody stem growth"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\tilde{z}",
+                "name": "axial coordinate from stem apex",
+                "unit": null,
+                "definition": "Normalized axial distance from the stem apex; same coordinate as in Section S5.",
+                "range": [
+                    0.0,
+                    1.0
+                ],
+                "dimension": null,
+                "aliases": [
+                    "z̃"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_eq_s6_1",
+                        "char_span": null,
+                        "snippet": "z̃ is the axial distance from the stem-apex (i.e., the same coordinate used in Section S5)"
+                    }
+                ]
+            },
+            {
+                "symbol": "P_0(\\tilde{z})",
+                "name": "NSC-unlimited potential turgor pressure",
+                "unit": "MPa",
+                "definition": "Potential turgor pressure along the stem if NSCs were not limiting.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "P0"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_eq_s6_1",
+                        "char_span": null,
+                        "snippet": "P0 is axially heterogeneous potential turgor pressure if NSCs were not limiting [MPa]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\Gamma",
+                "name": "threshold pressure for tissue expansion",
+                "unit": "MPa",
+                "definition": "Turgor threshold that must be exceeded before tissue expansion occurs.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_eq_s6_1",
+                        "char_span": null,
+                        "snippet": "Γ is the threshold pressure that turgor must exceed before tissue expansion occurs [MPa]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\psi(\\tilde{z})",
+                "name": "xylem water potential along stem",
+                "unit": "MPa",
+                "definition": "Water potential along the stem determined by xylem hydraulics (referencing Eq. S5.5).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ψ"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 35,
+                        "block_id": "p35_eq_s6_2_context",
+                        "char_span": null,
+                        "snippet": "ψ is defined by xylem hydraulics (Eq. S5.5)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\psi_S",
+                "name": "stem-apex water potential",
+                "unit": "MPa",
+                "definition": "Stem apex water potential used to estimate mp and π0.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ψS"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 36,
+                        "block_id": "p36_eq_s6_3",
+                        "char_span": null,
+                        "snippet": "mp = cm,1 − cm,2 ψS, (S6.3)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\pi_0",
+                "name": "NSC-unlimited osmotic potential",
+                "unit": "MPa",
+                "definition": "Osmotic potential if NSCs were not limiting (more negative than or equal to true π with NSC limitations).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "π0"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 35,
+                        "block_id": "p35_eq_s6_2",
+                        "char_span": null,
+                        "snippet": "π0 is the osmotic potential if NSCs were not limiting [MPa]"
+                    }
+                ]
+            },
+            {
+                "symbol": "m_p",
+                "name": "phloem sap molality",
+                "unit": "mol kilogram^-1",
+                "definition": "Phloem sap molality predicted from ψS using an empirical regression.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "mp"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 36,
+                        "block_id": "p36_eq_s6_3",
+                        "char_span": null,
+                        "snippet": "phloem sap molality, mp [mol·kg-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\tilde{\\phi}(T_a)",
+                "name": "effective whole-tree extensibility",
+                "unit": "MPa^-1 second^-1",
+                "definition": "Effective extensibility parameter capturing temperature sensitivity of growth; proportional to true extensibility ϕ by an allometric factor.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ϕ̃"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_eq_s6_1",
+                        "char_span": null,
+                        "snippet": "ϕ̃ is an “effective” whole-tree extensibility [MPa-1·s-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\tilde{z}^{+}",
+                "name": "threshold axial location where P0 equals Γ",
+                "unit": null,
+                "definition": "Location (in normalized axial coordinate) where P0(z̃)=Γ, clipped to [0,1].",
+                "range": [
+                    0.0,
+                    1.0
+                ],
+                "dimension": null,
+                "aliases": [
+                    "z̃+"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_eq_s6_6",
+                        "char_span": null,
+                        "snippet": "z̃+ is the value of z̃ at which P0 = Γ if located within the bounds of z̃ (0 ≤ z̃+ ≤ 1)."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\Omega(\\tilde{z}^{+})",
+                "name": "unitless shorthand for polylogarithm expression",
+                "unit": null,
+                "definition": "Auxiliary function defined in Eq. S6.8 using Li2 and Λ.",
+                "range": null,
+                "dimension": "unitless",
+                "aliases": [
+                    "Ω"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_eq_s6_8",
+                        "char_span": null,
+                        "snippet": "where Ω is unitless shorthand for (S6.8)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\Lambda(\\tilde{z})",
+                "name": "auxiliary function Lambda",
+                "unit": null,
+                "definition": "Auxiliary unitless function defined in Eq. S6.10.",
+                "range": null,
+                "dimension": "unitless",
+                "aliases": [
+                    "Λ"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_eq_s6_10",
+                        "char_span": null,
+                        "snippet": "Λ is a unitless function of z̃ defined as (S6.10)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\psi_{soil}",
+                "name": "soil water potential",
+                "unit": "MPa",
+                "definition": "Soil water potential input; used as an argument for G0 via hydraulics (referenced in text).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ψsoil"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_para_inputs",
+                        "char_span": null,
+                        "snippet": "soil-water potential, ψsoil [MPa]"
+                    }
+                ]
+            },
+            {
+                "symbol": "k_S",
+                "name": "stem hydraulic parameter kS",
+                "unit": null,
+                "definition": "Stem hydraulic parameter appearing in z̃+ and G0 expressions; defined in Section S5 (referenced).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ks"
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_eq_s6_6",
+                        "char_span": null,
+                        "snippet": "ks/(χS + aL E) ..."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\alpha_S",
+                "name": "stem vulnerability curve shape parameter αS",
+                "unit": null,
+                "definition": "Shape parameter appearing in analytical stem water potential and growth expressions; defined in Section S5 (referenced).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "αS"
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_eq_s6_6",
+                        "char_span": null,
+                        "snippet": "1/αS ln( ... )"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\beta_S",
+                "name": "stem water potential at 50% conductance loss βS",
+                "unit": null,
+                "definition": "Parameter appearing in analytical expressions; defined in Section S5 (referenced).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "βS"
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_eq_s6_7",
+                        "char_span": null,
+                        "snippet": "βS − π0 − Γ − ..."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\chi_S",
+                "name": "gravitational/hydrostatic term χS",
+                "unit": null,
+                "definition": "Hydraulic term appearing in stem water potential solutions; defined in Section S5 (referenced).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "χS"
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_eq_s6_6",
+                        "char_span": null,
+                        "snippet": "(χS + aL E) ..."
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "name": "c_{m,1}",
+                "unit": "mol kilogram^-1",
+                "default": 0.48,
+                "estimation": "Empirical coefficient for Scots pine regression (Paljakka et al., 2017).",
+                "evidence": [
+                    {
+                        "page": 36,
+                        "block_id": "p36_para_cm_values",
+                        "char_span": null,
+                        "snippet": "cm,1 = 0.48 mol·kg-1; cm,2 = 0.13 [mol·kg-1·MPa-1]"
+                    }
+                ]
+            },
+            {
+                "name": "c_{m,2}",
+                "unit": "mol kilogram^-1 MPa^-1",
+                "default": 0.13,
+                "estimation": "Empirical coefficient for Scots pine regression (Paljakka et al., 2017).",
+                "evidence": [
+                    {
+                        "page": 36,
+                        "block_id": "p36_para_cm_values",
+                        "char_span": null,
+                        "snippet": "cm,1 = 0.48 mol·kg-1; cm,2 = 0.13 [mol·kg-1·MPa-1]"
+                    }
+                ]
+            },
+            {
+                "name": "c_{\\Pi,1}",
+                "unit": null,
+                "default": 0.998,
+                "estimation": "Empirical coefficient in osmotic potential formula (Michel, 1972; Thompson & Holbrook, 2003a).",
+                "evidence": [
+                    {
+                        "page": 36,
+                        "block_id": "p36_para_cpi_values",
+                        "char_span": null,
+                        "snippet": "cΠ,1 = 0.998; cΠ,2 = 0.089 kg·mol-1"
+                    }
+                ]
+            },
+            {
+                "name": "c_{\\Pi,2}",
+                "unit": "kilogram mole^-1",
+                "default": 0.089,
+                "estimation": "Empirical coefficient in osmotic potential formula (Michel, 1972; Thompson & Holbrook, 2003a).",
+                "evidence": [
+                    {
+                        "page": 36,
+                        "block_id": "p36_para_cpi_values",
+                        "char_span": null,
+                        "snippet": "cΠ,1 = 0.998; cΠ,2 = 0.089 kg·mol-1"
+                    }
+                ]
+            },
+            {
+                "name": "\\varpi",
+                "unit": "MPa Pa^-1",
+                "default": 1e-6,
+                "estimation": "Unit conversion factor from Pa to MPa.",
+                "evidence": [
+                    {
+                        "page": 36,
+                        "block_id": "p36_para_varpi",
+                        "char_span": null,
+                        "snippet": "ϖ = 10-6 MPa·Pa-1"
+                    }
+                ]
+            },
+            {
+                "name": "a (allometry exponent)",
+                "unit": null,
+                "default": 1.5,
+                "estimation": "Classical exponent relating tree height and DBH in allometric scaling.",
+                "evidence": [
+                    {
+                        "page": 35,
+                        "block_id": "p35_para_ab",
+                        "char_span": null,
+                        "snippet": "For classical values of a = 3/2 ... and b = 2/3 ... ϕ̃ = 4ϕ."
+                    }
+                ]
+            },
+            {
+                "name": "b (phloem thickness exponent)",
+                "unit": null,
+                "default": 0.6666666667,
+                "estimation": "Classical exponent relating phloem thickness and stem diameter in allometric scaling.",
+                "evidence": [
+                    {
+                        "page": 35,
+                        "block_id": "p35_para_ab",
+                        "char_span": null,
+                        "snippet": "For classical values of a = 3/2 ... and b = 2/3 ... ϕ̃ = 4ϕ."
+                    }
+                ]
+            }
+        ],
+        "algorithm": {
+            "inputs": [
+                "E",
+                "a_L",
+                "T_a",
+                "\\psi_{soil}",
+                "Hydraulic parameters from Section S5 (k_S, \\alpha_S, \\beta_S, \\chi_S, and \\psi(\\tilde{z}), \\psi_S, \\partial\\psi_S/\\partial E)"
+            ],
+            "outputs": [
+                "G_0",
+                "\\partial G_0/\\partial E",
+                "\\tilde{z}^{+}",
+                "\\pi_0"
+            ],
+            "steps": [
+                "Compute stem water potential profile ψ( z̃ ) and stem-apex potential ψS using xylem hydraulics (referenced Eq. S5.5 and Eq. S5.6).",
+                "Compute phloem sap molality mp from ψS using Eq. S6.3.",
+                "Compute NSC-unlimited osmotic potential π0 from mp and Ta using Eq. S6.4.",
+                "Compute threshold location z̃+ where P0(z̃)=Γ using Eq. S6.6 (clipped to [0,1]).",
+                "Compute analytical sink-limited potential growth G0 using Eq. S6.7 with Ω(z̃+) (Eqs. S6.8–S6.10).",
+                "Compute ∂π0/∂ψS (Eq. S6.12), ∂z̃+/∂E (Eq. S6.13), ∂Λ(1)/∂E (Eq. S6.14), ∂Λ(z̃+)/∂E (Eq. S6.15), and assemble ∂G0/∂E using Eq. S6.11."
+            ],
+            "pseudocode": null,
+            "evidence": [
+                {
+                    "page": 37,
+                    "block_id": "p37_para_dG0dE_intro",
+                    "char_span": null,
+                    "snippet": "we required solutions for how the sink-limited growth rate changes ... ∂G0/∂E is solved by differentiating Eq. S6.7 with respect to E"
+                }
+            ]
+        },
+        "datasets": [],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L1",
+                "text": "π0 is estimated using an empirical Scots pine regression (R2=0.44) and may not generalize across species or conditions without recalibration.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 36,
+                        "block_id": "p36_para_r2",
+                        "char_span": null,
+                        "snippet": "Paljakka et al., 2017; R2 = 0.44; Eqn S6.3&4"
+                    }
+                ]
+            },
+            {
+                "id": "L2",
+                "text": "Assumes axially uniform π (and π0) within the stem as a first-order simplification; real stems may show gradients.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 35,
+                        "block_id": "p35_para_pi_uniform",
+                        "char_span": null,
+                        "snippet": "we approximate π (and π0 in Eq. S6.2) as axially uniform within the stem as a first-order approximation for simplicity"
+                    }
+                ]
+            },
+            {
+                "id": "L3",
+                "text": "Approximates inner bark potential by xylem potential; validity relies on xylem–phloem coupling assumptions.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 35,
+                        "block_id": "p35_para_coupling",
+                        "char_span": null,
+                        "snippet": "xylem-phloem coupling enables water-potential equilibrium ... approximate the inner bark potential as the xylem potential"
+                    }
+                ]
+            }
+        ],
+        "implementation": {
+            "model_scope": "Section S6 provides an analytical formulation of sink-limited potential growth G0 and its derivative with respect to transpiration E for use in growth-optimizing stomatal conductance (Section S2).",
+            "state_variables": [],
+            "exogenous_inputs": [
+                "T_a",
+                "\\psi_{soil}"
+            ],
+            "control_inputs": [],
+            "outputs_observables": [
+                "G_0",
+                "\\partial G_0/\\partial E",
+                "\\pi_0",
+                "\\tilde{z}^{+}"
+            ],
+            "io_contract": {
+                "input_schema": null,
+                "output_schema": null,
+                "data_types": [],
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_para_inputs",
+                        "char_span": null,
+                        "snippet": "G0 may be written as a function ... (ψsoil, E, Ta)"
+                    }
+                ]
+            },
+            "dependency_graph": {
+                "nodes": [
+                    "E",
+                    "a_L",
+                    "T_a",
+                    "\\psi_{soil}",
+                    "\\psi_S",
+                    "m_p",
+                    "\\pi_0",
+                    "\\tilde{z}^{+}",
+                    "\\Omega",
+                    "\\Lambda",
+                    "G_0",
+                    "\\partial G_0/\\partial E"
+                ],
+                "edges": [
+                    {
+                        "from": "\\psi_{soil}",
+                        "to": "\\psi_S",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "E",
+                        "to": "\\psi_S",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "\\psi_S",
+                        "to": "m_p",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "m_p",
+                        "to": "\\pi_0",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "\\pi_0",
+                        "to": "\\tilde{z}^{+}",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "\\tilde{z}^{+}",
+                        "to": "G_0",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "G_0",
+                        "to": "\\partial G_0/\\partial E",
+                        "type": "equation"
+                    }
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 37,
+                        "block_id": "p37_para_inputs",
+                        "char_span": null,
+                        "snippet": "G0 ... function ... (ψsoil, E, Ta)"
+                    }
+                ]
+            },
+            "numerics": {
+                "time_step": null,
+                "time_grid": null,
+                "integration_method": null,
+                "solver": null,
+                "convergence_criteria": null,
+                "stability_notes": null,
+                "uncertain": true,
+                "evidence": []
+            },
+            "initial_conditions": [],
+            "boundary_conditions": [],
+            "preprocessing": {
+                "steps": [],
+                "missing_value_policy": null,
+                "unit_conversions": [],
+                "filters_smoothing": [],
+                "uncertain": true,
+                "evidence": []
+            },
+            "calibration": {
+                "estimated_parameters": [],
+                "objective": null,
+                "constraints": null,
+                "optimizer": null,
+                "train_validation_protocol": null,
+                "uncertain": true,
+                "evidence": []
+            },
+            "code_blueprint": {
+                "language": null,
+                "modules": [],
+                "functions": [],
+                "tests": []
+            },
+            "unresolved_assets": [
+                {
+                    "type": "equation",
+                    "label": "Eq. S5.5 / Eq. S5.6 (ψ(z̃), ψS)",
+                    "page": 35,
+                    "issue": "This section requires ψ(z̃) and ψS from xylem hydraulics in Section S5 to evaluate P0(z̃) and z̃+.",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 35,
+                            "block_id": "p35_eq_s6_2_context",
+                            "char_span": null,
+                            "snippet": "ψ is defined by xylem hydraulics (Eq. S5.5)"
+                        },
+                        {
+                            "page": 37,
+                            "block_id": "p37_eq_s6_6",
+                            "char_span": null,
+                            "snippet": "z̃+ can be solved ... by setting ψ(z̃+) = Γ + π0 ... (S6.6)"
+                        }
+                    ]
+                },
+                {
+                    "type": "equation",
+                    "label": "∂ψS/∂E (referenced from Section S5)",
+                    "page": 38,
+                    "issue": "dG0/dE requires ∂ψS/∂E, which is referenced as already defined in Section S5 but not re-derived here.",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 38,
+                            "block_id": "p38_para_dpsi",
+                            "char_span": null,
+                            "snippet": "where ∂ψS/∂E was already defined by Eq. S5.10"
+                        }
+                    ]
+                }
+            ],
+            "open_questions": [
+                {
+                    "id": "Q1",
+                    "question": "What are the numerical evaluation details/constraints for Li2(·) and logarithms in Ω(z̃+) and Eq. S6.11 to ensure stable computation across parameter ranges?",
+                    "why_needed": "Implementation of Eq. S6.7–S6.11 depends on special functions and log terms that may encounter domain issues (e.g., Λ(·) close to 1).",
+                    "likely_location": "Implementation notes, code repository, or numerical methods section (not shown in S6).",
+                    "evidence": [
+                        {
+                            "page": 37,
+                            "block_id": "p37_eq_s6_8",
+                            "char_span": null,
+                            "snippet": "Ω(z̃+) = Li2[...] ... (S6.8)"
+                        },
+                        {
+                            "page": 38,
+                            "block_id": "p38_eq_s6_11",
+                            "char_span": null,
+                            "snippet": "terms ln[Λ(1)−1] and ln[Λ(z̃+)−1] appear in (S6.11)"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "provenance": {
+        "extraction_time": "2026-01-17T03:55:00Z",
+        "model": "GPT-5.2 Thinking",
+        "notes": "MODE=EXTRACT for chunk C006 (S6 Turgor-limited potential growth). Included pages through Eq. S6.15 (page 38) to capture full dG0/dE derivation before S7 begins.",
+        "mode": "EXTRACT",
+        "is_partial": true,
+        "chunk": {
+            "chunk_id": "C006",
+            "page_range": [
+                34,
+                38
+            ]
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C006",
+                "page_range": [
+                    34,
+                    38
+                ],
+                "section_titles": [
+                    "S6 Turgor-limited potential growth"
+                ],
+                "focus_tags": [
+                    "model",
+                    "equations",
+                    "algorithm",
+                    "appendix"
+                ],
+                "priority": 1,
+                "rationale": "Defines sink-limited potential growth G0 and provides analytic dG0/dE needed by the growth-optimization condition in S2.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 34,
+                        "block_id": "p34_h_s6",
+                        "char_span": null,
+                        "snippet": "S6 Turgor-limited potential growth"
+                    }
+                ]
+            }
+        ],
+        "next_recommended_chunk_id": "C007"
+    }
+}

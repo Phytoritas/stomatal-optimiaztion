@@ -1,0 +1,997 @@
+{
+    "doc": {
+        "id": "Potkay and Feng - 2023 - Do stomata optimize turgor-driven growth A new framework for integrating stomata response with whol_appendix.pdf",
+        "title": "Do stomata optimize turgor-driven growth?: A new framework for integrating stomata response with whole-plant hydraulics and carbon balance",
+        "year": 2023,
+        "doi": null,
+        "page_count": 62
+    },
+    "model_card": {
+        "name": "S1 Whole-tree carbon dynamics",
+        "aliases": [
+            "Whole-tree carbon balance",
+            "NSC storage balance"
+        ],
+        "task": [
+            "simulate NSC storage dynamics",
+            "partition assimilated carbon into respiration and growth"
+        ],
+        "domain": [
+            "plant/tree ecophysiology",
+            "carbon allocation"
+        ],
+        "assumptions": [
+            {
+                "id": "A1",
+                "text": "Stem and root maintenance respiration is substrate-limited by NSC availability via σ_r(C), implemented as a Michaelis–Menten function.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_b1",
+                        "char_span": null,
+                        "snippet": "R_M = σ_r(C) R_{M,0}. (S1.3)"
+                    },
+                    {
+                        "page": 20,
+                        "block_id": "p20_b4",
+                        "char_span": null,
+                        "snippet": "σ_r(C) = C/(C+γ_r C_struct). (S1.4)"
+                    }
+                ]
+            },
+            {
+                "id": "A2",
+                "text": "Maintenance respiration is not explicitly formulated as a function of water availability (e.g., turgor/tissue water content) for simplicity.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_b6",
+                        "char_span": null,
+                        "snippet": "we do not formulate R_M as a function of water availability here for simplicity and parametrical parsimony."
+                    }
+                ]
+            },
+            {
+                "id": "A3",
+                "text": "Total structural biomass in carbon equivalents (C_struct) is treated as approximately constant in simulations (dC_struct/dt ≈ 0).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_b7",
+                        "char_span": null,
+                        "snippet": "we treat C_struct here as a constant in our simulations (dC_struct/dt ≈ 0)"
+                    },
+                    {
+                        "page": 21,
+                        "block_id": "p21_b6",
+                        "char_span": null,
+                        "snippet": "approximate C_struct as a constant, which is reasonable if simulations are short or simulated trees are mature in stature"
+                    }
+                ]
+            },
+            {
+                "id": "A4",
+                "text": "Whole-tree growth is modeled as sink-limited potential growth G0 multiplied by an NSC limitation function σ_g(C), also Michaelis–Menten.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_b3",
+                        "char_span": null,
+                        "snippet": "G = σ_g(C) G0. (S1.7)"
+                    },
+                    {
+                        "page": 21,
+                        "block_id": "p21_b5",
+                        "char_span": null,
+                        "snippet": "σ_g(C) = C/(C+γ_g C_struct). (S1.8)"
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "Eq.S1.1",
+                "latex": "\\dot{C}=\\frac{dC}{dt}=a_L\\,(A_n+R_d)-G-R",
+                "variables": [
+                    "\\dot{C}",
+                    "C",
+                    "t",
+                    "a_L",
+                    "A_n",
+                    "R_d",
+                    "G",
+                    "R"
+                ],
+                "explanation": "Stored NSC balance: canopy carbon input minus growth and whole-tree respiration.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_b2",
+                        "char_span": null,
+                        "snippet": "Ċ = dC/dt = a_L (A_n+R_d) − G − R, (S1.1)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S1.2",
+                "latex": "R=a_L R_d+R_M+R_G",
+                "variables": [
+                    "R",
+                    "a_L",
+                    "R_d",
+                    "R_M",
+                    "R_G"
+                ],
+                "explanation": "Whole-tree respiration partitioned into leaf respiration plus maintenance and growth respiration.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_b5",
+                        "char_span": null,
+                        "snippet": "R = a_L R_d + R_M + R_G, (S1.2)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S1.3",
+                "latex": "R_M=\\sigma_r(C)\\,R_{M,0}",
+                "variables": [
+                    "R_M",
+                    "\\sigma_r(C)",
+                    "C",
+                    "R_{M,0}"
+                ],
+                "explanation": "Stem/root maintenance respiration scaled by NSC availability.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_b1",
+                        "char_span": null,
+                        "snippet": "R_M = σ_r(C) R_{M,0}. (S1.3)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S1.4",
+                "latex": "\\sigma_r(C)=\\frac{C}{C+\\gamma_r C_{struct}}",
+                "variables": [
+                    "\\sigma_r(C)",
+                    "C",
+                    "\\gamma_r",
+                    "C_{struct}"
+                ],
+                "explanation": "Michaelis–Menten NSC limitation for maintenance respiration.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_b4",
+                        "char_span": null,
+                        "snippet": "σ_r(C) = C/(C+γ_r C_struct). (S1.4)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S1.5",
+                "latex": "R_{M,0}=r_{M,W}C_W+r_{M,R}C_R",
+                "variables": [
+                    "R_{M,0}",
+                    "r_{M,W}",
+                    "C_W",
+                    "r_{M,R}",
+                    "C_R"
+                ],
+                "explanation": "Potential maintenance respiration proportional to woody stem and root biomass pools.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_b8",
+                        "char_span": null,
+                        "snippet": "R_{M,0} = r_{M,W} C_W + r_{M,R} C_R (S1.5)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S1.6",
+                "latex": "R_G=\\frac{f_c}{1-f_c}\\,G",
+                "variables": [
+                    "R_G",
+                    "f_c",
+                    "G"
+                ],
+                "explanation": "Growth respiration proportional to growth via fixed fraction f_c.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_b8",
+                        "char_span": null,
+                        "snippet": "R_G = f_c/(1−f_c) · G, (S1.6)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S1.7",
+                "latex": "G=\\sigma_g(C)\\,G_0",
+                "variables": [
+                    "G",
+                    "\\sigma_g(C)",
+                    "C",
+                    "G_0"
+                ],
+                "explanation": "Actual growth as NSC-limited fraction of sink-limited potential growth.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_b3",
+                        "char_span": null,
+                        "snippet": "G = σ_g(C) G0. (S1.7)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S1.8",
+                "latex": "\\sigma_g(C)=\\frac{C}{C+\\gamma_g C_{struct}}",
+                "variables": [
+                    "\\sigma_g(C)",
+                    "C",
+                    "\\gamma_g",
+                    "C_{struct}"
+                ],
+                "explanation": "Michaelis–Menten NSC limitation for growth.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_b5",
+                        "char_span": null,
+                        "snippet": "σ_g(C) = C/(C+γ_g C_struct). (S1.8)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S1.9",
+                "latex": "\\dot{C}=\\frac{dC}{dt}=a_L A_n-\\sigma_r(C)R_{M,0}-\\frac{\\sigma_g(C)G_0}{1-f_c}",
+                "variables": [
+                    "\\dot{C}",
+                    "C",
+                    "t",
+                    "a_L",
+                    "A_n",
+                    "\\sigma_r(C)",
+                    "R_{M,0}",
+                    "\\sigma_g(C)",
+                    "G_0",
+                    "f_c"
+                ],
+                "explanation": "NSC balance after combining Eqs. S1.1–S1.8 (leaf dark respiration cancels via Eq. S1.2).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_b7",
+                        "char_span": null,
+                        "snippet": "Ċ = dC/dt = a_L A_n − σ_r(C) R_{M,0} − σ_g(C) G0/(1−f_c). (S1.9)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "C",
+                "name": "stored nonstructural carbohydrates (NSC)",
+                "unit": "mol C",
+                "definition": "Stored NSC pool (state variable).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "NSC storage"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_b1",
+                        "char_span": null,
+                        "snippet": "nonstructural carbohydrates (NSC), C [mol C]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\dot{C}",
+                "name": "rate of change of NSC storage",
+                "unit": "mol C s^-1",
+                "definition": "Time derivative of C.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "dC/dt"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_b2",
+                        "char_span": null,
+                        "snippet": "dC/dt or Ċ for short [mol C∙s-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "t",
+                "name": "time",
+                "unit": "s",
+                "definition": "Time.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_b3",
+                        "char_span": null,
+                        "snippet": "where t is time [s]"
+                    }
+                ]
+            },
+            {
+                "symbol": "a_L",
+                "name": "leaf area",
+                "unit": "m^2",
+                "definition": "Leaf area used to scale leaf-area specific fluxes.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "a"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_b3",
+                        "char_span": null,
+                        "snippet": "a is the leaf area [m2]"
+                    }
+                ]
+            },
+            {
+                "symbol": "A_n",
+                "name": "canopy-averaged net carbon assimilation rate (leaf-area specific)",
+                "unit": "mol C m^-2 s^-1",
+                "definition": "Canopy-averaged, leaf-area specific net assimilation rate.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_b3",
+                        "char_span": null,
+                        "snippet": "A_n is the canopy-averaged leaf-area specific net carbon assimilation rate ... [mol C∙m-2∙s-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "R_d",
+                "name": "leaf dark respiration (leaf-area specific)",
+                "unit": "mol C m^-2 s^-1",
+                "definition": "Leaf dark respiration rate.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_b3",
+                        "char_span": null,
+                        "snippet": "R_d is the leaf dark respiration [mol C∙m-2∙s-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "G",
+                "name": "whole-tree growth rate (C equivalents)",
+                "unit": "mol C s^-1",
+                "definition": "Growth rate allocated to structural biomass (C equivalents).",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_b3",
+                        "char_span": null,
+                        "snippet": "G is the whole-tree growth rate in C equivalents [mol C∙s-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "R",
+                "name": "whole-tree respiration",
+                "unit": "mol C s^-1",
+                "definition": "Respiration of leaves, stems, and roots combined.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_b3",
+                        "char_span": null,
+                        "snippet": "R is whole-tree respiration [mol C∙s-1], including the respiration rates of leaves, stems, and roots."
+                    }
+                ]
+            },
+            {
+                "symbol": "R_M",
+                "name": "maintenance respiration of stems and roots",
+                "unit": "mol C s^-1",
+                "definition": "Maintenance respiration excluding leaves (stems+roots).",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_b0",
+                        "char_span": null,
+                        "snippet": "R_M is the maintenance respiration of stems and roots (i.e., excluding leaves)"
+                    }
+                ]
+            },
+            {
+                "symbol": "R_G",
+                "name": "growth respiration",
+                "unit": "mol C s^-1",
+                "definition": "Respiration associated with growth of all organs.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_b0",
+                        "char_span": null,
+                        "snippet": "R_G is the growth respiration associated with the growth of all organs"
+                    }
+                ]
+            },
+            {
+                "symbol": "R_{M,0}",
+                "name": "potential stem and root maintenance respiration",
+                "unit": "mol C s^-1",
+                "definition": "Maximum potential maintenance respiration of stems and roots.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_b0",
+                        "char_span": null,
+                        "snippet": "maximum potential value, R_{M,0} [mol C∙s-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\sigma_r(C)",
+                "name": "NSC limitation function for maintenance respiration",
+                "unit": null,
+                "definition": "Unitless function describing maintenance respiration limitation due to low NSC.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "sigma_r"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_b1",
+                        "char_span": null,
+                        "snippet": "unitless function, σ_r(C), that describes the limitation of maintenance respiration due to low NSC availability"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\sigma_g(C)",
+                "name": "NSC limitation function for growth",
+                "unit": null,
+                "definition": "Unitless function describing growth limitation due to low NSC availability.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "sigma_g"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_b3",
+                        "char_span": null,
+                        "snippet": "unitless function, σ_g(C), to describe the limitation to growth due to low NSC availability"
+                    }
+                ]
+            },
+            {
+                "symbol": "G_0",
+                "name": "sink-limited potential growth rate",
+                "unit": "mol C s^-1",
+                "definition": "Potential growth rate under sink limitation (details referenced to Section S6).",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_b3",
+                        "char_span": null,
+                        "snippet": "sink-limited potential growth rate, G0 [mol C∙s-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_{struct}",
+                "name": "total structural biomass (C equivalents)",
+                "unit": "mol C",
+                "definition": "Total structural biomass in carbon equivalents.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_b5",
+                        "char_span": null,
+                        "snippet": "C_struct is the total structural biomass in carbon equivalents [mol C]"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_W",
+                "name": "woody stem biomass (C equivalents)",
+                "unit": "mol C",
+                "definition": "Woody stem biomass in carbon equivalents.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_b0",
+                        "char_span": null,
+                        "snippet": "where C_W and C_R are woody stem biomass and root biomass, respectively, in C equivalents [mol C]"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_R",
+                "name": "root biomass (C equivalents)",
+                "unit": "mol C",
+                "definition": "Root biomass in carbon equivalents.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_b0",
+                        "char_span": null,
+                        "snippet": "where C_W and C_R are woody stem biomass and root biomass, respectively, in C equivalents [mol C]"
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "name": "gamma_r",
+                "unit": null,
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_b5",
+                        "char_span": null,
+                        "snippet": "γ_r is a unitless parameter"
+                    }
+                ]
+            },
+            {
+                "name": "gamma_g",
+                "unit": null,
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_b6",
+                        "char_span": null,
+                        "snippet": "γ_g is a unitless shape parameter"
+                    }
+                ]
+            },
+            {
+                "name": "r_M,W",
+                "unit": "s^-1",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_b0",
+                        "char_span": null,
+                        "snippet": "r_{M,W} and r_{M,R} are carbon pool-specific maintenance respiration rates [s-1]"
+                    }
+                ]
+            },
+            {
+                "name": "r_M,R",
+                "unit": "s^-1",
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_b0",
+                        "char_span": null,
+                        "snippet": "r_{M,W} and r_{M,R} are carbon pool-specific maintenance respiration rates [s-1]"
+                    }
+                ]
+            },
+            {
+                "name": "f_c",
+                "unit": null,
+                "default": null,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_b0",
+                        "char_span": null,
+                        "snippet": "f_c is the fixed fraction of gross primary production diverted to growth respiration"
+                    }
+                ]
+            }
+        ],
+        "algorithm": {
+            "inputs": [
+                "C",
+                "A_n",
+                "G_0",
+                "a_L",
+                "C_W",
+                "C_R"
+            ],
+            "outputs": [
+                "\\dot{C}",
+                "R_M",
+                "R_G",
+                "G"
+            ],
+            "steps": [
+                "Compute σ_r(C) using Eq. S1.4.",
+                "Compute R_{M,0} using Eq. S1.5, then R_M using Eq. S1.3.",
+                "Compute σ_g(C) using Eq. S1.8, then G using Eq. S1.7.",
+                "Compute R_G using Eq. S1.6.",
+                "Compute Ċ using Eq. S1.9 (or Eq. S1.1 with Eq. S1.2 if retaining explicit leaf respiration terms)."
+            ],
+            "pseudocode": null,
+            "evidence": [
+                {
+                    "page": 21,
+                    "block_id": "p21_b7",
+                    "char_span": null,
+                    "snippet": "Thus combining Eq. S1.1-8 ... Ċ = ... (S1.9)"
+                },
+                {
+                    "page": 20,
+                    "block_id": "p20_b8",
+                    "char_span": null,
+                    "snippet": "R_{M,0} = ... (S1.5) ... R_G = ... (S1.6)"
+                }
+            ]
+        },
+        "datasets": [],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L1",
+                "text": "Structural biomass carbon (C_struct) is not dynamically simulated; it is approximated constant (dC_struct/dt ≈ 0).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_b7",
+                        "char_span": null,
+                        "snippet": "treat C_struct here as a constant in our simulations (dC_struct/dt ≈ 0)"
+                    }
+                ]
+            },
+            {
+                "id": "L2",
+                "text": "Maintenance respiration is not formulated as an explicit function of water availability/turgor.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_b6",
+                        "char_span": null,
+                        "snippet": "we do not formulate R_M as a function of water availability here"
+                    }
+                ]
+            }
+        ],
+        "implementation": {
+            "model_scope": "Whole-tree carbon dynamics module (NSC storage balance; NSC-limited scaling of respiration and growth).",
+            "state_variables": [
+                "C"
+            ],
+            "exogenous_inputs": [
+                "A_n",
+                "G_0"
+            ],
+            "control_inputs": [],
+            "outputs_observables": [
+                "C",
+                "\\dot{C}",
+                "G",
+                "R_M",
+                "R_G",
+                "R"
+            ],
+            "io_contract": {
+                "input_schema": null,
+                "output_schema": null,
+                "data_types": [],
+                "evidence": []
+            },
+            "dependency_graph": {
+                "nodes": [
+                    "C",
+                    "A_n",
+                    "a_L",
+                    "G_0",
+                    "f_c",
+                    "R_{M,0}",
+                    "\\sigma_r(C)",
+                    "\\sigma_g(C)",
+                    "\\dot{C)"
+                ],
+                "edges": [
+                    {
+                        "from": "C",
+                        "to": "\\sigma_r(C)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "C",
+                        "to": "\\sigma_g(C)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "A_n",
+                        "to": "\\dot{C}",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "G_0",
+                        "to": "\\dot{C}",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "f_c",
+                        "to": "\\dot{C}",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "R_{M,0}",
+                        "to": "\\dot{C}",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "a_L",
+                        "to": "\\dot{C}",
+                        "type": "equation"
+                    }
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_b7",
+                        "char_span": null,
+                        "snippet": "Ċ = dC/dt = a_L A_n − σ_r(C) R_{M,0} − σ_g(C) G0/(1−f_c). (S1.9)"
+                    }
+                ]
+            },
+            "numerics": {
+                "time_step": null,
+                "time_grid": null,
+                "integration_method": null,
+                "solver": null,
+                "convergence_criteria": null,
+                "stability_notes": null,
+                "uncertain": true,
+                "evidence": []
+            },
+            "initial_conditions": [],
+            "boundary_conditions": [],
+            "preprocessing": {
+                "steps": [],
+                "missing_value_policy": null,
+                "unit_conversions": [],
+                "filters_smoothing": [],
+                "uncertain": true,
+                "evidence": []
+            },
+            "calibration": {
+                "estimated_parameters": [
+                    "gamma_g",
+                    "gamma_r"
+                ],
+                "objective": "Indirect estimation for model performance given chosen C_struct.",
+                "constraints": null,
+                "optimizer": null,
+                "train_validation_protocol": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_b6",
+                        "char_span": null,
+                        "snippet": "γ_g and γ_r ... both of which we indirectly estimated for model performance given our value of C_struct"
+                    }
+                ]
+            },
+            "code_blueprint": {
+                "language": null,
+                "modules": [],
+                "functions": [],
+                "tests": []
+            },
+            "unresolved_assets": [],
+            "open_questions": [
+                {
+                    "id": "Q1",
+                    "question": "What numerical values are used for r_{M,W}, r_{M,R}, f_c, gamma_r, gamma_g, C_struct, C_W, and C_R in the simulations?",
+                    "why_needed": "Required to reproduce maintenance respiration scaling and NSC-limited growth dynamics (Eqs. S1.4–S1.9).",
+                    "likely_location": "Main text Parameterization section and Supporting Information Section S8.",
+                    "evidence": [
+                        {
+                            "page": 21,
+                            "block_id": "p21_b6",
+                            "char_span": null,
+                            "snippet": "both of which we indirectly estimated ... (see Parameterization section in main text; Section S8)"
+                        }
+                    ]
+                },
+                {
+                    "id": "Q2",
+                    "question": "What initial condition (initial C) is used for dynamic NSC simulations?",
+                    "why_needed": "C is the state variable; initial C determines transient NSC limitation via σ_r(C) and σ_g(C).",
+                    "likely_location": "Simulation setup details (likely Section S9 or main text Methods).",
+                    "evidence": [
+                        {
+                            "page": 19,
+                            "block_id": "p19_b1",
+                            "char_span": null,
+                            "snippet": "nonstructural carbohydrates (NSC), C [mol C], is defined by the change in NSC storage per unit time"
+                        }
+                    ]
+                },
+                {
+                    "id": "Q3",
+                    "question": "What is the exact sign/definition of A_n relative to R_d, given Eq. S1.1 includes (A_n + R_d) and Eq. S1.9 reduces to a_L A_n?",
+                    "why_needed": "Correct implementation of carbon input and cancellation with leaf respiration depends on sign conventions.",
+                    "likely_location": "Supporting Information Section S4 and main text Methods.",
+                    "evidence": [
+                        {
+                            "page": 19,
+                            "block_id": "p19_b2",
+                            "char_span": null,
+                            "snippet": "a_L (A_n+R_d) − G − R, (S1.1)"
+                        },
+                        {
+                            "page": 21,
+                            "block_id": "p21_b7",
+                            "char_span": null,
+                            "snippet": "a_L A_n − ... (S1.9)"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "provenance": {
+        "extraction_time": "2026-01-17T02:18:32Z",
+        "model": "GPT-5.2 Thinking",
+        "notes": "MODE=EXTRACT; user requested chunk_id=C001. Evidence restricted to pages 19-21 (S1 Whole-tree carbon dynamics).",
+        "mode": "EXTRACT",
+        "is_partial": true,
+        "chunk": {
+            "chunk_id": "C001",
+            "page_range": [
+                19,
+                21
+            ]
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C001",
+                "page_range": [
+                    19,
+                    21
+                ],
+                "section_titles": [
+                    "S1 Whole-tree carbon dynamics"
+                ],
+                "focus_tags": [
+                    "model",
+                    "theory",
+                    "equations"
+                ],
+                "priority": 1,
+                "rationale": "Defines whole-tree carbon balance and NSC storage dynamics; provides base equations for respiration and NSC-limited growth used downstream.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_b0",
+                        "char_span": null,
+                        "snippet": "Contents S1 Whole-tree carbon dynamics S2 Growth optimization S3 Leaf temperature and stomatal conductances ... S10 Model limitations and potential improvements"
+                    }
+                ]
+            }
+        ],
+        "next_recommended_chunk_id": "C002"
+    }
+}

@@ -1,0 +1,880 @@
+{
+    "doc": {
+        "id": "Potkay and Feng - 2023 - Do stomata o ptimize turgor-driven growth A new framework for integrating stomata response with whol_appendix.pdf",
+        "title": "Do stomata optimize turgor-driven growth? ... (Supporting Information)",
+        "year": 2023,
+        "doi": null,
+        "page_count": 62
+    },
+    "model_card": {
+        "name": "S2 Growth optimization",
+        "aliases": [
+            "growth-optimization hypothesis",
+            "GOH"
+        ],
+        "task": [
+            "derive optimal stomatal conductance that maximizes integrated growth"
+        ],
+        "domain": [
+            "plant eco-physiology",
+            "stomatal optimization",
+            "optimal control"
+        ],
+        "assumptions": [
+            {
+                "id": "A1",
+                "text": "Indefinite-horizon optimization over tree lifetime.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_b2",
+                        "char_span": null,
+                        "snippet": "...optimizes growth, G, over an indefinite period... trees lifetime."
+                    }
+                ]
+            },
+            {
+                "id": "A2",
+                "text": "gc is control; C and E are state variables; ψsoil and Ta are inputs.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_b4",
+                        "char_span": null,
+                        "snippet": "gc is the control variable, and C and E are the state variables... ψsoil... Ta..."
+                    }
+                ]
+            },
+            {
+                "id": "A3",
+                "text": "NSC storage C is the limiting dynamic resource/constraint rather than soil moisture.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b2",
+                        "char_span": null,
+                        "snippet": "...internal NSC storage, C, as the limiting dynamic resource..."
+                    }
+                ]
+            },
+            {
+                "id": "A4",
+                "text": "η is unitless and undetermined a priori; NSCUE meaning emerges a posteriori; don't substitute Eq S2.3 back into S2.2.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b3",
+                        "char_span": null,
+                        "snippet": "η is a unitless, arbitrary, and undetermined Lagrange multiplier"
+                    },
+                    {
+                        "page": 24,
+                        "block_id": "p24_b2",
+                        "char_span": null,
+                        "snippet": "Eq. S2.3 may not be plugged back into Eq. S2.2."
+                    }
+                ]
+            },
+            {
+                "id": "A5",
+                "text": "Viable solutions require ∂RM/∂C > 0.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_b4",
+                        "char_span": null,
+                        "snippet": "...∂RM/∂C > 0"
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "Eq.S2.1",
+                "latex": "\\max_{g_c}\\int G(C,E)\\,dt",
+                "variables": [
+                    "g_c",
+                    "G",
+                    "C",
+                    "E"
+                ],
+                "explanation": "Maximize time-integrated growth.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_b3",
+                        "char_span": null,
+                        "snippet": "max gc ∫ G(C, E) dt, (S2.1)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S2.2",
+                "latex": "\\mathcal{L}(g_c, C, \\dot{C}, \\eta, t)=G(g_c,C,t)-\\eta\\,[\\dot{C}-F_C(g_c,C,t)]",
+                "variables": [
+                    "g_c",
+                    "C",
+                    "\\dot{C}",
+                    "\\eta",
+                    "t",
+                    "G",
+                    "F_C"
+                ],
+                "explanation": "Augmented Lagrangian.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b3",
+                        "char_span": null,
+                        "snippet": "𝓛(gc, C, Ċ, η, t) = G... (S2.2)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S2.3",
+                "latex": "\\eta=-\\frac{\\partial G/\\partial E}{\\partial F_C/\\partial E}=(1-f_c)\\,\\frac{|\\partial G/\\partial E|}{|\\partial G/\\partial E|+(1-f_c)a_L\\,dA_n/dE}",
+                "variables": [
+                    "\\eta",
+                    "G",
+                    "E",
+                    "F_C",
+                    "f_c",
+                    "a_L",
+                    "A_n"
+                ],
+                "explanation": "Control condition; defines NSCUE.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b1",
+                        "char_span": null,
+                        "snippet": "(S2.3)"
+                    },
+                    {
+                        "page": 24,
+                        "block_id": "p24_b2",
+                        "char_span": null,
+                        "snippet": "...instantaneous marginal NSC-use efficiency (NSCUE)..."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S2.4a",
+                "latex": "\\chi_w\\equiv\\left(\\frac{1}{1-f_c}-\\frac{1}{\\eta}\\right)\\frac{1}{a_L}\\frac{\\partial G}{\\partial E}",
+                "variables": [
+                    "\\chi_w",
+                    "f_c",
+                    "\\eta",
+                    "a_L",
+                    "G",
+                    "E"
+                ],
+                "explanation": "Defines marginal cost of water in GOH (rearranged from Eq S2.3).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b2",
+                        "char_span": null,
+                        "snippet": "...marginal cost of water... (S2.4a)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S2.4b",
+                "latex": "\\chi_w=\\lambda",
+                "variables": [
+                    "\\chi_w",
+                    "\\lambda"
+                ],
+                "explanation": "Instantaneous optimum: marginal cost equals marginal profit (dAn/dE).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b2",
+                        "char_span": null,
+                        "snippet": "χw = λ (S2.4b)"
+                    },
+                    {
+                        "page": 25,
+                        "block_id": "p25_b1",
+                        "char_span": null,
+                        "snippet": "dAn/dE... short-hand symbol, λ"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S2.5",
+                "latex": "\\Theta=\\left(\\frac{1}{1-f_c}-\\frac{1}{\\eta}\\right)\\frac{G}{a_L}",
+                "variables": [
+                    "\\Theta",
+                    "f_c",
+                    "\\eta",
+                    "G",
+                    "a_L"
+                ],
+                "explanation": "Equivalent hydraulic cost (integral of χw).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b4",
+                        "char_span": null,
+                        "snippet": "Θ = ∫ χw dE"
+                    },
+                    {
+                        "page": 26,
+                        "block_id": "p26_b1",
+                        "char_span": null,
+                        "snippet": "(S2.5)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S2.6",
+                "latex": "\\frac{d\\eta}{dt}=\\eta\\,\\frac{\\partial R_M}{\\partial C}+\\left(\\frac{\\eta}{1-f_c}-1\\right)\\frac{\\partial G}{\\partial C}",
+                "variables": [
+                    "\\eta",
+                    "t",
+                    "R_M",
+                    "C",
+                    "f_c",
+                    "G"
+                ],
+                "explanation": "Co-state evolution.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_b3",
+                        "char_span": null,
+                        "snippet": "(S2.6)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "g_c",
+                "name": "total conductance to CO2",
+                "unit": null,
+                "range": null,
+                "dimension": null,
+                "description": "Control variable.",
+                "aliases": [],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_b2",
+                        "char_span": null,
+                        "snippet": "...total conductance to CO2, gc..."
+                    }
+                ]
+            },
+            {
+                "symbol": "E",
+                "name": "transpiration rate",
+                "unit": "mol H2O m^-2 s^-1",
+                "range": null,
+                "dimension": null,
+                "description": "State variable linked to gc via hydraulics.",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_b1",
+                        "char_span": null,
+                        "snippet": "transpiration rates, E [mol H2O∙m-2∙s-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "C",
+                "name": "NSC storage",
+                "unit": null,
+                "range": null,
+                "dimension": null,
+                "description": "Dynamic carbon storage constraint.",
+                "aliases": [
+                    "NSC"
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_b2",
+                        "char_span": null,
+                        "snippet": "NSC storage, C"
+                    }
+                ]
+            },
+            {
+                "symbol": "η",
+                "name": "Lagrange multiplier / NSCUE",
+                "unit": null,
+                "range": "0 ≤ η < 1 − f_c",
+                "dimension": "unitless",
+                "description": "Co-state; interpreted as instantaneous marginal NSC-use efficiency.",
+                "aliases": [
+                    "NSCUE"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b3",
+                        "char_span": null,
+                        "snippet": "η is a unitless..."
+                    },
+                    {
+                        "page": 24,
+                        "block_id": "p24_b2",
+                        "char_span": null,
+                        "snippet": "η < 1 – fc... η ≥ 0"
+                    }
+                ]
+            },
+            {
+                "symbol": "F_C",
+                "name": "NSC balance constraint",
+                "unit": null,
+                "range": null,
+                "dimension": null,
+                "description": "Constraint function (equals Ċ at optimum).",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b4",
+                        "char_span": null,
+                        "snippet": "FC = Ċ ≡ aL∙(An + Rd) – G – R"
+                    }
+                ]
+            },
+            {
+                "symbol": "λ",
+                "name": "marginal carbon profit of water",
+                "unit": null,
+                "range": null,
+                "dimension": null,
+                "description": "Short-hand for dAn/dE.",
+                "aliases": [
+                    "dA_n/dE"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b1",
+                        "char_span": null,
+                        "snippet": "dAn/dE... short-hand symbol, λ"
+                    }
+                ]
+            },
+            {
+                "symbol": "χ_w",
+                "name": "marginal cost of water",
+                "unit": null,
+                "range": null,
+                "dimension": null,
+                "description": "Derived from GOH; equals λ at optimum.",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b2",
+                        "char_span": null,
+                        "snippet": "marginal cost of water, χw"
+                    }
+                ]
+            },
+            {
+                "symbol": "Θ",
+                "name": "hydraulic cost",
+                "unit": null,
+                "range": null,
+                "dimension": null,
+                "description": "Θ = ∫ χw dE; expressed in Eq S2.5.",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_b4",
+                        "char_span": null,
+                        "snippet": "Θ = ∫ χw dE"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\psi_{soil}",
+                "name": "soil water potential",
+                "unit": "MPa",
+                "range": null,
+                "dimension": null,
+                "description": "Environmental input.",
+                "aliases": [
+                    "ψsoil"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_b4",
+                        "char_span": null,
+                        "snippet": "soil water potential, ψsoil"
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "symbol": "f_c",
+                "name": "fraction parameter",
+                "unit": null,
+                "default": null,
+                "range": null,
+                "description": "Appears in bounds and cost terms.",
+                "estimation": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_b2",
+                        "char_span": null,
+                        "snippet": "η < 1 – fc"
+                    }
+                ]
+            },
+            {
+                "symbol": "a_L",
+                "name": "leaf-area scaling parameter",
+                "unit": null,
+                "default": null,
+                "range": null,
+                "description": "Appears in FC and cost equations.",
+                "estimation": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b4",
+                        "char_span": null,
+                        "snippet": "aL∙(An + Rd)"
+                    }
+                ]
+            },
+            {
+                "symbol": "u_S",
+                "name": "stem allocation fraction",
+                "unit": null,
+                "default": null,
+                "range": null,
+                "description": "Assumed constant linking whole-tree and stem growth.",
+                "estimation": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b1",
+                        "char_span": null,
+                        "snippet": "stem allocation fraction, uS"
+                    }
+                ]
+            }
+        ],
+        "algorithm": {
+            "steps": [
+                {
+                    "id": "S1",
+                    "text": "Formulate objective (Eq S2.1) and augmented Lagrangian (Eq S2.2).",
+                    "inputs": [
+                        "g_c"
+                    ],
+                    "outputs": [
+                        "\\mathcal{L}"
+                    ],
+                    "uncertain": false,
+                    "evidence": [
+                        {
+                            "page": 22,
+                            "block_id": "p22_b3",
+                            "char_span": null,
+                            "snippet": "(S2.1)"
+                        },
+                        {
+                            "page": 23,
+                            "block_id": "p23_b3",
+                            "char_span": null,
+                            "snippet": "(S2.2)"
+                        }
+                    ]
+                },
+                {
+                    "id": "S2",
+                    "text": "Apply Euler–Lagrange conditions to obtain η (Eq S2.3) and co-state evolution (Eq S2.6).",
+                    "inputs": [
+                        "\\mathcal{L}"
+                    ],
+                    "outputs": [
+                        "η",
+                        "dη/dt"
+                    ],
+                    "uncertain": false,
+                    "evidence": [
+                        {
+                            "page": 24,
+                            "block_id": "p24_b1",
+                            "char_span": null,
+                            "snippet": "(S2.3)"
+                        },
+                        {
+                            "page": 26,
+                            "block_id": "p26_b3",
+                            "char_span": null,
+                            "snippet": "(S2.6)"
+                        }
+                    ]
+                },
+                {
+                    "id": "S3",
+                    "text": "Rearrange to χw (Eq S2.4a) and solve χw=λ (Eq S2.4b) for instantaneous optimal gc.",
+                    "inputs": [
+                        "η"
+                    ],
+                    "outputs": [
+                        "g_c"
+                    ],
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 25,
+                            "block_id": "p25_b2",
+                            "char_span": null,
+                            "snippet": "(S2.4a)"
+                        },
+                        {
+                            "page": 25,
+                            "block_id": "p25_b2",
+                            "char_span": null,
+                            "snippet": "(S2.4b)"
+                        }
+                    ]
+                },
+                {
+                    "id": "S4",
+                    "text": "Define equivalent hydraulic cost Θ = ∫ χw dE and Eq S2.5.",
+                    "inputs": [
+                        "χw"
+                    ],
+                    "outputs": [
+                        "Θ"
+                    ],
+                    "uncertain": false,
+                    "evidence": [
+                        {
+                            "page": 25,
+                            "block_id": "p25_b4",
+                            "char_span": null,
+                            "snippet": "Θ = ∫ χw dE"
+                        },
+                        {
+                            "page": 26,
+                            "block_id": "p26_b1",
+                            "char_span": null,
+                            "snippet": "(S2.5)"
+                        }
+                    ]
+                }
+            ],
+            "pseudocode": [
+                "Given η (or η(t)): compute χw and λ; solve χw=λ for gc; update C via FC and η via Eq S2.6."
+            ],
+            "uncertain": true,
+            "evidence": [
+                {
+                    "page": 26,
+                    "block_id": "p26_b5",
+                    "char_span": null,
+                    "snippet": "...η, is designated a priori."
+                }
+            ]
+        },
+        "datasets": [],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L1",
+                "text": "Instantaneous optimal gc requires η designated a priori.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_b5",
+                        "char_span": null,
+                        "snippet": "η, is designated a priori"
+                    }
+                ]
+            },
+            {
+                "id": "L2",
+                "text": "Multiple χw–λ intersections can occur; authors choose the lesser gc.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_b5",
+                        "char_span": null,
+                        "snippet": "intersect at multiple points... use the lesser"
+                    }
+                ]
+            },
+            {
+                "id": "L3",
+                "text": "Soil moisture not treated as self-regulated dynamic resource in this section.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_b2",
+                        "char_span": null,
+                        "snippet": "...rather than soil moisture"
+                    }
+                ]
+            }
+        ],
+        "implementation": {
+            "model_scope": "S2 derivation of GOH optimality conditions (not a full numerical implementation).",
+            "state_variables": [
+                "C"
+            ],
+            "exogenous_inputs": [
+                "\\psi_{soil}",
+                "T_a"
+            ],
+            "control_inputs": [
+                "g_c"
+            ],
+            "outputs_observables": [
+                "g_c",
+                "η",
+                "χ_w",
+                "λ",
+                "Θ"
+            ],
+            "io_contract": {
+                "input_schema": null,
+                "output_schema": null,
+                "data_types": [],
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_b4",
+                        "char_span": null,
+                        "snippet": "...ψsoil... Ta, are inputs."
+                    }
+                ]
+            },
+            "dependency_graph": {
+                "nodes": [
+                    "g_c",
+                    "E",
+                    "A_n",
+                    "C",
+                    "G",
+                    "η"
+                ],
+                "edges": [
+                    {
+                        "from": "g_c",
+                        "to": "E",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "g_c",
+                        "to": "A_n",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "A_n",
+                        "to": "C",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "E",
+                        "to": "G",
+                        "type": "equation"
+                    }
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_b2",
+                        "char_span": null,
+                        "snippet": "...gc... transpiration... turgor... constraining growth..."
+                    }
+                ]
+            },
+            "numerics": {
+                "time_step": null,
+                "time_grid": null,
+                "integration_method": null,
+                "solver": null,
+                "convergence_criteria": null,
+                "stability_notes": null,
+                "uncertain": true,
+                "evidence": []
+            },
+            "initial_conditions": [],
+            "boundary_conditions": [],
+            "preprocessing": {
+                "steps": [],
+                "missing_value_policy": null,
+                "unit_conversions": [],
+                "filters_smoothing": [],
+                "uncertain": true,
+                "evidence": []
+            },
+            "calibration": {
+                "estimated_parameters": [],
+                "objective": null,
+                "constraints": null,
+                "optimizer": null,
+                "train_validation_protocol": null,
+                "uncertain": true,
+                "evidence": []
+            },
+            "code_blueprint": {
+                "language": null,
+                "modules": [],
+                "functions": [],
+                "tests": []
+            },
+            "unresolved_assets": [
+                {
+                    "type": "equation",
+                    "label": "Eq. S6.11",
+                    "page": 24,
+                    "issue": "Need ∂G0/∂E definition.",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 24,
+                            "block_id": "p24_b1",
+                            "char_span": null,
+                            "snippet": "where ∂G0/∂E is defined by Eq. S6.11"
+                        }
+                    ]
+                },
+                {
+                    "type": "equation",
+                    "label": "Eq. S4.6 & Eq. S4.11",
+                    "page": 25,
+                    "issue": "Need λ=dAn/dE definition from gas exchange.",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 25,
+                            "block_id": "p25_b3",
+                            "char_span": null,
+                            "snippet": "defined later in Eq. S4.6&11"
+                        }
+                    ]
+                }
+            ],
+            "open_questions": [
+                {
+                    "id": "Q1",
+                    "question": "How is η chosen in practice for simulations?",
+                    "why_needed": "gc* requires η a priori.",
+                    "likely_location": "Methods/implementation sections.",
+                    "evidence": [
+                        {
+                            "page": 26,
+                            "block_id": "p26_b5",
+                            "char_span": null,
+                            "snippet": "η, is designated a priori"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "provenance": {
+        "extraction_time": "2026-01-17T02:52:36Z",
+        "model": "GPT-5.2 Thinking",
+        "notes": "Compact EXTRACT for C002 (pages 22-26).",
+        "mode": "EXTRACT",
+        "is_partial": true,
+        "chunk": {
+            "chunk_id": "C002",
+            "page_range": [
+                22,
+                26
+            ]
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C002",
+                "page_range": [
+                    22,
+                    26
+                ],
+                "section_titles": [
+                    "S2 Growth optimization"
+                ],
+                "focus_tags": [
+                    "model",
+                    "equations"
+                ],
+                "priority": 1,
+                "rationale": "Derives GOH objective, Lagrangian, optimality conditions and marginal water cost/profit relations.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_b2",
+                        "char_span": null,
+                        "snippet": "S2 Growth optimization"
+                    }
+                ]
+            }
+        ],
+        "next_recommended_chunk_id": "C003"
+    }
+}

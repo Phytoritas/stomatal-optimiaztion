@@ -5,14 +5,14 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 070 completed and architecture gaps cleared
+- Current phase: slice 071 reopened the root GOSM and TDGM migration wave
 
 ## Scope
 
 Create a scaffold-aligned refactoring program for the legacy "00. Stomatal Optimization" workspace without starting broad code migration yet.
 
 The initial scope covers:
-- source inventory across `THORP`, `TOMATO`, and `load-cell-data`
+- source inventory across `THORP`, `GOSM`, `TDGM`, `TOMATO`, and `load-cell-data`
 - target module boundary proposal for the new repository
 - validation and regression harness planning
 - migration slice planning for the first bounded implementation wave
@@ -99,6 +99,7 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. keep the current validation gates green as new work lands
-2. reopen the gap register only when a new structural uncertainty appears
-3. keep shared utilities blocked until a concrete cross-domain helper emerges
+1. keep the current validation gates green as root `GOSM` and `TDGM` slices land
+2. close the root `GOSM` foundation seam before widening into numerical runtime modules
+3. open the parallel root `TDGM` foundation seam next, then choose the earliest numerical seam
+4. keep shared utilities blocked until a concrete cross-domain helper emerges
