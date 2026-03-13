@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 047 completed and slice 048 planning
+- Current phase: slice 048 completed and slice 049 planning
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. audit the `load-cell-data` aggregation seam at `loadcell_pipeline/aggregation.py`
-2. preserve the config-and-ingestion-first package boundary while deciding whether aggregation should precede preprocessing and workflow seams
+1. audit the `load-cell-data` threshold-detection seam at `loadcell_pipeline/thresholds.py`
+2. preserve the config-plus-IO-plus-aggregation package boundary while deciding whether threshold detection should precede preprocessing and workflow seams
 3. keep `load-cell-data` blocked until its source audit is deeper

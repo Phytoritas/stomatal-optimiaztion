@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 047
-- Gate D. Bounded slices 001 through 024 approved for THORP, slices 025 through 045 approved for TOMATO, and slices 046 through 047 approved for `load-cell-data`
+- Gate C. Validation plan ready through slice 048
+- Gate D. Bounded slices 001 through 024 approved for THORP, slices 025 through 045 approved for TOMATO, and slices 046 through 048 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -329,3 +329,9 @@ Slice 047:
 - target: `src/stomatal_optimiaztion/domains/load_cell/io.py`, package exports, and `tests/test_load_cell_io.py`
 - scope: bounded `load-cell-data` IO surface covering raw CSV ingestion, interpolation flags, duplicate-timestamp handling, and single/multi-resolution artifact writing
 - excluded: `loadcell_pipeline/aggregation.py`, preprocessing, workflow, CLI, and dashboard entrypoints
+
+Slice 048:
+- source: `load-cell-data/loadcell_pipeline/aggregation.py`
+- target: `src/stomatal_optimiaztion/domains/load_cell/aggregation.py`, package exports, and `tests/test_load_cell_aggregation.py`
+- scope: bounded `load-cell-data` aggregation surface covering flux resampling, daily summaries, event counts, label-derived durations, and metadata passthrough
+- excluded: `loadcell_pipeline/thresholds.py`, preprocessing, workflow, CLI, and dashboard entrypoints

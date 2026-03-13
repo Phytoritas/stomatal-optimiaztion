@@ -1,3 +1,7 @@
+from stomatal_optimiaztion.domains.load_cell.aggregation import (
+    daily_summary,
+    resample_flux_timeseries,
+)
 from stomatal_optimiaztion.domains.load_cell.config import (
     PipelineConfig,
     load_config,
@@ -9,7 +13,9 @@ from stomatal_optimiaztion.domains.load_cell.io import (
 )
 
 __all__ = [
+    "daily_summary",
     "PipelineConfig",
+    "resample_flux_timeseries",
     "load_config",
     "read_load_cell_csv",
     "write_multi_resolution_results",
