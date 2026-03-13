@@ -580,8 +580,16 @@ The sixty-seventh slice opens the next bounded THORP namespace-wrapper seam:
 - keep the seam wrapper-bounded without widening into new runtime abstractions
 - leave `THORP/src/thorp/params/__init__.py` blocked as the next seam
 
+## Slice 068: THORP Params Compatibility
+
+The sixty-eighth slice closes the remaining bounded THORP namespace-wrapper gap:
+- broaden `src/stomatal_optimiaztion/domains/thorp/params.py` so legacy callers recover the grouped `thorp.params` surface
+- preserve grouped exports for `BottomBoundaryCondition`, `SoilHydraulics`, `THORPParams`, `WeibullVC`, and flat `default_params()`
+- keep the seam compatibility-bounded without reintroducing the legacy `config.py` module layout
+- leave package-level smoke validation as the next artifact
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP namespace-wrapper audit for `THORP/src/thorp/params/__init__.py`
+3. prepare the THORP package-level smoke validation note as the next artifact
