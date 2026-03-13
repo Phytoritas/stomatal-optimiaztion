@@ -659,8 +659,15 @@ The seventy-sixth slice extends the bounded root `GOSM` runtime package with the
 - preserve `Eq.S8.1` and `Eq.S8.2` tagging plus scalar and vector steady-state NPP/GPP ratio behavior
 - keep the seam helper-bounded and leave `optimal_control.py`, carbon-dynamics kernels, and pipeline orchestration blocked
 
+## Slice 077: Root GOSM Optimal Control Helpers
+
+The seventy-seventh slice extends the bounded root `GOSM` runtime package with the next objective-layer helpers:
+- move `GOSM/src/gosm/model/optimal_control.py` into the staged `domains/gosm/model/` package
+- preserve `Eq.S2.1` through `Eq.S2.6` tagging plus vectorized objective, eta, chi, theta, and eta-dot behavior
+- keep the seam helper-bounded and leave `carbon_dynamics.py`, conductance-temperature kernels, and pipeline orchestration blocked
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate `GOSM/src/gosm/model/optimal_control.py` as the next bounded GOSM objective seam
+3. migrate `GOSM/src/gosm/model/carbon_dynamics.py` as the next bounded GOSM carbon-balance seam

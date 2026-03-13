@@ -505,3 +505,9 @@ Slice 076:
 - target: `src/stomatal_optimiaztion/domains/gosm/model/` and `tests/test_gosm_npp_gpp.py`
 - scope: bounded root `GOSM` runtime seam covering target and steady-state NPP/GPP helper calculations plus equation-tag preservation
 - excluded: `GOSM/src/gosm/model/optimal_control.py`, larger carbon-dynamics/runtime kernels, and root `TDGM` runtime seams
+
+Slice 077:
+- source: `GOSM/src/gosm/model/optimal_control.py` and `GOSM/src/gosm/model/__init__.py`
+- target: `src/stomatal_optimiaztion/domains/gosm/model/` and `tests/test_gosm_optimal_control.py`
+- scope: bounded root `GOSM` runtime seam covering objective, eta, chi, theta, and eta-dot helper calculations plus equation-tag preservation
+- excluded: `GOSM/src/gosm/model/carbon_dynamics.py`, conductance-temperature or hydraulics kernels, and root `TDGM` runtime seams
