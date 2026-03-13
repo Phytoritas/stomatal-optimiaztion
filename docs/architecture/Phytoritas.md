@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 063 completed and THORP compatibility planning
+- Current phase: slice 064 completed and THORP namespace-wrapper planning
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. confirm the THORP stable `sim` wrapper surface is closed after migrating `thorp.sim.run`
-2. audit `THORP/src/thorp/equation_registry.py` as the next bounded compatibility seam
-3. prepare the next module spec only after the equation-registry import surface is scoped against the existing traceability helpers
+1. confirm the THORP equation-registry surface is closed after migrating `equation_registry.py`
+2. audit `THORP/src/thorp/utils/__init__.py` as the next bounded namespace-wrapper seam
+3. prepare the next module spec only after the utilities wrapper is scoped against the existing traceability and model-card helpers
