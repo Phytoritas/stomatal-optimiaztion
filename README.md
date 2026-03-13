@@ -19,6 +19,7 @@
 ```bash
 poetry install
 poetry run python -m stomatal_optimiaztion.domains.thorp --max-steps 60
+poetry run python scripts/render_thorp_example_figures.py --legacy-example-dir "../00. Stomatal Optimization/THORP/example/THORP_code_forcing_outputs_plotting"
 poetry run python scripts/render_gosm_control_example.py --output-dir out/gosm/control_example
 poetry run python scripts/render_gosm_sensitivity_figures.py --legacy-example-dir "../00. Stomatal Optimization/GOSM/example"
 poetry run python scripts/render_gosm_manuscript_panels.py --output-dir out/gosm/manuscript_panels
@@ -126,6 +127,7 @@ poetry run ruff check .
 - Legacy example and figure parity audit is recorded as slice 096 and reopens bounded workflow-reproduction gaps for root `GOSM`, `THORP`, and `TDGM`.
 - Root GOSM control example figure workflow is migrated as slice 097.
 - Root GOSM sensitivity and manuscript figure workflows are migrated as slice 098.
+- Root THORP main-text example figure workflows are migrated as slice 099.
 
 ## Next validation
-- Move next to root `THORP` example figure workflows, then reuse or generalize the figure bundle pattern for root `TDGM`.
+- Move next to root `TDGM` supplementary example workflows while keeping the new shared Plotkit helper narrowly scoped.

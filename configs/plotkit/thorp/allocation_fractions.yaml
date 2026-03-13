@@ -1,0 +1,71 @@
+version: 1
+meta:
+  id: thorp_allocation_fractions
+  title: Root THORP allocation fraction figure
+  journal_target: Nature Plants
+  family: thorp_example
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_main_text_figure
+layout:
+  rows: 3
+  cols: 1
+panel_order:
+  - leaf
+  - wood
+  - fine_root
+panels:
+  leaf:
+    title: Leaf allocation
+    x_label: Age [yr]
+    y_label: Leaf allocation
+    x_limits: [0, 150]
+    y_limits: [0.1, 0.6]
+    styling:
+      confidence_fill_color: '#D0D0D0'
+      confidence_fill_alpha: 0.7
+      combined_color: '#6B6B6B'
+      scenario_linewidth_pt: 2.2
+  wood:
+    title: Above- and belowground wood allocation
+    x_label: Age [yr]
+    y_label: Wood allocation
+    x_limits: [0, 150]
+    y_limits: [0.2, 0.9]
+    styling:
+      confidence_fill_color: '#D0D0D0'
+      confidence_fill_alpha: 0.7
+      combined_color: '#6B6B6B'
+      scenario_linewidth_pt: 2.2
+  fine_root:
+    title: Fine-root allocation
+    x_label: Age [yr]
+    y_label: Fine-root allocation
+    x_limits: [0, 150]
+    y_limits: [0.0, 0.7]
+    styling:
+      confidence_fill_color: '#D0D0D0'
+      confidence_fill_alpha: 0.7
+      combined_color: '#6B6B6B'
+      scenario_linewidth_pt: 2.2
+legend:
+  order:
+    - Confidence range of observations
+    - Combined regression
+    - Boreal
+    - Temperate
+    - Control
+    - 75% Precipitation
+    - 50% Precipitation
+    - 50% Precipitation + 2 m GWTD
+  loc: center right
+  bbox_to_anchor: [0.985, 0.5]
+figure:
+  width_mm: 180
+  height_mm: 190
+theme:
+  name: nature_plants_like
+  tokens: ../themes/nature_plants_like_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false

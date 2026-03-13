@@ -808,8 +808,23 @@ The ninety-seventh slice lands the first bounded example-parity reproduction:
 - render a Plotkit-style publication bundle with PNG, PDF, CSV, spec, resolved spec, tokens, and metadata exports
 - leave the broader root `GOSM` sensitivity/manuscript figure workflows as the next open example slice
 
+## Slice 098: Root GOSM Sensitivity And Manuscript Figure Workflows
+
+The ninety-eighth slice closes the remaining root `GOSM` example workflows:
+- reproduce the sensitivity and manuscript figure exports from the real legacy `.mat` payloads plus migrated `gosm` kernels
+- lock parity with fixed digest evidence and spec-first Plotkit bundles
+- leave root `THORP` example figure workflows as the next open example slice
+
+## Slice 099: Root THORP Example Figure Workflows
+
+The ninety-ninth slice closes the root `THORP` main-text example wave:
+- reproduce the five main-text figure workflows from the real legacy THORP `.mat` payloads and empirical MATLAB tables
+- render Plotkit-style bundles with PNG, PDF, CSV, spec, resolved spec, tokens, and metadata exports
+- lock parity with fixed frame digests and visually spot-check the rendered PNGs against the legacy figure exports
+- introduce a narrow `shared_plotkit.py` helper because the figure-bundle contract is now shared by more than one domain
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. move next to root `GOSM` sensitivity/manuscript figure workflows before widening into root `THORP` and `TDGM` examples
+3. move next to root `TDGM` supplementary example workflows

@@ -1,0 +1,69 @@
+version: 1
+meta:
+  id: thorp_groundwater_sweep
+  title: Root THORP groundwater sweep figure
+  journal_target: Nature Plants
+  family: thorp_example
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_main_text_figure
+layout:
+  rows: 3
+  cols: 2
+panel_order:
+  - depth_time
+  - depth_height
+  - gwtd_vs_root_depth
+  - deep_uptake_fraction
+  - rmf_height
+panels:
+  depth_time:
+    title: Rooting depth over time
+    x_label: Simulation time [yr]
+    y_label: Rooting depth Z95 [m]
+    x_limits: [0, 100]
+    y_limits: [-25, 0]
+  depth_height:
+    title: Rooting depth versus height
+    x_label: Height [m]
+    y_label: Rooting depth Z95 [m]
+    x_limits: [0, 35]
+    y_limits: [-25, 0]
+  gwtd_vs_root_depth:
+    title: Mean rooting depth versus mean GWTD
+    x_label: Mean groundwater table depth [m]
+    y_label: Mean rooting depth [m]
+    x_limits: [1, 100]
+    y_limits: [1, 100]
+    identity_line: [1, 100]
+  deep_uptake_fraction:
+    title: Deep-water uptake fraction
+    x_label: Mean groundwater table depth [m]
+    y_label: Fraction of E from below 2 m
+    x_limits: [0, 80]
+    y_limits: [0, 0.5]
+  rmf_height:
+    title: RMF versus height
+    x_label: Height [m]
+    y_label: RMF [g g^-1]
+    x_limits: [0, 35]
+    y_limits: [0, 0.5]
+legend:
+  order:
+    - Mean Z95
+    - Mean Z95 range
+    - Mean Z99.5
+    - Mean Z99.5 range
+    - Fraction of E from below 2 m
+    - Empirical RMF range
+  loc: center right
+  bbox_to_anchor: [0.985, 0.54]
+figure:
+  width_mm: 184
+  height_mm: 195
+theme:
+  name: nature_plants_like
+  tokens: ../themes/nature_plants_like_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false

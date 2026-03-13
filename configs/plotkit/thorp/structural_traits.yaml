@@ -1,0 +1,79 @@
+version: 1
+meta:
+  id: thorp_structural_traits
+  title: Root THORP structural trait figure
+  journal_target: Nature Plants
+  family: thorp_example
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_main_text_figure
+layout:
+  rows: 3
+  cols: 2
+panel_order:
+  - depth_time
+  - lai_time
+  - depth_mass
+  - lai_mass
+  - leaf_vs_sapwood
+  - huber_value
+panels:
+  depth_time:
+    title: Height and rooting depth over time
+    x_label: Simulation time [yr]
+    left_y_label: Height [m]
+    right_y_label: Rooting depth Z95 [m]
+    x_limits: [0, 100]
+    left_y_limits: [0, 140]
+    right_y_limits: [-25, 0]
+    twin_axis: true
+  lai_time:
+    title: LAI over time
+    x_label: Simulation time [yr]
+    y_label: LAI [m^2 m^-2]
+    x_limits: [0, 100]
+    y_limits: [0, 8]
+  depth_mass:
+    title: Height and rooting depth versus biomass
+    x_label: log10(Total dry mass [g])
+    left_y_label: Height [m]
+    right_y_label: Rooting depth Z95 [m]
+    x_limits: [2.5, 6.5]
+    left_y_limits: [0, 140]
+    right_y_limits: [-25, 0]
+    twin_axis: true
+  lai_mass:
+    title: LAI versus biomass
+    x_label: log10(Total dry mass [g])
+    y_label: LAI [m^2 m^-2]
+    x_limits: [2.5, 6.5]
+    y_limits: [0, 8]
+  leaf_vs_sapwood:
+    title: Leaf area versus sapwood area
+    x_label: Basal sapwood area [m^2]
+    y_label: Leaf area [m^2]
+    x_limits: [0, 0.1]
+    y_limits: [0, 900]
+  huber_value:
+    title: Huber value versus biomass
+    x_label: log10(Total dry mass [g])
+    y_label: Huber value [m^2 m^-2]
+    x_limits: [2.5, 6.5]
+    y_limits: [0.0, 0.003]
+legend:
+  order:
+    - Control
+    - 75% Precipitation
+    - 50% Precipitation
+    - 50% Precipitation + 2 m GWTD
+  loc: center right
+  bbox_to_anchor: [0.985, 0.54]
+figure:
+  width_mm: 184
+  height_mm: 190
+theme:
+  name: nature_plants_like
+  tokens: ../themes/nature_plants_like_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false

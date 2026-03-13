@@ -1,0 +1,88 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+from hashlib import sha256
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+import pandas as pd
+import yaml
+
+
+@dataclass(frozen=True)
+class FigureBundleArtifacts:
+    output_dir: Path
+    data_csv_path: Path
+    spec_copy_path: Path
+    resolved_spec_path: Path
+    tokens_copy_path: Path
+    metadata_path: Path
+    png_path: Path
+    pdf_path: Path
+
+    def to_summary(self) -> dict[str, Any]:
+        return {
+            "output_dir": str(self.output_dir),
+            "data_csv": str(self.data_csv_path),
+            "spec_copy": str(self.spec_copy_path),
+            "resolved_spec": str(self.resolved_spec_path),
+            "tokens_copy": str(self.tokens_copy_path),
+            "metadata": str(self.metadata_path),
+            "png": str(self.png_path),
+            "pdf": str(self.pdf_path),
+        }
+
+
+def load_yaml(path: Path) -> dict[str, Any]:
+    return yaml.safe_load(path.read_text(encoding="utf-8"))
+
+
+def apply_axis_theme(ax: Any, *, tokens: dict[str, Any], show_xlabels: bool) -> None:
+    axes_tokens = tokens["axes"]
+    ax.set_facecolor(tokens["figure"]["background"])
+    ax.grid(
+        axis=axes_tokens.get("grid_major", "y"),
+        color=axes_tokens["grid_color"],
+        linewidth=axes_tokens["grid_width_pt"],
+        alpha=axes_tokens["grid_alpha"],
+    )
+    ax.tick_params(
+        direction=axes_tokens["tick_direction"],
+        length=axes_tokens["tick_length_pt"],
+        width=axes_tokens["tick_width_pt"],
+        colors=axes_tokens["tick_color"],
+        labelsize=tokens["fonts"]["base_size_pt"],
+    )
+    for side in ("left", "right", "top", "bottom"):
+        spine = ax.spines[side]
+        spine.set_color(axes_tokens["spine_color"])
+        spine.set_linewidth(axes_tokens["spine_width_pt"])
+    if not show_xlabels:
+        ax.tick_params(labelbottom=False)
+
+
+def resolve_figure_paths(output_dir: Path, figure_id: str) -> dict[str, Path]:
+    return {
+        "data_csv": output_dir / f"{figure_id}_data.csv",
+        "spec_copy": output_dir / f"{figure_id}_spec.yaml",
+        "resolved_spec": output_dir / f"{figure_id}_resolved_spec.yaml",
+        "tokens_copy": output_dir / f"{figure_id}_tokens.yaml",
+        "metadata": output_dir / f"{figure_id}_metadata.json",
+        "png": output_dir / f"{figure_id}.png",
+        "pdf": output_dir / f"{figure_id}.pdf",
+    }
+
+
+def frame_digest(frame: pd.DataFrame, *, float_decimals: int = 10) -> str:
+    normalized = frame.copy()
+    for column in normalized.columns:
+        if pd.api.types.is_numeric_dtype(normalized[column]):
+            normalized[column] = np.round(normalized[column].astype(float), float_decimals)
+        else:
+            normalized[column] = normalized[column].astype(str).fillna("")
+    csv_blob = normalized.sort_values(list(normalized.columns)).to_csv(
+        index=False,
+        float_format=f"%.{float_decimals}f",
+    )
+    return sha256(csv_blob.encode("utf-8")).hexdigest()
