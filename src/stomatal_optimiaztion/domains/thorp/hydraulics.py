@@ -9,6 +9,9 @@ from numpy.typing import NDArray
 from stomatal_optimiaztion.domains.thorp.implements import implements
 from stomatal_optimiaztion.domains.thorp.vulnerability import WeibullVC
 
+_ROOT_INTEGRATION_N = 20
+_ROOT_INTEGRATION_FRACTIONS = np.linspace(0.0, 1.0, _ROOT_INTEGRATION_N, dtype=float)
+
 
 def _reverse_cumsum(x: NDArray[np.floating], axis: int = 0) -> NDArray[np.floating]:
     return np.flip(np.cumsum(np.flip(x, axis=axis), axis=axis), axis=axis)
@@ -55,9 +58,9 @@ def e_from_soil_to_root_collar(
     c_r_h: NDArray[np.floating],
     c_r_v: NDArray[np.floating],
 ) -> RootUptakeResult:
-    n = 20
-
     c_r = c_r_h + c_r_v
+    vc_r_at_zero = float(params.vc_r(0.0))
+    hydro_head = params.rho * params.g * z_soil_mid / 1e6
     r_r_h_min = np.divide(
         params.beta_r_h,
         c_r_h,
@@ -74,38 +77,68 @@ def e_from_soil_to_root_collar(
 
     e_soil = np.full_like(psi_soil_by_layer, np.nan, dtype=float)
     f_r = np.full_like(psi_soil_by_layer, np.nan, dtype=float)
+    active = c_r > 0
+    inactive = ~active
+    if np.any(inactive):
+        e_soil[inactive] = 0.0
+        psi_inactive = np.minimum(psi_soil_by_layer[inactive], 0.0)
+        f_r[inactive] = np.asarray(params.vc_r(psi_inactive), dtype=float)
 
-    for layer_idx in range(psi_soil_by_layer.size):
-        if c_r[layer_idx] > 0:
-            psi_soil_i = float(psi_soil_by_layer[layer_idx])
-            z_soil_i = float(z_soil_mid[layer_idx])
-            psi_src_min = float(min(psi_soil_i, psi_rc))
-            psi_src_max = float(max(psi_soil_i, psi_rc))
+    if np.any(active):
+        psi_active = psi_soil_by_layer[active]
+        r_r_h_min_active = r_r_h_min[active]
+        r_r_v_sum_active = r_r_v_sum[active]
+        hydro_head_active = hydro_head[active]
 
-            if psi_rc == psi_soil_i:
-                f_ri = float(params.vc_r(psi_src_min))
-                if psi_src_min > 0:
-                    f_ri = float(params.vc_r(0.0))
-                r_r_h = _safe_div(float(r_r_h_min[layer_idx]), f_ri)
-                r_r = r_r_h + float(r_r_v_sum[layer_idx])
-                e_i = -(params.rho * params.g * z_soil_i / 1e6) / r_r / la
-            elif (psi_soil_i - psi_rc) == (params.rho * params.g * z_soil_i / 1e6):
-                e_i = 0.0
-                f_ri = float(params.vc_r(psi_src_min if psi_src_min <= 0 else 0.0))
-            else:
-                psi_src = np.linspace(psi_src_min, psi_src_max, n)
-                f_vals = np.asarray(params.vc_r(psi_src), dtype=float)
-                f_vals = np.where(psi_src > 0, float(params.vc_r(0.0)), f_vals)
-                f_ri = float(np.sum(f_vals) / n)
-                r_r_h = _safe_div(float(r_r_h_min[layer_idx]), f_ri)
-                r_r = r_r_h + float(r_r_v_sum[layer_idx])
-                e_i = (psi_soil_i - psi_rc - params.rho * params.g * z_soil_i / 1e6) / r_r / la
+        equal_mask = psi_active == psi_rc
+        zero_mask = (psi_active - psi_rc) == hydro_head_active
+        other_mask = ~(equal_mask | zero_mask)
 
-            e_soil[layer_idx] = e_i
-            f_r[layer_idx] = f_ri
-        else:
-            e_soil[layer_idx] = 0.0
-            f_r[layer_idx] = float(params.vc_r(float(psi_soil_by_layer[layer_idx])))
+        f_active = np.empty_like(psi_active, dtype=float)
+        e_active = np.empty_like(psi_active, dtype=float)
+
+        if np.any(equal_mask):
+            psi_src_min = np.minimum(psi_active[equal_mask], psi_rc)
+            f_eq = np.asarray(params.vc_r(psi_src_min), dtype=float)
+            f_eq = np.where(psi_src_min > 0, vc_r_at_zero, f_eq)
+            r_r_h_eq = np.divide(
+                r_r_h_min_active[equal_mask],
+                f_eq,
+                out=np.full_like(f_eq, np.inf, dtype=float),
+                where=f_eq != 0,
+            )
+            r_r_eq = r_r_h_eq + r_r_v_sum_active[equal_mask]
+            e_active[equal_mask] = -hydro_head_active[equal_mask] / r_r_eq / la
+            f_active[equal_mask] = f_eq
+
+        if np.any(zero_mask):
+            psi_src_min = np.minimum(psi_active[zero_mask], psi_rc)
+            f_zero = np.asarray(params.vc_r(psi_src_min), dtype=float)
+            f_zero = np.where(psi_src_min > 0, vc_r_at_zero, f_zero)
+            e_active[zero_mask] = 0.0
+            f_active[zero_mask] = f_zero
+
+        if np.any(other_mask):
+            psi_src_min = np.minimum(psi_active[other_mask], psi_rc)
+            psi_src_max = np.maximum(psi_active[other_mask], psi_rc)
+            psi_src = psi_src_min[:, None] + (psi_src_max - psi_src_min)[:, None] * _ROOT_INTEGRATION_FRACTIONS
+            f_vals = np.asarray(params.vc_r(psi_src), dtype=float)
+            f_vals = np.where(psi_src > 0, vc_r_at_zero, f_vals)
+            f_other = np.mean(f_vals, axis=1)
+            r_r_h_other = np.divide(
+                r_r_h_min_active[other_mask],
+                f_other,
+                out=np.full_like(f_other, np.inf, dtype=float),
+                where=f_other != 0,
+            )
+            r_r_other = r_r_h_other + r_r_v_sum_active[other_mask]
+            e_active[other_mask] = (
+                psi_active[other_mask] - psi_rc - hydro_head_active[other_mask]
+            ) / r_r_other / la
+            f_active[other_mask] = f_other
+
+        e_soil[active] = e_active
+        f_r[active] = f_active
 
     e = float(np.sum(e_soil))
 

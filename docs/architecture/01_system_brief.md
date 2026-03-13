@@ -873,10 +873,28 @@ The one-hundred-sixth slice makes the closed root rerun wave directly inspectabl
 - write only PNG comparison overlays and paired CSV data exports under `out/rerun_parity/`
 - keep the slow `GOSM` `imag` conductance-loss graph opt-in while the default graph bundle stays bounded to the fast validation set
 
+## Slice 107: Full-Series Rerun Bundles And Plot Pruning
+
+The one-hundred-seventh slice narrows the live comparison surface to true rerun parity only:
+- prune repo-level scripts, specs, and tests that only rendered legacy example/result figures without a live Python rerun comparison contract
+- keep only Plotkit-style rerun bundles under `out/rerun_parity/`
+- upgrade root `THORP` and root `TDGM` dynamic comparison bundles so the default export uses the full legacy stored series for the canonical control case
+- export bundle data as `*_python.csv`, `*_legacy.csv`, and `*_diff.csv` instead of mixed chart-only CSVs
+- keep fast smoke rendering available through `scripts/render_root_rerun_parity_figures.py --fast-smoke`
+
+## Slice 108: Root Full-Series Control Rerender Audit
+
+The one-hundred-eighth slice turns the rerun-only graph contract into a real full-series control audit:
+- vectorize the shared THORP/THORP-G root-uptake bottleneck so canonical control rerenders finish in practical time on the workstation
+- regenerate the live Plotkit rerun bundles under `out/rerun_parity/` so they contain only `png`, `*_python.csv`, `*_legacy.csv`, and `*_diff.csv`
+- confirm that root `THORP` full-series control rerun matches the legacy MATLAB payload to machine precision
+- confirm that root `GOSM` control/sensitivity rerun bundles remain numerically tight
+- expose a still-open root `TDGM` long-horizon control drift gap from the regenerated full-series `*_diff.csv`
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. keep the example figure suites and shared Plotkit bundle contract stable under regression
+3. keep the rerun-only Plotkit bundle contract stable under regression
 4. keep the fast root rerun parity tests green for `THORP`, `GOSM`, and `TDGM`
 5. keep `scripts/render_root_rerun_parity_figures.py` stable so users can inspect rerun parity without reading pytest internals

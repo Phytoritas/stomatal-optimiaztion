@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 106 keeps Plotkit-style root rerun parity comparison outputs available as minimal `PNG + CSV` bundles on top of the closed `THORP`, `GOSM`, and `TDGM` MATLAB-output parity wave, then returns the architecture to monitor mode
+- Current phase: slice 108 keeps only Plotkit-style `Python rerun vs MATLAB reference` bundles under `out/rerun_parity/`, finishes the canonical full-series control rerenders for root `THORP` and `TDGM`, and reopens a bounded follow-up gap because root `TDGM` still drifts from the legacy MATLAB control payload over the full stored horizon
 
 ## Scope
 
@@ -99,7 +99,8 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. keep the current validation gates green now that the root rerun parity wave also has reproducible graph bundles
-2. rerun the fast root parity tests and `scripts/render_root_rerun_parity_figures.py` when touching `THORP`, `GOSM`, or `TDGM` runtime kernels
-3. run the opt-in slow `GOSM` `imag` conductance-loss branch and graph bundle when root `gosm` hydraulics or stomatal logic changes
-4. leave the architecture in monitor mode until a new bounded structural gap appears
+1. keep the current validation gates green now that the root rerun parity wave also has canonical `png + python/legacy/diff csv` bundles on disk
+2. rerun the fast root parity tests and `scripts/render_root_rerun_parity_figures.py --fast-smoke` when touching `THORP`, `GOSM`, or `TDGM` runtime kernels
+3. rerender the default full-series control bundles for root `THORP` and `TDGM` whenever their runtime kernels change
+4. investigate the newly exposed root `TDGM` long-horizon control drift from the legacy MATLAB payload
+5. run the opt-in slow `GOSM` `imag` conductance-loss branch and bundle when root `gosm` hydraulics or stomatal logic changes

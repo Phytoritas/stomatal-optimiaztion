@@ -61,12 +61,17 @@ class WeibullVC:
     c: float
 
     def __call__(self, p: NDArray[np.floating] | float) -> NDArray[np.floating] | float:
-        p_arr = np.asarray(p)
+        if np.isscalar(p):
+            p_scalar = float(p)
+            if p_scalar > 0.0:
+                p_scalar = 0.0
+            with np.errstate(over="ignore", invalid="ignore"):
+                return float(np.exp(-(-p_scalar / self.b) ** self.c))
+
+        p_arr = np.asarray(p, dtype=float)
         p_arr = np.minimum(p_arr, 0.0)
         with np.errstate(over="ignore", invalid="ignore"):
             out = np.exp(-(-p_arr / self.b) ** self.c)
-        if np.isscalar(p):
-            return float(out)
         return out
 
 

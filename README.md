@@ -19,15 +19,13 @@
 ```bash
 poetry install
 poetry run python -m stomatal_optimiaztion.domains.thorp --max-steps 60
-poetry run python scripts/render_thorp_example_figures.py --legacy-example-dir "../00. Stomatal Optimization/THORP/example/THORP_code_forcing_outputs_plotting"
-poetry run python scripts/render_gosm_control_example.py --output-dir out/gosm/control_example
-poetry run python scripts/render_gosm_sensitivity_figures.py --legacy-example-dir "../00. Stomatal Optimization/GOSM/example"
-poetry run python scripts/render_gosm_manuscript_panels.py --output-dir out/gosm/manuscript_panels
-poetry run python scripts/render_tdgm_example_figures.py --output-dir out/tdgm/example_figures
 poetry run python scripts/render_root_rerun_parity_figures.py --output-dir out/rerun_parity
+poetry run python scripts/render_root_rerun_parity_figures.py --output-dir out/rerun_parity --fast-smoke
 poetry run pytest
 poetry run ruff check .
 ```
+
+`THORP` and `TDGM` full-series control rerenders are long-running. On the current workstation, the canonical full rerender completed in about 52 minutes for `THORP` and 56 minutes for `TDGM`.
 
 ## Current status
 - Gates A through C are satisfied for the first bounded migration slice.
@@ -126,20 +124,23 @@ poetry run ruff check .
 - MATLAB source parity audit is recorded as slice 093 and reopens only the bounded gaps that remain against the original THORP, GOSM, and TDGM `.m` source.
 - Root GOSM steady-state inversion helper is migrated as slice 094.
 - Root TDGM initial mean-allocation helper is migrated as slice 095.
-- Legacy example and figure parity audit is recorded as slice 096 and reopens bounded workflow-reproduction gaps for root `GOSM`, `THORP`, and `TDGM`.
-- Root GOSM control example figure workflow is migrated as slice 097.
-- Root GOSM sensitivity and manuscript figure workflows are migrated as slice 098.
-- Root THORP main-text example figure workflows are migrated as slice 099.
-- Root TDGM supplementary offline and THORP-G example figure workflows are migrated as slice 100.
+- Legacy example and figure parity audit is recorded as slice 096, and the old legacy-only plotting wave is later pruned from the live runtime surface in slice 107.
 - Root THORP fast Python rerun parity is locked against `THORP_data_0.6RH.mat` in slice 101.
 - Root GOSM legacy rerun helpers and fast MATLAB-output parity tests are restored in slice 102.
 - Root TDGM `thorp_g` runtime surface and fast MATLAB-output parity tests are restored in slice 103.
 - Root Python rerun parity audit is recorded in slice 104.
 - Root GOSM rerun kernels and helpers are hardened so the parity regressions run warning-free in slice 105.
-- Root THORP, GOSM, and TDGM rerun parity can now be inspected through Plotkit-style comparison `PNG + CSV` bundles under `out/rerun_parity/` in slice 106.
+- Root THORP, GOSM, and TDGM rerun parity can now be inspected through Plotkit-style comparison bundles under `out/rerun_parity/` in slice 106.
+- Slice 107 prunes legacy-only example plotting assets and keeps only `Python rerun vs MATLAB reference` outputs under `out/rerun_parity/`:
+  - `THORP`: full stored-series control rerun
+  - `GOSM`: full response-domain control and sensitivity reruns
+  - `TDGM`: full stored-series control rerun
+  - per bundle outputs: `png`, `*_python.csv`, `*_legacy.csv`, `*_diff.csv`
+- Slice 108 vectorizes the THORP/TDGM root-uptake bottleneck so the canonical full-series control rerenders finish in practical time, regenerates the live Plotkit comparison bundles, and records that root `TDGM` still shows long-horizon full-series drift against the legacy MATLAB control payload.
 
 ## Next validation
-- Keep `pytest`, `ruff`, the fast root rerun parity tests, and the Plotkit example renderers green while the architecture remains in monitor mode.
+- Keep `pytest`, `ruff`, and the root rerun parity renderers green while the architecture remains in monitor mode.
 - Keep the fast root `GOSM` rerun tests warning-free and run the opt-in slow `imag` branch whenever root `gosm` hydraulics or stomatal logic changes.
 - Run the opt-in slow `GOSM` `imag` conductance-loss parity branch when root `gosm` hydraulics or stomatal logic changes.
-- Re-render `scripts/render_root_rerun_parity_figures.py` whenever root `THORP`, `GOSM`, or `TDGM` rerun kernels or example helpers change.
+- Re-render `scripts/render_root_rerun_parity_figures.py` whenever root `THORP`, `GOSM`, or `TDGM` rerun kernels change.
+- Investigate the remaining root `TDGM` full-series control drift exposed by `out/rerun_parity/tdgm/..._diff.csv`.

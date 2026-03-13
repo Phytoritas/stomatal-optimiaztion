@@ -17,55 +17,72 @@ Verify that the migrated root `THORP`, `GOSM`, and `TDGM` packages can be rerun 
 
 Out of scope for this note:
 - pixel-level figure comparison
-- full-horizon reruns for every scenario
+- full-horizon reruns for every historical scenario variant
 - re-running MATLAB itself
 
 ## Findings
 
-1. Root `THORP` rerun parity is now closed for the fast control regression. The current Python runtime reproduces `THORP_data_0.6RH.mat` for the time axis and the first three stored points after `max_steps=60`.
+1. Root `THORP` rerun parity is now closed for:
+   - fast regression coverage at `max_steps=60`
+   - regenerated full stored-series graph/data export for the canonical control case `THORP_data_0.6RH.mat`
+   - full-series control `max_abs_diff` within machine precision (`<= 4.99e-13` across the live `*_diff.csv`)
 2. Root `GOSM` rerun parity is now closed for:
    - `Example_Growth_Opt__control.mat`
    - `Growth_Opt_Stomata__test_sensitivity__RH.mat`
    - `Growth_Opt_Stomata__test_sensitivity__c_a.mat`
    - `Growth_Opt_Stomata__test_sensitivity__P_soil.mat`
    - `Growth_Opt_Stomata__test_sensitivity__P_soil_min__true_k_loss.mat`
+   These are full response-domain comparisons rather than time-series reruns, because the legacy `GOSM` reference payloads are control/sensitivity curves rather than stored temporal traces.
 3. Root `GOSM` reruns are now warning-free for the fast control and sensitivity paths. The rerun regressions promote `RuntimeWarning` to test failures, so the current `hydraulics`, `conductance_temperature`, stomata-model, and example helper branches no longer emit transient NumPy warnings during parity checks.
 4. Root `GOSM` also exposes the legacy `imag` conductance-loss rerun path. That branch remains opt-in behind `GOSM_RUN_SLOW=1` to keep the default validation loop bounded, and it was executed under `warnings-as-errors` to confirm that the slower path still reproduces the legacy MATLAB payload without emitting `RuntimeWarning`.
 5. Root `TDGM` rerun parity required restoring the legacy `tdgm.thorp_g` runtime surface. With that seam restored, the current Python runtime matches ten representative THORP-G MATLAB scenarios for the time axis and the first three stored points after `max_steps=60`.
-6. Root rerun parity is now directly inspectable without reading pytest internals. `scripts/render_root_rerun_parity_figures.py` renders Plotkit-style overlay bundles under `out/rerun_parity/` for:
-   - `THORP` fast control parity
-   - `GOSM` control plus fast sensitivity cases
-   - `TDGM` THORP-G fast scenario set
-7. Within the documented fast-rerun scope, no open root architecture gap remains.
+6. The canonical root `TDGM` control case now also has a regenerated full stored-series graph/data export path, and that full-horizon comparison exposes a residual long-horizon drift:
+   - `assimilation` `max_abs_diff ~= 1.2340`
+   - `transpiration` `max_abs_diff ~= 0.3832`
+   - `height` `max_abs_diff ~= 0.01637`
+   - `diameter` `max_abs_diff ~= 0.0002401`
+   This is now treated as an open bounded architecture gap rather than a closed parity claim.
+7. Root rerun parity is now directly inspectable without reading pytest internals. `scripts/render_root_rerun_parity_figures.py` renders Plotkit-style bundles under `out/rerun_parity/` with:
+   - `THORP` control `png + python/legacy/diff csv`
+   - `GOSM` control plus fast sensitivity `png + python/legacy/diff csv`
+   - `TDGM` canonical control `png + python/legacy/diff csv` by default
+8. The old legacy-only example plotting scripts/specs/tests have been pruned from the live repository surface so that `out/rerun_parity/` is the only supported graph inspection entrypoint for root rerun comparison.
+9. Within the documented rerun-comparison scope, root `THORP` and root `GOSM` are currently closed, but root `TDGM` reopens one bounded full-series control-drift gap.
 
 ## Validation Executed
 
 - `.\.venv\Scripts\python.exe -m pytest tests/test_thorp_rerun_parity.py tests/test_gosm_rerun_control.py tests/test_gosm_rerun_sensitivity_environmental_conditions.py tests/test_gosm_rerun_sensitivity_p_soil_min.py tests/test_tdgm_thorp_g_rerun_parity.py`
 - result: `16 passed, 1 skipped`
 - the skipped test is the opt-in slow `GOSM` `imag` conductance-loss rerun branch
+- `.\.venv\Scripts\python.exe -m pytest tests/test_root_rerun_parity_figures.py`
+- result: root rerun graph/data bundle contract passes under fast smoke mode
 - `.\.venv\Scripts\python.exe -m pytest tests/test_gosm_rerun_control.py tests/test_gosm_rerun_sensitivity_environmental_conditions.py tests/test_gosm_rerun_sensitivity_p_soil_min.py -W error::RuntimeWarning`
 - result: `5 passed, 1 skipped`
 - `powershell -Command "$env:GOSM_RUN_SLOW='1'; .\.venv\Scripts\python.exe -m pytest tests/test_gosm_rerun_sensitivity_p_soil_min.py -k imag"`
 - result: `1 passed, 1 deselected`
 - `powershell -Command "$env:GOSM_RUN_SLOW='1'; .\.venv\Scripts\python.exe -m pytest tests/test_gosm_rerun_sensitivity_p_soil_min.py -k imag -W error::RuntimeWarning"`
 - result: `1 passed, 1 deselected`
-- `.\.venv\Scripts\python.exe scripts\render_root_rerun_parity_figures.py --output-dir out/rerun_parity`
-- result: `THORP`, `GOSM`, and `TDGM` comparison bundles written under `out/rerun_parity/` with only the comparison PNG overlays and paired CSV data exports
+- `.\.venv\Scripts\python.exe scripts\render_root_rerun_parity_figures.py --output-dir out/rerun_parity --domains gosm`
+- result: full root `GOSM` rerun bundles regenerated under `out/rerun_parity/`
+- `.\.venv\Scripts\python.exe scripts\render_root_rerun_parity_figures.py --output-dir out/rerun_parity --domains thorp`
+- result: canonical root `THORP` full-series control rerun bundle regenerated under `out/rerun_parity/`
+- `.\.venv\Scripts\python.exe scripts\render_root_rerun_parity_figures.py --output-dir out/rerun_parity --domains tdgm`
+- result: canonical root `TDGM` full-series control rerun bundle regenerated under `out/rerun_parity/`
 - `.\.venv\Scripts\python.exe -m pytest`
-- result: `432 passed, 1 skipped`
+- result: `414 passed, 1 skipped`
 - `.\.venv\Scripts\ruff.exe check .`
 - result: `passed`
 
 ## Result
 
-- root `THORP`: direct Python rerun vs legacy MATLAB output comparison available and passing
+- root `THORP`: direct Python rerun vs legacy MATLAB output comparison available and passing, with regenerated full stored-series control exports matching the legacy payload to machine precision
 - root `GOSM`: direct Python rerun vs legacy MATLAB output comparison available and passing for the default fast control and sensitivity set, warning-free under `warnings-as-errors`, with the slower `imag` conductance-loss branch manually verified the same way
-- root `TDGM`: direct Python rerun vs legacy MATLAB output comparison available and passing for the fast THORP-G regression set
-- root rerun parity graph bundles: reproducible Plotkit-style overlays available under `out/rerun_parity/`
+- root `TDGM`: direct Python rerun vs legacy MATLAB output comparison available and passing for the fast THORP-G regression set, but the regenerated full stored-series control bundle reveals a remaining long-horizon control-drift gap
+- root rerun parity graph bundles: reproducible Plotkit-style rerun-only overlays available under `out/rerun_parity/`
 
 ## Next Actions
 
 1. keep the rerun parity tests green whenever root hydraulic or growth kernels change
 2. rerun the opt-in slow `GOSM` `imag` conductance-loss branch when touching root `gosm` hydraulics or stomatal-model logic
-3. rerender `scripts/render_root_rerun_parity_figures.py` whenever root rerun kernels or example helpers change
-4. leave the architecture in monitor mode until a new bounded rerun or workflow gap appears
+3. rerender `scripts/render_root_rerun_parity_figures.py` whenever root rerun kernels change
+4. investigate the root `TDGM` full-series control drift before declaring that domain fully parity-complete over the long horizon

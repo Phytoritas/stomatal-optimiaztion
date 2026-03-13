@@ -466,7 +466,7 @@ Slice 069:
 
 Slice 070:
 - source: migrated THORP, TOMATO `tTHORP`, and `load_cell` utility-like seams
-- target: `docs/architecture/system/second-domain-utility-comparison-note.md`
+- target: historical utility-pressure note later retired when the legacy-only example plotting wave was pruned in slice 107
 - scope: bounded architecture decision note comparing utility pressure across domains and deciding whether `shared/` should stay blocked
 - excluded: new shared code extraction and fresh domain refactors
 

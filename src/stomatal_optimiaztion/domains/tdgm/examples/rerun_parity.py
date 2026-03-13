@@ -38,6 +38,7 @@ TDGM_RERUN_CASES: tuple[tuple[str, float, float, float], ...] = (
     ("THORP_data_Control_Turgor_Gamma_plus_0.05MPa.mat", 1.0, 1.0, 0.05),
     ("THORP_data_Control_Turgor_Gamma_plus_0.1MPa.mat", 1.0, 1.0, 0.1),
 )
+DEFAULT_TDGM_FULL_SERIES_CASES: tuple[str, ...] = ("THORP_data_Control_Turgor.mat",)
 
 _METRICS: dict[str, dict[str, Any]] = {
     "height": {"legacy_key": "H_stor", "factor": 1.0},
@@ -89,6 +90,23 @@ def _y_limits(values: np.ndarray, *, padding_fraction: float) -> tuple[float, fl
     return y_min - pad, y_max + pad
 
 
+def _add_diff_columns(diff_frame: pd.DataFrame) -> pd.DataFrame:
+    legacy_value = diff_frame["legacy_value"].to_numpy(dtype=float)
+    python_value = diff_frame["python_value"].to_numpy(dtype=float)
+    same_inf = (
+        np.isinf(legacy_value)
+        & np.isinf(python_value)
+        & (np.signbit(legacy_value) == np.signbit(python_value))
+    )
+    same_nan = np.isnan(legacy_value) & np.isnan(python_value)
+    with np.errstate(invalid="ignore"):
+        signed_diff = python_value - legacy_value
+    signed_diff[same_inf | same_nan] = 0.0
+    diff_frame["signed_diff"] = signed_diff
+    diff_frame["abs_diff"] = np.abs(signed_diff)
+    return diff_frame
+
+
 def _resolve_case_params(mat_name: str) -> tuple[float, float, float]:
     for case_name, rh_scale, precip_scale, gamma_shift in TDGM_RERUN_CASES:
         if case_name == mat_name:
@@ -96,43 +114,53 @@ def _resolve_case_params(mat_name: str) -> tuple[float, float, float]:
     raise KeyError(f"Unknown TDGM rerun parity case: {mat_name}")
 
 
-def build_case_rerun_parity_frame(
+def _build_series_frame(*, mat_dict: dict[str, Any], source: str) -> pd.DataFrame:
+    time_day = _as_1d(mat_dict["t_stor"]) / (24.0 * 3600.0)
+    records: list[dict[str, Any]] = []
+    for panel_id, metric in _METRICS.items():
+        value_vec = metric["factor"] * _as_1d(mat_dict[metric["legacy_key"]])[: time_day.size]
+        for x_value, y_value in zip(time_day, value_vec, strict=True):
+            records.append(
+                {
+                    "panel_id": panel_id,
+                    "source": source,
+                    "time_day": float(x_value),
+                    "value": float(y_value),
+                }
+            )
+    return pd.DataFrame.from_records(records)
+
+
+def build_case_rerun_parity_tables(
     *,
     legacy_mat_path: Path,
-    max_steps: int = 60,
-) -> pd.DataFrame:
+    max_steps: int | None = None,
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     legacy_mat_path = legacy_mat_path.resolve()
     legacy = load_mat(legacy_mat_path)
     rh_scale, precip_scale, gamma_shift = _resolve_case_params(legacy_mat_path.name)
     params0 = default_params(
-        forcing_repeat_q=1,
         forcing_rh_scale=rh_scale,
         forcing_precip_scale=precip_scale,
     )
     params = replace(params0, gamma_turgor_shift=float(gamma_shift))
     python_out = run(params=params, max_steps=max_steps).as_mat_dict()
 
-    records: list[dict[str, Any]] = []
-    for panel_id, metric in _METRICS.items():
-        legacy_time = _as_1d(legacy["t_stor"]) / (24.0 * 3600.0)
-        python_time = _as_1d(python_out["t_stor"]) / (24.0 * 3600.0)
-        legacy_values = metric["factor"] * _as_1d(legacy[metric["legacy_key"]])[: legacy_time.size]
-        python_values = metric["factor"] * _as_1d(python_out[metric["legacy_key"]])[: python_time.size]
-
-        for source, time_vec, value_vec in (
-            ("legacy", legacy_time, legacy_values),
-            ("python", python_time, python_values),
-        ):
-            for x_value, y_value in zip(time_vec, value_vec, strict=True):
-                records.append(
-                    {
-                        "panel_id": panel_id,
-                        "source": source,
-                        "time_day": float(x_value),
-                        "value": float(y_value),
-                    }
-                )
-    return pd.DataFrame.from_records(records)
+    legacy_frame = _build_series_frame(mat_dict=legacy, source="legacy")
+    python_frame = _build_series_frame(mat_dict=python_out, source="python")
+    diff_frame = (
+        legacy_frame.drop(columns="source")
+        .rename(columns={"value": "legacy_value"})
+        .merge(
+            python_frame.drop(columns="source").rename(columns={"value": "python_value"}),
+            on=["panel_id", "time_day"],
+            how="outer",
+            validate="one_to_one",
+        )
+        .sort_values(["panel_id", "time_day"])
+        .reset_index(drop=True)
+    )
+    return legacy_frame, python_frame, _add_diff_columns(diff_frame)
 
 
 def render_case_rerun_parity_bundle(
@@ -140,7 +168,7 @@ def render_case_rerun_parity_bundle(
     legacy_mat_path: Path,
     output_dir: Path | None = None,
     spec_path: Path | None = None,
-    max_steps: int = 60,
+    max_steps: int | None = None,
 ) -> FigureBundleArtifacts:
     legacy_mat_path = legacy_mat_path.resolve()
     case_id = legacy_mat_path.stem.lower()
@@ -151,31 +179,21 @@ def render_case_rerun_parity_bundle(
     spec = load_yaml(spec_path)
     tokens_path = (spec_path.parent / spec["theme"]["tokens"]).resolve()
     tokens = load_yaml(tokens_path)
-    frame = build_case_rerun_parity_frame(legacy_mat_path=legacy_mat_path, max_steps=max_steps)
+    legacy_frame, python_frame, diff_frame = build_case_rerun_parity_tables(
+        legacy_mat_path=legacy_mat_path,
+        max_steps=max_steps,
+    )
+    frame = pd.concat([legacy_frame, python_frame], ignore_index=True)
     figure_id = f"{spec['meta']['id']}_{case_id}"
     file_paths = resolve_figure_paths(output_dir, figure_id)
+    python_csv_path = output_dir / f"{figure_id}_python.csv"
+    legacy_csv_path = output_dir / f"{figure_id}_legacy.csv"
+    diff_csv_path = output_dir / f"{figure_id}_diff.csv"
 
-    diff_summary: dict[str, dict[str, Any]] = {}
-    resolved_title = f"{spec['meta']['title']} ({_case_label(legacy_mat_path.name)})"
-    resolved_y_limits: dict[str, tuple[float, float]] = {}
-
-    for panel_id in spec["panel_order"]:
-        panel_frame = frame[frame["panel_id"] == panel_id]
-        pivot = (
-            panel_frame.pivot_table(index="time_day", columns="source", values="value")
-            .reset_index()
-            .sort_values("time_day")
-        )
-        diff_summary[panel_id] = {
-            "max_abs_diff": float(np.nanmax(np.abs(pivot["python"] - pivot["legacy"]))),
-        }
-        resolved_y_limits[panel_id] = _y_limits(
-            panel_frame["value"].to_numpy(dtype=float),
-            padding_fraction=float(spec["panels"][panel_id].get("y_padding_fraction", 0.08)),
-        )
-
-    frame.to_csv(file_paths["data_csv"], index=False)
-    for extra_key in ("spec_copy", "resolved_spec", "tokens_copy", "metadata", "pdf"):
+    legacy_frame.to_csv(legacy_csv_path, index=False)
+    python_frame.to_csv(python_csv_path, index=False)
+    diff_frame.to_csv(diff_csv_path, index=False)
+    for extra_key in ("data_csv", "spec_copy", "resolved_spec", "tokens_copy", "metadata", "pdf"):
         file_paths[extra_key].unlink(missing_ok=True)
 
     width_mm = float(spec["figure"]["width_mm"])
@@ -189,7 +207,14 @@ def render_case_rerun_parity_bundle(
         facecolor=tokens["figure"]["background"],
         constrained_layout=False,
     )
-    fig.subplots_adjust(left=0.10, right=0.84, bottom=0.12, top=0.90, hspace=float(spec["layout"]["hspace"]), wspace=float(spec["layout"]["wspace"]))
+    fig.subplots_adjust(
+        left=0.10,
+        right=0.84,
+        bottom=0.12,
+        top=0.90,
+        hspace=float(spec["layout"]["hspace"]),
+        wspace=float(spec["layout"]["wspace"]),
+    )
 
     handles: dict[str, Any] = {}
     fonts = tokens["fonts"]
@@ -202,7 +227,12 @@ def render_case_rerun_parity_bundle(
         ax.set_ylabel(panel_spec["y_label"], fontsize=fonts["axis_label_size_pt"])
         ax.set_yscale(panel_spec["scale"])
         ax.set_xlim(float(panel_frame["time_day"].min()) - 0.5, float(panel_frame["time_day"].max()) + 0.5)
-        ax.set_ylim(resolved_y_limits[panel_id])
+        ax.set_ylim(
+            _y_limits(
+                panel_frame["value"].to_numpy(dtype=float),
+                padding_fraction=float(panel_spec.get("y_padding_fraction", 0.08)),
+            )
+        )
 
         for source in ("legacy", "python"):
             source_spec = spec["styling"]["sources"][source]
@@ -229,14 +259,29 @@ def render_case_rerun_parity_bundle(
         frameon=tokens["legend"]["frameon"],
         fontsize=fonts["legend_size_pt"],
     )
-    fig.text(0.43, 0.965, resolved_title, ha="center", va="center", fontsize=fonts["title_size_pt"] + 2, fontweight="bold")
+    fig.text(
+        0.43,
+        0.965,
+        f"{spec['meta']['title']} ({_case_label(legacy_mat_path.name)})",
+        ha="center",
+        va="center",
+        fontsize=fonts["title_size_pt"] + 2,
+        fontweight="bold",
+    )
 
-    fig.savefig(file_paths["png"], dpi=dpi, transparent=spec["export"]["transparent"], facecolor=tokens["figure"]["background"])
+    fig.savefig(
+        file_paths["png"],
+        dpi=dpi,
+        transparent=spec["export"]["transparent"],
+        facecolor=tokens["figure"]["background"],
+    )
     plt.close(fig)
     return FigureBundleArtifacts(
         output_dir=output_dir,
-        data_csv_path=file_paths["data_csv"],
         png_path=file_paths["png"],
+        python_csv_path=python_csv_path,
+        legacy_csv_path=legacy_csv_path,
+        diff_csv_path=diff_csv_path,
     )
 
 
@@ -244,16 +289,18 @@ def render_rerun_parity_suite(
     *,
     output_dir: Path | None = None,
     case_names: list[str] | None = None,
+    max_steps: int | None = None,
 ) -> TDGMRerunParitySuiteArtifacts:
     output_dir = (output_dir or DEFAULT_RERUN_PARITY_OUTPUT_DIR).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    selected_names = case_names or [case_name for case_name, *_ in TDGM_RERUN_CASES]
+    selected_names = case_names or list(DEFAULT_TDGM_FULL_SERIES_CASES)
     cases: dict[str, FigureBundleArtifacts] = {}
     for case_name in selected_names:
         legacy_mat_path = DEFAULT_LEGACY_TDGM_THORP_G_DIR / case_name
         cases[Path(case_name).stem.lower()] = render_case_rerun_parity_bundle(
             legacy_mat_path=legacy_mat_path,
             output_dir=output_dir / Path(case_name).stem.lower(),
+            max_steps=max_steps,
         )
     return TDGMRerunParitySuiteArtifacts(cases=cases)
