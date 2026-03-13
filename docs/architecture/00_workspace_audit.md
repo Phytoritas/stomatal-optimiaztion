@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 041
-- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 041 approved for TOMATO
+- Gate C. Validation plan ready through slice 042
+- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 042 approved for TOMATO
 
 ## Migrated THORP Slices
 
@@ -293,3 +293,9 @@ Slice 041:
 - target: `scripts/plot_allocation_compare_png.py` and `tests/test_tomato_tthorp_plot_allocation_compare_png_script.py`
 - scope: bounded TOMATO repo-level allocation-comparison plotting surface covering CSV alignment, allocation-column reshaping, overlap filtering, subsampling, and optional matplotlib dependency behavior
 - excluded: `tGOSM`, `tTDGM`, shared plotting packages, and broader non-TOMATO reporting entrypoints
+
+Slice 042:
+- source: `TOMATO/tGOSM/src/tgosm/contracts.py` and `TOMATO/tGOSM/tests/{test_tgosm_contracts.py,test_tgosm_import.py}`
+- target: `src/stomatal_optimiaztion/domains/tomato/tgosm/`, root TOMATO exports, and `tests/test_tomato_tgosm_contracts.py`
+- scope: bounded TOMATO `tGOSM` contract surface covering optimization request/result dataclasses, nonnegative clamping, and package import identity
+- excluded: `src/tgosm/interface.py`, optimizer implementation details, `tTDGM`, and broader non-TOMATO entrypoints

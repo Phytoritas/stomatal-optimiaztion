@@ -372,8 +372,16 @@ The forty-first slice opens the next bounded TOMATO seam:
 - keep `matplotlib` as an optional plotting dependency instead of widening the core package runtime
 - leave `TOMATO/tGOSM/src/tgosm/contracts.py` blocked as the next seam
 
+## Slice 042: TOMATO tGOSM Contracts
+
+The forty-second slice opens the next bounded TOMATO seam:
+- move `TOMATO/tGOSM/src/tgosm/contracts.py` into a new staged `domains/tomato/tgosm` package
+- preserve optimization request/result dataclasses, nonnegative clamping, and the package import identity `MODEL_NAME == "tGOSM"`
+- keep the slice contract-first and avoid pulling in `interface.py` or wider optimizer behavior yet
+- leave `TOMATO/tGOSM/src/tgosm/interface.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first seventeen TOMATO bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first eighteen TOMATO bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `TOMATO/tGOSM/src/tgosm/contracts.py`
+3. prepare the next TOMATO source audit for `TOMATO/tGOSM/src/tgosm/interface.py`
