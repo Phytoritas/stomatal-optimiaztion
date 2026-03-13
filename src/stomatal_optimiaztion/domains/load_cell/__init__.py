@@ -13,6 +13,9 @@ from stomatal_optimiaztion.domains.load_cell.events import (
     merge_close_events,
     merge_close_events_with_df,
 )
+from stomatal_optimiaztion.domains.load_cell.fluxes import (
+    compute_fluxes_per_second,
+)
 from stomatal_optimiaztion.domains.load_cell.io import (
     read_load_cell_csv,
     write_multi_resolution_results,
@@ -28,6 +31,7 @@ from stomatal_optimiaztion.domains.load_cell.thresholds import (
 
 __all__ = [
     "auto_detect_step_thresholds",
+    "compute_fluxes_per_second",
     "daily_summary",
     "detect_and_correct_outliers",
     "group_events",
