@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 062 completed and post-load-cell re-audit planning
+- Current phase: slice 063 completed and THORP compatibility planning
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. confirm the legacy `load-cell-data/src/` source wave is closed after migrating `build_preprocess_compare_viewer.py`
-2. run a post-`load-cell-data` workspace audit to identify the next bounded seam across the remaining legacy sources
-3. prepare the next module spec only after the next non-`load-cell-data` seam is explicitly selected
+1. confirm the THORP stable `sim` wrapper surface is closed after migrating `thorp.sim.run`
+2. audit `THORP/src/thorp/equation_registry.py` as the next bounded compatibility seam
+3. prepare the next module spec only after the equation-registry import surface is scoped against the existing traceability helpers

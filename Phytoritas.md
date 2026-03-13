@@ -29,4 +29,5 @@ Current status:
 - Slice 060 migrated: `load-cell-data` incremental preprocess harness seam
 - Slice 061 migrated: `load-cell-data` preprocess-compare local server seam
 - Slice 062 migrated: `load-cell-data` static preprocess-compare viewer seam
-- Next blocked seam: post-`load-cell-data` workspace re-audit to select the next bounded legacy seam
+- Slice 063 migrated: THORP stable `sim` runner seam
+- Next blocked seam: THORP equation-registry seam at `THORP/src/thorp/equation_registry.py`

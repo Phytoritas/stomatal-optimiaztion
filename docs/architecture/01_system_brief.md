@@ -540,8 +540,16 @@ The sixty-second slice closes the remaining bounded `load-cell-data/src` seam:
 - keep the seam viewer-builder-bounded without widening into a new frontend architecture or a second server framework
 - leave post-`load-cell-data` workspace re-audit blocked as the next step
 
+## Slice 063: THORP Stable Sim Runner
+
+The sixty-third slice opens the next bounded THORP compatibility seam:
+- move `THORP/src/thorp/sim/runner.py` and `THORP/src/thorp/sim/__init__.py` into the staged `domains/thorp/sim/` package
+- preserve the stable `thorp.sim.run` wrapper import surface over the already migrated simulation runtime
+- keep the seam wrapper-bounded without widening into THORP numerical kernels or package-wide export redesign
+- leave `THORP/src/thorp/equation_registry.py` blocked as the next seam
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare a post-`load-cell-data` workspace-audit delta to select the next bounded seam
+3. prepare the next THORP compatibility audit for `THORP/src/thorp/equation_registry.py`
