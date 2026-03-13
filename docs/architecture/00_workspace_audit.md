@@ -613,3 +613,9 @@ Slice 094:
 - target: `src/stomatal_optimiaztion/domains/gosm/model/steady_state.py` and `tests/test_gosm_steady_state_inversion.py`
 - scope: bounded root `GOSM` helper seam covering the MATLAB-style `mult_phi` logspace search for a fixed assumed NSC state
 - excluded: `Growth_Opt_Stomata.m` and the figure/sensitivity scripts under `GOSM/example/`
+
+Slice 095:
+- source: `TDGM/example/Supplementary Code __THORP_code_v1.4/FUNCTION_Initial_Mean_Allocation_Fractions.m`
+- target: `src/stomatal_optimiaztion/domains/tdgm/coupling.py` and `tests/test_tdgm_coupling.py`
+- scope: bounded root `TDGM` helper seam covering the supplementary THORP-G allocation-memory initialization helper
+- excluded: `ANALYSIS_*.m`, `PLOT_*.m`, and a full supplementary THORP-G runner

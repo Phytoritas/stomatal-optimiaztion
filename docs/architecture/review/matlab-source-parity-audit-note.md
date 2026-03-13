@@ -66,11 +66,11 @@ No core `THORP` runtime gap was found relative to the original MATLAB source. Re
 | `FUNCTION_Steadystate_NSC_and_CUE.m` | `domains/gosm/model/steady_state.py::steady_state_nsc_and_cue` | covered |
 | `FUNCTION_Stomata_*.m` | `domains/gosm/model/stomata_models.py` | covered |
 
-### Remaining core gap
+### Gap found during audit
 
 | MATLAB source | Current Python surface | Status |
 | --- | --- | --- |
-| `FUNCTION_Solve_mult_phi_given_assumed_NSC.m` | none | missing core steady-state inversion helper |
+| `FUNCTION_Solve_mult_phi_given_assumed_NSC.m` | none at audit time | closed later by slice 094 |
 
 ### Example-only scripts left outside the package surface
 
@@ -99,11 +99,11 @@ The core `GOSM` runtime is almost complete against the original MATLAB source, b
 | `FUNCTION_Turgor_driven_growth_THORP.m` | `domains/tdgm/turgor_growth.py` + `domains/tdgm/thorp_g_postprocess.py` helpers | replaced by decomposed helpers |
 | `FUNCTION_Mean_Allocation_Fractions.m` | `domains/tdgm/coupling.py::allocation_fraction_derivative` and `allocation_fraction_from_history` | replaced by explicit ODE/discrete filter helpers |
 
-### Remaining core gap
+### Gap found during audit
 
 | MATLAB source | Current Python surface | Status |
 | --- | --- | --- |
-| `FUNCTION_Initial_Mean_Allocation_Fractions.m` | none | missing helper for exact THORP-G allocation-memory initialization |
+| `FUNCTION_Initial_Mean_Allocation_Fractions.m` | none at audit time | closed later by slice 095 |
 
 ### Example-only scripts left outside the package surface
 
@@ -118,11 +118,10 @@ The current `TDGM` package covers the model kernels and postprocess bridge, but 
 ## Findings
 
 1. `THORP` core runtime parity is complete; no new bounded code slice is required there.
-2. `GOSM` still lacks `FUNCTION_Solve_mult_phi_given_assumed_NSC.m`, which is a real model helper rather than a plotting script.
-3. `TDGM` still lacks `FUNCTION_Initial_Mean_Allocation_Fractions.m`, a small initialization helper for the supplementary THORP-G allocation-memory path.
+2. `GOSM` initially lacked `FUNCTION_Solve_mult_phi_given_assumed_NSC.m`, which was a real model helper rather than a plotting script; this was closed by slice 094.
+3. `TDGM` initially lacked `FUNCTION_Initial_Mean_Allocation_Fractions.m`, a small initialization helper for the supplementary THORP-G allocation-memory path; this was closed by slice 095.
 
 ## Next Actions
 
-1. restore the missing root `GOSM` steady-state inversion helper as the next bounded slice
-2. restore the missing root `TDGM` initial mean-allocation helper after that
-3. keep the remaining MATLAB plotting and manuscript scripts explicitly out of scope unless full figure/workflow reproduction becomes a project goal
+1. keep the remaining MATLAB plotting and manuscript scripts explicitly out of scope unless full figure/workflow reproduction becomes a project goal
+2. treat the current root `THORP`, `GOSM`, and `TDGM` model-kernel wave as parity-complete

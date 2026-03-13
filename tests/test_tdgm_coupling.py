@@ -73,6 +73,19 @@ def test_allocation_fraction_from_history_constant_signal() -> None:
     np.testing.assert_allclose(u_i_ts, v_i_ts, atol=0.0, rtol=0.0)
 
 
+def test_initial_mean_allocation_fractions_match_matlab_biomass_partitioning() -> None:
+    u_sw_mean, u_l_mean, u_r_h_mean, u_r_v_mean = tdgm.initial_mean_allocation_fractions(
+        c_r_h=np.array([1.0, 3.0]),
+        c_r_v=np.array([2.0, 4.0]),
+    )
+
+    assert np.isclose(u_sw_mean, 0.3)
+    assert np.isclose(u_l_mean, 0.3)
+    np.testing.assert_allclose(u_r_h_mean, np.array([0.04, 0.12]))
+    np.testing.assert_allclose(u_r_v_mean, np.array([0.08, 0.16]))
+    assert np.isclose(u_sw_mean + u_l_mean + np.sum(u_r_h_mean) + np.sum(u_r_v_mean), 1.0)
+
+
 def test_tdgm_coupling_exports_equation_tags() -> None:
     assert implemented_equations(tdgm.tree_volume_from_carbon_pools) == ("Eq.S.3.3",)
     assert implemented_equations(tdgm.allocation_fraction_from_history) == ("Eq.S.3.7",)

@@ -202,6 +202,44 @@ def allocation_fraction_derivative(
     return np.asarray(du_dt, dtype=float)
 
 
+def initial_mean_allocation_fractions(
+    *,
+    c_r_h: np.ndarray | float,
+    c_r_v: np.ndarray | float,
+) -> tuple[float, float, np.ndarray, np.ndarray]:
+    """Initialize THORP-G mean allocation fractions from root biomass pools."""
+
+    c_r_h = np.asarray(c_r_h, dtype=float)
+    c_r_v = np.asarray(c_r_v, dtype=float)
+    if c_r_h.ndim != 1 or c_r_v.ndim != 1:
+        raise ValueError("c_r_h and c_r_v must be 1D arrays")
+
+    total_root = float(np.sum(c_r_h + c_r_v))
+    if total_root <= 0:
+        raise ValueError("Root carbon pools must sum to a positive value")
+    sum_c_r_h = float(np.sum(c_r_h))
+    sum_c_r_v = float(np.sum(c_r_v))
+    if sum_c_r_h <= 0 or sum_c_r_v <= 0:
+        raise ValueError("Horizontal and vertical root pools must both sum to a positive value")
+
+    u_sw_mean = 0.3
+    u_l_mean = 0.3
+    u_r_mean = 0.4
+
+    u_r_h_mean_total = u_r_mean * sum_c_r_h / total_root
+    u_r_v_mean_total = u_r_mean - u_r_h_mean_total
+
+    u_r_h_mean = u_r_h_mean_total * c_r_h / sum_c_r_h
+    u_r_v_mean = u_r_v_mean_total * c_r_v / sum_c_r_v
+
+    return (
+        float(u_sw_mean),
+        float(u_l_mean),
+        np.asarray(u_r_h_mean, dtype=float),
+        np.asarray(u_r_v_mean, dtype=float),
+    )
+
+
 @implements("Eq.S.3.7")
 def allocation_fraction_from_history(
     *,
