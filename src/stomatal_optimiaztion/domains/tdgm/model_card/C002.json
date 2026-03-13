@@ -1,0 +1,1143 @@
+{
+    "doc": {
+        "id": "Potkay et al. - 2022 - Turgor-limited predictions of tree growth, height and metabolic scaling over tree lifespans 1.pdf",
+        "title": "Turgor-limited predictions of tree growth, height, and metabolic scaling over tree lifespans (Supporting Information)",
+        "year": 2022,
+        "doi": null,
+        "page_count": 36
+    },
+    "model_card": {
+        "name": "Phloem transport model (PTM) — Notes S1 (C002)",
+        "aliases": [
+            "PTM",
+            "Phloem transport model"
+        ],
+        "task": [
+            "derive spatial distributions of unloading (growth + maintenance respiration) along the stem",
+            "derive closed-form axial sugar flux j(z̃) from the net source term ΔS"
+        ],
+        "domain": [
+            "plant physiology",
+            "tree carbon allocation",
+            "phloem transport modeling"
+        ],
+        "assumptions": [
+            {
+                "id": "A8",
+                "text": "Given Da Vinci’s rule, pipe model theory, and uniform specific leaf mass and wood density, the sink for new-leaf growth and construction respiration is approximately uniform along z and z̃.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_L242-249",
+                        "char_span": null,
+                        "snippet": "Given Da Vinci’s rule... pipe model theory... assuming a uniform specific leaf mass and wood density, we expect ... leaf growth ... to be approximately spatially uniform..."
+                    }
+                ]
+            },
+            {
+                "id": "A9",
+                "text": "By similar logic (particularly Da Vinci’s rule), the sink for stem wood growth and construction respiration is approximately uniform along z and z̃.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_L250-252",
+                        "char_span": null,
+                        "snippet": "By similar logic, particularly Da Vinci’s rule... define the sink for wood growth and construction respiration as approximately uniform..."
+                    }
+                ]
+            },
+            {
+                "id": "A10",
+                "text": "Stem maintenance respiration per unit length is proportional to phloem area distribution along the stem.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_eqS1.11",
+                        "char_span": null,
+                        "snippet": "S̄_R,S^- ∝ A_p (S.1.11)"
+                    }
+                ]
+            },
+            {
+                "id": "A11",
+                "text": "Allometric power-laws are assumed: stem diameter varies with distance from apex (d_S ∝ z^a) and phloem thickness scales with stem diameter (d_p ∝ d_S^b).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_eqS1.12",
+                        "char_span": null,
+                        "snippet": "d_S ∝ z^a (S.1.12)"
+                    },
+                    {
+                        "page": 20,
+                        "block_id": "p20_eqS1.15",
+                        "char_span": null,
+                        "snippet": "d_p ∝ d_S^b ∝ z^{ab} (S.1.15)"
+                    }
+                ]
+            },
+            {
+                "id": "A12",
+                "text": "Sapwood area conservation across branch order (Da Vinci’s rule) implies total cross-sectional area summed over furcations A_W is uniform with respect to z; therefore N scales as (H/z)^{2a}.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_L266-270",
+                        "char_span": null,
+                        "snippet": "apply Da Vinci’s rule... assume that A_W is uniform with respect to z. Thus, the furcation number, N, scales... (S.1.14)"
+                    }
+                ]
+            },
+            {
+                "id": "A13",
+                "text": "Because generally d_S ≫ d_p, total phloem cross-sectional area summed over furcations can be approximated as A_p ∝ N d_S d_p.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_L274-277",
+                        "char_span": null,
+                        "snippet": "Given that generally d_S ≫ d_p, the total phloem cross-sectional area... A_p, can be estimated as the product of d_S and d_p... A_p ∝ N d_S d_p (S.1.16)"
+                    }
+                ]
+            },
+            {
+                "id": "A14",
+                "text": "Allocation fractions sum to unity (u_L + u_S + u_R = 1). Reproduction is ignored explicitly, but the aboveground allocation term (1 − u_R) can still represent all aboveground allocation when reproduction is included. Belowground symbionts can be included if u_R and R_R are interpreted as total belowground growth and respiration.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_L286-293",
+                        "char_span": null,
+                        "snippet": "u_L + u_S + u_R = 1... ignored reproduction... still holds... not considered symbionts; however, if u_R... and if R_R... then this formulation is still valid."
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "Eq_S1.9",
+                "latex": "\\bar{S}_{G,L}^{-} = \\frac{\\alpha}{H}\\,\\frac{u_L}{1-f_c}\\,G",
+                "variables": [
+                    "\\bar{S}_{G,L}^{-}",
+                    "\\alpha",
+                    "H",
+                    "u_L",
+                    "f_c",
+                    "G"
+                ],
+                "explanation": "Uniform (in z̃) sink term for new-leaf growth and construction respiration.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_eqS1.9",
+                        "char_span": null,
+                        "snippet": "S̄_G,L^- = (α/H) (u_L/(1−f_c)) G (S.1.9)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq_S1.10",
+                "latex": "\\bar{S}_{G,S}^{-} = \\frac{\\alpha}{H}\\,\\frac{u_S}{1-f_c}\\,G",
+                "variables": [
+                    "\\bar{S}_{G,S}^{-}",
+                    "\\alpha",
+                    "H",
+                    "u_S",
+                    "f_c",
+                    "G"
+                ],
+                "explanation": "Uniform (in z̃) sink term for stem wood growth and construction respiration.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_eqS1.10",
+                        "char_span": null,
+                        "snippet": "S̄_G,S^- = (α/H) (u_S/(1−f_c)) G (S.1.10)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq_S1.11",
+                "latex": "\\bar{S}_{R,S}^{-} \\propto A_p",
+                "variables": [
+                    "\\bar{S}_{R,S}^{-}",
+                    "A_p"
+                ],
+                "explanation": "Stem maintenance respiration sink per unit length is proportional to phloem area distribution.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_eqS1.11",
+                        "char_span": null,
+                        "snippet": "S̄_R,S^- ∝ A_p (S.1.11)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq_S1.12",
+                "latex": "d_S \\propto z^{a}",
+                "variables": [
+                    "d_S",
+                    "z",
+                    "a"
+                ],
+                "explanation": "Allometric relationship between stem diameter and distance from stem apex.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_eqS1.12",
+                        "char_span": null,
+                        "snippet": "d_S ∝ z^a (S.1.12)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq_S1.13",
+                "latex": "A_W = \\frac{\\pi}{4}\\,N\\,d_S^2",
+                "variables": [
+                    "A_W",
+                    "N",
+                    "d_S"
+                ],
+                "explanation": "Total cross-sectional area summed over all furcations for circular stems.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_eqS1.13",
+                        "char_span": null,
+                        "snippet": "A_W = (π/4) N d_S^2 (S.1.13)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq_S1.14",
+                "latex": "N = \\left(\\frac{H}{z}\\right)^{2a}",
+                "variables": [
+                    "N",
+                    "H",
+                    "z",
+                    "a"
+                ],
+                "explanation": "Furcation number scaling derived from assuming A_W is uniform with respect to z (Da Vinci’s rule).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_eqS1.14",
+                        "char_span": null,
+                        "snippet": "N = (H/z)^{2a} (S.1.14)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq_S1.15",
+                "latex": "d_p \\propto d_S^{b} \\propto z^{ab}",
+                "variables": [
+                    "d_p",
+                    "d_S",
+                    "b",
+                    "z",
+                    "a"
+                ],
+                "explanation": "Phloem thickness scaling with stem diameter, simplified using d_S ∝ z^a.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_eqS1.15",
+                        "char_span": null,
+                        "snippet": "d_p ∝ d_S^b ∝ z^{ab} (S.1.15)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq_S1.16",
+                "latex": "A_p \\propto N\\,d_S\\,d_p \\propto z^{a(b-1)}",
+                "variables": [
+                    "A_p",
+                    "N",
+                    "d_S",
+                    "d_p",
+                    "z",
+                    "a",
+                    "b"
+                ],
+                "explanation": "Total phloem area scaling as a power-law in z (using N, d_S, d_p scalings).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_eqS1.16",
+                        "char_span": null,
+                        "snippet": "A_p ∝ N d_S d_p ∝ z^{a(b−1)} (S.1.16)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq_S1.17",
+                "latex": "\\alpha R_S = \\int_{0}^{1}\\bar{S}_{R,S}^{-}\\,d\\tilde{z}",
+                "variables": [
+                    "\\alpha",
+                    "R_S",
+                    "\\bar{S}_{R,S}^{-}",
+                    "\\tilde{z}"
+                ],
+                "explanation": "Formal definition connecting total stem respiration to its spatially distributed sink term.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_eqS1.17",
+                        "char_span": null,
+                        "snippet": "α R_S = ∫_0^1 S̄_R,S^- d z̃ (S.1.17)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq_S1.18",
+                "latex": "\\bar{S}_{R,S}^{-} = \\frac{\\alpha}{H}\\,R_S\\,[a(b-1)+1]\\,\\tilde{z}^{a(b-1)}",
+                "variables": [
+                    "\\bar{S}_{R,S}^{-}",
+                    "\\alpha",
+                    "H",
+                    "R_S",
+                    "a",
+                    "b",
+                    "\\tilde{z}"
+                ],
+                "explanation": "Normalized spatial distribution of stem maintenance respiration sink along z̃.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_eqS1.18",
+                        "char_span": null,
+                        "snippet": "S̄_R,S^- = (α/H) R_S [a(b−1)+1] z̃^{a(b−1)} (S.1.18)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq_S1.19",
+                "latex": "\\Delta S = \\frac{\\alpha}{H}\\left\\{\\,L_{\\mathrm{net}}\\,\\sigma\\,\\frac{\\exp(-\\sigma\\tilde{z})}{1-\\exp(-\\sigma)}\\; -\\;\\frac{1-u_R}{1-f_c}\\,G\\; -\\;[a(b-1)+1]R_S\\,\\tilde{z}^{a(b-1)}\\right\\}",
+                "variables": [
+                    "\\Delta S",
+                    "\\alpha",
+                    "H",
+                    "L_{\\mathrm{net}}",
+                    "\\sigma",
+                    "\\tilde{z}",
+                    "u_R",
+                    "f_c",
+                    "G",
+                    "a",
+                    "b",
+                    "R_S"
+                ],
+                "explanation": "Net source term ΔS expressed using the loading profile and the three sink components (leaf+stem growth demand combined via 1−u_R, and stem respiration distribution).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_eqS1.19",
+                        "char_span": null,
+                        "snippet": "ΔS = (α/H){ L_net σ exp(−σ z̃)/(1−exp(−σ)) − (1−u_R)/(1−f_c) G − [a(b−1)+1] R_S z̃^{a(b−1)} } (S.1.19)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq_S1.20",
+                "latex": "\\frac{\\partial j}{\\partial \\tilde{z}} = \\alpha\\left\\{\\,L_{\\mathrm{net}}\\,\\sigma\\,\\frac{\\exp(-\\sigma\\tilde{z})}{1-\\exp(-\\sigma)}\\; -\\;\\frac{1-u_R}{1-f_c}\\,G\\; -\\;[a(b-1)+1]R_S\\,\\tilde{z}^{a(b-1)}\\right\\}",
+                "variables": [
+                    "j",
+                    "\\tilde{z}",
+                    "\\alpha",
+                    "L_{\\mathrm{net}}",
+                    "\\sigma",
+                    "u_R",
+                    "f_c",
+                    "G",
+                    "a",
+                    "b",
+                    "R_S"
+                ],
+                "explanation": "Axial flux gradient in z̃ after substituting ΔS into the transformed mass balance (Eq. S.1.3).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_eqS1.20",
+                        "char_span": null,
+                        "snippet": "∂j/∂z̃ = α{ ... } (S.1.20)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq_S1.21",
+                "latex": "j = \\alpha\\left\\{\\,L_{\\mathrm{net}}\\,\\frac{\\exp(-\\sigma)-\\exp(-\\sigma\\tilde{z})}{1-\\exp(-\\sigma)}\\; +\\;\\frac{G}{1-f_c}\\left[1-(1-u_R)\\tilde{z}\\right]\\; +\\;R_R\\; +\\;R_S\\left[1-\\tilde{z}^{a(b-1)+1}\\right]\\right\\}",
+                "variables": [
+                    "j",
+                    "\\alpha",
+                    "L_{\\mathrm{net}}",
+                    "\\sigma",
+                    "\\tilde{z}",
+                    "G",
+                    "f_c",
+                    "u_R",
+                    "R_R",
+                    "R_S",
+                    "a",
+                    "b"
+                ],
+                "explanation": "Closed-form axial sugar flux j(z̃) obtained by integrating Eq. S.1.20 with the root-collar boundary condition at z̃=1.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_eqS1.21",
+                        "char_span": null,
+                        "snippet": "j = α{ L_net( exp(−σ)−exp(−σ z̃) )/(1−exp(−σ)) + (G/(1−f_c))[1−(1−u_R)z̃] + R_R + R_S[1− z̃^{a(b−1)+1}] } (S.1.21)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "u_L",
+                "name": "leaf growth allocation fraction",
+                "unit": null,
+                "definition": "Fraction of new growth allocated to leaves.",
+                "range": [
+                    0.0,
+                    1.0
+                ],
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_L286-288",
+                        "char_span": null,
+                        "snippet": "u_L + u_S + u_R = 1, where u_L, u_S, and u_R are the fractions of new growth allocated to leaves, stems, and roots..."
+                    }
+                ]
+            },
+            {
+                "symbol": "u_S",
+                "name": "stem growth allocation fraction",
+                "unit": null,
+                "definition": "Fraction of new growth allocated to stems.",
+                "range": [
+                    0.0,
+                    1.0
+                ],
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_L286-288",
+                        "char_span": null,
+                        "snippet": "u_L + u_S + u_R = 1..."
+                    }
+                ]
+            },
+            {
+                "symbol": "d_S",
+                "name": "stem diameter",
+                "unit": "m",
+                "definition": "Stem diameter (used for allometric scaling along z).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "dS"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_L258-262",
+                        "char_span": null,
+                        "snippet": "stem diameter, d_S [m]... d_S ∝ z^a (S.1.12)"
+                    }
+                ]
+            },
+            {
+                "symbol": "d_p",
+                "name": "phloem thickness",
+                "unit": "m",
+                "definition": "Phloem thickness, assumed to scale with stem diameter via exponent b.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "dp"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_L272-273",
+                        "char_span": null,
+                        "snippet": "phloem thickness, d_p [m]..."
+                    }
+                ]
+            },
+            {
+                "symbol": "A_p",
+                "name": "total phloem cross-sectional area (summed over furcations)",
+                "unit": "m^2",
+                "definition": "Total phloem area summed over all furcations at a given z; used to distribute stem respiration sink.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Ap"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_L255-257",
+                        "char_span": null,
+                        "snippet": "distribution of phloem area, A_p [m^2]."
+                    }
+                ]
+            },
+            {
+                "symbol": "A_W",
+                "name": "total cross-sectional area (summed over furcations)",
+                "unit": "m^2",
+                "definition": "Total cross-sectional area summed over all furcations for circular stems.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "AW"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_L262-265",
+                        "char_span": null,
+                        "snippet": "cross-sectional area summed over all furcations, A_W [m^2]... A_W = (π/4) N d_S^2 (S.1.13)"
+                    }
+                ]
+            },
+            {
+                "symbol": "N",
+                "name": "furcation number",
+                "unit": null,
+                "definition": "Number of branches at a distance z from the stem apex (dimensionless).",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_L265-266",
+                        "char_span": null,
+                        "snippet": "N is the dimensionless furcation number (i.e. the number of branches at a distance z from the stem apex)."
+                    }
+                ]
+            },
+            {
+                "symbol": "a",
+                "name": "stem taper exponent",
+                "unit": null,
+                "definition": "Dimensionless exponent relating stem diameter to distance from apex (d_S ∝ z^a).",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_L261-262",
+                        "char_span": null,
+                        "snippet": "where a is a dimensionless exponent."
+                    }
+                ]
+            },
+            {
+                "symbol": "b",
+                "name": "phloem-thickness exponent",
+                "unit": null,
+                "definition": "Dimensionless exponent relating phloem thickness to stem diameter (d_p ∝ d_S^b).",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_eqS1.15",
+                        "char_span": null,
+                        "snippet": "d_p ∝ d_S^b (S.1.15)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\bar{S}_{G,L}^{-}",
+                "name": "distributed leaf-growth sink term",
+                "unit": "mol sucrose m^-1 s^-1",
+                "definition": "Spatially distributed sink per unit stem length for leaf growth and construction respiration (approximated uniform in z̃).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "S̄_G,L^-"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_eqS1.9",
+                        "char_span": null,
+                        "snippet": "S̄_G,L^- = ... (S.1.9)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\bar{S}_{G,S}^{-}",
+                "name": "distributed stem-growth sink term",
+                "unit": "mol sucrose m^-1 s^-1",
+                "definition": "Spatially distributed sink per unit stem length for stem growth and construction respiration (approximated uniform in z̃).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "S̄_G,S^-"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_eqS1.10",
+                        "char_span": null,
+                        "snippet": "S̄_G,S^- = ... (S.1.10)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\bar{S}_{R,S}^{-}",
+                "name": "distributed stem-respiration sink term",
+                "unit": "mol sucrose m^-1 s^-1",
+                "definition": "Spatially distributed sink per unit stem length for stem maintenance respiration, shaped by phloem area distribution and normalized to total R_S.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "S̄_R,S^-"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_eqS1.18",
+                        "char_span": null,
+                        "snippet": "S̄_R,S^- = (α/H) R_S [a(b−1)+1] z̃^{a(b−1)} (S.1.18)"
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "name": "a",
+                "unit": null,
+                "default": null,
+                "estimation": "Allometric exponent (stem diameter vs z); value specified elsewhere (e.g., Table 1 / Table S1).",
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_eqS1.12",
+                        "char_span": null,
+                        "snippet": "d_S ∝ z^a (S.1.12)"
+                    }
+                ]
+            },
+            {
+                "name": "b",
+                "unit": null,
+                "default": null,
+                "estimation": "Allometric exponent (phloem thickness vs stem diameter); value specified elsewhere.",
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_eqS1.15",
+                        "char_span": null,
+                        "snippet": "d_p ∝ d_S^b (S.1.15)"
+                    }
+                ]
+            }
+        ],
+        "algorithm": {
+            "inputs": [
+                "H",
+                "G",
+                "f_c",
+                "alpha",
+                "L_net",
+                "sigma",
+                "u_L",
+                "u_S",
+                "u_R",
+                "R_S",
+                "R_R",
+                "a",
+                "b",
+                "\\tilde{z}"
+            ],
+            "outputs": [
+                "\\bar{S}_{G,L}^{-}(\\tilde{z})",
+                "\\bar{S}_{G,S}^{-}(\\tilde{z})",
+                "\\bar{S}_{R,S}^{-}(\\tilde{z})",
+                "\\Delta S(\\tilde{z})",
+                "j(\\tilde{z})"
+            ],
+            "steps": [
+                "Compute uniform distributed sinks for growth/construction respiration: use Eq. S.1.9 for leaf sink and Eq. S.1.10 for stem sink.",
+                "Compute phloem-area scaling along the stem via allometries: d_S ∝ z^a (Eq. S.1.12), N = (H/z)^{2a} (Eq. S.1.14), d_p ∝ d_S^b (Eq. S.1.15), giving A_p ∝ z^{a(b−1)} (Eq. S.1.16).",
+                "Normalize stem maintenance respiration distribution so that its integral equals α R_S (Eq. S.1.17), yielding Eq. S.1.18 for S̄_R,S^-(z̃).",
+                "Combine loading and sink terms to form ΔS(z̃) (Eq. S.1.19). Note that u_L + u_S + u_R = 1 implies total aboveground allocation fraction is (1−u_R).",
+                "Compute axial flux gradient ∂j/∂z̃ from Eq. S.1.20 and integrate using the root-collar boundary condition j(z̃=1)=α[R_R + u_R·G/(1−f_c)] to obtain j(z̃) (Eq. S.1.21)."
+            ],
+            "pseudocode": null,
+            "evidence": [
+                {
+                    "page": 20,
+                    "block_id": "p20_L296-301",
+                    "char_span": null,
+                    "snippet": "With a formal definition for ΔS... integrate... boundary condition... j(z̃=1)=α[ R_R + u_R·G/(1−f_c) ]..."
+                }
+            ]
+        },
+        "limitations": [
+            {
+                "id": "L3",
+                "text": "Uniform (in z̃) approximations for leaf-growth and stem-growth sink distributions rely on structural and density assumptions (Da Vinci’s rule, pipe model theory, uniform specific leaf mass and wood density).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_L242-249",
+                        "char_span": null,
+                        "snippet": "Given Da Vinci’s rule... pipe model theory... uniform... we expect ... approximately spatially uniform..."
+                    }
+                ]
+            },
+            {
+                "id": "L4",
+                "text": "Stem respiration distribution depends on assumed allometric scalings (d_S ∝ z^a, d_p ∝ d_S^b) and the approximation A_p ∝ N d_S d_p (requiring d_S ≫ d_p).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_L274-276",
+                        "char_span": null,
+                        "snippet": "Given that generally d_S ≫ d_p... A_p can be estimated as the product of d_S and d_p..."
+                    }
+                ]
+            }
+        ],
+        "implementation": {
+            "model_scope": "PTM subcomponent: sink-term spatial distributions (leaf/stem growth + stem respiration) and integrated axial sugar flux j(z̃) (Notes S1, pages 19–20).",
+            "state_variables": [],
+            "exogenous_inputs": [
+                "H",
+                "L_net",
+                "sigma",
+                "G",
+                "f_c",
+                "R_S",
+                "R_R"
+            ],
+            "control_inputs": [
+                "u_L",
+                "u_S",
+                "u_R"
+            ],
+            "outputs_observables": [
+                "\\Delta S(\\tilde{z})",
+                "j(\\tilde{z})"
+            ],
+            "io_contract": {
+                "input_schema": null,
+                "output_schema": null,
+                "data_types": [],
+                "evidence": []
+            },
+            "dependency_graph": {
+                "nodes": [
+                    "u_L",
+                    "u_S",
+                    "u_R",
+                    "G",
+                    "f_c",
+                    "alpha",
+                    "H",
+                    "R_S",
+                    "R_R",
+                    "sigma",
+                    "L_net",
+                    "a",
+                    "b",
+                    "z",
+                    "z_tilde",
+                    "d_S(z)",
+                    "N(z)",
+                    "d_p(z)",
+                    "A_p(z)",
+                    "Sbar_G_L_minus(z_tilde)",
+                    "Sbar_G_S_minus(z_tilde)",
+                    "Sbar_R_S_minus(z_tilde)",
+                    "DeltaS(z_tilde)",
+                    "j(z_tilde)"
+                ],
+                "edges": [
+                    {
+                        "from": "u_L",
+                        "to": "Sbar_G_L_minus(z_tilde)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "u_S",
+                        "to": "Sbar_G_S_minus(z_tilde)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "G",
+                        "to": "Sbar_G_L_minus(z_tilde)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "G",
+                        "to": "Sbar_G_S_minus(z_tilde)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "f_c",
+                        "to": "Sbar_G_L_minus(z_tilde)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "f_c",
+                        "to": "Sbar_G_S_minus(z_tilde)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "z",
+                        "to": "d_S(z)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "a",
+                        "to": "d_S(z)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "H",
+                        "to": "N(z)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "z",
+                        "to": "N(z)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "a",
+                        "to": "N(z)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "d_S(z)",
+                        "to": "d_p(z)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "b",
+                        "to": "d_p(z)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "N(z)",
+                        "to": "A_p(z)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "d_S(z)",
+                        "to": "A_p(z)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "d_p(z)",
+                        "to": "A_p(z)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "A_p(z)",
+                        "to": "Sbar_R_S_minus(z_tilde)",
+                        "type": "proportionality+normalization"
+                    },
+                    {
+                        "from": "R_S",
+                        "to": "Sbar_R_S_minus(z_tilde)",
+                        "type": "normalization"
+                    },
+                    {
+                        "from": "Sbar_G_L_minus(z_tilde)",
+                        "to": "DeltaS(z_tilde)",
+                        "type": "composition"
+                    },
+                    {
+                        "from": "Sbar_G_S_minus(z_tilde)",
+                        "to": "DeltaS(z_tilde)",
+                        "type": "composition"
+                    },
+                    {
+                        "from": "Sbar_R_S_minus(z_tilde)",
+                        "to": "DeltaS(z_tilde)",
+                        "type": "composition"
+                    },
+                    {
+                        "from": "L_net",
+                        "to": "DeltaS(z_tilde)",
+                        "type": "composition"
+                    },
+                    {
+                        "from": "sigma",
+                        "to": "DeltaS(z_tilde)",
+                        "type": "composition"
+                    },
+                    {
+                        "from": "DeltaS(z_tilde)",
+                        "to": "j(z_tilde)",
+                        "type": "integration_with_BC"
+                    },
+                    {
+                        "from": "R_R",
+                        "to": "j(z_tilde)",
+                        "type": "boundary_condition"
+                    },
+                    {
+                        "from": "u_R",
+                        "to": "j(z_tilde)",
+                        "type": "boundary_condition"
+                    }
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_eqS1.19",
+                        "char_span": null,
+                        "snippet": "ΔS = ... (S.1.19)"
+                    },
+                    {
+                        "page": 20,
+                        "block_id": "p20_eqS1.21",
+                        "char_span": null,
+                        "snippet": "j = ... (S.1.21)"
+                    }
+                ]
+            },
+            "numerics": {
+                "time_step": null,
+                "time_grid": null,
+                "integration_method": "analytic integration in z̃ for j(z̃)",
+                "solver": null,
+                "convergence_criteria": null,
+                "stability_notes": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 20,
+                        "block_id": "p20_eqS1.21",
+                        "char_span": null,
+                        "snippet": "Closed-form integrated j is provided (S.1.21)."
+                    }
+                ]
+            },
+            "initial_conditions": [],
+            "boundary_conditions": [
+                {
+                    "name": "Root collar flux condition",
+                    "formulation": "j(\\tilde{z}=1)=\\alpha\\left[R_R + \\frac{u_R}{1-f_c}G\\right]",
+                    "uncertain": false,
+                    "evidence": [
+                        {
+                            "page": 20,
+                            "block_id": "p20_L298-301",
+                            "char_span": null,
+                            "snippet": "boundary condition... j(z̃ = 1) = α[ R_R + u_R·G/(1−f_c) ]"
+                        }
+                    ]
+                }
+            ],
+            "preprocessing": {
+                "steps": [],
+                "missing_value_policy": null,
+                "unit_conversions": [
+                    "Use α to convert between carbon units and sucrose units (as in previous chunk)."
+                ],
+                "filters_smoothing": [],
+                "uncertain": true,
+                "evidence": []
+            },
+            "calibration": {
+                "estimated_parameters": [
+                    "a",
+                    "b"
+                ],
+                "objective": null,
+                "constraints": null,
+                "optimizer": null,
+                "train_validation_protocol": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_eqS1.12",
+                        "char_span": null,
+                        "snippet": "d_S ∝ z^a (S.1.12)"
+                    },
+                    {
+                        "page": 20,
+                        "block_id": "p20_eqS1.15",
+                        "char_span": null,
+                        "snippet": "d_p ∝ d_S^b (S.1.15)"
+                    }
+                ]
+            },
+            "code_blueprint": {
+                "language": null,
+                "modules": [
+                    {
+                        "name": "ptm_sinks_and_flux",
+                        "responsibility": "Compute sink distributions, ΔS(z̃), and analytic j(z̃).",
+                        "public_api": [
+                            {
+                                "name": "compute_sink_terms",
+                                "signature": "compute_sink_terms(z_tilde, H, alpha, G, f_c, u_L, u_S, u_R, R_S, a, b) -> (Sbar_GL, Sbar_GS, Sbar_RS)",
+                                "description": "Compute Eqs. S.1.9, S.1.10, S.1.18."
+                            },
+                            {
+                                "name": "compute_DeltaS",
+                                "signature": "compute_DeltaS(z_tilde, H, alpha, L_net, sigma, G, f_c, u_R, R_S, a, b) -> DeltaS",
+                                "description": "Compute Eq. S.1.19."
+                            },
+                            {
+                                "name": "compute_flux_j",
+                                "signature": "compute_flux_j(z_tilde, alpha, L_net, sigma, G, f_c, u_R, R_R, R_S, a, b) -> j",
+                                "description": "Compute analytic Eq. S.1.21."
+                            }
+                        ]
+                    }
+                ],
+                "functions": [],
+                "tests": []
+            },
+            "unresolved_assets": [],
+            "open_questions": []
+        }
+    },
+    "provenance": {
+        "extraction_time": "2026-01-29T00:34:00.000000+00:00",
+        "model": "GPT-5.2 Thinking",
+        "notes": "EXTRACT C002 (pages 19–20): derives spatial unloading terms (S̄_G,L^-, S̄_G,S^-, S̄_R,S^-) via Da Vinci’s rule/pipe-model/allometries, forms ΔS (S.1.19), then integrates to axial flux j(z̃) with root-collar boundary condition (S.1.21).",
+        "mode": "EXTRACT",
+        "is_partial": true,
+        "chunk": {
+            "chunk_id": "C002",
+            "page_range": [
+                19,
+                20
+            ]
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C002",
+                "page_range": [
+                    19,
+                    20
+                ],
+                "section_titles": [
+                    "S.1.1 Spatially-resolved phloem loading and unloading (continued)",
+                    "S.1.2 Resolving the axial sugar fluxes"
+                ],
+                "focus_tags": [
+                    "model",
+                    "equations",
+                    "parameters"
+                ],
+                "priority": 2,
+                "rationale": "Completes unloading distributions using Da Vinci’s rule and allometries; constructs ΔS(z̃) and derives analytic j(z̃) with boundary condition at z̃=1.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_eqS1.9-14",
+                        "char_span": null,
+                        "snippet": "Eqs. S.1.9–S.1.14 define uniform growth sinks and furcation/allometry relationships."
+                    },
+                    {
+                        "page": 20,
+                        "block_id": "p20_eqS1.15-21",
+                        "char_span": null,
+                        "snippet": "Eqs. S.1.15–S.1.21 define A_p scaling, S̄_R,S^-, ΔS, ∂j/∂z̃, and integrated j(z̃)."
+                    }
+                ]
+            }
+        ],
+        "next_recommended_chunk_id": "C003"
+    }
+}

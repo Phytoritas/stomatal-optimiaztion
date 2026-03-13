@@ -624,8 +624,15 @@ The seventy-first slice reopens the architecture after the false "all gaps close
 - open a legacy-style `domains/gosm/utils/traceability.py` compatibility path so later numerical ports can land without import churn
 - leave `GOSM/src/gosm/params/defaults.py` and the wider `model/` runtime blocked as later seams
 
+## Slice 072: Root TDGM Model-Card And Traceability Foundation
+
+The seventy-second slice opens the parallel root `TDGM` package foundation:
+- move the root `TDGM` model-card JSON assets into a staged `domains/tdgm` package
+- preserve packaged equation-id access and decorator-based traceability metadata helpers
+- keep the seam package-foundation-bounded and leave PTM, turgor-growth, coupling, and THORP-G runtime imports blocked
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` foundation seam, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. open the parallel root `TDGM` foundation seam next
+3. migrate `GOSM/src/gosm/params/defaults.py` as the first bounded numerical seam

@@ -45,8 +45,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 071
-- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slice 069 recorded as THORP package-level smoke evidence, slice 070 recorded as the cross-domain utility comparison decision, slice 071 approved for root `GOSM`, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
+- Gate C. Validation plan ready through slice 072
+- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slice 069 recorded as THORP package-level smoke evidence, slice 070 recorded as the cross-domain utility comparison decision, slices 071 through 072 approved for root `GOSM` and `TDGM` package foundations, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -475,3 +475,9 @@ Slice 071:
 - target: `src/stomatal_optimiaztion/domains/gosm/`, `src/stomatal_optimiaztion/domains/gosm/utils/`, packaged model-card assets, and `tests/test_gosm_{model_card,traceability,import_surface}.py`
 - scope: bounded root `GOSM` foundation surface covering packaged model-card access, equation-id validation, traceability metadata helpers, and legacy-style `utils.traceability` compatibility
 - excluded: `GOSM/src/gosm/params/defaults.py`, numerical runtime modules under `GOSM/src/gosm/model/`, and root `TDGM` migration seams
+
+Slice 072:
+- source: `TDGM/model_card/C001.json` through `TDGM/model_card/C006.json`, `TDGM/src/tdgm/implements.py`, and `TDGM/src/tdgm/__init__.py`
+- target: `src/stomatal_optimiaztion/domains/tdgm/`, packaged model-card assets, and `tests/test_tdgm_{model_card,traceability,import_surface}.py`
+- scope: bounded root `TDGM` foundation surface covering packaged model-card access, equation-id validation, and decorator-based traceability metadata helpers
+- excluded: `TDGM/src/tdgm/ptm.py`, `TDGM/src/tdgm/turgor_growth.py`, `TDGM/src/tdgm/coupling.py`, THORP-G runtime adapters, and root `GOSM` numerical seams

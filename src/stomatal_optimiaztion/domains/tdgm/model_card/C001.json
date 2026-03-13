@@ -1,0 +1,311 @@
+{
+    "doc": {
+        "id": "Potkay et al. - 2022 - Turgor-limited predictions of tree growth, height and metabolic scaling over tree lifespans 1.pdf (:contentReference[oaicite:0]{index=0})",
+        "title": "Turgor-limited predictions of tree growth, height, and metabolic scaling over tree lifespans (Supporting Information: Notes S1)",
+        "year": 2022,
+        "doi": null,
+        "page_count": 36
+    },
+    "model_card": {
+        "name": null,
+        "aliases": [],
+        "task": [],
+        "domain": [],
+        "assumptions": [],
+        "equations": [],
+        "variables": [],
+        "parameters": [],
+        "algorithm": {
+            "inputs": [],
+            "outputs": [],
+            "steps": [],
+            "pseudocode": null,
+            "evidence": []
+        },
+        "datasets": [],
+        "metrics": [],
+        "limitations": [],
+        "implementation": {
+            "model_scope": null,
+            "state_variables": [],
+            "exogenous_inputs": [],
+            "control_inputs": [],
+            "outputs_observables": [],
+            "io_contract": {
+                "input_schema": null,
+                "output_schema": null,
+                "data_types": [],
+                "evidence": []
+            },
+            "dependency_graph": {
+                "nodes": [],
+                "edges": [],
+                "uncertain": true,
+                "evidence": []
+            },
+            "numerics": {
+                "time_step": null,
+                "time_grid": null,
+                "integration_method": null,
+                "solver": null,
+                "convergence_criteria": null,
+                "stability_notes": null,
+                "uncertain": true,
+                "evidence": []
+            },
+            "initial_conditions": [],
+            "boundary_conditions": [],
+            "preprocessing": {
+                "steps": [],
+                "missing_value_policy": null,
+                "unit_conversions": [],
+                "filters_smoothing": [],
+                "uncertain": true,
+                "evidence": []
+            },
+            "calibration": {
+                "estimated_parameters": [],
+                "objective": null,
+                "constraints": null,
+                "optimizer": null,
+                "train_validation_protocol": null,
+                "uncertain": true,
+                "evidence": []
+            },
+            "code_blueprint": {
+                "language": null,
+                "modules": [],
+                "functions": [],
+                "tests": []
+            },
+            "unresolved_assets": [],
+            "open_questions": []
+        }
+    },
+    "provenance": {
+        "extraction_time": "2026-01-28T19:00:44.091174+00:00",
+        "model": "GPT-5.2 Thinking",
+        "notes": "User requested chunking to begin from page 16 where model equations start (Notes S1). Note: symbol/parameter overview tables appear earlier (Table S1–S2 on pages 11–15) and may be needed later for full implementation, but are not included per the requested start page.",
+        "mode": "PLAN",
+        "is_partial": true,
+        "chunk": {
+            "chunk_id": null,
+            "page_range": null
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C001",
+                "page_range": [
+                    16,
+                    18
+                ],
+                "section_titles": [
+                    "NOTES S1: Model descriptions",
+                    "S.1 Phloem transport model (PTM)",
+                    "S.1.1 Spatially-resolved phloem loading and unloading (start)"
+                ],
+                "focus_tags": [
+                    "model",
+                    "theory",
+                    "equations"
+                ],
+                "priority": 1,
+                "rationale": "PTM setup: steady-state sugar mass balance, dimensionless coordinate transform, definition of net source term components, and initial formulation of net loading (exponential with σ). Covers core governing balance and early constitutive assumptions needed before solving flux/concentration.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 16,
+                        "block_id": "p16_notesS1_header",
+                        "char_span": null,
+                        "snippet": "NOTES S1: Model descriptions... phloem transport model (PTM; S.1)... mass balance... 0 = −∂j/∂z + ΔS (S.1.1)"
+                    },
+                    {
+                        "page": 18,
+                        "block_id": "p18_net_loading",
+                        "char_span": null,
+                        "snippet": "We model net loading as exponentially distributed along the stem, Snet+ ∝ exp(−σ z̃) (S.1.6) ... Snet+ = (α/H) Lnet σ exp(−σ z̃)/(1−exp(−σ)) (S.1.7)"
+                    }
+                ]
+            },
+            {
+                "chunk_id": "C002",
+                "page_range": [
+                    19,
+                    20
+                ],
+                "section_titles": [
+                    "S.1.1 Spatially-resolved phloem loading and unloading (continued)",
+                    "S.1.2 Resolving the axial sugar fluxes"
+                ],
+                "focus_tags": [
+                    "model",
+                    "equations",
+                    "parameters"
+                ],
+                "priority": 2,
+                "rationale": "Completes spatial distributions of unloading/sinks using Da Vinci’s rule and allometries (dS, dp, N, Ap), constructs full ΔS(z̃), then integrates to obtain axial sugar flux j(z̃) with boundary condition at root collar.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 19,
+                        "block_id": "p19_allometry_sinks",
+                        "char_span": null,
+                        "snippet": "Defines SG,L− (S.1.9), SG,S− (S.1.10), SR,S− ∝ Ap (S.1.11), dS ∝ z^a (S.1.12), N=(H/z)^(2a) (S.1.14), Ap ∝ z^{a(b−1)} (S.1.16)"
+                    },
+                    {
+                        "page": 20,
+                        "block_id": "p20_flux_solution",
+                        "char_span": null,
+                        "snippet": "Combines to ΔS (S.1.19), then ∂j/∂z̃ = ... (S.1.20) and integrated flux j expression with boundary condition j(z̃=1)=α[RR+uR·G/(1−fc)] (S.1.21)"
+                    }
+                ]
+            },
+            {
+                "chunk_id": "C003",
+                "page_range": [
+                    21,
+                    23
+                ],
+                "section_titles": [
+                    "S.1.3 Solution for phloem sap sugar concentrations"
+                ],
+                "focus_tags": [
+                    "model",
+                    "theory",
+                    "equations",
+                    "algorithm"
+                ],
+                "priority": 3,
+                "rationale": "Derives cp(z̃) from flux-pressure relation (Münch), decomposes turgor gradient into water potential, gravity, osmotic potential; introduces density model and linearized Π–cp; applies carbon potential transform and permeability scaling to obtain linear ODE and closed-form solution components (including incomplete gamma).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_munch",
+                        "char_span": null,
+                        "snippet": "j = −cp κp/μ ∂P/∂z (S.1.22) ... j = −cp κp/μ (ψ′ − ϖ ρp g − ∂Π/∂z) (S.1.23–S.1.24)"
+                    },
+                    {
+                        "page": 22,
+                        "block_id": "p22_transform",
+                        "char_span": null,
+                        "snippet": "ρp = ρw + mp cp (S.1.25); Π = −(ki + ks ϖ R T cp) (S.1.26); Φ = cp^2/2 = ΦS Φ̃ (S.1.27); Taylor √Φ̃ ≈ 1/2 + Φ̃/2 (S.1.29)"
+                    },
+                    {
+                        "page": 23,
+                        "block_id": "p23_ode_solution",
+                        "char_span": null,
+                        "snippet": "κp = κp,0 (H/h)^λ z̃^δ (S.1.30); linear ODE form (S.1.31); constants θ,η,ε,ζ (S.1.32–S.1.35); solution Φ̃ (S.1.36) with Θ integral (S.1.37) and closed form Θ (S.1.38)"
+                    }
+                ]
+            },
+            {
+                "chunk_id": "C004",
+                "page_range": [
+                    24,
+                    26
+                ],
+                "section_titles": [
+                    "S.2 Turgor-driven growth model (TDGM)"
+                ],
+                "focus_tags": [
+                    "model",
+                    "theory",
+                    "equations"
+                ],
+                "priority": 4,
+                "rationale": "TDGM derivation: stem biomass definition, differentiation via Leibniz rule, allometric simplifications, Lockhart equation at stem level, handling max(P−Γ,0) via z̃+ bounds, culminating in whole-tree growth equation G (S.2.16).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_tdgm_start",
+                        "char_span": null,
+                        "snippet": "CW = ρcS ξ H D^2 (S.2.1); integral form (S.2.2); differentiated stem growth (S.2.3) with chain rule simplification (S.2.4)"
+                    },
+                    {
+                        "page": 25,
+                        "block_id": "p25_lockhart",
+                        "char_span": null,
+                        "snippet": "∂dp/∂t = dp ϕ max(P−Γ,0) (S.2.7); leads to ∂dS/∂t = (ϕ/b) dS max(P−Γ,0) (S.2.8); integral bounds change to z̃+ where P(z̃+)=Γ (S.2.11)"
+                    },
+                    {
+                        "page": 26,
+                        "block_id": "p26_final_growth",
+                        "char_span": null,
+                        "snippet": "z̃+ = min[max((Π+Γ−ψS)/(ψRc−ψS),0),1] (S.2.12); whole-stem growth (S.2.13–S.2.14); ∂CW/∂t = uS G (S.2.15); final G (S.2.16)"
+                    }
+                ]
+            },
+            {
+                "chunk_id": "C005",
+                "page_range": [
+                    27,
+                    30
+                ],
+                "section_titles": [
+                    "S.3 Dynamic Simulations (THORP-G coupling)"
+                ],
+                "focus_tags": [
+                    "algorithm",
+                    "numerics",
+                    "model"
+                ],
+                "priority": 5,
+                "rationale": "Coupling logic and executable update order: two NSC pools (CS,I, CS,M), growth modifiers gT and gNSC (Michaelis-Menten), smoothing allocation fractions via filter/ODE, and the ordered per-timestep computation steps (1–9).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_nsc_pools",
+                        "char_span": null,
+                        "snippet": "Two NSC pools: CS,I = CS − CS,M (S.3.1); CS,M = (cp/α) V (S.3.2); V definition using CW, CR, CL and densities (S.3.3)"
+                    },
+                    {
+                        "page": 28,
+                        "block_id": "p28_growth_mods",
+                        "char_span": null,
+                        "snippet": "Realized growth: G = gT gNSC G′ (S.3.4); gNSC = CS,I/(CS,I+KMM) (S.3.5); KMM = (cMM/α) V (S.3.6)"
+                    },
+                    {
+                        "page": 29,
+                        "block_id": "p29_allocation_filter",
+                        "char_span": null,
+                        "snippet": "Allocation smoothing: ui(t)=Υ∫vi(τ)exp(−Υ[t−τ])dτ (S.3.7); equivalent ODE ∂ui/∂t=Υ(vi−ui) (S.3.8)"
+                    },
+                    {
+                        "page": 30,
+                        "block_id": "p30_step_order",
+                        "char_span": null,
+                        "snippet": "Lists ordered operations within a timestep (steps 1–9), including hydraulics/An, optimal vi, realized ui, compute G′ via S.2.16 (solving cp), then CS,M, CS,I, gT, gNSC, realized G, and biomass/CS updates."
+                    }
+                ]
+            },
+            {
+                "chunk_id": "C006",
+                "page_range": [
+                    31,
+                    36
+                ],
+                "section_titles": [
+                    "References"
+                ],
+                "focus_tags": [
+                    "appendix"
+                ],
+                "priority": 99,
+                "rationale": "Bibliography only. Useful for tracing parameter sources but not required for implementing the equations directly.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_references_header",
+                        "char_span": null,
+                        "snippet": "References (bibliography section begins)."
+                    }
+                ]
+            }
+        ],
+        "next_recommended_chunk_id": "C001"
+    }
+}

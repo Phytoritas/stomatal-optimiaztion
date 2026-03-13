@@ -96,6 +96,7 @@ poetry run ruff check .
 - THORP package-level smoke validation note is recorded as slice 069.
 - Second-domain utility comparison note is recorded as slice 070.
 - Root GOSM model-card and traceability foundation is migrated as slice 071.
+- Root TDGM model-card and traceability foundation is migrated as slice 072.
 
 ## Next validation
-- Migrate the parallel root TDGM model-card and traceability foundation seam.
+- Migrate the root GOSM parameter-defaults seam.

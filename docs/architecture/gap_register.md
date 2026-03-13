@@ -2,6 +2,6 @@
 
 | ID | Gap | Impact | Required Artifact |
 | --- | --- | --- | --- |
-| G-072 | Root TDGM model-card and traceability foundation is still missing from the migrated repo | Blocks staged migration of the legacy `TDGM/` Python package and keeps the architecture falsely closed after slice 070 | `docs/architecture/architecture/module_specs/module-072-tdgm-model-card-traceability-foundation.md` |
+| G-073 | Root GOSM parameter-defaults seam is still missing from the migrated repo | Blocks the first bounded numerical runtime migration after the GOSM and TDGM foundation slices | `docs/architecture/architecture/module_specs/module-073-gosm-parameter-defaults.md` |
 
-Current open gaps: G-072.
+Current open gaps: G-073.
