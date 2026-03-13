@@ -38,4 +38,5 @@ Current status:
 - Slice 069 recorded: THORP package-level smoke validation note
 - Slice 070 recorded: second-domain utility comparison note
 - Slice 071 migrated: root GOSM model-card and traceability foundation
-- Current open architecture gaps: root TDGM model-card and traceability foundation
+- Slice 072 migrated: root TDGM model-card and traceability foundation
+- Current open architecture gaps: root GOSM parameter-defaults seam

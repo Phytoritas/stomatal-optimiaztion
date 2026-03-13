@@ -1,0 +1,167 @@
+{
+    "doc": {
+        "id": "Potkay et al. - 2022 - Turgor-limited predictions of tree growth, height and metabolic scaling over tree lifespans 1.pdf",
+        "title": "Turgor-limited predictions of tree growth, height, and metabolic scaling over tree lifespans (Supporting Information)",
+        "year": 2022,
+        "doi": null,
+        "page_count": 36
+    },
+    "model_card": {
+        "name": "Supporting Information References",
+        "aliases": [
+            "Bibliography",
+            "References"
+        ],
+        "task": [
+            "Provide source citations supporting PTM, TDGM, and THORP-G model derivations."
+        ],
+        "domain": [
+            "Plant/forest eco-physiology",
+            "Tree hydraulics",
+            "Carbon transport and allocation",
+            "Growth modeling"
+        ],
+        "assumptions": [],
+        "equations": [],
+        "variables": [],
+        "parameters": [],
+        "algorithm": {
+            "inputs": [],
+            "outputs": [],
+            "steps": [],
+            "pseudocode": null,
+            "evidence": [
+                {
+                    "page": 31,
+                    "block_id": "p31_b1",
+                    "char_span": null,
+                    "snippet": "References"
+                }
+            ]
+        },
+        "datasets": [],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L_ref_1",
+                "text": "This chunk contains only the bibliography (References) and introduces no new model equations, parameters, or algorithms beyond what was defined in earlier sections (S.1–S.3).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_b1",
+                        "char_span": null,
+                        "snippet": "References"
+                    }
+                ]
+            }
+        ],
+        "implementation": {
+            "model_scope": "Bibliography for the Supporting Information model descriptions (PTM, TDGM, and THORP-G).",
+            "state_variables": [],
+            "exogenous_inputs": [],
+            "control_inputs": [],
+            "outputs_observables": [],
+            "io_contract": {
+                "input_schema": null,
+                "output_schema": null,
+                "data_types": [],
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_b1",
+                        "char_span": null,
+                        "snippet": "References"
+                    }
+                ]
+            },
+            "dependency_graph": {
+                "nodes": [],
+                "edges": [],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_b1",
+                        "char_span": null,
+                        "snippet": "References"
+                    }
+                ]
+            },
+            "numerics": {
+                "time_step": null,
+                "time_grid": null,
+                "integration_method": null,
+                "solver": null,
+                "convergence_criteria": null,
+                "stability_notes": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_b1",
+                        "char_span": null,
+                        "snippet": "References"
+                    }
+                ]
+            },
+            "initial_conditions": [],
+            "boundary_conditions": [],
+            "preprocessing": {
+                "steps": [],
+                "missing_value_policy": null,
+                "unit_conversions": [],
+                "filters_smoothing": [],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_b1",
+                        "char_span": null,
+                        "snippet": "References"
+                    }
+                ]
+            },
+            "calibration": {
+                "estimated_parameters": [],
+                "objective": null,
+                "constraints": null,
+                "optimizer": null,
+                "train_validation_protocol": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_b1",
+                        "char_span": null,
+                        "snippet": "References"
+                    }
+                ]
+            },
+            "code_blueprint": {
+                "language": null,
+                "modules": [],
+                "functions": [],
+                "tests": []
+            },
+            "unresolved_assets": [],
+            "open_questions": []
+        }
+    },
+    "provenance": {
+        "extraction_time": "2026-01-29T03:12:30.903699+00:00",
+        "model": "GPT-5.2 Thinking",
+        "notes": "This chunk covers the Supporting Information 'References' section (PDF pages 31–36). No additional model equations or algorithm definitions appear after S.3; remaining content is a bibliography.\n\nREFERENCES_RAW\n[PDF p31]\nReferences\nBentley, L. P., Stegen, J. C., Savage, V. M., Smith, D. D., von Allmen, E. I., Sperry, J. S., ... &\nEnquist, B. J. (2013). An empirical assessment of tree branching networks and\nimplications for plant allometric scaling models. Ecology letters, 16(8), 1069-1078.\nBouchard, C., & Granjean, B. P. (1995). A neural network correlation for the variation of\nviscosity of sucrose aqueous solutions with temperature and concentration. LWT-Food\nScience and Technology, 28(1), 157-159.\nBuckley, T. N., & Roberts, D. W. (2006). DESPOT, a process-based tree growth model that\nallocates carbon to maximize carbon gain. Tree Physiology, 26(2), 129-144.\nCabon, A., Peters, R. L., Fonti, P., Martínez‐Vilalta, J., & De Cáceres, M. (2020). Temperature\nand water potential co‐limit stem cambial activity along a steep elevational gradient. New\nPhytologist, 226(5), 1325-1340.\nChung HH, Barnes RL (1977). Photosynthate allocation in Pinus taeda taeda. I. Substrate\nrequirements for synthesis of shoot biomass. Canadian Journal of Forest Research 7:\n106-111.\nClerx, L. E., Rockwell, F. E., Savage, J. A., & Holbrook, N. M. (2020). Functional xylem\nanatomy and hydraulic scaling in red oak (Quercus rubra). Plant, Cell & Environment,\n43(9), 2015-2030.\nDickson, R. E. (1989). Carbon and nitrogen allocation in trees. Annales des sciences\nforestières, 46(Supplement), 631s-647s.\nDonnelly, J. R. (1974). Photosynthate translocation in seedlings of Pinus. Physiology of Plant\nPathology, 4(1), 59-69.\nEpron, D., Dannoura, M., Ishida, A., & Kosugi, Y. (2019). Estimation of phloem carbon\ntranslocation belowground at stand level in a hinoki cypress stand. Tree physiology,\n39(2), 320-331.\nEvans, J. R. (1989). Photosynthesis and nitrogen relationships in leaves of C 3\nplants. Oecologia, 78(1), 9-19.\nFarquhar, G. D., von Caemmerer, S. V., & Berry, J. A. (1980). A biochemical model of\nphotosynthetic CO 2 assimilation in leaves of C 3 species. Planta, 149(1), 78-90.\nFarquhar, G. D., & Von Caemmerer, S. (1982). Modelling of photosynthetic response to\nenvironmental conditions. In Physiological plant ecology II (pp. 549-587). Springer,\nBerlin, Heidelberg.\nField, C. H., & Mooney, H. A. (1986). Photosynthesis--nitrogen relationship in wild plants. In\nOn the Economy of Plant Form and Function: Proceedings of the Sixth Maria Moors\nCabot Symposium, Evolutionary Constraints on Primary Productivity, Adaptive Patterns\nof Energy Capture in Plants, Harvard Forest, August 1983. Cambridge\n[Cambridgeshire]: Cambridge University Press, c1986.\nGénard, M., Fishman, S., Vercambre, G., Huguet, J. G., Bussi, C., Besset, J., & Habib, R.\n(2001). A biophysical analysis of stem and root diameter variations in woody plants.\nPlant Physiology, 126(1), 188-202.\nGersony, J. T., & Holbrook, N. M. (2014). Why phloem transport is faster in small plants than\nin tall trees. Journal of Experimental Botany, 65(17), 4939-4946.\nHölttä, T., Kurppa, M., & Nikinmaa, E. (2013). Scaling of xylem and phloem transport capacity\nand resource usage with tree size. Frontiers in plant science, 4, 496.\nHölttä, T., Lintunen, A., Chan, T., Mäkelä, A., & Nikinmaa, E. (2017). A steady-state stomatal\nmodel of balanced leaf gas exchange, hydraulics and maximal source–sink flux. Tree\nphysiology, 37(7), 851-868.\nHuber, B., Schmidt, E., & Jahnel, H. (1937). Untersuchungen über den Assimilationsstrom der\nBäume I. Tharandter Forstliches Jahrbuch, 88, 1017-1049.\nJensen, K. H., Savage, J. A., & Holbrook, N. M. (2013). Optimal concentration for sugar\ntransport in plants. Journal of the Royal Society Interface, 10(83), 20130055.\nJones, S., Rowland, L., Cox, P., Hemming, D., Wiltshire, A., Williams, K., ... & Mencuccini, M.\n(2019). The Impact of a Simple Representation of Non-Structural Carbohydrates on the\nSimulated Response of Tropical Forests to Drought. Biogeosciences Discussions, 1-26.\nJyske, T., & Hölttä, T. (2015). Comparison of phloem and xylem hydraulic architecture in P icea\nabies stems. New phytologist, 205(1), 102-115.\nKatchalsky A,\nKirmse, M. H., & Klinge, H. (1988). Growth and storage of nonstructural carbohydrates in\nstemwood of tropical forest trees. Oecologia, 77(1), 53-59.\nKnoblauch, J., Knoblauch, M., van Bel, A. J., & Mullendore, D. L. (2016). Micro- and\nnanostructural characterization of tissue and transport interfaces in phloem and xylem.\nPlant Physiology, 171(4), 2335-2346.\nLiesche, J., Pace, M. R., Xu, Q., Li, Y., & Chen, S. (2017). Height-related scaling of phloem\nanatomy and physiology. Journal of Experimental Botany, 68(18), 5131-5142.\nLosada, J. M., & Holbrook, N. M. (2019). Scaling of phloem hydraulic resistance with tree\nheight. Journal of Experimental Botany, 70(8), 2239-2249.\nMäkelä, A. (1997). A carbon balance model of growth and self-pruning in trees based on\nstructural relationships. Forest Science, 43(1), 7-24.\nMilburn JA. (1975). Pressure flow. In: Zimmermann MH, Milburn JA, eds. Transport in plants.\nI. Phloem transport. Encyclopedia of plant physiology, New series, Vol. 1. Berlin,\nHeidelberg: Springer‐Verlag.\nMinchin PEH, Troughton JH. (1980). Quantitative interpretation of phloem translocation data.\nAnnual Review of Plant Physiology 31,191–215.\nMuller‐Landau, H. C., Condit, R. S., Chave, J., Thomas, S. C., Bohlman, S. A., Bunyavejchewin,\nS., ... & Ashton, P. (2006). Testing metabolic ecology theory for allometric scaling of tree\nsize, growth and mortality in tropical forests. Ecology letters, 9(5), 575-588.\nMünch, E. (1930). Die Stoffbewegungen in der Pflanze. Jena: Gustav Fischer.\nMurty, D., McMurtrie, R. E., & Ryan, M. G. (1996). Declining forest productivity in aging forest\nstands: a modeling analysis of alternative hypotheses. Tree Physiology, 16(1-2), 187-200.\nNikinmaa, E., Hölttä, T., Hari, P., Kolari, P., Mäkelä, A., Sevanto, S., & Vesala, T. (2013).\nAssimilate transport in phloem sets conditions for leaf gas exchange. Plant, Cell &\nEnvironment, 36(3), 655-669.\nNikinmaa, E., Sievänen, R., & Hölttä, T. (2014). Dynamics of phloem transport in changing\nenvironments. Tree Physiology, 34(5), 476-484.\nNiklas, K. J., & Spatz, H. C. (2004). Growth and hydraulic (not mechanical) constraints govern\nthe scaling of tree height and mass. Proceedings of the National Academy of Sciences,\n101(44), 15661-15663.\nOren, R., Sperry, J. S., Katul, G. G., Pataki, D. E., Ewers, B. E., Phillips, N., & Schäfer, K. V.\n(1999). Survey and synthesis of intra-and interspecific variation in stomatal sensitivity to\nvapour pressure deficit. Plant, Cell & Environment, 22(12), 1515-1526.\nPivovaroff, A. L., Sack, L., Santiago, L. S., & Angeles, G. (2016). Coordination of stem and leaf\ntraits with hydraulic conductance and photosynthesis across native and cultivated\ncacti. Plant Physiology, 172(3), 2001-2014.\nPotkay, A., Hölttä, T., Trugman, A. T., & Fan, Y. (2021). Turgor-limited predictions of tree\ngrowth, height, and metabolic scaling over tree lifespans. Tree Physiology, 41(9), 1501-\n1526.\nReich, P. B., Walters, M. B., & Ellsworth, D. S. (1997). From tropics to tundra: global\nconvergence in plant functioning. Proceedings of the National Academy of Sciences,\n94(25), 13730-13734.\nRichardson, A. D., Carbone, M. S., Keenan, T. F., Czimczik, C. I., Hollinger, D. Y., Murakami,\nP., ... & Xu, X. (2013). Seasonal dynamics and age of stemwood nonstructural\ncarbohydrates in temperate forest trees. New Phytologist, 197(3), 850-861.\nRosell, J. A. (2016). Bark thickness across the angiosperms: more than just fire. New\nPhytologist, 211(1), 90-102.\nRosell, J. A., Olson, M. E., Anfodillo, T., & Martínez‐Méndez, N. (2017). Exploring the bark\nthickness–stem diameter relationship: clues from lianas, successive cambia, monocots\nand gymnosperms. New Phytologist, 215(2), 569-581.\nSalmon, Y., Lintunen, A., Dayet, A., Chan, T., Dewar, R., Vesala, T., & Hölttä, T. (2020). Leaf\ncarbon and water status control stomatal and nonstomatal limitations of photosynthesis in\ntrees. New phytologist, 226(3), 690-703.\nSalomón, R. L., De Roo, L., Oleksyn, J., De Pauw, D. J., & Steppe, K. (2020). TReSpire–a\nbiophysical TRee Stem respiration model. New Phytologist, 225(5), 2214-2230.\nSavage, J. A., Beecher, S. D., Clerx, L., Gersony, J. T., Knoblauch, J., Losada, J. M., ... &\nHolbrook, N. M. (2017). Maintenance of carbohydrate transport in tall trees. Nature\nplants, 3(12), 965-972.\nSchiestl‐Aalto, P., Kulmala, L., Mäkinen, H., Nikinmaa, E., & Mäkelä, A. (2015). CASSIA–a\ndynamic model for predicting intra‐annual sink demand and interannual growth variation\nin S cots pine. New Phytologist, 206(3), 1232-1243.\nSevanto, S. (2014). Phloem transport and drought. Journal of Experimental Botany, 65(7),\n1751-1759.\nShinozaki, K., Yoda, K., Hozumi, K., & Kira, T. (1964). A quantitative analysis of plant form-the\npipe model theory. I. Basic analyses. Japanese Journal of Ecology, 14(3), 97-105.\nSperry, J. S., & Tyree, M. T. (1988). Mechanism of water stress-induced xylem embolism. Plant\nphysiology, 88(3), 581-587.\nSteppe, K., De Pauw, D. J., Lemeur, R., & Vanrolleghem, P. A. (2006). A mathematical model\nlinking tree sap flow dynamics to daily stem diameter fluctuations and radial stem\ngrowth. Tree physiology, 26(3), 257-273.\nSteppe, K., De Pauw, D. J., & Lemeur, R. (2008). Validation of a dynamic stem diameter\nvariation model and the resulting seasonal changes in calibrated parameter\nvalues. Ecological Modelling, 218(3-4), 247-259.\nThompson, M. V., & Holbrook, N. M. (2003a). Application of a single-solute non-steady-state\nphloem model to the study of long-distance assimilate transport. Journal of Theoretical\nBiology, 220(4), 419-455.\nThompson, M. V., & Holbrook, N. M. (2003b). Scaling phloem-transport: water potential\nequilibrium and osmoregulatory flow. Plant, Cell & Environment, 26(9), 1561-1577.\nThorne, JH & Giaquinta RT. (1984). Pathways and mechanisms associated with carbohydrate\ntranslocation in plants. In: Lewis DH, ed. Storage carbohydrates in vascular plants.\nCambridge: Cambridge University Press, 75–96.\nvon Allmen, E. I., Sperry, J. S., Smith, D. D., Savage, V. M., Enquist, B. J., Reich, P. B., &\nBentley, L. P. (2012). A species‐level model for metabolic scaling of trees II. Testing in a\nring‐and diffuse‐porous species. Functional Ecology, 26(5), 1066-1076.\nWoodruff, D. R., Bond, B. J., & Meinzer, F. C. (2004). Does turgor limit growth in tall\ntrees?. Plant, Cell & Environment, 27(2), 229-236.",
+        "mode": "EXTRACT",
+        "is_partial": true,
+        "chunk": {
+            "chunk_id": "C006",
+            "page_range": [
+                31,
+                36
+            ]
+        },
+        "chunk_plan": [],
+        "next_recommended_chunk_id": null
+    }
+}

@@ -1,0 +1,1691 @@
+{
+    "doc": {
+        "id": "Potkay et al. - 2022 - Turgor-limited predictions of tree growth, height and metabolic scaling over tree lifespans 1.pdf",
+        "title": "Turgor-limited predictions of tree growth, height, and metabolic scaling over tree lifespans (Supporting Information)",
+        "year": 2022,
+        "doi": null,
+        "page_count": 36
+    },
+    "model_card": {
+        "name": "Phloem transport model (PTM) — Notes S1 (C003)",
+        "aliases": [
+            "PTM",
+            "Phloem transport model"
+        ],
+        "task": [
+            "compute phloem sap sucrose-equivalent concentration profile c_p(z̃) from axial flux j(z̃)",
+            "solve transformed ODE for dimensionless carbon potential Φ̃(z̃) with analytic integral term Θ(z̃)"
+        ],
+        "domain": [
+            "plant physiology",
+            "tree carbon allocation",
+            "phloem transport modeling"
+        ],
+        "assumptions": [
+            {
+                "id": "A15",
+                "text": "Sucrose is the only solute (confined to the phloem); “sugar” and “sucrose” are treated synonymously as a first-order approximation.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L309-313",
+                        "char_span": null,
+                        "snippet": "sucrose is the only solute and is confined to the phloem... first-order approximation..."
+                    }
+                ]
+            },
+            {
+                "id": "A16",
+                "text": "Sieve tube membranes are ideally semi-permeable to sucrose (reflection coefficient = 1).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L313-315",
+                        "char_span": null,
+                        "snippet": "ideally semi-permeable (reflection coefficient for sucrose is unity)..."
+                    }
+                ]
+            },
+            {
+                "id": "A17",
+                "text": "Molecular diffusion of sucrose is ignored because advection dominates transport by many orders of magnitude.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L314-316",
+                        "char_span": null,
+                        "snippet": "molecular diffusion of sucrose is ignored, since advection is the dominant mode..."
+                    }
+                ]
+            },
+            {
+                "id": "A18",
+                "text": "Sap viscosity μ is uniform along the stem (treated as a constant).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L319-321",
+                        "char_span": null,
+                        "snippet": "We assume viscosity, μ, is reasonably uniform... (μ is a constant)..."
+                    }
+                ]
+            },
+            {
+                "id": "A19",
+                "text": "Stem water potential gradient ψ′ is uniform (ψ′ constant).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L331-334",
+                        "char_span": null,
+                        "snippet": "assuming a uniform change in water potentials along the stem (i.e. ψ’ is a constant)..."
+                    }
+                ]
+            },
+            {
+                "id": "A20",
+                "text": "Xylem–phloem coupling yields near water-potential equilibrium: ψ_p = ψ_x = ψ.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L335-338",
+                        "char_span": null,
+                        "snippet": "xylem-phloem coupling enables water-potential equilibrium... (ψp = ψx = ψ)"
+                    }
+                ]
+            },
+            {
+                "id": "A21",
+                "text": "Phloem sap density is linear in sugar concentration: ρ_p = ρ_w + m_p c_p, with m_p fixed from a regression to 0.13 kg·mol−1.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_eqS1.25",
+                        "char_span": null,
+                        "snippet": "ρp = ρw + mp cp (S.1.25)"
+                    },
+                    {
+                        "page": 22,
+                        "block_id": "p22_L343-344",
+                        "char_span": null,
+                        "snippet": "we set mp equal to 0.13 kg·mol-1."
+                    }
+                ]
+            },
+            {
+                "id": "A22",
+                "text": "Osmotic potential Π is linearized over expected c_p: Π = −(k_i + k_s ϖ R T c_p).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_eqS1.26",
+                        "char_span": null,
+                        "snippet": "Π = −(ki + ks ϖ R T cp) (S.1.26)"
+                    }
+                ]
+            },
+            {
+                "id": "A23",
+                "text": "Square-root nonlinearity in Φ̃ is further linearized by a first-order Taylor approximation: √Φ̃ ≈ 1/2 + Φ̃/2, valid (≤10% error) for ~0.3 < Φ̃ < ~2.0.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_eqS1.29",
+                        "char_span": null,
+                        "snippet": "√Φ̃ ≈ 1/2 + Φ̃/2 (S.1.29)"
+                    },
+                    {
+                        "page": 22,
+                        "block_id": "p22_L367-368",
+                        "char_span": null,
+                        "snippet": "reasonable as long as ~0.3 < Φ̃ < ~2.0 (less than 10% error)"
+                    }
+                ]
+            },
+            {
+                "id": "A24",
+                "text": "Phloem permeability varies as a power-law in z̃ and scales with height: κ_p = κ_p,0 (H/h)^λ z̃^δ.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.30",
+                        "char_span": null,
+                        "snippet": "κp = κp,0 (H/h)^λ z̃^δ (S.1.30)"
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "Eq_S1.22",
+                "latex": "j = -c_p\\,\\frac{\\kappa_p}{\\mu}\\,\\frac{\\partial P}{\\partial z}",
+                "variables": [
+                    "j",
+                    "c_p",
+                    "\\kappa_p",
+                    "\\mu",
+                    "P",
+                    "z"
+                ],
+                "explanation": "Turgor-driven advection (Münch-type) linking axial sucrose flux to turgor pressure gradient.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_eqS1.22",
+                        "char_span": null,
+                        "snippet": "j = − cp κp/μ ∂P/∂z (S.1.22)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S1.23",
+                "latex": "j = -c_p\\,\\frac{\\kappa_p}{\\mu}\\left(\\psi' - \\varpi\\rho_p g - \\frac{\\partial \\Pi}{\\partial z}\\right)",
+                "variables": [
+                    "j",
+                    "c_p",
+                    "\\kappa_p",
+                    "\\mu",
+                    "\\psi'",
+                    "\\varpi",
+                    "\\rho_p",
+                    "g",
+                    "\\Pi",
+                    "z"
+                ],
+                "explanation": "Turgor gradient decomposed into water potential gradient, gravity, and osmotic potential gradient.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_eqS1.23",
+                        "char_span": null,
+                        "snippet": "j = − cp κp/μ(ψ′ − ϖ ρp g − ∂Π/∂z) (S.1.23)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S1.24",
+                "latex": "j = -\\frac{c_p}{H}\\,\\frac{\\kappa_p}{\\mu}\\,\\frac{\\partial P}{\\partial \\tilde{z}} = -c_p\\,\\frac{\\kappa_p}{\\mu}\\left(\\psi' - \\varpi\\rho_p g - \\frac{1}{H}\\frac{\\partial \\Pi}{\\partial \\tilde{z}}\\right)",
+                "variables": [
+                    "j",
+                    "c_p",
+                    "H",
+                    "\\kappa_p",
+                    "\\mu",
+                    "P",
+                    "\\tilde{z}",
+                    "\\psi'",
+                    "\\varpi",
+                    "\\rho_p",
+                    "g",
+                    "\\Pi"
+                ],
+                "explanation": "Same advection relation in the dimensionless axial coordinate z̃ = z/H.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_eqS1.24",
+                        "char_span": null,
+                        "snippet": "j = ... in our dimensionless coordinate system... (S.1.24)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S1.25",
+                "latex": "\\rho_p = \\rho_w + m_p c_p",
+                "variables": [
+                    "\\rho_p",
+                    "\\rho_w",
+                    "m_p",
+                    "c_p"
+                ],
+                "explanation": "Linear density–concentration relationship for phloem sap.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_eqS1.25",
+                        "char_span": null,
+                        "snippet": "ρp = ρw + mp cp (S.1.25)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S1.26",
+                "latex": "\\Pi = -\\left(k_i + k_s\\,\\varpi R T\\,c_p\\right)",
+                "variables": [
+                    "\\Pi",
+                    "k_i",
+                    "k_s",
+                    "\\varpi",
+                    "R",
+                    "T",
+                    "c_p"
+                ],
+                "explanation": "Linearized osmotic potential–concentration relationship; reduces to van’t Hoff when k_i=0 and k_s=1.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_eqS1.26",
+                        "char_span": null,
+                        "snippet": "Π = −(ki + ks ϖ R T cp) (S.1.26)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S1.27",
+                "latex": "\\Phi = \\frac{c_p^2}{2} = \\Phi_S\\,\\tilde{\\Phi}",
+                "variables": [
+                    "\\Phi",
+                    "c_p",
+                    "\\Phi_S",
+                    "\\tilde{\\Phi}"
+                ],
+                "explanation": "Carbon potential transformation and normalization by the apex value Φ_S = c_{p,S}^2/2.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_eqS1.27",
+                        "char_span": null,
+                        "snippet": "Φ = cp^2/2 = ΦS Φ̃ (S.1.27)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S1.28",
+                "latex": "-\\frac{\\mu j}{\\kappa_p} = \\sqrt{2\\Phi_S}\\,(\\psi' - \\varpi\\rho_w g)\\,\\sqrt{\\tilde{\\Phi}} - 2\\varpi g m_p\\Phi_S\\tilde{\\Phi} + \\frac{k_s\\varpi R T\\Phi_S}{H}\\,\\frac{\\partial \\tilde{\\Phi}}{\\partial \\tilde{z}}",
+                "variables": [
+                    "\\mu",
+                    "j",
+                    "\\kappa_p",
+                    "\\Phi_S",
+                    "\\psi'",
+                    "\\varpi",
+                    "\\rho_w",
+                    "g",
+                    "\\tilde{\\Phi}",
+                    "m_p",
+                    "k_s",
+                    "R",
+                    "T",
+                    "H",
+                    "\\tilde{z}"
+                ],
+                "explanation": "Governing relation for Φ̃ after combining advection, density, and linearized osmotic potential; still nonlinear due to √Φ̃.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_eqS1.28",
+                        "char_span": null,
+                        "snippet": "Eq. S.1.28 ..."
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S1.29",
+                "latex": "\\sqrt{\\tilde{\\Phi}} \\approx \\frac{1}{2} + \\frac{\\tilde{\\Phi}}{2}",
+                "variables": [
+                    "\\tilde{\\Phi}"
+                ],
+                "explanation": "First-order Taylor approximation used to linearize the square-root term in Eq. S.1.28.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_eqS1.29",
+                        "char_span": null,
+                        "snippet": "√Φ̃ ≈ 1/2 + Φ̃/2 (S.1.29)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S1.30",
+                "latex": "\\kappa_p = \\kappa_{p,0}\\left(\\frac{H}{h}\\right)^{\\lambda}\\,\\tilde{z}^{\\delta}",
+                "variables": [
+                    "\\kappa_p",
+                    "\\kappa_{p,0}",
+                    "H",
+                    "h",
+                    "\\lambda",
+                    "\\tilde{z}",
+                    "\\delta"
+                ],
+                "explanation": "Power-law permeability profile capturing variation with tree size (H) and position (z̃).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.30",
+                        "char_span": null,
+                        "snippet": "κp = κp,0 (H/h)^λ z̃^δ (S.1.30)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S1.31",
+                "latex": "-\\frac{\\zeta}{\\epsilon}\\,j\\,\\tilde{z}^{-\\delta} - \\frac{\\theta}{\\epsilon} = \\frac{\\theta-\\eta}{\\epsilon}\\,\\tilde{\\Phi} + \\frac{\\partial \\tilde{\\Phi}}{\\partial \\tilde{z}}",
+                "variables": [
+                    "\\zeta",
+                    "\\epsilon",
+                    "j",
+                    "\\tilde{z}",
+                    "\\delta",
+                    "\\theta",
+                    "\\eta",
+                    "\\tilde{\\Phi}"
+                ],
+                "explanation": "Linear ODE for Φ̃(z̃) after applying Eq. S.1.29 and permeability scaling Eq. S.1.30.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.31",
+                        "char_span": null,
+                        "snippet": "Eq. S.1.31 ..."
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S1.32",
+                "latex": "\\theta = c_{p,S}^2\\,(\\psi' - \\varpi\\rho_w g)",
+                "variables": [
+                    "\\theta",
+                    "c_{p,S}",
+                    "\\psi'",
+                    "\\varpi",
+                    "\\rho_w",
+                    "g"
+                ],
+                "explanation": "Constant grouping water-potential gradient and gravity (via ρ_w).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.32",
+                        "char_span": null,
+                        "snippet": "θ = cp,S^2 (ψ′ − ϖ ρw g) (S.1.32)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S1.33",
+                "latex": "\\eta = 2\\varpi g m_p\\Phi_S = \\varpi g m_p c_{p,S}^2",
+                "variables": [
+                    "\\eta",
+                    "\\varpi",
+                    "g",
+                    "m_p",
+                    "\\Phi_S",
+                    "c_{p,S}"
+                ],
+                "explanation": "Constant grouping gravity, density–concentration slope, and apex carbon potential.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.33",
+                        "char_span": null,
+                        "snippet": "η = ... = ϖ g mp cp,S^2 (S.1.33)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S1.34",
+                "latex": "\\epsilon = \\frac{k_s\\varpi R T\\Phi_S}{H} = \\frac{k_s\\varpi R T c_{p,S}^2}{2H}",
+                "variables": [
+                    "\\epsilon",
+                    "k_s",
+                    "\\varpi",
+                    "R",
+                    "T",
+                    "\\Phi_S",
+                    "H",
+                    "c_{p,S}"
+                ],
+                "explanation": "Constant grouping osmotic slope, temperature, and height scaling.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.34",
+                        "char_span": null,
+                        "snippet": "ε = ... = ks ϖ R T cp,S^2 /(2H) (S.1.34)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S1.35",
+                "latex": "\\zeta = \\frac{\\mu}{\\kappa_{p,0}}\\left(\\frac{h}{H}\\right)^{\\lambda}",
+                "variables": [
+                    "\\zeta",
+                    "\\mu",
+                    "\\kappa_{p,0}",
+                    "h",
+                    "H",
+                    "\\lambda"
+                ],
+                "explanation": "Resistance-like constant capturing permeability scaling with tree size.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.35",
+                        "char_span": null,
+                        "snippet": "ζ = μ/κp,0 (h/H)^λ (S.1.35)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S1.36",
+                "latex": "\\tilde{\\Phi} = \\exp\\left(\\frac{\\eta-\\theta}{\\epsilon}\\,\\tilde{z}\\right)\\left[\\frac{\\eta-2\\theta}{\\eta-\\theta} - \\frac{\\zeta}{\\epsilon}\\,\\Theta\\right] + \\frac{\\theta}{\\eta-\\theta}",
+                "variables": [
+                    "\\tilde{\\Phi}",
+                    "\\eta",
+                    "\\theta",
+                    "\\epsilon",
+                    "\\tilde{z}",
+                    "\\zeta",
+                    "\\Theta"
+                ],
+                "explanation": "Closed-form solution for Φ̃(z̃) given boundary condition Φ̃(0)=1.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.36",
+                        "char_span": null,
+                        "snippet": "Φ̃ = exp((η−θ)/ε z̃)[ ... − (ζ/ε)Θ] + θ/(η−θ) (S.1.36)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S1.37",
+                "latex": "\\Theta = \\int \\exp\\left(\\frac{\\theta-\\eta}{\\epsilon}\\,\\tilde{z}\\right)\\,\\tilde{z}^{-\\delta}\\,j\\,d\\tilde{z}",
+                "variables": [
+                    "\\Theta",
+                    "\\theta",
+                    "\\eta",
+                    "\\epsilon",
+                    "\\tilde{z}",
+                    "\\delta",
+                    "j"
+                ],
+                "explanation": "Integral term appearing in the ODE solution; Θ has the same units as flux j.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.37",
+                        "char_span": null,
+                        "snippet": "Θ = ∫ exp((θ−η)/ε z̃) z̃^{−δ} j dz̃ (S.1.37)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S1.38",
+                "latex": "\\Theta = \\alpha\\left\\{-\\frac{L_{\\mathrm{net}}}{1-\\exp(-\\sigma)}\\left(\\frac{\\epsilon}{\\sigma\\epsilon+\\eta-\\theta}\\right)^{1-\\delta}\\gamma\\left(1-\\delta,\\frac{\\sigma\\epsilon+\\eta-\\theta}{\\epsilon}\\tilde{z}\\right) - \\frac{G}{1-f_c}(1-u_R)\\left(\\frac{\\epsilon}{\\eta-\\theta}\\right)^{2-\\delta}\\gamma\\left(2-\\delta,\\frac{\\eta-\\theta}{\\epsilon}\\tilde{z}\\right) - R_S\\left(\\frac{\\epsilon}{\\eta-\\theta}\\right)^{a(b-1)+2-\\delta}\\gamma\\left(a(b-1)+2-\\delta,\\frac{\\eta-\\theta}{\\epsilon}\\tilde{z}\\right) + \\frac{L_{\\mathrm{net}}}{1-\\exp(-\\sigma)}\\left(\\frac{\\epsilon}{\\eta-\\theta}\\right)^{1-\\delta}\\gamma\\left(1-\\delta,\\frac{\\eta-\\theta}{\\epsilon}\\tilde{z}\\right)\\right\\}",
+                "variables": [
+                    "\\Theta",
+                    "\\alpha",
+                    "L_{\\mathrm{net}}",
+                    "\\sigma",
+                    "\\epsilon",
+                    "\\eta",
+                    "\\theta",
+                    "\\delta",
+                    "G",
+                    "f_c",
+                    "u_R",
+                    "R_S",
+                    "a",
+                    "b",
+                    "\\tilde{z}",
+                    "\\gamma(\\cdot,\\cdot)"
+                ],
+                "explanation": "Analytic Θ(z̃) obtained by substituting j(z̃) (Eq. S.1.21) into Eq. S.1.37; γ denotes the (lower) incomplete gamma function.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.38",
+                        "char_span": null,
+                        "snippet": "Θ = α{ ... γ(...) ... } (S.1.38)"
+                    }
+                ]
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "c_p",
+                "name": "phloem sap sugar concentration (sucrose equivalents)",
+                "unit": "mol sucrose m^-3",
+                "definition": "Phloem sap sucrose-equivalent concentration along the stem.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "cp"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L308-310",
+                        "char_span": null,
+                        "snippet": "phloem sap sugar concentrations... cp [(mol sucrose)·m-3]"
+                    }
+                ]
+            },
+            {
+                "symbol": "P",
+                "name": "turgor pressure",
+                "unit": "MPa",
+                "definition": "Turgor pressure driving advection in sieve tubes.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L319-323",
+                        "char_span": null,
+                        "snippet": "P is turgor pressure [MPa]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\kappa_p",
+                "name": "phloem permeability",
+                "unit": "m^4",
+                "definition": "Permeability of phloem conduits; κp·μ−1 is phloem conductivity.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "kappa_p"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L318-320",
+                        "char_span": null,
+                        "snippet": "κp is the phloem permeability [m4] ... (κp·μ−1 is the phloem conductivity)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\mu",
+                "name": "sap viscosity",
+                "unit": "MPa·s",
+                "definition": "Viscosity of phloem sap, assumed constant along the stem.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "mu"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L319-321",
+                        "char_span": null,
+                        "snippet": "μ is the sap viscosity [MPa∙s] ... μ is a constant"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\psi'",
+                "name": "stem water potential gradient",
+                "unit": "MPa m^-1",
+                "definition": "Axial gradient of water potential along the stem (ψ′ = ∂ψ/∂z).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "psi_prime"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L324-325",
+                        "char_span": null,
+                        "snippet": "ψ’ is the stem water potential gradient [MPa∙m-1] (ψ’ = ∂ψ/∂z ...)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\varpi",
+                "name": "Pa-to-MPa conversion factor",
+                "unit": "MPa Pa^-1",
+                "definition": "Conversion factor from Pa to MPa (ϖ = 10^-6 MPa·Pa^-1).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "omega_conversion"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L325-326",
+                        "char_span": null,
+                        "snippet": "ϖ is a factor that converts from Pa to MPa (ϖ = 10-6 MPa ∙ Pa-1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\rho_p",
+                "name": "phloem sap density",
+                "unit": "kg m^-3",
+                "definition": "Density of phloem sap, modeled as a linear function of c_p.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L325-326",
+                        "char_span": null,
+                        "snippet": "ρp is the density of the phloem sap [kg∙m-3]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\rho_w",
+                "name": "water density",
+                "unit": "kg m^-3",
+                "definition": "Density of pure water used in gravitational term and density model.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L324-325",
+                        "char_span": null,
+                        "snippet": "ρw is the density of water [kg∙m-3]"
+                    }
+                ]
+            },
+            {
+                "symbol": "g",
+                "name": "acceleration due to gravity",
+                "unit": "m s^-2",
+                "definition": "Gravitational acceleration (g = 9.81 m·s^-2).",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L326-327",
+                        "char_span": null,
+                        "snippet": "g is the acceleration due to gravity... (g = 9.81 m∙s-2)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\Pi",
+                "name": "osmotic potential",
+                "unit": "MPa",
+                "definition": "Osmotic potential of phloem sap; linearized in c_p.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L326-327",
+                        "char_span": null,
+                        "snippet": "Π is the osmotic potential [MPa]"
+                    }
+                ]
+            },
+            {
+                "symbol": "m_p",
+                "name": "density–concentration slope",
+                "unit": "kg mol^-1",
+                "definition": "Linear correction term relating sucrose concentration to solution density (set to 0.13 kg·mol^-1).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "mp"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_L342-344",
+                        "char_span": null,
+                        "snippet": "mp... units of molar mass... set mp equal to 0.13 kg·mol-1."
+                    }
+                ]
+            },
+            {
+                "symbol": "k_i",
+                "name": "osmotic linearization intercept",
+                "unit": "MPa",
+                "definition": "Intercept of linear regression between Π and ϖRTc_p.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ki"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_L352-353",
+                        "char_span": null,
+                        "snippet": "ki is the intercept... [MPa]"
+                    }
+                ]
+            },
+            {
+                "symbol": "k_s",
+                "name": "osmotic linearization slope",
+                "unit": null,
+                "definition": "Slope of linear regression between Π and ϖRTc_p.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ks"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_L352-353",
+                        "char_span": null,
+                        "snippet": "ks is the unitless slope [-]"
+                    }
+                ]
+            },
+            {
+                "symbol": "R",
+                "name": "universal gas constant",
+                "unit": "J mol^-1 K^-1",
+                "definition": "R = 8.314 J·mol^-1·K^-1.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_L353-354",
+                        "char_span": null,
+                        "snippet": "R... (R = 8.314 J∙mol-1∙K-1)"
+                    }
+                ]
+            },
+            {
+                "symbol": "T",
+                "name": "temperature",
+                "unit": "K",
+                "definition": "Temperature used in osmotic relation.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_L353-354",
+                        "char_span": null,
+                        "snippet": "T is temperature [K]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\Phi",
+                "name": "carbon potential",
+                "unit": null,
+                "definition": "Transformed variable Φ = c_p^2/2 used to reduce nonlinearity.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_L357-360",
+                        "char_span": null,
+                        "snippet": "carbon potential transformation, Φ ... Φ = cp^2/2"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\tilde{\\Phi}",
+                "name": "dimensionless carbon potential",
+                "unit": null,
+                "definition": "Φ̃ = Φ/Φ_S, where Φ_S = c_{p,S}^2/2.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Phi_tilde"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_L358-360",
+                        "char_span": null,
+                        "snippet": "normalize into a dimensionless form, Φ̃ [-]... ΦS = cp,S^2/2"
+                    }
+                ]
+            },
+            {
+                "symbol": "c_{p,S}",
+                "name": "apex phloem concentration",
+                "unit": "mol sucrose m^-3",
+                "definition": "Phloem sap concentration at the stem apex (z̃=0), used as normalization reference.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "cp,S"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_L389-390",
+                        "char_span": null,
+                        "snippet": "boundary condition... cp(z̃ = 0) = cp,S"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\kappa_{p,0}",
+                "name": "root-collar permeability at reference height",
+                "unit": "m^4",
+                "definition": "Permeability at the root collar (z̃=1) for a tree with reference height h.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "kappa_p0"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_L374-375",
+                        "char_span": null,
+                        "snippet": "κp,0 is the permeability at the root collar (z̃ = 1) for a tree with reference height, h"
+                    }
+                ]
+            },
+            {
+                "symbol": "h",
+                "name": "reference height",
+                "unit": "m",
+                "definition": "Reference tree height used in permeability scaling.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_L374-375",
+                        "char_span": null,
+                        "snippet": "reference height, h [m]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\lambda",
+                "name": "height-scaling exponent for permeability",
+                "unit": null,
+                "definition": "Exponent controlling permeability scaling with tree height H.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "lambda"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_L375-376",
+                        "char_span": null,
+                        "snippet": "unitless scaling exponents, λ and δ, describe how permeability scales with tree size and distance..."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\delta",
+                "name": "axial-scaling exponent for permeability",
+                "unit": null,
+                "definition": "Exponent controlling permeability scaling with distance from the stem apex (in z̃).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "delta"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_L375-377",
+                        "char_span": null,
+                        "snippet": "λ and δ... distance from stem apex, respectively."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\theta",
+                "name": "ODE constant theta",
+                "unit": "MPa·(mol sucrose)·m^-4",
+                "definition": "Constant defined by Eq. S.1.32.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.32",
+                        "char_span": null,
+                        "snippet": "θ = ... (S.1.32)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\eta",
+                "name": "ODE constant eta",
+                "unit": "MPa·(mol sucrose)·m^-4",
+                "definition": "Constant defined by Eq. S.1.33.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.33",
+                        "char_span": null,
+                        "snippet": "η = ... (S.1.33)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\epsilon",
+                "name": "ODE constant epsilon",
+                "unit": "MPa·(mol sucrose)·m^-4",
+                "definition": "Constant defined by Eq. S.1.34.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.34",
+                        "char_span": null,
+                        "snippet": "ε = ... (S.1.34)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\zeta",
+                "name": "ODE constant zeta (resistance-like)",
+                "unit": "MPa·s·m^-4",
+                "definition": "Resistance-like constant defined by Eq. S.1.35.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.35",
+                        "char_span": null,
+                        "snippet": "ζ = ... (S.1.35)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\Theta",
+                "name": "integral term in Φ̃ solution",
+                "unit": "mol sucrose s^-1",
+                "definition": "Integral term (Eq. S.1.37) depending on j(z̃); has units of flux j.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Theta"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_L392-393",
+                        "char_span": null,
+                        "snippet": "Θ has units of j [(mol sucrose)·s-1]."
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "name": "m_p",
+                "unit": "kg mol^-1",
+                "default": 0.13,
+                "estimation": "Fixed from regression between solution density and sucrose concentration (Jensen et al., 2013).",
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_L343-344",
+                        "char_span": null,
+                        "snippet": "we set mp equal to 0.13 kg·mol-1."
+                    }
+                ]
+            },
+            {
+                "name": "varpi",
+                "unit": "MPa Pa^-1",
+                "default": 1e-6,
+                "estimation": "Unit conversion constant (Pa → MPa).",
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L325-326",
+                        "char_span": null,
+                        "snippet": "ϖ = 10-6 MPa ∙ Pa-1"
+                    }
+                ]
+            },
+            {
+                "name": "g",
+                "unit": "m s^-2",
+                "default": 9.81,
+                "estimation": "Gravitational acceleration.",
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L326-327",
+                        "char_span": null,
+                        "snippet": "g = 9.81 m∙s-2"
+                    }
+                ]
+            },
+            {
+                "name": "R",
+                "unit": "J mol^-1 K^-1",
+                "default": 8.314,
+                "estimation": "Universal gas constant.",
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_L353-354",
+                        "char_span": null,
+                        "snippet": "R = 8.314 J∙mol-1∙K-1"
+                    }
+                ]
+            },
+            {
+                "name": "kappa_p_0",
+                "unit": "m^4",
+                "default": null,
+                "estimation": "Permeability at root collar for reference-height tree; specified elsewhere (Table 1 / Table S1).",
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.30",
+                        "char_span": null,
+                        "snippet": "κp,0 ... (S.1.30)"
+                    }
+                ]
+            },
+            {
+                "name": "lambda",
+                "unit": null,
+                "default": null,
+                "estimation": "Exponent for permeability scaling with height; specified elsewhere (Table 1 / Table S1).",
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.30",
+                        "char_span": null,
+                        "snippet": "(H/h)^λ ... (S.1.30)"
+                    }
+                ]
+            },
+            {
+                "name": "delta",
+                "unit": null,
+                "default": null,
+                "estimation": "Exponent for permeability scaling with z̃; specified elsewhere (Table 1 / Table S1).",
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.30",
+                        "char_span": null,
+                        "snippet": "z̃^δ ... (S.1.30)"
+                    }
+                ]
+            },
+            {
+                "name": "k_i",
+                "unit": "MPa",
+                "default": null,
+                "estimation": "Linearized Π–(ϖRTc_p) intercept; specified elsewhere (Table 1 / Table S1).",
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_L352-353",
+                        "char_span": null,
+                        "snippet": "ki is the intercept..."
+                    }
+                ]
+            },
+            {
+                "name": "k_s",
+                "unit": null,
+                "default": null,
+                "estimation": "Linearized Π–(ϖRTc_p) slope; specified elsewhere (Table 1 / Table S1).",
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_L352-353",
+                        "char_span": null,
+                        "snippet": "ks is the unitless slope"
+                    }
+                ]
+            }
+        ],
+        "algorithm": {
+            "inputs": [
+                "j(\\tilde{z})",
+                "H",
+                "h",
+                "\\kappa_{p,0}",
+                "\\lambda",
+                "\\delta",
+                "\\mu",
+                "\\psi'",
+                "\\rho_w",
+                "m_p",
+                "k_i",
+                "k_s",
+                "R",
+                "T",
+                "\\varpi",
+                "g",
+                "c_{p,S}",
+                "\\alpha",
+                "L_{\\mathrm{net}}",
+                "\\sigma",
+                "G",
+                "f_c",
+                "u_R",
+                "R_S",
+                "a",
+                "b"
+            ],
+            "outputs": [
+                "\\tilde{\\Phi}(\\tilde{z})",
+                "c_p(\\tilde{z})",
+                "\\rho_p(\\tilde{z})",
+                "\\Pi(\\tilde{z})"
+            ],
+            "steps": [
+                "Given j(z̃) from Eq. S.1.21 (C002), define κ_p(z̃) using Eq. S.1.30 and define constants θ, η, ε, ζ using Eqs. S.1.32–S.1.35.",
+                "Compute Θ(z̃) from Eq. S.1.38 (analytic form involving the incomplete gamma function) which is derived from Eq. S.1.37 and j(z̃).",
+                "Compute Φ̃(z̃) using the closed-form solution Eq. S.1.36 with boundary condition Φ̃(0)=1.",
+                "Recover concentration: c_p(z̃) = c_{p,S}\\sqrt{\\tilde{\\Phi}(\\tilde{z})} (implied by Eq. S.1.27).",
+                "Optionally compute ρ_p(z̃) via Eq. S.1.25 and Π(z̃) via Eq. S.1.26."
+            ],
+            "pseudocode": null,
+            "evidence": [
+                {
+                    "page": 23,
+                    "block_id": "p23_L389-395",
+                    "char_span": null,
+                    "snippet": "solution... boundary condition... Θ ... fully defined..."
+                }
+            ]
+        },
+        "limitations": [
+            {
+                "id": "L5",
+                "text": "Assumptions of sucrose-only solute, ideal semi-permeability, and negligible diffusion simplify transport physics; deviations could affect inferred concentrations.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 21,
+                        "block_id": "p21_L309-316",
+                        "char_span": null,
+                        "snippet": "sucrose is the only solute... reflection coefficient... diffusion ignored..."
+                    }
+                ]
+            },
+            {
+                "id": "L6",
+                "text": "Linearized osmotic potential Π(c_p) may miss nonlinear effects at large sugar concentrations; authors linearize over expected range.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_L346-350",
+                        "char_span": null,
+                        "snippet": "nonlinear behaviors... influence... Hence, we apply... linearized..."
+                    }
+                ]
+            },
+            {
+                "id": "L7",
+                "text": "Taylor approximation √Φ̃ ≈ 1/2 + Φ̃/2 is valid only within ~0.3 < Φ̃ < ~2.0 (≤10% error).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_L367-368",
+                        "char_span": null,
+                        "snippet": "reasonable as long as ~0.3 < Φ̃ < ~2.0 (less than 10% error)"
+                    }
+                ]
+            },
+            {
+                "id": "L8",
+                "text": "Permeability scaling exponents λ and δ bundle multiple allometric meanings (furcation and phloem area) and are not directly identical to previously reported within-branch conductance scalings.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_L376-379",
+                        "char_span": null,
+                        "snippet": "λ and δ are not identical... meanings... represent furcation and phloem area..."
+                    }
+                ]
+            }
+        ],
+        "implementation": {
+            "model_scope": "PTM subcomponent: concentration solution (S.1.3) using carbon potential transform and permeability power-law (Notes S1, pages 21–23).",
+            "state_variables": [],
+            "exogenous_inputs": [
+                "H",
+                "h",
+                "\\kappa_{p,0}",
+                "\\lambda",
+                "\\delta",
+                "\\mu",
+                "\\psi'",
+                "\\rho_w",
+                "k_i",
+                "k_s",
+                "R",
+                "T",
+                "c_{p,S}"
+            ],
+            "control_inputs": [],
+            "outputs_observables": [
+                "c_p(\\tilde{z})",
+                "\\tilde{\\Phi}(\\tilde{z})"
+            ],
+            "dependency_graph": {
+                "nodes": [
+                    "j(z_tilde)",
+                    "H",
+                    "h",
+                    "kappa_p0",
+                    "lambda",
+                    "delta",
+                    "kappa_p(z_tilde)",
+                    "mu",
+                    "psi_prime",
+                    "varpi",
+                    "rho_w",
+                    "g",
+                    "m_p",
+                    "k_i",
+                    "k_s",
+                    "R",
+                    "T",
+                    "cp_S",
+                    "Phi_S",
+                    "theta",
+                    "eta",
+                    "epsilon",
+                    "zeta",
+                    "Theta(z_tilde)",
+                    "Phi_tilde(z_tilde)",
+                    "cp(z_tilde)",
+                    "rho_p(z_tilde)",
+                    "Pi(z_tilde)"
+                ],
+                "edges": [
+                    {
+                        "from": "H",
+                        "to": "kappa_p(z_tilde)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "h",
+                        "to": "kappa_p(z_tilde)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "kappa_p0",
+                        "to": "kappa_p(z_tilde)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "lambda",
+                        "to": "kappa_p(z_tilde)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "delta",
+                        "to": "kappa_p(z_tilde)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "cp_S",
+                        "to": "Phi_S",
+                        "type": "definition"
+                    },
+                    {
+                        "from": "cp_S",
+                        "to": "theta",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "psi_prime",
+                        "to": "theta",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "varpi",
+                        "to": "theta",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "rho_w",
+                        "to": "theta",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "g",
+                        "to": "theta",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "varpi",
+                        "to": "eta",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "g",
+                        "to": "eta",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "m_p",
+                        "to": "eta",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "Phi_S",
+                        "to": "eta",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "k_s",
+                        "to": "epsilon",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "varpi",
+                        "to": "epsilon",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "R",
+                        "to": "epsilon",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "T",
+                        "to": "epsilon",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "Phi_S",
+                        "to": "epsilon",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "H",
+                        "to": "epsilon",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "mu",
+                        "to": "zeta",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "kappa_p0",
+                        "to": "zeta",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "h",
+                        "to": "zeta",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "H",
+                        "to": "zeta",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "lambda",
+                        "to": "zeta",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "j(z_tilde)",
+                        "to": "Theta(z_tilde)",
+                        "type": "integral/analytic"
+                    },
+                    {
+                        "from": "Theta(z_tilde)",
+                        "to": "Phi_tilde(z_tilde)",
+                        "type": "closed_form"
+                    },
+                    {
+                        "from": "theta",
+                        "to": "Phi_tilde(z_tilde)",
+                        "type": "closed_form"
+                    },
+                    {
+                        "from": "eta",
+                        "to": "Phi_tilde(z_tilde)",
+                        "type": "closed_form"
+                    },
+                    {
+                        "from": "epsilon",
+                        "to": "Phi_tilde(z_tilde)",
+                        "type": "closed_form"
+                    },
+                    {
+                        "from": "zeta",
+                        "to": "Phi_tilde(z_tilde)",
+                        "type": "closed_form"
+                    },
+                    {
+                        "from": "Phi_tilde(z_tilde)",
+                        "to": "cp(z_tilde)",
+                        "type": "transform_inverse"
+                    },
+                    {
+                        "from": "cp(z_tilde)",
+                        "to": "rho_p(z_tilde)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "cp(z_tilde)",
+                        "to": "Pi(z_tilde)",
+                        "type": "equation"
+                    }
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.31-36",
+                        "char_span": null,
+                        "snippet": "ODE constants and closed-form solution for Φ̃."
+                    },
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.38",
+                        "char_span": null,
+                        "snippet": "Analytic Θ(z̃) from j(z̃) using incomplete gamma terms."
+                    }
+                ]
+            },
+            "numerics": {
+                "time_step": null,
+                "time_grid": null,
+                "integration_method": "analytic (closed-form Φ̃ and Θ; incomplete gamma functions)",
+                "solver": null,
+                "convergence_criteria": null,
+                "stability_notes": "Accuracy depends on Taylor approximation validity range for Φ̃.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_L367-368",
+                        "char_span": null,
+                        "snippet": "≤10% error range for √Φ̃ approximation."
+                    }
+                ]
+            },
+            "boundary_conditions": [
+                {
+                    "name": "Apex carbon potential boundary condition",
+                    "formulation": "\\tilde{\\Phi}(\\tilde{z}=0)=1\\;\\;\\Leftrightarrow\\;\\;c_p(\\tilde{z}=0)=c_{p,S}",
+                    "uncertain": false,
+                    "evidence": [
+                        {
+                            "page": 23,
+                            "block_id": "p23_L389-391",
+                            "char_span": null,
+                            "snippet": "boundary condition that Φ̃(z̃ = 0) = 1 (i.e. cp(z̃ = 0) = cp,S)"
+                        }
+                    ]
+                }
+            ],
+            "code_blueprint": {
+                "language": null,
+                "modules": [
+                    {
+                        "name": "ptm_concentration_solution",
+                        "responsibility": "Compute κp(z̃), constants (θ,η,ε,ζ), Θ(z̃), Φ̃(z̃), and c_p(z̃) from j(z̃).",
+                        "public_api": [
+                            {
+                                "name": "compute_kappa_p",
+                                "signature": "compute_kappa_p(z_tilde, H, h, kappa_p0, lambda_, delta) -> kappa_p",
+                                "description": "Eq. S.1.30."
+                            },
+                            {
+                                "name": "compute_constants",
+                                "signature": "compute_constants(cp_S, psi_prime, rho_w, varpi, g, m_p, k_s, R, T, H, mu, kappa_p0, h, lambda_) -> (theta, eta, epsilon, zeta)",
+                                "description": "Eqs. S.1.32–S.1.35."
+                            },
+                            {
+                                "name": "compute_Theta",
+                                "signature": "compute_Theta(z_tilde, alpha, L_net, sigma, G, f_c, u_R, R_S, a, b, theta, eta, epsilon, delta) -> Theta",
+                                "description": "Eq. S.1.38 (requires incomplete gamma γ)."
+                            },
+                            {
+                                "name": "compute_Phi_tilde",
+                                "signature": "compute_Phi_tilde(z_tilde, theta, eta, epsilon, zeta, Theta) -> Phi_tilde",
+                                "description": "Eq. S.1.36."
+                            },
+                            {
+                                "name": "compute_cp",
+                                "signature": "compute_cp(cp_S, Phi_tilde) -> cp",
+                                "description": "Implied inverse of Eq. S.1.27: cp = cp_S * sqrt(Phi_tilde)."
+                            }
+                        ]
+                    }
+                ],
+                "functions": [],
+                "tests": []
+            }
+        }
+    },
+    "provenance": {
+        "extraction_time": "2026-01-28T19:40:10.705041Z",
+        "model": "GPT-5.2 Thinking",
+        "notes": "EXTRACT C003 (pages 21–23): PTM concentration solution (S.1.3). Defines turgor-driven advection, decomposes turgor components (water potential gradient, gravity via density, osmotic potential), applies carbon potential transform and Taylor linearization, introduces permeability power-law, derives linear ODE and closed-form Φ̃(z̃) with analytic Θ(z̃) involving incomplete gamma functions.",
+        "mode": "EXTRACT",
+        "is_partial": true,
+        "chunk": {
+            "chunk_id": "C003",
+            "page_range": [
+                21,
+                23
+            ]
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C003",
+                "page_range": [
+                    21,
+                    23
+                ],
+                "section_titles": [
+                    "S.1.3 Solution for phloem sap sugar concentrations"
+                ],
+                "focus_tags": [
+                    "model",
+                    "equations",
+                    "transformation",
+                    "closed_form_solution"
+                ],
+                "priority": 3,
+                "rationale": "Converts flux solution j(z̃) into concentration c_p(z̃) via carbon potential Φ̃, yielding an implementable closed-form solution and explicit parameter groupings (θ,η,ε,ζ) plus analytic Θ(z̃).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 22,
+                        "block_id": "p22_eqS1.27-29",
+                        "char_span": null,
+                        "snippet": "Defines Φ and Φ̃; Taylor approximation for √Φ̃."
+                    },
+                    {
+                        "page": 23,
+                        "block_id": "p23_eqS1.31-38",
+                        "char_span": null,
+                        "snippet": "Linear ODE, constants, boundary condition, closed-form Φ̃, and analytic Θ with incomplete gamma."
+                    }
+                ]
+            }
+        ],
+        "next_recommended_chunk_id": "C004"
+    }
+}

@@ -1,0 +1,1247 @@
+{
+    "doc": {
+        "id": "Potkay et al. - 2022 - Turgor-limited predictions of tree growth, height and metabolic scaling over tree lifespans 1.pdf",
+        "title": "Turgor-limited predictions of tree growth, height, and metabolic scaling over tree lifespans (Supporting Information)",
+        "year": 2022,
+        "doi": null,
+        "page_count": 36
+    },
+    "model_card": {
+        "name": "THORP-G dynamic simulation coupling (TDGM + THORP)",
+        "aliases": [
+            "THORP-Growth",
+            "THORP-G"
+        ],
+        "task": [
+            "Dynamic coupling of turgor-driven growth model (TDGM) with THORP to simulate growth and NSC pools at subdaily time steps"
+        ],
+        "domain": [
+            "Plant/forest eco-physiology",
+            "Tree hydraulics",
+            "Carbon allocation",
+            "Dynamic growth modeling"
+        ],
+        "assumptions": [
+            {
+                "id": "A1",
+                "text": "THORP-G replaces THORP’s single NSC pool with two NSC pools: immobile sugars/starches (CS,I) and mobile sugars (CS,M).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_b10",
+                        "char_span": null,
+                        "snippet": "CS ≤ 0. With the addition of the TDGM, THORP-G contains two NSC pools. Two NSC pool  503"
+                    }
+                ]
+            },
+            {
+                "id": "A2",
+                "text": "Mortality (carbon starvation) in THORP-G is determined when storage is insufficient for osmoregulation/active processes, stated as CS,I < 0 (equivalently CS < CS,M).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_b26",
+                        "char_span": null,
+                        "snippet": "osmoregulation or active processes (CS,I < 0; alternatively stated as CS < CS,M).   519"
+                    }
+                ]
+            },
+            {
+                "id": "A3",
+                "text": "Realized allocation fractions ui are smoothed versions of optimal daily allocation fractions vi using an exponential-memory filter with coefficient Υ; Υ is set to 3.8×10^-6 s^-1 (≈ two-week memory).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_b38",
+                        "char_span": null,
+                        "snippet": "to the daily, optimal allocation fractions. Instead, we smoothed allocation fractions to reduce high- 566"
+                    },
+                    {
+                        "page": 29,
+                        "block_id": "p29_b7",
+                        "char_span": null,
+                        "snippet": "with little memory has large ϒ. We set ϒ equal to 3.8∙10-6 s-1 such that 99% of the system’s  575"
+                    },
+                    {
+                        "page": 29,
+                        "block_id": "p29_b8",
+                        "char_span": null,
+                        "snippet": "memory reflects the past two weeks. We chose two weeks of memory, since the solution to our  576"
+                    }
+                ]
+            },
+            {
+                "id": "A4",
+                "text": "Growth in THORP-G is halted when air temperature ≤ 7°C (contrasting THORP’s ≤ 0°C threshold).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_b12",
+                        "char_span": null,
+                        "snippet": "temperature was less than or equal to 7°C, based on Cabon et al.’s (2020) study of cambial growth  543"
+                    }
+                ]
+            },
+            {
+                "id": "A5",
+                "text": "NSC limitation term gNSC is represented as a Michaelis–Menten function of immobile NSC CS,I with size-dependent half-saturation coefficient KMM determined from a fixed sucrose-equivalent concentration cMM and estimated tree volume V.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_b22",
+                        "char_span": null,
+                        "snippet": "we treat gNSC as a Michaelis-Menten function,  553"
+                    },
+                    {
+                        "page": 28,
+                        "block_id": "p28_b25",
+                        "char_span": null,
+                        "snippet": "where the Michaelis-Menten coefficient, KMM [mol C], scales with tree-size in proportion to a fixed  555"
+                    },
+                    {
+                        "page": 28,
+                        "block_id": "p28_b26",
+                        "char_span": null,
+                        "snippet": "NSC concentration expressed in sucrose equivalents, cMM [(mol suc)∙m-3],   556"
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "Eq.S.3.1",
+                "latex": "C_{S,I} = C_S - C_{S,M}",
+                "variables": [
+                    "C_{S,I}",
+                    "C_S",
+                    "C_{S,M}"
+                ],
+                "explanation": "Definition of immobile NSC pool as total NSC minus mobile NSC.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_b14",
+                        "char_span": null,
+                        "snippet": "𝐶𝑆,𝐼= 𝐶𝑆−𝐶𝑆,𝑀          (S.3.1)  507"
+                    }
+                ]
+            },
+            {
+                "id": "Eq.S.3.2",
+                "latex": "C_{S,M} = \\left(\\frac{c_p}{\\alpha}\\right) V",
+                "variables": [
+                    "C_{S,M}",
+                    "c_p",
+                    "\\alpha",
+                    "V"
+                ],
+                "explanation": "First-order estimate of mobile NSC from phloem sugar concentration and an estimated tree volume.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_b30",
+                        "char_span": null,
+                        "snippet": "𝐶𝑆,𝑀="
+                    },
+                    {
+                        "page": 27,
+                        "block_id": "p27_b31",
+                        "char_span": null,
+                        "snippet": "𝑐𝑝"
+                    },
+                    {
+                        "page": 27,
+                        "block_id": "p27_b32",
+                        "char_span": null,
+                        "snippet": "𝛼𝑉            (S.3.2)  523"
+                    },
+                    {
+                        "page": 27,
+                        "block_id": "p27_b27",
+                        "char_span": null,
+                        "snippet": "As a first-order approximation, CS,M  is estimated from the phloem sugar concentration, cp  520"
+                    }
+                ],
+                "candidates": [
+                    {
+                        "latex": "C_{S,M} = \\frac{c_p}{\\alpha V}",
+                        "evidence": [
+                            {
+                                "page": 27,
+                                "block_id": "p27_b30",
+                                "char_span": null,
+                                "snippet": "𝐶𝑆,𝑀="
+                            },
+                            {
+                                "page": 27,
+                                "block_id": "p27_b31",
+                                "char_span": null,
+                                "snippet": "𝑐𝑝"
+                            },
+                            {
+                                "page": 27,
+                                "block_id": "p27_b32",
+                                "char_span": null,
+                                "snippet": "𝛼𝑉            (S.3.2)  523"
+                            }
+                        ]
+                    },
+                    {
+                        "latex": "C_{S,M} = \\frac{c_p V}{\\alpha}",
+                        "evidence": [
+                            {
+                                "page": 27,
+                                "block_id": "p27_b30",
+                                "char_span": null,
+                                "snippet": "𝐶𝑆,𝑀="
+                            },
+                            {
+                                "page": 27,
+                                "block_id": "p27_b31",
+                                "char_span": null,
+                                "snippet": "𝑐𝑝"
+                            },
+                            {
+                                "page": 27,
+                                "block_id": "p27_b32",
+                                "char_span": null,
+                                "snippet": "𝛼𝑉            (S.3.2)  523"
+                            }
+                        ]
+                    },
+                    {
+                        "latex": "C_{S,M} = \\left(\\frac{c_p}{\\alpha}\\right) V",
+                        "evidence": [
+                            {
+                                "page": 27,
+                                "block_id": "p27_b30",
+                                "char_span": null,
+                                "snippet": "𝐶𝑆,𝑀="
+                            },
+                            {
+                                "page": 27,
+                                "block_id": "p27_b31",
+                                "char_span": null,
+                                "snippet": "𝑐𝑝"
+                            },
+                            {
+                                "page": 27,
+                                "block_id": "p27_b32",
+                                "char_span": null,
+                                "snippet": "𝛼𝑉            (S.3.2)  523"
+                            }
+                        ]
+                    }
+                ],
+                "selected": "C_{S,M} = \\left(\\frac{c_p}{\\alpha}\\right) V",
+                "selection_reason": "Resolved using the doc-chunk evidence summary in `TDGM/model_card/C001.json` (chunk C005, p27_nsc_pools), which states CS,M = (cp/α) V."
+            },
+            {
+                "id": "Eq.S.3.3",
+                "latex": "V = \\frac{C_W + C_R}{\\rho_{cS}} + \\frac{C_L}{\\rho_{cL}}",
+                "variables": [
+                    "V",
+                    "C_W",
+                    "C_R",
+                    "C_L",
+                    "\\rho_{cS}",
+                    "\\rho_{cL}"
+                ],
+                "explanation": "Approximate total tree volume from stem+root carbon pools (using stem carbon density) and leaf carbon pool (using leaf carbon density).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_b33",
+                        "char_span": null,
+                        "snippet": "𝑉="
+                    },
+                    {
+                        "page": 27,
+                        "block_id": "p27_b34",
+                        "char_span": null,
+                        "snippet": "𝐶𝑊+𝐶𝑅"
+                    },
+                    {
+                        "page": 27,
+                        "block_id": "p27_b35",
+                        "char_span": null,
+                        "snippet": "𝜌𝑐𝑆 +"
+                    },
+                    {
+                        "page": 27,
+                        "block_id": "p27_b36",
+                        "char_span": null,
+                        "snippet": "𝐶𝐿 𝜌𝑐𝐿          (S.3.3)  524"
+                    },
+                    {
+                        "page": 27,
+                        "block_id": "p27_b38",
+                        "char_span": null,
+                        "snippet": "C)-1] (α = 1/12), V is an estimate, albeit a rough approximation, for the total tree volume [m3], ρcS  526"
+                    }
+                ]
+            },
+            {
+                "id": "Eq.S.3.4",
+                "latex": "G = g_T \\, g_{NSC} \\, G'",
+                "variables": [
+                    "G",
+                    "g_T",
+                    "g_{NSC}",
+                    "G'"
+                ],
+                "explanation": "Realized growth rate equals maximum potential (turgor-limited) growth scaled by temperature and NSC availability limitations.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_b7",
+                        "char_span": null,
+                        "snippet": "𝐺= 𝑔𝑇𝑔𝑁𝑆𝐶𝐺′          (S.3.4)  538"
+                    },
+                    {
+                        "page": 28,
+                        "block_id": "p28_b2",
+                        "char_span": null,
+                        "snippet": "S.2. We apply our TDGM to predict a maximum potential, turgor-limited growth rate, G’ [(mol  533"
+                    }
+                ]
+            },
+            {
+                "id": "Eq.S.3.5",
+                "latex": "g_{NSC} = \\frac{C_{S,I}}{C_{S,I} + K_{MM}}",
+                "variables": [
+                    "g_{NSC}",
+                    "C_{S,I}",
+                    "K_{MM}"
+                ],
+                "explanation": "Michaelis–Menten limitation on growth due to immobile NSC availability.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_b23",
+                        "char_span": null,
+                        "snippet": "𝑔𝑁𝑆𝐶="
+                    },
+                    {
+                        "page": 28,
+                        "block_id": "p28_b24",
+                        "char_span": null,
+                        "snippet": "𝐶𝑆,𝐼 𝐶𝑆,𝐼+𝐾𝑀𝑀          (S.3.5)  554"
+                    }
+                ]
+            },
+            {
+                "id": "Eq.S.3.6",
+                "latex": "K_{MM} = \\left(\\frac{c_{MM}}{\\alpha}\\right) V",
+                "variables": [
+                    "K_{MM}",
+                    "c_{MM}",
+                    "\\alpha",
+                    "V"
+                ],
+                "explanation": "Size-dependent Michaelis–Menten coefficient derived from a fixed sucrose-equivalent concentration and estimated tree volume.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_b27",
+                        "char_span": null,
+                        "snippet": "𝐾𝑀𝑀="
+                    },
+                    {
+                        "page": 28,
+                        "block_id": "p28_b28",
+                        "char_span": null,
+                        "snippet": "𝑐𝑀𝑀"
+                    },
+                    {
+                        "page": 28,
+                        "block_id": "p28_b29",
+                        "char_span": null,
+                        "snippet": "𝛼𝑉           (S.3.6)  557"
+                    }
+                ],
+                "candidates": [
+                    {
+                        "latex": "K_{MM} = \\frac{c_{MM}}{\\alpha V}",
+                        "evidence": [
+                            {
+                                "page": 28,
+                                "block_id": "p28_b27",
+                                "char_span": null,
+                                "snippet": "𝐾𝑀𝑀="
+                            },
+                            {
+                                "page": 28,
+                                "block_id": "p28_b28",
+                                "char_span": null,
+                                "snippet": "𝑐𝑀𝑀"
+                            },
+                            {
+                                "page": 28,
+                                "block_id": "p28_b29",
+                                "char_span": null,
+                                "snippet": "𝛼𝑉           (S.3.6)  557"
+                            }
+                        ]
+                    },
+                    {
+                        "latex": "K_{MM} = \\frac{c_{MM} V}{\\alpha}",
+                        "evidence": [
+                            {
+                                "page": 28,
+                                "block_id": "p28_b27",
+                                "char_span": null,
+                                "snippet": "𝐾𝑀𝑀="
+                            },
+                            {
+                                "page": 28,
+                                "block_id": "p28_b28",
+                                "char_span": null,
+                                "snippet": "𝑐𝑀𝑀"
+                            },
+                            {
+                                "page": 28,
+                                "block_id": "p28_b29",
+                                "char_span": null,
+                                "snippet": "𝛼𝑉           (S.3.6)  557"
+                            }
+                        ]
+                    },
+                    {
+                        "latex": "K_{MM} = \\left(\\frac{c_{MM}}{\\alpha}\\right) V",
+                        "evidence": [
+                            {
+                                "page": 28,
+                                "block_id": "p28_b27",
+                                "char_span": null,
+                                "snippet": "𝐾𝑀𝑀="
+                            },
+                            {
+                                "page": 28,
+                                "block_id": "p28_b28",
+                                "char_span": null,
+                                "snippet": "𝑐𝑀𝑀"
+                            },
+                            {
+                                "page": 28,
+                                "block_id": "p28_b29",
+                                "char_span": null,
+                                "snippet": "𝛼𝑉           (S.3.6)  557"
+                            }
+                        ]
+                    }
+                ],
+                "selected": "K_{MM} = \\left(\\frac{c_{MM}}{\\alpha}\\right) V",
+                "selection_reason": "Resolved using the doc-chunk evidence summary in `TDGM/model_card/C001.json` (chunk C005, p28_growth_mods), which states KMM = (cMM/α) V."
+            },
+            {
+                "id": "Eq.S.3.7",
+                "latex": "u_i(t) = \\Upsilon \\int_{-\\infty}^{t} v_i(\\tau)\\,\\exp\\!\\left(-\\Upsilon\\,[t-\\tau]\\right)\\,d\\tau",
+                "variables": [
+                    "u_i",
+                    "v_i",
+                    "\\Upsilon",
+                    "t",
+                    "\\tau"
+                ],
+                "explanation": "Exponential-memory smoothing of optimal allocation fractions v_i into realized fractions u_i.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b1",
+                        "char_span": null,
+                        "snippet": "𝑢𝑖(𝑡) = Υ ∫ 𝑣𝑖(𝜏) exp(−Υ[𝑡−𝜏 ])  𝑑𝜏 𝑡 −∞       (S.3.7)  569"
+                    }
+                ]
+            },
+            {
+                "id": "Eq.S.3.8",
+                "latex": "\\frac{\\partial u_i}{\\partial t} = \\Upsilon\\,(v_i - u_i)",
+                "variables": [
+                    "u_i",
+                    "v_i",
+                    "\\Upsilon",
+                    "t"
+                ],
+                "explanation": "Finite-difference/ODE form used to solve Eq. S.3.7 without storing past v_i values.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b17",
+                        "char_span": null,
+                        "snippet": "𝜕𝑢𝑖"
+                    },
+                    {
+                        "page": 29,
+                        "block_id": "p29_b18",
+                        "char_span": null,
+                        "snippet": "𝜕𝑡= Υ(𝑣𝑖−𝑢𝑖)          (S.3.8)  585"
+                    },
+                    {
+                        "page": 29,
+                        "block_id": "p29_b15",
+                        "char_span": null,
+                        "snippet": "Instead, we solve Eq. S.3.7 through a finite-difference approach, requiring no storage of vi expect  583"
+                    }
+                ]
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "C_{S,I}",
+                "name": "Immobile non-structural carbohydrates (sugars and starches)",
+                "unit": "mole C",
+                "definition": "Immobile NSC pool in THORP-G (CS,I).",
+                "range": null,
+                "dimension": "amount of substance",
+                "aliases": [
+                    "CS,I"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_b13",
+                        "char_span": null,
+                        "snippet": "sugars and starches, CS,I [mol C], and a second pool for mobile sugars, CS,M [mol C],  506"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_{S,M}",
+                "name": "Mobile non-structural carbohydrates (mobile sugars)",
+                "unit": "mole C",
+                "definition": "Mobile NSC pool in THORP-G (CS,M).",
+                "range": null,
+                "dimension": "amount of substance",
+                "aliases": [
+                    "CS,M"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_b13",
+                        "char_span": null,
+                        "snippet": "sugars and starches, CS,I [mol C], and a second pool for mobile sugars, CS,M [mol C],  506"
+                    }
+                ]
+            },
+            {
+                "symbol": "C_S",
+                "name": "Total non-structural carbohydrate pool",
+                "unit": "mole C",
+                "definition": "Total NSC pool calculated from THORP carbon input/sink dynamics; relates to CS,I and CS,M via Eq. S.3.1.",
+                "range": null,
+                "dimension": "amount of substance",
+                "aliases": [
+                    "CS"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_b15",
+                        "char_span": null,
+                        "snippet": "where CS is the total NSC pool [mol C], calculated from carbon input- and sink-dynamics (e.g. net  508"
+                    }
+                ]
+            },
+            {
+                "symbol": "c_p",
+                "name": "Phloem sap sugar concentration (sucrose equivalents)",
+                "unit": "mole sucrose meter^-3",
+                "definition": "Phloem sap sucrose-equivalent concentration used to estimate mobile NSC CS,M (Eq. S.3.2) and solved simultaneously when computing G′ (via Eq. S.2.16 in Section S.2).",
+                "range": null,
+                "dimension": "amount of substance per volume",
+                "aliases": [
+                    "cp"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_b27",
+                        "char_span": null,
+                        "snippet": "As a first-order approximation, CS,M  is estimated from the phloem sugar concentration, cp  520"
+                    },
+                    {
+                        "page": 29,
+                        "block_id": "p29_b37",
+                        "char_span": null,
+                        "snippet": "by Eq. S.2.16, which simultaneously solves for the phloem sugar concentration, cp,  604"
+                    }
+                ]
+            },
+            {
+                "symbol": "V",
+                "name": "Estimated total tree volume",
+                "unit": "meter^3",
+                "definition": "Approximate tree volume computed from carbon pools and carbon densities (Eq. S.3.3).",
+                "range": null,
+                "dimension": "volume",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_b38",
+                        "char_span": null,
+                        "snippet": "C)-1] (α = 1/12), V is an estimate, albeit a rough approximation, for the total tree volume [m3], ρcS  526"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\rho_{cS}",
+                "name": "Stem carbon density",
+                "unit": "mole C meter^-3",
+                "definition": "Stem carbon density used in volume approximation Eq. S.3.3.",
+                "range": null,
+                "dimension": "amount of substance per volume",
+                "aliases": [
+                    "ρcS"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_b39",
+                        "char_span": null,
+                        "snippet": "and ρcL are the stem and  leaf carbon densities, respectively [(mol C)∙m-3], and CW, CR, and CL are  527"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\rho_{cL}",
+                "name": "Leaf carbon density",
+                "unit": "mole C meter^-3",
+                "definition": "Leaf carbon density used in volume approximation Eq. S.3.3.",
+                "range": null,
+                "dimension": "amount of substance per volume",
+                "aliases": [
+                    "ρcL"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_b39",
+                        "char_span": null,
+                        "snippet": "and ρcL are the stem and  leaf carbon densities, respectively [(mol C)∙m-3], and CW, CR, and CL are  527"
+                    }
+                ]
+            },
+            {
+                "symbol": "G'",
+                "name": "Maximum potential (turgor-limited) growth rate",
+                "unit": "mole C second^-1",
+                "definition": "Maximum potential growth predicted by TDGM (Section S.2) and used in realized growth in THORP-G.",
+                "range": null,
+                "dimension": "amount of substance per time",
+                "aliases": [
+                    "G’",
+                    "Gprime"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_b2",
+                        "char_span": null,
+                        "snippet": "S.2. We apply our TDGM to predict a maximum potential, turgor-limited growth rate, G’ [(mol  533"
+                    }
+                ]
+            },
+            {
+                "symbol": "G",
+                "name": "Realized growth rate",
+                "unit": "mole C second^-1",
+                "definition": "Growth rate after applying temperature and NSC limitations to G′ (Eq. S.3.4).",
+                "range": null,
+                "dimension": "amount of substance per time",
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_b4",
+                        "char_span": null,
+                        "snippet": "realized growth rate in THORP-G, G [(mol C)∙s-1] is the product of G’ and two dimensionless  535"
+                    }
+                ]
+            },
+            {
+                "symbol": "g_T",
+                "name": "Temperature limitation factor on growth",
+                "unit": "dimensionless",
+                "definition": "Temperature-dependent modifier applied to growth in THORP-G; formulation referenced to Schiestl-Aalto et al. (2015) / Eq. S.9.2b in Potkay et al. (2021).",
+                "range": [
+                    0.0,
+                    1.0
+                ],
+                "dimension": "dimensionless",
+                "aliases": [
+                    "gT"
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_b8",
+                        "char_span": null,
+                        "snippet": "Like in THORP, growth rates in THORP-G are temperature-dependent according to the  539"
+                    },
+                    {
+                        "page": 28,
+                        "block_id": "p28_b12",
+                        "char_span": null,
+                        "snippet": "temperature was less than or equal to 7°C, based on Cabon et al.’s (2020) study of cambial growth  543"
+                    }
+                ]
+            },
+            {
+                "symbol": "g_{NSC}",
+                "name": "NSC limitation factor on growth",
+                "unit": "dimensionless",
+                "definition": "Modifier describing limitation due to immobile NSC availability, modeled via Eq. S.3.5.",
+                "range": [
+                    0.0,
+                    1.0
+                ],
+                "dimension": "dimensionless",
+                "aliases": [
+                    "gNSC"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_b18",
+                        "char_span": null,
+                        "snippet": "The second modifying term to growth, gNSC, represents the constraint on growth from the  548"
+                    }
+                ]
+            },
+            {
+                "symbol": "K_{MM}",
+                "name": "Michaelis–Menten coefficient for NSC limitation",
+                "unit": "mole C",
+                "definition": "Half-saturation coefficient in Eq. S.3.5; scales with tree size via Eq. S.3.6.",
+                "range": null,
+                "dimension": "amount of substance",
+                "aliases": [
+                    "KMM"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_b25",
+                        "char_span": null,
+                        "snippet": "where the Michaelis-Menten coefficient, KMM [mol C], scales with tree-size in proportion to a fixed  555"
+                    }
+                ]
+            },
+            {
+                "symbol": "c_{MM}",
+                "name": "Fixed NSC concentration in sucrose equivalents (parameterization constant)",
+                "unit": "mole sucrose meter^-3",
+                "definition": "Fixed sucrose-equivalent concentration used to scale KMM with V; stated as the only new constant requiring parameterization in THORP-G.",
+                "range": null,
+                "dimension": "amount of substance per volume",
+                "aliases": [
+                    "cMM"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_b26",
+                        "char_span": null,
+                        "snippet": "NSC concentration expressed in sucrose equivalents, cMM [(mol suc)∙m-3],   556"
+                    },
+                    {
+                        "page": 28,
+                        "block_id": "p28_b30",
+                        "char_span": null,
+                        "snippet": "where cMM is the only constant in Eq. S.3.5-6 that requires parameterization and was not already  558"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\alpha",
+                "name": "Carbon–sucrose conversion constant",
+                "unit": "mole sucrose per mole C",
+                "definition": "Converts between carbon and sucrose equivalents; α = 1/12.",
+                "range": null,
+                "dimension": "dimensionless",
+                "aliases": [
+                    "α"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_b38",
+                        "char_span": null,
+                        "snippet": "C)-1] (α = 1/12), V is an estimate, albeit a rough approximation, for the total tree volume [m3], ρcS  526"
+                    }
+                ]
+            },
+            {
+                "symbol": "u_i",
+                "name": "Realized allocation fraction to pool i",
+                "unit": "dimensionless",
+                "definition": "Smoothed allocation fraction applied for biomass increments in THORP-G.",
+                "range": [
+                    0.0,
+                    1.0
+                ],
+                "dimension": "dimensionless",
+                "aliases": [
+                    "ui"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b4",
+                        "char_span": null,
+                        "snippet": "where ui is the realized allocation fraction [-] to the ith carbon pool (e.g. stem wood, S, or roots,  570"
+                    }
+                ]
+            },
+            {
+                "symbol": "v_i",
+                "name": "Optimal (daily) allocation fraction to pool i",
+                "unit": "dimensionless",
+                "definition": "Daily optimal allocation fraction calculated by THORP before smoothing.",
+                "range": [
+                    0.0,
+                    1.0
+                ],
+                "dimension": "dimensionless",
+                "aliases": [
+                    "vi"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b5",
+                        "char_span": null,
+                        "snippet": "R) at time, t [s], vi is the daily, optimal allocation fraction [-] calculated by THORP for the ith  571"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\Upsilon",
+                "name": "Allocation filter memory coefficient",
+                "unit": "second^-1",
+                "definition": "Coefficient controlling memory/smoothing of allocation fractions; set to 3.8×10^-6 s^-1.",
+                "range": null,
+                "dimension": "per time",
+                "aliases": [
+                    "Υ",
+                    "ϒ"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b7",
+                        "char_span": null,
+                        "snippet": "with little memory has large ϒ. We set ϒ equal to 3.8∙10-6 s-1 such that 99% of the system’s  575"
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "name": "\\alpha",
+                "unit": "mole sucrose per mole C",
+                "default": 0.08333333333333333,
+                "estimation": "Fixed constant (provided).",
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_b38",
+                        "char_span": null,
+                        "snippet": "C)-1] (α = 1/12), V is an estimate, albeit a rough approximation, for the total tree volume [m3], ρcS  526"
+                    }
+                ]
+            },
+            {
+                "name": "\\Upsilon",
+                "unit": "second^-1",
+                "default": 3.8e-06,
+                "estimation": "Chosen so ~99% of memory reflects past two weeks.",
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b7",
+                        "char_span": null,
+                        "snippet": "with little memory has large ϒ. We set ϒ equal to 3.8∙10-6 s-1 such that 99% of the system’s  575"
+                    },
+                    {
+                        "page": 29,
+                        "block_id": "p29_b8",
+                        "char_span": null,
+                        "snippet": "memory reflects the past two weeks. We chose two weeks of memory, since the solution to our  576"
+                    }
+                ]
+            },
+            {
+                "name": "c_{MM}",
+                "unit": "mole sucrose meter^-3",
+                "default": null,
+                "estimation": "Parameterized using analogous variables from prior phloem loading PTMs (Table 2 referenced).",
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_b31",
+                        "char_span": null,
+                        "snippet": "in THORP. Due to the aforementioned similarity to phloem loading schemes, we parameterized  559"
+                    },
+                    {
+                        "page": 28,
+                        "block_id": "p28_b32",
+                        "char_span": null,
+                        "snippet": "cMM by similar variables from past PTMs (Table 2).   560"
+                    }
+                ]
+            }
+        ],
+        "algorithm": {
+            "inputs": [
+                "ψ_{Rc}",
+                "ψ_S",
+                "A_n",
+                "v_i",
+                "C_S",
+                "T_air"
+            ],
+            "outputs": [
+                "G'",
+                "c_p",
+                "C_{S,M}",
+                "C_{S,I}",
+                "g_T",
+                "g_{NSC}",
+                "G",
+                "u_i"
+            ],
+            "steps": [
+                "1) Compute xylem hydraulics (ψRc, ψS) and carbon assimilation An using THORP framework.",
+                "2) Compute optimal allocation fractions vi using THORP framework.",
+                "3) Update realized allocation fractions ui from vi using Eq. S.3.8 (smoothing filter).",
+                "4) Compute maximum potential growth G′ (and simultaneously solve cp) from ψRc, ψS, and uS via Eq. S.2.16 (TDGM).",
+                "5) Compute mobile NSC CS,M from cp using Eq. S.3.2.",
+                "6) Compute immobile NSC CS,I from CS,M using Eq. S.3.1.",
+                "7) Compute temperature limitation gT (per Schiestl-Aalto et al. 2015 / Potkay et al. 2021) and NSC limitation gNSC from CS,I using Eq. S.3.5.",
+                "8) Compute realized growth G via Eq. S.3.4.",
+                "9) Update structural biomass pools and total NSC CS per THORP carbon dynamics (including growth and respiration)."
+            ],
+            "pseudocode": null,
+            "evidence": [
+                {
+                    "page": 26,
+                    "block_id": "p26_b46",
+                    "char_span": null,
+                    "snippet": "Lastly, we summarize the order of computational operations within THORP-G.  488"
+                },
+                {
+                    "page": 29,
+                    "block_id": "p29_b31",
+                    "char_span": null,
+                    "snippet": "1. calculate xylem hydraulics, notably ψRc and ψS, and carbon assimilation, An, according to  598"
+                },
+                {
+                    "page": 30,
+                    "block_id": "p30_b1",
+                    "char_span": null,
+                    "snippet": "7. calculate temperature limitations, gT (Shiestl-Aalto et al., 2015; Eq. S.9.2b in Potkay et al.,  607"
+                }
+            ]
+        },
+        "datasets": [],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L1",
+                "text": "The explicit formulation for gT is not provided in this Supporting Information section; it is referenced to Eq. S.9.2b in Potkay et al. (2021) and Schiestl-Aalto et al. (2015).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 28,
+                        "block_id": "p28_b9",
+                        "char_span": null,
+                        "snippet": "formulation for Scots Pine from Schiestl-Aalto et al. (2015), gT (same as in Eq. S.9.2b in Potkay  540"
+                    }
+                ]
+            },
+            {
+                "id": "L2",
+                "text": "Equations S.3.2 and S.3.6 are typeset across multiple blocks in the PDF; their exact algebraic grouping (e.g., whether V is in a denominator or multiplicative factor) is ambiguous from text extraction alone.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 27,
+                        "block_id": "p27_b32",
+                        "char_span": null,
+                        "snippet": "𝛼𝑉            (S.3.2)  523"
+                    },
+                    {
+                        "page": 28,
+                        "block_id": "p28_b29",
+                        "char_span": null,
+                        "snippet": "𝛼𝑉           (S.3.6)  557"
+                    }
+                ]
+            }
+        ],
+        "implementation": {
+            "model_scope": "Couples TDGM (turgor-limited growth) to THORP hydraulics/optimal allocation to create THORP-G with two NSC pools, temperature & NSC growth limitations, and smoothed allocation fractions.",
+            "state_variables": [
+                "C_W",
+                "C_R",
+                "C_L",
+                "C_S",
+                "C_{S,I}",
+                "C_{S,M}",
+                "u_i"
+            ],
+            "exogenous_inputs": [
+                "T_air",
+                "atmospheric forcing (radiation, VPD, etc.; via THORP)"
+            ],
+            "control_inputs": [],
+            "outputs_observables": [
+                "G",
+                "G'",
+                "c_p",
+                "g_T",
+                "g_{NSC}",
+                "ψ_{Rc}",
+                "ψ_S",
+                "u_i",
+                "v_i"
+            ],
+            "boundary_conditions": {
+                "spatial_domain": null,
+                "initial_conditions": null,
+                "constraints": [
+                    "Σ u_i = 1 (allocation fractions remain normalized when smoothing filter applied)"
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b20",
+                        "char_span": null,
+                        "snippet": "definition of an allocation fraction (i.e. the system must satisfy Σui = Σvi = 1, and thus also Σ∂ui/∂t  587"
+                    }
+                ]
+            },
+            "dependency_graph": {
+                "nodes": [
+                    "THORP hydraulics (ψRc, ψS)",
+                    "THORP assimilation (An)",
+                    "THORP optimal allocation (vi)",
+                    "Allocation filter (ui via Eq.S.3.8)",
+                    "TDGM max growth (G′ & cp via Eq.S.2.16)",
+                    "Mobile NSC (CS,M via Eq.S.3.2)",
+                    "Immobile NSC (CS,I via Eq.S.3.1)",
+                    "NSC limitation (gNSC via Eq.S.3.5-6)",
+                    "Temperature limitation (gT)",
+                    "Realized growth (G via Eq.S.3.4)",
+                    "THORP carbon/biomass updates"
+                ],
+                "edges": [
+                    {
+                        "from": "THORP hydraulics (ψRc, ψS)",
+                        "to": "TDGM max growth (G′ & cp via Eq.S.2.16)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "THORP optimal allocation (vi)",
+                        "to": "Allocation filter (ui via Eq.S.3.8)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "Allocation filter (ui via Eq.S.3.8)",
+                        "to": "TDGM max growth (G′ & cp via Eq.S.2.16)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "TDGM max growth (G′ & cp via Eq.S.2.16)",
+                        "to": "Mobile NSC (CS,M via Eq.S.3.2)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "Mobile NSC (CS,M via Eq.S.3.2)",
+                        "to": "Immobile NSC (CS,I via Eq.S.3.1)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "Immobile NSC (CS,I via Eq.S.3.1)",
+                        "to": "NSC limitation (gNSC via Eq.S.3.5-6)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "Temperature limitation (gT)",
+                        "to": "Realized growth (G via Eq.S.3.4)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "NSC limitation (gNSC via Eq.S.3.5-6)",
+                        "to": "Realized growth (G via Eq.S.3.4)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "TDGM max growth (G′ & cp via Eq.S.2.16)",
+                        "to": "Realized growth (G via Eq.S.3.4)",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "Realized growth (G via Eq.S.3.4)",
+                        "to": "THORP carbon/biomass updates",
+                        "type": "algorithm"
+                    },
+                    {
+                        "from": "THORP assimilation (An)",
+                        "to": "THORP carbon/biomass updates",
+                        "type": "algorithm"
+                    }
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b31",
+                        "char_span": null,
+                        "snippet": "1. calculate xylem hydraulics, notably ψRc and ψS, and carbon assimilation, An, according to  598"
+                    },
+                    {
+                        "page": 30,
+                        "block_id": "p30_b2",
+                        "char_span": null,
+                        "snippet": "9. and calculate change in structural biomass (Eq. S.9.3-7 in Potkay et al., 2021) and total  610"
+                    }
+                ]
+            },
+            "numerics": {
+                "time_step": "Subdaily time-steps (inherited from THORP; not specified here).",
+                "time_grid": null,
+                "integration_method": "Finite-difference update of allocation filter using Eq. S.3.8 (first-order linear ODE / exponential smoothing).",
+                "solver": null,
+                "convergence_criteria": null,
+                "stability_notes": "Allocation smoothing avoids high-frequency noise in daily optimal allocation fractions.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b15",
+                        "char_span": null,
+                        "snippet": "Instead, we solve Eq. S.3.7 through a finite-difference approach, requiring no storage of vi expect  583"
+                    },
+                    {
+                        "page": 28,
+                        "block_id": "p28_b39",
+                        "char_span": null,
+                        "snippet": "frequency noise. The realized allocation fractions are treated as a smoothed versions of optimal  567"
+                    }
+                ]
+            },
+            "code_blueprint": {
+                "modules": [
+                    {
+                        "name": "thorp_hydraulics_photosynthesis",
+                        "responsibility": "Compute ψRc, ψS and An at the current subdaily step (existing THORP)."
+                    },
+                    {
+                        "name": "thorp_allocation_optimizer",
+                        "responsibility": "Compute optimal daily allocation fractions vi (existing THORP)."
+                    },
+                    {
+                        "name": "allocation_filter",
+                        "responsibility": "Update realized fractions ui using Eq. S.3.8."
+                    },
+                    {
+                        "name": "tdgm_max_growth",
+                        "responsibility": "Compute G′ and cp via Eq. S.2.16 using ψRc, ψS, and uS."
+                    },
+                    {
+                        "name": "nsc_pools",
+                        "responsibility": "Compute CS,M (Eq. S.3.2) and CS,I (Eq. S.3.1); evaluate mortality criterion CS,I<0."
+                    },
+                    {
+                        "name": "growth_limiters",
+                        "responsibility": "Compute gT and gNSC (Eq. S.3.5-6) and realized growth G (Eq. S.3.4)."
+                    },
+                    {
+                        "name": "carbon_biomass_updates",
+                        "responsibility": "Update structural pools and total NSC via THORP framework using An, G, and respiration."
+                    }
+                ],
+                "open_questions": [
+                    "What is the exact algebraic form of Eq. S.3.2 and Eq. S.3.6 (is V in the denominator or multiplied), given the split typesetting?",
+                    "What is the full formula for gT (temperature limitation) referenced to Potkay et al. (2021) Eq. S.9.2b?",
+                    "What subdaily time step and numerical integration scheme does THORP-G use for state updates (An, hydraulics, carbon pools), beyond the allocation filter?"
+                ],
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b31",
+                        "char_span": null,
+                        "snippet": "1. calculate xylem hydraulics, notably ψRc and ψS, and carbon assimilation, An, according to  598"
+                    },
+                    {
+                        "page": 30,
+                        "block_id": "p30_b1",
+                        "char_span": null,
+                        "snippet": "7. calculate temperature limitations, gT (Shiestl-Aalto et al., 2015; Eq. S.9.2b in Potkay et al.,  607"
+                    }
+                ]
+            }
+        }
+    },
+    "provenance": {
+        "chunk_id": "C005",
+        "page_range": [
+            26,
+            30
+        ],
+        "section_titles": [
+            "S.3 Dynamic Simulations"
+        ],
+        "focus_tags": [
+            "coupling",
+            "THORP-G",
+            "TDGM",
+            "NSC pools",
+            "growth limitation",
+            "allocation smoothing",
+            "algorithm order"
+        ],
+        "extraction_time_utc": "2026-01-28T18:11:07.824589Z",
+        "notes": [
+            "Chunk C005 extracts the dynamic simulation coupling (Section S.3) describing THORP-Growth (THORP-G), including two-NSC-pool structure, growth modifiers, allocation smoothing filter, and computational step order.",
+            "Equations S.3.2 and S.3.6 are visually split in the PDF and may be ambiguous in algebraic grouping; candidates recorded."
+        ],
+        "next_recommended_chunk_id": "C006"
+    }
+}

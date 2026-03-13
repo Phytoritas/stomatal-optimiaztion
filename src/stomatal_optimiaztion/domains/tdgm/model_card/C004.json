@@ -1,0 +1,1276 @@
+{
+    "doc": {
+        "id": "Potkay et al. - 2022 - Turgor-limited predictions of tree growth, height and metabolic scaling over tree lifespans 1.pdf",
+        "title": "Turgor-limited predictions of tree growth, height, and metabolic scaling over tree lifespans (Supporting Information)",
+        "year": 2022,
+        "doi": null,
+        "page_count": 36
+    },
+    "model_card": {
+        "name": "Turgor-driven growth model (TDGM) — Notes S2 (C004)",
+        "aliases": [
+            "TDGM",
+            "Turgor-driven growth model"
+        ],
+        "task": [
+            "derive whole-stem growth rate from Lockhart-type turgor limitation applied at stem scale",
+            "relate stem growth to whole-tree growth using stem allocation fraction u_S",
+            "obtain closed-form growth expression under uniform osmotic potential and linear stem water-potential profile"
+        ],
+        "domain": [
+            "plant hydraulics",
+            "tree growth modeling",
+            "turgor-limited growth"
+        ],
+        "assumptions": [
+            {
+                "id": "A25",
+                "text": "Whole-stem growth can be represented using a Lockhart-type equation applied at the stem scale (following prior stem-level formulations).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L403-406",
+                        "char_span": null,
+                        "snippet": "Whole-stem growth rates are predicted from the Lockhart (1965) equation... describe the growth of stem tissue..."
+                    }
+                ]
+            },
+            {
+                "id": "A26",
+                "text": "Stem biomass can be represented by CW = ρcS ξ H D^2 with constant stem carbon density ρcS and form factor ξ.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L411-416",
+                        "char_span": null,
+                        "snippet": "CW = ρcS ξ H D^2 ... where ρcS is the stem carbon density ... ξ is an empirical form factor ..."
+                    }
+                ]
+            },
+            {
+                "id": "A27",
+                "text": "Basal diameter and height obey an allometric power law D ∝ H^a (equivalent to dS ∝ z^a used earlier).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L424-426",
+                        "char_span": null,
+                        "snippet": "an allometric relationship between basal diameter and height (D ∝ H^a), equivalent to Eq. S.1.12."
+                    }
+                ]
+            },
+            {
+                "id": "A28",
+                "text": "At fixed z̃, furcation number N is time-constant, and N is non-uniform in z̃ but does not vary with time at a given z̃.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L430-432",
+                        "char_span": null,
+                        "snippet": "N is non-uniform with regard to z̃, but constant with regards to t at a given z̃..."
+                    }
+                ]
+            },
+            {
+                "id": "A29",
+                "text": "Phloem thickness scales allometrically with stem diameter: dp ∝ dS^b.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L434-436",
+                        "char_span": null,
+                        "snippet": "allometric scaling between stem diameter and phloem thickness ... dp ∝ dS^b."
+                    }
+                ]
+            },
+            {
+                "id": "A30",
+                "text": "Growth occurs only where (P − Γ) ≥ 0, implemented via max(P − Γ, 0) and equivalent integration bounds z̃+ to 1.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L448-451",
+                        "char_span": null,
+                        "snippet": "discontinuities arising from the maximum operation... removed by changing the bounds of integration... where (P − Γ) ≥ 0... where P(z̃+) = Γ..."
+                    }
+                ]
+            },
+            {
+                "id": "A31",
+                "text": "Turgor pressure increases monotonically with z̃ (∂P/∂z̃ ≥ 0) so the active-growth region is contiguous (z̃+ ≤ z̃ ≤ 1).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L451-456",
+                        "char_span": null,
+                        "snippet": "bounds... chosen based on the assumption that ∂P/∂z̃ ≥ 0 at any z̃... given uniform osmotic potentials..."
+                    }
+                ]
+            },
+            {
+                "id": "A32",
+                "text": "Uniform osmotic potential Π along the stem (as suggested by PTM results) and a linear water potential profile ψ(z̃) = ψS + (ψRc − ψS) z̃ are used to derive closed-form expressions.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L456-459",
+                        "char_span": null,
+                        "snippet": "For a system with uniform osmotic potential and a linear water potential drop along the stem... ψ = ψS + (ψRc - ψS)∙z̃..."
+                    }
+                ]
+            },
+            {
+                "id": "A33",
+                "text": "Whole-stem carbon growth rate relates to whole-tree growth through the stem allocation fraction uS: ∂CW/∂t = uS G.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_L476-479",
+                        "char_span": null,
+                        "snippet": "∂CW/∂t = uS G ... where uS is the fraction of growth allocated to stems..."
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "Eq_S2.1",
+                "latex": "C_W = \\rho_{cS}\\,\\xi\\,H\\,D^{2}",
+                "variables": [
+                    "C_W",
+                    "\\rho_{cS}",
+                    "\\xi",
+                    "H",
+                    "D"
+                ],
+                "explanation": "Stem biomass in carbon equivalents from a form-factor geometry.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L411-414",
+                        "char_span": null,
+                        "snippet": "CW= ρcS ξ H D^2 (S.2.1)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S2.2",
+                "latex": "C_W = \\rho_{cS}\\,\\xi\\,\\int_{0}^{H} N\\,d_S^{2}\\,dz",
+                "variables": [
+                    "C_W",
+                    "\\rho_{cS}",
+                    "\\xi",
+                    "N",
+                    "d_S",
+                    "z",
+                    "H"
+                ],
+                "explanation": "Integral form of stem biomass including furcations via N(z).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L416-418",
+                        "char_span": null,
+                        "snippet": "CW= ρcS ξ ∫ N dS^2 dz (S.2.2)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S2.3",
+                "latex": "\\frac{\\partial C_W}{\\partial t}=\\rho_{cS}\\,\\xi\\left\\{D^{2}\\frac{\\partial H}{\\partial t}+H\\int_{0}^{1}\\frac{\\partial}{\\partial t}\\left(N d_S^{2}\\right)d\\tilde{z}\\right\\}",
+                "variables": [
+                    "C_W",
+                    "t",
+                    "\\rho_{cS}",
+                    "\\xi",
+                    "D",
+                    "H",
+                    "N",
+                    "d_S",
+                    "\\tilde{z}"
+                ],
+                "explanation": "Stem growth rate from Leibniz rule in dimensionless coordinate z̃.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L420-424",
+                        "char_span": null,
+                        "snippet": "∂CW/∂t = ρcS ξ { D^2 ∂H/∂t + H ∫ ∂/∂t(N dS^2) dz̃ } (S.2.3)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S2.4b",
+                "latex": "\\frac{\\partial H}{\\partial C_W}=\\frac{1}{1+2a}\\,\\frac{H}{C_W}",
+                "variables": [
+                    "H",
+                    "C_W",
+                    "a"
+                ],
+                "explanation": "Allometric derivative using D \\propto H^{a} and CW definition.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L426-428",
+                        "char_span": null,
+                        "snippet": "∂H/∂CW = (1/(1+2a)) H/CW (S.2.4b)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S2.4c",
+                "latex": "D^{2}\\frac{\\partial H}{\\partial t}=\\frac{1}{1+2a}\\,\\frac{1}{\\rho_{cS}\\xi}\\,\\frac{\\partial C_W}{\\partial t}",
+                "variables": [
+                    "D",
+                    "H",
+                    "t",
+                    "a",
+                    "\\rho_{cS}",
+                    "\\xi",
+                    "C_W"
+                ],
+                "explanation": "First term simplification in Eq. S2.3 using chain rule and Eq. S2.1.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L428-429",
+                        "char_span": null,
+                        "snippet": "D^2 ∂H/∂t = (1/(1+2a))(1/(ρcS ξ)) ∂CW/∂t (S.2.4c)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S2.5",
+                "latex": "\\int_{0}^{1}\\frac{\\partial}{\\partial t}(N d_S^{2})\\,d\\tilde{z}=2\\int_{0}^{1}N d_S\\frac{\\partial d_S}{\\partial t}\\,d\\tilde{z}",
+                "variables": [
+                    "N",
+                    "d_S",
+                    "t",
+                    "\\tilde{z}"
+                ],
+                "explanation": "Derivative expansion assuming N is time-constant at fixed z̃.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L430-433",
+                        "char_span": null,
+                        "snippet": "∫ ∂/∂t(N dS^2) dz̃ = 2 ∫ N dS ∂dS/∂t dz̃ (S.2.5)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S2.6",
+                "latex": "\\frac{\\partial d_S}{\\partial t}=\\frac{\\partial d_S}{\\partial d_p}\\frac{\\partial d_p}{\\partial t}=\\frac{1}{b}\\frac{d_S}{d_p}\\frac{\\partial d_p}{\\partial t}",
+                "variables": [
+                    "d_S",
+                    "t",
+                    "d_p",
+                    "b"
+                ],
+                "explanation": "Chain rule using phloem thickness allometry dp \\propto dS^b.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L434-437",
+                        "char_span": null,
+                        "snippet": "∂dS/∂t = (1/b)(dS/dp) ∂dp/∂t (S.2.6)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S2.7",
+                "latex": "\\frac{\\partial d_p}{\\partial t}=d_p\\,\\phi\\,\\max(P-\\Gamma,0)",
+                "variables": [
+                    "d_p",
+                    "t",
+                    "\\phi",
+                    "P",
+                    "\\Gamma"
+                ],
+                "explanation": "Stem-level Lockhart formulation for phloem thickness expansion rate.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L437-440",
+                        "char_span": null,
+                        "snippet": "∂dp/∂t = dp φ max(P−Γ, 0) (S.2.7)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S2.8",
+                "latex": "\\frac{\\partial d_S}{\\partial t}=\\frac{\\phi}{b}\\,d_S\\,\\max(P-\\Gamma,0)",
+                "variables": [
+                    "d_S",
+                    "t",
+                    "\\phi",
+                    "b",
+                    "P",
+                    "\\Gamma"
+                ],
+                "explanation": "Stem diameter expansion rate implied by dp–dS allometry and Lockhart form.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L440-442",
+                        "char_span": null,
+                        "snippet": "∂dS/∂t = (φ/b) dS max(P−Γ, 0) (S.2.8)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S2.10",
+                "latex": "\\int_{0}^{1}\\frac{\\partial}{\\partial t}(N d_S^{2})\\,d\\tilde{z}=\\frac{2\\phi D^{2}}{b}\\int_{0}^{1}\\max(P-\\Gamma,0)\\,d\\tilde{z}",
+                "variables": [
+                    "N",
+                    "d_S",
+                    "t",
+                    "\\tilde{z}",
+                    "\\phi",
+                    "D",
+                    "b",
+                    "P",
+                    "\\Gamma"
+                ],
+                "explanation": "Simplification using N dS^2 uniform in z̃ and equal to D^2.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L444-448",
+                        "char_span": null,
+                        "snippet": "… = (2 φ D^2 / b) ∫ max(P−Γ,0) dz̃ (S.2.10)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S2.11",
+                "latex": "\\int_{0}^{1}\\frac{\\partial}{\\partial t}(N d_S^{2})\\,d\\tilde{z}=\\frac{2\\phi D^{2}}{b}\\int_{\\tilde{z}^{+}}^{1}(P-\\Gamma)\\,d\\tilde{z}",
+                "variables": [
+                    "N",
+                    "d_S",
+                    "t",
+                    "\\tilde{z}",
+                    "\\phi",
+                    "D",
+                    "b",
+                    "P",
+                    "\\Gamma",
+                    "\\tilde{z}^{+}"
+                ],
+                "explanation": "Remove max() by integrating only where P ≥ Γ; z̃+ satisfies P(z̃+) = Γ.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L448-452",
+                        "char_span": null,
+                        "snippet": "… = (2 φ D^2 / b) ∫_{z̃+}^{1} (P−Γ) dz̃ (S.2.11)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S2.12",
+                "latex": "\\tilde{z}^{+}=\\min\\left[\\max\\left(\\frac{\\Pi+\\Gamma-\\psi_S}{\\psi_{Rc}-\\psi_S},\\,0\\right),\\,1\\right]",
+                "variables": [
+                    "\\tilde{z}^{+}",
+                    "\\Pi",
+                    "\\Gamma",
+                    "\\psi_S",
+                    "\\psi_{Rc}"
+                ],
+                "explanation": "Closed-form position of the growth-threshold point under uniform Π and linear ψ(z̃).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_L461",
+                        "char_span": null,
+                        "snippet": "z̃+ = min[max((Π+Γ−ψS)/(ψRc−ψS), 0), 1] (S.2.12)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S2.13",
+                "latex": "\\frac{\\partial C_W}{\\partial t}=\\frac{1+2a}{a b\\phi}\\,C_W\\int_{\\tilde{z}^{+}}^{1}(P-\\Gamma)\\,d\\tilde{z}",
+                "variables": [
+                    "C_W",
+                    "t",
+                    "a",
+                    "b",
+                    "\\phi",
+                    "\\tilde{z}^{+}",
+                    "P",
+                    "\\Gamma"
+                ],
+                "explanation": "Whole-stem growth rate after combining Eq. S2.3, Eq. S2.4c, and Eq. S2.11.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_L470-473",
+                        "char_span": null,
+                        "snippet": "∂CW/∂t = (1+2a)/(abφ) CW ∫_{z̃+}^{1} (P−Γ) dz̃ (S.2.13)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S2.14",
+                "latex": "\\frac{\\partial C_W}{\\partial t}=\\frac{1+2a}{a b\\phi}\\,C_W\\left[(\\psi_S-\\Pi-\\Gamma)(1-\\tilde{z}^{+})+\\frac{\\psi_{Rc}-\\psi_S}{2}(1-(\\tilde{z}^{+})^{2})\\right]",
+                "variables": [
+                    "C_W",
+                    "t",
+                    "a",
+                    "b",
+                    "\\phi",
+                    "\\psi_S",
+                    "\\Pi",
+                    "\\Gamma",
+                    "\\tilde{z}^{+}",
+                    "\\psi_{Rc}"
+                ],
+                "explanation": "Closed-form stem growth rate using linear ψ(z̃) and uniform Π (so P = ψ − Π).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_L473-476",
+                        "char_span": null,
+                        "snippet": "… simplifies … given ψ = ψS + (ψRc - ψS) z̃ … (S.2.14)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S2.15",
+                "latex": "\\frac{\\partial C_W}{\\partial t}=u_S\\,G",
+                "variables": [
+                    "C_W",
+                    "t",
+                    "u_S",
+                    "G"
+                ],
+                "explanation": "Definition linking stem biomass growth to whole-tree growth via allocation fraction uS.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_L476-478",
+                        "char_span": null,
+                        "snippet": "∂CW/∂t = uS G (S.2.15)"
+                    }
+                ]
+            },
+            {
+                "id": "Eq_S2.16",
+                "latex": "G=\\frac{1+2a}{a b\\phi}\\,\\frac{C_W}{u_S}\\left[(\\psi_S-\\Pi-\\Gamma)(1-\\tilde{z}^{+})+\\frac{\\psi_{Rc}-\\psi_S}{2}(1-(\\tilde{z}^{+})^{2})\\right]",
+                "variables": [
+                    "G",
+                    "a",
+                    "b",
+                    "\\phi",
+                    "C_W",
+                    "u_S",
+                    "\\psi_S",
+                    "\\Pi",
+                    "\\Gamma",
+                    "\\tilde{z}^{+}",
+                    "\\psi_{Rc}"
+                ],
+                "explanation": "Final TDGM: whole-tree growth as a turgor-limited function of stem water potential endpoints and uniform osmotic potential.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_L478-481",
+                        "char_span": null,
+                        "snippet": "G = ... (CW/uS)[(ψS−Π−Γ)(1−z̃+) + (ψRc−ψS)/2 (1−z̃+2)] (S.2.16)"
+                    }
+                ]
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "C_W",
+                "name": "stem wood carbon pool (carbon equivalents)",
+                "unit": "mol C",
+                "definition": "Stem biomass expressed in carbon equivalents.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "CW"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L411-415",
+                        "char_span": null,
+                        "snippet": "Stem biomass in carbon equivalents, CW [mol C]..."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\rho_{cS}",
+                "name": "stem carbon density",
+                "unit": "mol C m^-3",
+                "definition": "Carbon density of stem tissue used in CW definition.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ρcS"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L414-415",
+                        "char_span": null,
+                        "snippet": "ρcS is the stem carbon density [(mol C)∙m-3]..."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\xi",
+                "name": "stem form factor",
+                "unit": null,
+                "definition": "Empirical form factor in CW geometry.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ξ"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L414-415",
+                        "char_span": null,
+                        "snippet": "ξ is an empirical form factor [-]..."
+                    }
+                ]
+            },
+            {
+                "symbol": "H",
+                "name": "tree height",
+                "unit": "m",
+                "definition": "Height used in biomass relation and scaling assumptions.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L414-416",
+                        "char_span": null,
+                        "snippet": "H is height [m]..."
+                    }
+                ]
+            },
+            {
+                "symbol": "D",
+                "name": "basal diameter",
+                "unit": "m",
+                "definition": "Basal diameter at root collar; equals local stem diameter dS at z = H (z̃ = 1).",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L415-416",
+                        "char_span": null,
+                        "snippet": "D is the basal diameter [m], equal to the local stem diameter, dS ... at the base of the stem..."
+                    }
+                ]
+            },
+            {
+                "symbol": "N",
+                "name": "furcation number",
+                "unit": null,
+                "definition": "Number of branches at a given axial position; used to sum areas/diameters over furcations.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L417-418",
+                        "char_span": null,
+                        "snippet": "where N is the furcation number (Eq. S.1.14)."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\tilde{z}",
+                "name": "dimensionless axial coordinate",
+                "unit": null,
+                "definition": "Normalized coordinate along stem (z̃ = z/H).",
+                "range": [
+                    0,
+                    1
+                ],
+                "dimension": null,
+                "aliases": [
+                    "z̃"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L420-422",
+                        "char_span": null,
+                        "snippet": "transform the coordinate system to the dimensionless z̃..."
+                    }
+                ]
+            },
+            {
+                "symbol": "d_S",
+                "name": "local stem diameter",
+                "unit": "m",
+                "definition": "Local stem diameter along the axis; D = dS(z̃=1).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "dS"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L415-416",
+                        "char_span": null,
+                        "snippet": "D ... equal to the local stem diameter, dS..."
+                    }
+                ]
+            },
+            {
+                "symbol": "d_p",
+                "name": "phloem thickness",
+                "unit": "m",
+                "definition": "Phloem thickness that expands according to a Lockhart-type rule and scales with dS via exponent b.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "dp"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L434-438",
+                        "char_span": null,
+                        "snippet": "dp ∝ dS^b ... ∂dp/∂t = dp φ max(P−Γ,0)"
+                    }
+                ]
+            },
+            {
+                "symbol": "P",
+                "name": "turgor pressure",
+                "unit": "MPa",
+                "definition": "Turgor pressure driving extensible growth; growth only when P > Γ.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L439-440",
+                        "char_span": null,
+                        "snippet": "where P is turgor pressure [MPa]..."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\Gamma",
+                "name": "threshold turgor",
+                "unit": "MPa",
+                "definition": "Threshold turgor required for growth (Lockhart threshold).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Γ"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L439-440",
+                        "char_span": null,
+                        "snippet": "Γ is the threshold turgor [MPa]..."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\phi",
+                "name": "extensibility",
+                "unit": "MPa^-1 s^-1",
+                "definition": "Extensibility parameter in Lockhart formulation (stem-level).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ϕ"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L439-440",
+                        "char_span": null,
+                        "snippet": "ϕ is the extensibility [MPa-1∙s-1]..."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\Pi",
+                "name": "osmotic potential",
+                "unit": "MPa",
+                "definition": "Assumed uniform along stem for the closed-form derivation; used in turgor P = ψ − Π.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Π"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L456-459",
+                        "char_span": null,
+                        "snippet": "uniform osmotic potential ... P = ψ − Π ..."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\psi_S",
+                "name": "apex water potential",
+                "unit": "MPa",
+                "definition": "Water potential at stem apex (z̃ = 0).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ψS"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L456-458",
+                        "char_span": null,
+                        "snippet": "ψS ... water potentials [MPa] at the apex..."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\psi_{Rc}",
+                "name": "root-collar water potential",
+                "unit": "MPa",
+                "definition": "Water potential at root collar (z̃ = 1).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ψRc"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L456-458",
+                        "char_span": null,
+                        "snippet": "ψRc ... water potentials [MPa] at ... root collar..."
+                    }
+                ]
+            },
+            {
+                "symbol": "u_S",
+                "name": "stem allocation fraction",
+                "unit": null,
+                "definition": "Fraction of whole-tree growth allocated to stem biomass (links ∂CW/∂t and G).",
+                "range": [
+                    0,
+                    1
+                ],
+                "dimension": null,
+                "aliases": [
+                    "uS"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_L476-479",
+                        "char_span": null,
+                        "snippet": "uS is the fraction of growth allocated to stems [-]..."
+                    }
+                ]
+            },
+            {
+                "symbol": "a",
+                "name": "stem allometry exponent (diameter–height)",
+                "unit": null,
+                "definition": "Exponent in D ∝ H^a (and earlier dS ∝ z^a).",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L424-426",
+                        "char_span": null,
+                        "snippet": "D ∝ H^a..."
+                    }
+                ]
+            },
+            {
+                "symbol": "b",
+                "name": "phloem allometry exponent (thickness–diameter)",
+                "unit": null,
+                "definition": "Exponent in dp ∝ dS^b.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L434-436",
+                        "char_span": null,
+                        "snippet": "dp ∝ dS^b"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\tilde{z}^{+}",
+                "name": "growth-threshold axial position",
+                "unit": null,
+                "definition": "Location where P(z̃+) = Γ; growth occurs for z̃ ∈ [z̃+, 1].",
+                "range": [
+                    0,
+                    1
+                ],
+                "dimension": null,
+                "aliases": [
+                    "z̃+"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L451-452",
+                        "char_span": null,
+                        "snippet": "where P(z̃+) = Γ, and ... (0 ≤ z̃+ ≤ 1)."
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "name": "phi",
+                "unit": "MPa^-1 s^-1",
+                "default": null,
+                "estimation": "Extensibility parameter in Lockhart-type formulation; specified/calibrated elsewhere.",
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L439-440",
+                        "char_span": null,
+                        "snippet": "ϕ is the extensibility [MPa-1∙s-1]..."
+                    }
+                ]
+            },
+            {
+                "name": "Gamma",
+                "unit": "MPa",
+                "default": null,
+                "estimation": "Threshold turgor; specified/calibrated elsewhere.",
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L439-440",
+                        "char_span": null,
+                        "snippet": "Γ is the threshold turgor [MPa]..."
+                    }
+                ]
+            },
+            {
+                "name": "rho_cS",
+                "unit": "mol C m^-3",
+                "default": null,
+                "estimation": "Stem carbon density; species/wood dependent; specified elsewhere.",
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L414-415",
+                        "char_span": null,
+                        "snippet": "ρcS is the stem carbon density..."
+                    }
+                ]
+            },
+            {
+                "name": "xi",
+                "unit": null,
+                "default": null,
+                "estimation": "Empirical form factor; specified elsewhere.",
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L414-415",
+                        "char_span": null,
+                        "snippet": "ξ is an empirical form factor..."
+                    }
+                ]
+            },
+            {
+                "name": "a",
+                "unit": null,
+                "default": null,
+                "estimation": "Allometric exponent D ∝ H^a; specified elsewhere.",
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L424-426",
+                        "char_span": null,
+                        "snippet": "D ∝ H^a..."
+                    }
+                ]
+            },
+            {
+                "name": "b",
+                "unit": null,
+                "default": null,
+                "estimation": "Allometric exponent dp ∝ dS^b; specified elsewhere.",
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L434-436",
+                        "char_span": null,
+                        "snippet": "dp ∝ dS^b"
+                    }
+                ]
+            }
+        ],
+        "algorithm": {
+            "inputs": [
+                "C_W",
+                "u_S",
+                "a",
+                "b",
+                "\\phi",
+                "\\Gamma",
+                "\\psi_S",
+                "\\psi_{Rc}",
+                "\\Pi"
+            ],
+            "outputs": [
+                "G",
+                "\\tilde{z}^{+}",
+                "\\partial C_W/\\partial t"
+            ],
+            "steps": [
+                "Compute the threshold position z̃+ using Eq. S.2.12 (clamped to [0,1]).",
+                "Compute the bracket term B = (ψS − Π − Γ)(1 − z̃+) + (ψRc − ψS)/2 · (1 − (z̃+)^2) (Eq. S.2.14).",
+                "Compute whole-tree growth G using Eq. S.2.16: G = ((1+2a)/(a b φ)) · (CW/uS) · B.",
+                "Optionally compute stem growth rate ∂CW/∂t = uS·G (Eq. S.2.15) for state updates."
+            ],
+            "pseudocode": null,
+            "evidence": [
+                {
+                    "page": 26,
+                    "block_id": "p26_L461-481",
+                    "char_span": null,
+                    "snippet": "Eqs. S.2.12–S.2.16 provide z̃+, ∂CW/∂t, and final G expression."
+                }
+            ]
+        },
+        "limitations": [
+            {
+                "id": "L9",
+                "text": "Closed-form expressions (z̃+, Eq. S2.14–S2.16) require uniform osmotic potential along the stem and a linear water potential drop; non-uniform osmotic profiles may require adjusting integration bounds and/or re-deriving the integral.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L454-456",
+                        "char_span": null,
+                        "snippet": "For non-uniform osmotic potentials, the bounds of integration may require adjustment depending on the osmotic potential profile."
+                    }
+                ]
+            },
+            {
+                "id": "L10",
+                "text": "The definition of Π used in applications may rely on empirical/biome-specific relations (e.g., Scots Pine regressions) and a nonlinear osmotic formulation, which may not transfer across species without recalibration.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_L461-469",
+                        "char_span": null,
+                        "snippet": "Π ... nonlinear formulation ... cp,S estimated ... Scots Pine ... regressions ... then calculate Π ..."
+                    }
+                ]
+            },
+            {
+                "id": "L11",
+                "text": "Monotonicity assumption ∂P/∂z̃ ≥ 0 is used to justify a single contiguous growth region; violations could yield multiple growth intervals and invalidate Eq. S2.11 bounds.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 25,
+                        "block_id": "p25_L451-454",
+                        "char_span": null,
+                        "snippet": "bounds ... chosen based on the assumption that ∂P/∂z̃ ≥ 0..."
+                    }
+                ]
+            }
+        ],
+        "implementation": {
+            "model_scope": "TDGM (Notes S2, pages 24–26): derives whole-tree growth G from turgor-limited stem growth and allocation.",
+            "state_variables": [
+                "C_W"
+            ],
+            "exogenous_inputs": [
+                "\\psi_S",
+                "\\psi_{Rc}",
+                "\\Pi"
+            ],
+            "control_inputs": [
+                "u_S"
+            ],
+            "outputs_observables": [
+                "G",
+                "\\partial C_W/\\partial t"
+            ],
+            "boundary_conditions": [],
+            "dependency_graph": {
+                "nodes": [
+                    "C_W",
+                    "u_S",
+                    "a",
+                    "b",
+                    "phi",
+                    "Gamma",
+                    "psi_S",
+                    "psi_Rc",
+                    "Pi",
+                    "z_tilde_plus",
+                    "G",
+                    "dCW_dt"
+                ],
+                "edges": [
+                    {
+                        "from": "Pi",
+                        "to": "z_tilde_plus",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "Gamma",
+                        "to": "z_tilde_plus",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "psi_S",
+                        "to": "z_tilde_plus",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "psi_Rc",
+                        "to": "z_tilde_plus",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "z_tilde_plus",
+                        "to": "G",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "C_W",
+                        "to": "G",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "u_S",
+                        "to": "G",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "a",
+                        "to": "G",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "b",
+                        "to": "G",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "phi",
+                        "to": "G",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "Gamma",
+                        "to": "G",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "Pi",
+                        "to": "G",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "psi_S",
+                        "to": "G",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "psi_Rc",
+                        "to": "G",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "G",
+                        "to": "dCW_dt",
+                        "type": "definition"
+                    },
+                    {
+                        "from": "u_S",
+                        "to": "dCW_dt",
+                        "type": "definition"
+                    }
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_L461-481",
+                        "char_span": null,
+                        "snippet": "Eqs. S.2.12–S.2.16 connect potentials to z̃+ and to G, and relate ∂CW/∂t to uS·G."
+                    }
+                ]
+            },
+            "numerics": {
+                "time_step": null,
+                "time_grid": null,
+                "integration_method": "analytic (closed-form in z̃ under linear ψ and uniform Π)",
+                "solver": null,
+                "convergence_criteria": null,
+                "stability_notes": "Clamping in Eq. S2.12 ensures z̃+ remains within [0,1], yielding zero-growth when P ≤ Γ everywhere (z̃+ = 1).",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 26,
+                        "block_id": "p26_L461",
+                        "char_span": null,
+                        "snippet": "z̃+ = min[max(...,0),1]"
+                    }
+                ]
+            },
+            "code_blueprint": {
+                "language": null,
+                "modules": [
+                    {
+                        "name": "tdgm_growth",
+                        "responsibility": "Compute z̃+, ∂CW/∂t, and G from potentials and allocation.",
+                        "public_api": [
+                            {
+                                "name": "compute_z_tilde_plus",
+                                "signature": "compute_z_tilde_plus(Pi, Gamma, psi_S, psi_Rc) -> z_tilde_plus",
+                                "description": "Eq. S.2.12."
+                            },
+                            {
+                                "name": "compute_growth_G",
+                                "signature": "compute_growth_G(CW, uS, a, b, phi, Gamma, Pi, psi_S, psi_Rc) -> G",
+                                "description": "Eq. S.2.16 (uses Eq. S.2.12)."
+                            },
+                            {
+                                "name": "compute_dCW_dt",
+                                "signature": "compute_dCW_dt(uS, G) -> dCW_dt",
+                                "description": "Eq. S.2.15."
+                            }
+                        ]
+                    }
+                ],
+                "functions": [],
+                "tests": []
+            }
+        }
+    },
+    "provenance": {
+        "extraction_time": "2026-01-28T19:51:49.550155+00:00",
+        "model": "GPT-5.2 Thinking",
+        "notes": "EXTRACT C004 (pages 24–26): derives TDGM using stem biomass definition + allometry + Lockhart-type turgor limitation, converts max() into growth-region bounds z̃+, and produces closed-form whole-tree growth G under uniform Π and linear ψ(z̃).",
+        "mode": "EXTRACT",
+        "is_partial": true,
+        "chunk": {
+            "chunk_id": "C004",
+            "page_range": [
+                24,
+                26
+            ]
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C004",
+                "page_range": [
+                    24,
+                    26
+                ],
+                "section_titles": [
+                    "S.2 Turgor-driven growth model (TDGM)"
+                ],
+                "focus_tags": [
+                    "model",
+                    "equations",
+                    "derivation",
+                    "closed_form"
+                ],
+                "priority": 4,
+                "rationale": "Introduces the TDGM, linking turgor (via ψ and Π) to whole-tree growth G and defining implementable closed forms (Eqs. S.2.12–S.2.16).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 24,
+                        "block_id": "p24_L411-424",
+                        "char_span": null,
+                        "snippet": "Eqs. S.2.1–S.2.3 define CW and ∂CW/∂t structure."
+                    },
+                    {
+                        "page": 25,
+                        "block_id": "p25_L434-452",
+                        "char_span": null,
+                        "snippet": "Eqs. S.2.6–S.2.11 apply Lockhart form and set growth-region bounds."
+                    },
+                    {
+                        "page": 26,
+                        "block_id": "p26_L461-481",
+                        "char_span": null,
+                        "snippet": "Eqs. S.2.12–S.2.16 give z̃+, ∂CW/∂t, and final G."
+                    }
+                ]
+            }
+        ],
+        "next_recommended_chunk_id": "C005"
+    }
+}
