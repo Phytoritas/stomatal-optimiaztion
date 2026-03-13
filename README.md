@@ -71,6 +71,7 @@ poetry run ruff check .
 - TOMATO `tTDGM` contracts seam is migrated as slice 044.
 - TOMATO `tTDGM` interface seam is migrated as slice 045.
 - `load-cell-data` config seam is migrated as slice 046.
+- `load-cell-data` IO seam is migrated as slice 047.
 
 ## Next validation
-- Audit the `load-cell-data` ingestion seam at `loadcell_pipeline/io.py`.
+- Audit the `load-cell-data` aggregation seam at `loadcell_pipeline/aggregation.py`.
