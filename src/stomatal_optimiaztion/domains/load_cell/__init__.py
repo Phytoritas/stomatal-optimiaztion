@@ -40,6 +40,9 @@ from stomatal_optimiaztion.domains.load_cell.workflow import (
     config_signature,
     run_workflow,
 )
+from stomatal_optimiaztion.domains.load_cell.run_all import (
+    run_all,
+)
 
 __all__ = [
     "auto_detect_step_thresholds",
@@ -58,6 +61,7 @@ __all__ = [
     "merge_close_events",
     "merge_close_events_with_df",
     "read_load_cell_csv",
+    "run_all",
     "run_pipeline",
     "run_sweep",
     "run_workflow",

@@ -80,6 +80,7 @@ poetry run ruff check .
 - `load-cell-data` pipeline CLI seam is migrated as slice 053.
 - `load-cell-data` workflow seam is migrated as slice 054.
 - `load-cell-data` sweep seam is migrated as slice 055.
+- `load-cell-data` end-to-end runner seam is migrated as slice 056.
 
 ## Next validation
-- Audit the `load-cell-data` end-to-end runner seam at `loadcell_pipeline/run_all.py`.
+- Audit the `load-cell-data` raw preprocessing seam at `loadcell_pipeline/almemo_preprocess.py`.
