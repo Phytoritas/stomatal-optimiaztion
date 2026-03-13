@@ -16,6 +16,10 @@ from stomatal_optimiaztion.domains.tdgm.traceability import (
     build_mapping,
     iter_annotated_callables,
 )
+from stomatal_optimiaztion.domains.tdgm.ptm import (
+    mu_sucrose,
+    phloem_transport_concentration,
+)
 from stomatal_optimiaztion.domains.tdgm.turgor_growth import (
     turgor_driven_growth_rate,
 )
@@ -33,5 +37,7 @@ __all__ = [
     "model_card_document_names",
     "qualname",
     "require_equation_ids",
+    "mu_sucrose",
+    "phloem_transport_concentration",
     "turgor_driven_growth_rate",
 ]

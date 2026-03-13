@@ -45,8 +45,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 088
-- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slice 069 recorded as THORP package-level smoke evidence, slice 070 recorded as the cross-domain utility comparison decision, slices 071 through 088 approved for root `GOSM` and `TDGM` foundations plus the completed root `GOSM` helper wave and the first root `TDGM` runtime seam, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
+- Gate C. Validation plan ready through slice 089
+- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slice 069 recorded as THORP package-level smoke evidence, slice 070 recorded as the cross-domain utility comparison decision, slices 071 through 089 approved for root `GOSM` and `TDGM` foundations plus the completed root `GOSM` helper wave and the first two root `TDGM` runtime seams, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -577,3 +577,9 @@ Slice 088:
 - target: `src/stomatal_optimiaztion/domains/tdgm/` and `tests/test_tdgm_turgor_growth.py`
 - scope: bounded root `TDGM` runtime seam covering the turgor-driven growth kernel, scalar/vector behavior, and equation-tag preservation
 - excluded: `TDGM/src/tdgm/ptm.py`, `TDGM/src/tdgm/coupling.py`, and `TDGM/src/tdgm/thorp_g_postprocess.py`
+
+Slice 089:
+- source: `TDGM/src/tdgm/ptm.py` and `TDGM/src/tdgm/__init__.py`
+- target: `src/stomatal_optimiaztion/domains/tdgm/` and `tests/test_tdgm_ptm.py`
+- scope: bounded root `TDGM` runtime seam covering the PTM concentration kernel, sucrose-viscosity helper, and equation-tag preservation
+- excluded: `TDGM/src/tdgm/coupling.py`, `TDGM/src/tdgm/equation_registry.py`, and `TDGM/src/tdgm/thorp_g_postprocess.py`
