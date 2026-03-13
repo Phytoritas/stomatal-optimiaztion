@@ -524,8 +524,16 @@ The sixtieth slice opens the next bounded `load-cell-data` seam:
 - keep the seam incremental-tooling-bounded without widening into the preprocess-compare server or static viewer builder in the same slice
 - leave `load-cell-data/src/preprocess_compare_server.py` blocked as the next seam
 
+## Slice 061: load-cell-data Preprocess-Compare Local Server
+
+The sixty-first slice opens the next bounded `load-cell-data` seam:
+- move `load-cell-data/src/preprocess_compare_server.py` into the repo-local `scripts/` surface
+- preserve local health/export/preprocess/cancel APIs, transpiration export computation, static viewer serving, and repo-level CLI defaults
+- keep the seam server-bounded without widening into the static viewer builder or broader web-framework choices in the same slice
+- leave `load-cell-data/src/build_preprocess_compare_viewer.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first fifteen `load-cell-data` bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next `load-cell-data` source audit for `src/preprocess_compare_server.py`
+3. prepare the next `load-cell-data` source audit for `src/build_preprocess_compare_viewer.py`
