@@ -1,3 +1,8 @@
+from stomatal_optimiaztion.domains.gosm.examples.control import (
+    build_control_E_vec,
+    build_control_e_vec,
+    run_control_plot_data,
+)
 from stomatal_optimiaztion.domains.gosm.examples.control_figure import (
     DEFAULT_CONTROL_FIGURE_SPEC_PATH,
     DEFAULT_CONTROL_FIGURE_OUTPUT_DIR,
@@ -14,6 +19,11 @@ from stomatal_optimiaztion.domains.gosm.examples.manuscript_panels import (
     GOSMManuscriptPanelArtifacts,
     build_manuscript_panel_frame,
     render_manuscript_panel_bundle,
+)
+from stomatal_optimiaztion.domains.gosm.examples.sensitivity import (
+    STUDY_LEGEND,
+    run_sensitivity_environmental_conditions,
+    run_sensitivity_p_soil_min_conductance_loss,
 )
 from stomatal_optimiaztion.domains.gosm.examples.sensitivity_figures import (
     DEFAULT_COMPARE_TRUE_IMAG_SPEC_PATH,
@@ -34,6 +44,9 @@ from stomatal_optimiaztion.domains.gosm.examples.sensitivity_figures import (
 )
 
 __all__ = [
+    "build_control_E_vec",
+    "build_control_e_vec",
+    "run_control_plot_data",
     "DEFAULT_CONTROL_FIGURE_OUTPUT_DIR",
     "DEFAULT_CONTROL_FIGURE_SPEC_PATH",
     "DEFAULT_COMPARE_TRUE_IMAG_SPEC_PATH",
@@ -48,6 +61,7 @@ __all__ = [
     "GOSMManuscriptPanelArtifacts",
     "GOSMSensitivityFigureSuiteArtifacts",
     "SensitivityScenario",
+    "STUDY_LEGEND",
     "build_compare_true_vs_imag_frame",
     "build_control_example_payload",
     "build_manuscript_panel_frame",
@@ -62,4 +76,6 @@ __all__ = [
     "render_sensitivity_all_bundle",
     "render_sensitivity_figure_suite",
     "render_sensitivity_some_bundle",
+    "run_sensitivity_environmental_conditions",
+    "run_sensitivity_p_soil_min_conductance_loss",
 ]

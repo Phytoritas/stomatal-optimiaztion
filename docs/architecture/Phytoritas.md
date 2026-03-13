@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 100 closes the root `TDGM` example wave and returns the architecture to monitor mode
+- Current phase: slice 104 closes the root `THORP`/`GOSM`/`TDGM` Python rerun parity wave and returns the architecture to monitor mode
 
 ## Scope
 
@@ -99,7 +99,7 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. keep the current validation gates green now that the example parity wave is closed
-2. leave the architecture in monitor mode until a new bounded structural gap appears
-3. rerun the Plotkit figure suites when future refactors touch the shared figure-bundle contract
-4. keep `shared_plotkit.py` narrowly scoped to figure-bundle concerns unless a second non-plotting cross-domain helper appears
+1. keep the current validation gates green now that the root rerun parity wave is closed
+2. rerun the fast root parity tests when touching `THORP`, `GOSM`, or `TDGM` runtime kernels
+3. run the opt-in slow `GOSM` `imag` conductance-loss parity branch when root `gosm` hydraulics or stomatal logic changes
+4. leave the architecture in monitor mode until a new bounded structural gap appears

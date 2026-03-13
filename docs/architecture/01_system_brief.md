@@ -831,8 +831,37 @@ The one-hundredth slice closes the remaining root `TDGM` supplementary example w
 - lock parity with fixed frame digests and visually spot-check representative THORP-G growth, height, and soil-moisture panels against the MATLAB script intent
 - leave the repository in monitor mode because the documented example-parity scope is now closed
 
+## Slice 101: Root THORP Python Rerun Parity
+
+The one-hundred-first slice reopens the root model wave for direct rerun evidence:
+- rerun the migrated root `THORP` Python runtime for the bounded fast horizon
+- compare the current Python output directly against the real legacy MATLAB `THORP_data_0.6RH.mat` payload
+- keep the seam validation-bounded without introducing a new CLI or full-horizon benchmark wave
+
+## Slice 102: Root GOSM Python Rerun Parity
+
+The one-hundred-second slice restores the root `GOSM` legacy rerun helper layer:
+- port the legacy control and sensitivity rerun helpers into `domains/gosm/examples/`
+- compare the current Python reruns directly against the real legacy MATLAB example `.mat` payloads
+- keep the slow `imag` conductance-loss branch opt-in so default validation stays bounded
+
+## Slice 103: Root TDGM THORP-G Rerun Parity
+
+The one-hundred-third slice restores the missing root `TDGM` rerun runtime:
+- move the legacy `tdgm.thorp_g` Python runtime surface into the staged repository
+- compare ten representative THORP-G rerun scenarios directly against the real legacy MATLAB `.mat` outputs
+- close the missing mean-allocation update helper through the shared root `tdgm.coupling` surface
+
+## Slice 104: Root Python Rerun Parity Audit
+
+The one-hundred-fourth slice records the repository-level rerun audit:
+- distinguish figure parity from true Python rerun parity
+- record which root architectures now support direct rerun versus legacy MATLAB output comparison
+- return the architecture to monitor mode once the rerun wave is closed
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
 3. keep the example figure suites and shared Plotkit bundle contract stable under regression
+4. keep the fast root rerun parity tests green for `THORP`, `GOSM`, and `TDGM`
