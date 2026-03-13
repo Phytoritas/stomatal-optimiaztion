@@ -24,6 +24,7 @@ poetry run python scripts/render_gosm_control_example.py --output-dir out/gosm/c
 poetry run python scripts/render_gosm_sensitivity_figures.py --legacy-example-dir "../00. Stomatal Optimization/GOSM/example"
 poetry run python scripts/render_gosm_manuscript_panels.py --output-dir out/gosm/manuscript_panels
 poetry run python scripts/render_tdgm_example_figures.py --output-dir out/tdgm/example_figures
+poetry run python scripts/render_root_rerun_parity_figures.py --output-dir out/rerun_parity
 poetry run pytest
 poetry run ruff check .
 ```
@@ -135,8 +136,10 @@ poetry run ruff check .
 - Root TDGM `thorp_g` runtime surface and fast MATLAB-output parity tests are restored in slice 103.
 - Root Python rerun parity audit is recorded in slice 104.
 - Root GOSM rerun kernels and helpers are hardened so the parity regressions run warning-free in slice 105.
+- Root THORP, GOSM, and TDGM rerun parity can now be inspected through Plotkit-style comparison bundles under `out/rerun_parity/` in slice 106.
 
 ## Next validation
 - Keep `pytest`, `ruff`, the fast root rerun parity tests, and the Plotkit example renderers green while the architecture remains in monitor mode.
 - Keep the fast root `GOSM` rerun tests warning-free and run the opt-in slow `imag` branch whenever root `gosm` hydraulics or stomatal logic changes.
 - Run the opt-in slow `GOSM` `imag` conductance-loss parity branch when root `gosm` hydraulics or stomatal logic changes.
+- Re-render `scripts/render_root_rerun_parity_figures.py` whenever root `THORP`, `GOSM`, or `TDGM` rerun kernels or example helpers change.

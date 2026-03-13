@@ -866,9 +866,17 @@ The one-hundred-fifth slice hardens the root `GOSM` rerun path:
 - promote `RuntimeWarning` to regression failures for the fast control and sensitivity rerun tests
 - verify that the opt-in slow `imag` conductance-loss branch is also warning-free when explicitly enabled
 
+## Slice 106: Root Rerun Parity Graph Bundles
+
+The one-hundred-sixth slice makes the closed root rerun wave directly inspectable:
+- render Plotkit-style THORP, GOSM, and TDGM comparison bundles that overlay Python reruns against the legacy MATLAB payloads
+- write PNG, PDF, CSV, spec, resolved spec, tokens, and metadata exports under `out/rerun_parity/`
+- keep the slow `GOSM` `imag` conductance-loss graph opt-in while the default graph bundle stays bounded to the fast validation set
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
 3. keep the example figure suites and shared Plotkit bundle contract stable under regression
 4. keep the fast root rerun parity tests green for `THORP`, `GOSM`, and `TDGM`
+5. keep `scripts/render_root_rerun_parity_figures.py` stable so users can inspect rerun parity without reading pytest internals

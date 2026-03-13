@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 105 hardens the root `GOSM` rerun path so the direct MATLAB-parity regressions run without `RuntimeWarning`, then returns the architecture to monitor mode
+- Current phase: slice 106 adds Plotkit-style root rerun parity graph bundles on top of the closed `THORP`, `GOSM`, and `TDGM` MATLAB-output parity wave, then returns the architecture to monitor mode
 
 ## Scope
 
@@ -99,7 +99,7 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. keep the current validation gates green now that the root rerun parity wave is closed and the `GOSM` rerun path is warning-free
-2. rerun the fast root parity tests when touching `THORP`, `GOSM`, or `TDGM` runtime kernels
-3. run the opt-in slow `GOSM` `imag` conductance-loss parity branch when root `gosm` hydraulics or stomatal logic changes
+1. keep the current validation gates green now that the root rerun parity wave also has reproducible graph bundles
+2. rerun the fast root parity tests and `scripts/render_root_rerun_parity_figures.py` when touching `THORP`, `GOSM`, or `TDGM` runtime kernels
+3. run the opt-in slow `GOSM` `imag` conductance-loss branch and graph bundle when root `gosm` hydraulics or stomatal logic changes
 4. leave the architecture in monitor mode until a new bounded structural gap appears

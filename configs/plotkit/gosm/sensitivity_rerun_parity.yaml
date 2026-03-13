@@ -1,0 +1,66 @@
+version: 1
+meta:
+  id: gosm_sensitivity_rerun_parity
+  title: Root GOSM sensitivity rerun parity against legacy MATLAB
+  journal_target: Nature Plants
+  family: rerun_parity
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_overlay
+  description: Overlay the current Python GOSM sensitivity rerun against the legacy MATLAB sensitivity payload for a single scenario.
+layout:
+  rows: 2
+  cols: 2
+  hspace: 0.28
+  wspace: 0.24
+panel_order:
+  - g_c_steady_state
+  - growth_steady_state
+  - g_c_instantaneous
+  - growth_instantaneous
+panels:
+  g_c_steady_state:
+    title: Steady-state conductance
+    y_label: g_c [mol m^-2 s^-1]
+    scale: linear
+    y_padding_fraction: 0.08
+  growth_steady_state:
+    title: Steady-state growth
+    y_label: G [umol C s^-1]
+    scale: linear
+    y_padding_fraction: 0.10
+  g_c_instantaneous:
+    title: Instantaneous conductance
+    y_label: g_c [mol m^-2 s^-1]
+    scale: linear
+    y_padding_fraction: 0.08
+  growth_instantaneous:
+    title: Instantaneous growth
+    y_label: G [umol C s^-1]
+    scale: linear
+    y_padding_fraction: 0.10
+styling:
+  source_styles:
+    python:
+      label: Python rerun
+      color: "#005F73"
+      linestyle: "-"
+      alpha: 1.0
+    legacy:
+      label: Legacy MATLAB
+      color: "#8D99AE"
+      linestyle: "--"
+      alpha: 0.95
+  steady_state_color: "#0A9396"
+  instantaneous_cmap: "viridis"
+  steady_state_linewidth_pt: 2.0
+  instantaneous_linewidth_pt: 1.6
+figure:
+  width_mm: 180
+  height_mm: 126
+theme:
+  name: nature_plants_like
+  tokens: ../themes/nature_plants_like_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false

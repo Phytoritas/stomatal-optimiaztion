@@ -25,9 +25,19 @@ from stomatal_optimiaztion.domains.thorp.examples.figure_workflows import (
     render_structural_trait_bundle,
     render_thorp_example_figure_suite,
 )
+from stomatal_optimiaztion.domains.thorp.examples.rerun_parity import (
+    DEFAULT_RERUN_PARITY_LEGACY_MAT_PATH,
+    DEFAULT_RERUN_PARITY_OUTPUT_DIR,
+    DEFAULT_RERUN_PARITY_SPEC_PATH,
+    build_rerun_parity_frame,
+    render_rerun_parity_bundle,
+)
 
 __all__ = [
     "DEFAULT_LEGACY_THORP_EXAMPLE_DIR",
+    "DEFAULT_RERUN_PARITY_LEGACY_MAT_PATH",
+    "DEFAULT_RERUN_PARITY_OUTPUT_DIR",
+    "DEFAULT_RERUN_PARITY_SPEC_PATH",
     "GWT_SWEEP_DEPTHS_M",
     "ThorpExampleFigureSuiteArtifacts",
     "ThorpLegacyScenario",
@@ -36,6 +46,7 @@ __all__ = [
     "build_eco2_light_limited_frame",
     "build_groundwater_sweep_frame",
     "build_mass_fraction_frame",
+    "build_rerun_parity_frame",
     "build_structural_trait_frame",
     "deep_uptake_fraction",
     "load_gwt_sweep_scenario",
@@ -45,6 +56,7 @@ __all__ = [
     "render_eco2_light_limited_bundle",
     "render_groundwater_sweep_bundle",
     "render_mass_fraction_bundle",
+    "render_rerun_parity_bundle",
     "render_structural_trait_bundle",
     "render_thorp_example_figure_suite",
     "simulated_groundwater_depth",
