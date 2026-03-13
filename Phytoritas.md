@@ -39,4 +39,5 @@ Current status:
 - Slice 070 recorded: second-domain utility comparison note
 - Slice 071 migrated: root GOSM model-card and traceability foundation
 - Slice 072 migrated: root TDGM model-card and traceability foundation
-- Current open architecture gaps: root GOSM parameter-defaults seam
+- Slice 073 migrated: root GOSM parameter-defaults seam
+- Current open architecture gaps: root GOSM radiation kernel seam

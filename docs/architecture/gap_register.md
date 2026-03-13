@@ -2,6 +2,6 @@
 
 | ID | Gap | Impact | Required Artifact |
 | --- | --- | --- | --- |
-| G-073 | Root GOSM parameter-defaults seam is still missing from the migrated repo | Blocks the first bounded numerical runtime migration after the GOSM and TDGM foundation slices | `docs/architecture/architecture/module_specs/module-073-gosm-parameter-defaults.md` |
+| G-074 | Root GOSM radiation kernel is still missing from the migrated repo | Blocks the first bounded runtime migration after the GOSM parameter-defaults seam | `docs/architecture/architecture/module_specs/module-074-gosm-radiation-kernel.md` |
 
-Current open gaps: G-073.
+Current open gaps: G-074.
