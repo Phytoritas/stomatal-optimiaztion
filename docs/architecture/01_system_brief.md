@@ -800,8 +800,16 @@ The ninety-sixth slice reopens the architecture beyond model kernels:
 - define Plotkit-style workflow parity in terms of numeric series, panel contract, and reproducible exports rather than MATLAB pixel identity
 - leave root `GOSM` control example reproduction as the next bounded example slice
 
+## Slice 097: Root GOSM Control Example Figure
+
+The ninety-seventh slice lands the first bounded example-parity reproduction:
+- rebuild the root `GOSM` control example payload from migrated `gosm.model` kernels
+- preserve legacy numeric-series parity against `Example_Growth_Opt__control.mat`
+- render a Plotkit-style publication bundle with PNG, PDF, CSV, spec, resolved spec, tokens, and metadata exports
+- leave the broader root `GOSM` sensitivity/manuscript figure workflows as the next open example slice
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. land root `GOSM` control example reproduction as the first Plotkit-style publication-figure slice
+3. move next to root `GOSM` sensitivity/manuscript figure workflows before widening into root `THORP` and `TDGM` examples

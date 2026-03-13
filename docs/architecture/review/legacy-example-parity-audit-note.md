@@ -101,6 +101,6 @@ Current repo status:
 
 ## Next Actions
 
-1. land a bounded root `GOSM` control-example slice first, using Plotkit-style tokens and spec-first exports
-2. validate parity numerically against the legacy `.mat` payload rather than relying on pixel identity
-3. keep `THORP` and `TDGM` example workflows blocked until the first GOSM publication-figure slice establishes the reusable pattern
+1. `slice 097` closes the root `GOSM` control-example figure workflow with Plotkit-style, spec-first exports
+2. move next to root `GOSM` sensitivity and manuscript figure workflows
+3. keep `THORP` and `TDGM` example workflows blocked until the GOSM figure pattern is reused or generalized

@@ -63,4 +63,5 @@ Current status:
 - Slice 094 migrated: root GOSM steady-state inversion helper
 - Slice 095 migrated: root TDGM initial mean-allocation helper
 - Slice 096 recorded: legacy example and figure parity audit for root THORP, GOSM, and TDGM
-- Current open architecture gaps: `G-096`, `G-097`, `G-098`, and `G-099` for the example and figure workflow wave
+- Slice 097 migrated: root GOSM control example figure workflow
+- Current open architecture gaps: `G-097`, `G-098`, and `G-099` for the remaining example and figure workflow wave

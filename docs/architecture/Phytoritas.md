@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 096 reopens the architecture for legacy example and figure workflow parity while leaving the root THORP/GOSM/TDGM model-kernel wave parity-complete
+- Current phase: slice 097 lands the first bounded example-parity reproduction while leaving root `GOSM` sensitivity figures plus root `THORP` and `TDGM` example workflows open
 
 ## Scope
 
@@ -99,7 +99,7 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. keep the current validation gates green as the example parity wave opens
-2. land the first bounded example slice on root `GOSM` control figure reproduction using Plotkit-style tokens and spec-first exports
-3. keep the remaining `THORP`, `GOSM`, and `TDGM` example workflows bounded in the gap register until each one is reproduced with explicit parity evidence
-4. keep shared utilities blocked until a concrete cross-domain plotting helper emerges from at least two migrated example slices
+1. keep the current validation gates green as the example parity wave continues
+2. move next to root `GOSM` sensitivity and manuscript figure workflows
+3. keep root `THORP` and `TDGM` example workflows bounded in the gap register until each one is reproduced with explicit parity evidence
+4. decide whether the current GOSM renderer stays domain-local or becomes a shared plotting helper only after a second example slice needs it

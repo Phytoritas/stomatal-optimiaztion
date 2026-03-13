@@ -19,6 +19,7 @@
 ```bash
 poetry install
 poetry run python -m stomatal_optimiaztion.domains.thorp --max-steps 60
+poetry run python scripts/render_gosm_control_example.py --output-dir out/gosm/control_example
 poetry run pytest
 poetry run ruff check .
 ```
@@ -121,6 +122,7 @@ poetry run ruff check .
 - Root GOSM steady-state inversion helper is migrated as slice 094.
 - Root TDGM initial mean-allocation helper is migrated as slice 095.
 - Legacy example and figure parity audit is recorded as slice 096 and reopens bounded workflow-reproduction gaps for root `GOSM`, `THORP`, and `TDGM`.
+- Root GOSM control example figure workflow is migrated as slice 097.
 
 ## Next validation
-- Land the first example parity slice on root `GOSM` control figure reproduction with Plotkit-style, spec-first publication outputs.
+- Move next to root `GOSM` sensitivity/manuscript figure workflows, then reuse or generalize the figure bundle pattern for root `THORP` and `TDGM`.
