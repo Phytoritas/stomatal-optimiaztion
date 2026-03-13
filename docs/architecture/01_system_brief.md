@@ -694,8 +694,15 @@ The eighty-first slice repairs the small utility dependency required before hydr
 - preserve `polylog2()` scalar and vector behavior and export it from `gosm.utils`
 - keep the seam utility-bounded and leave `hydraulics.py` as the next coupled runtime kernel
 
+## Slice 082: Root GOSM Hydraulics Kernel
+
+The eighty-second slice opens the next coupled root `GOSM` runtime kernel:
+- move `GOSM/src/gosm/model/hydraulics.py` into the staged `domains/gosm/model/` package
+- preserve `Eq.S5.1` through `Eq.S6.15` tagging plus hydraulic state outputs, turgor-growth outputs, and derivative propagation
+- keep the seam kernel-bounded and leave `pipeline.py` as the next fully wired runtime seam
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate `GOSM/src/gosm/model/hydraulics.py` as the next bounded GOSM hydraulic-growth kernel
+3. migrate `GOSM/src/gosm/model/pipeline.py` as the next bounded GOSM runtime pipeline seam

@@ -535,3 +535,9 @@ Slice 081:
 - target: `src/stomatal_optimiaztion/domains/gosm/utils/` and `tests/test_gosm_math.py`
 - scope: bounded root `GOSM` utility seam covering `polylog2()` and the `gosm.utils` export surface required by later hydraulics formulas
 - excluded: `GOSM/src/gosm/model/hydraulics.py`, wider runtime kernels, and root `TDGM` runtime seams
+
+Slice 082:
+- source: `GOSM/src/gosm/model/hydraulics.py`, `GOSM/src/gosm/model/__init__.py`, and `GOSM/src/gosm/utils/math.py`
+- target: `src/stomatal_optimiaztion/domains/gosm/model/` and `tests/test_gosm_hydraulics.py`
+- scope: bounded root `GOSM` runtime seam covering hydraulic state outputs, turgor-growth outputs, and derivative propagation plus equation-tag preservation
+- excluded: `GOSM/src/gosm/model/pipeline.py`, wider policy layers, and root `TDGM` runtime seams

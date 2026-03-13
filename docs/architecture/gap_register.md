@@ -2,6 +2,6 @@
 
 | ID | Gap | Impact | Required Artifact |
 | --- | --- | --- | --- |
-| G-082 | Root GOSM hydraulics kernel is still missing from the migrated repo | Blocks the next coupled hydraulic-growth runtime kernel after the migrated math helper seam | `docs/architecture/architecture/module_specs/module-082-gosm-hydraulics-kernel.md` |
+| G-083 | Root GOSM pipeline seam is still missing from the migrated repo | Blocks the first fully wired root GOSM runtime path after the migrated hydraulics kernel | `docs/architecture/architecture/module_specs/module-083-gosm-runtime-pipeline.md` |
 
-Current open gaps: G-082.
+Current open gaps: G-083.

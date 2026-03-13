@@ -48,4 +48,5 @@ Current status:
 - Slice 079 migrated: root GOSM conductance-temperature kernel
 - Slice 080 migrated: root GOSM carbon-assimilation kernel
 - Slice 081 migrated: root GOSM math helper seam
-- Current open architecture gaps: root GOSM hydraulics kernel
+- Slice 082 migrated: root GOSM hydraulics kernel
+- Current open architecture gaps: root GOSM runtime pipeline seam
