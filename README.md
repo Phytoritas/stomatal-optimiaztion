@@ -136,7 +136,7 @@ poetry run ruff check .
 - Root TDGM `thorp_g` runtime surface and fast MATLAB-output parity tests are restored in slice 103.
 - Root Python rerun parity audit is recorded in slice 104.
 - Root GOSM rerun kernels and helpers are hardened so the parity regressions run warning-free in slice 105.
-- Root THORP, GOSM, and TDGM rerun parity can now be inspected through Plotkit-style comparison bundles under `out/rerun_parity/` in slice 106.
+- Root THORP, GOSM, and TDGM rerun parity can now be inspected through Plotkit-style comparison `PNG + CSV` bundles under `out/rerun_parity/` in slice 106.
 
 ## Next validation
 - Keep `pytest`, `ruff`, the fast root rerun parity tests, and the Plotkit example renderers green while the architecture remains in monitor mode.

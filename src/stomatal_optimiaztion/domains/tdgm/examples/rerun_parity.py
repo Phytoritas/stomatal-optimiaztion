@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-from copy import deepcopy
 from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
-import json
 
 import matplotlib
 import numpy as np
@@ -158,14 +156,8 @@ def render_case_rerun_parity_bundle(
     file_paths = resolve_figure_paths(output_dir, figure_id)
 
     diff_summary: dict[str, dict[str, Any]] = {}
-    resolved_spec = deepcopy(spec)
-    resolved_spec["meta"]["title"] = f"{spec['meta']['title']} ({_case_label(legacy_mat_path.name)})"
-    resolved_spec["meta"]["legacy_mat_path"] = str(legacy_mat_path)
-    resolved_spec["data"] = {
-        "path": str(file_paths["data_csv"].resolve()),
-        "row_count": int(len(frame)),
-        "columns": list(frame.columns),
-    }
+    resolved_title = f"{spec['meta']['title']} ({_case_label(legacy_mat_path.name)})"
+    resolved_y_limits: dict[str, tuple[float, float]] = {}
 
     for panel_id in spec["panel_order"]:
         panel_frame = frame[frame["panel_id"] == panel_id]
@@ -177,17 +169,14 @@ def render_case_rerun_parity_bundle(
         diff_summary[panel_id] = {
             "max_abs_diff": float(np.nanmax(np.abs(pivot["python"] - pivot["legacy"]))),
         }
-        resolved_spec["panels"][panel_id]["resolved_y_limits"] = list(
-            _y_limits(
-                panel_frame["value"].to_numpy(dtype=float),
-                padding_fraction=float(spec["panels"][panel_id].get("y_padding_fraction", 0.08)),
-            )
+        resolved_y_limits[panel_id] = _y_limits(
+            panel_frame["value"].to_numpy(dtype=float),
+            padding_fraction=float(spec["panels"][panel_id].get("y_padding_fraction", 0.08)),
         )
 
     frame.to_csv(file_paths["data_csv"], index=False)
-    file_paths["spec_copy"].write_text(spec_path.read_text(encoding="utf-8"), encoding="utf-8")
-    file_paths["resolved_spec"].write_text(json.dumps(resolved_spec, indent=2), encoding="utf-8")
-    file_paths["tokens_copy"].write_text(tokens_path.read_text(encoding="utf-8"), encoding="utf-8")
+    for extra_key in ("spec_copy", "resolved_spec", "tokens_copy", "metadata", "pdf"):
+        file_paths[extra_key].unlink(missing_ok=True)
 
     width_mm = float(spec["figure"]["width_mm"])
     height_mm = float(spec["figure"]["height_mm"])
@@ -213,7 +202,7 @@ def render_case_rerun_parity_bundle(
         ax.set_ylabel(panel_spec["y_label"], fontsize=fonts["axis_label_size_pt"])
         ax.set_yscale(panel_spec["scale"])
         ax.set_xlim(float(panel_frame["time_day"].min()) - 0.5, float(panel_frame["time_day"].max()) + 0.5)
-        ax.set_ylim(resolved_spec["panels"][panel_id]["resolved_y_limits"])
+        ax.set_ylim(resolved_y_limits[panel_id])
 
         for source in ("legacy", "python"):
             source_spec = spec["styling"]["sources"][source]
@@ -240,30 +229,14 @@ def render_case_rerun_parity_bundle(
         frameon=tokens["legend"]["frameon"],
         fontsize=fonts["legend_size_pt"],
     )
-    fig.text(0.43, 0.965, resolved_spec["meta"]["title"], ha="center", va="center", fontsize=fonts["title_size_pt"] + 2, fontweight="bold")
+    fig.text(0.43, 0.965, resolved_title, ha="center", va="center", fontsize=fonts["title_size_pt"] + 2, fontweight="bold")
 
     fig.savefig(file_paths["png"], dpi=dpi, transparent=spec["export"]["transparent"], facecolor=tokens["figure"]["background"])
-    fig.savefig(file_paths["pdf"], dpi=dpi, transparent=spec["export"]["transparent"], facecolor=tokens["figure"]["background"])
     plt.close(fig)
-
-    metadata = {
-        "figure_id": figure_id,
-        "case_id": case_id,
-        "legacy_mat_path": str(legacy_mat_path),
-        "diff_summary": diff_summary,
-        "outputs": {key: str(value) for key, value in file_paths.items()},
-    }
-    file_paths["metadata"].write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-
     return FigureBundleArtifacts(
         output_dir=output_dir,
         data_csv_path=file_paths["data_csv"],
-        spec_copy_path=file_paths["spec_copy"],
-        resolved_spec_path=file_paths["resolved_spec"],
-        tokens_copy_path=file_paths["tokens_copy"],
-        metadata_path=file_paths["metadata"],
         png_path=file_paths["png"],
-        pdf_path=file_paths["pdf"],
     )
 
 

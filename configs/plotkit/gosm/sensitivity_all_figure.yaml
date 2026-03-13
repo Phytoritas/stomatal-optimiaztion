@@ -2,7 +2,6 @@ version: 1
 meta:
   id: gosm_sensitivity_all
   title: Growth-optimizing responses to the environment
-  journal_target: Nature Plants
   family: gosm_example
   support_level: thin_wrapper
   render_strategy: plotkit_style_composite

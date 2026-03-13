@@ -2,7 +2,6 @@ version: 1
 meta:
   id: thorp_groundwater_sweep
   title: Root THORP groundwater sweep figure
-  journal_target: Nature Plants
   family: thorp_example
   support_level: thin_wrapper
   render_strategy: plotkit_style_main_text_figure

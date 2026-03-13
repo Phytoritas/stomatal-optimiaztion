@@ -2,7 +2,6 @@ version: 1
 meta:
   id: tdgm_max_height_for_soil
   title: TDGM maximum height versus soil water balance
-  journal_target: Nature Plants
   family: tdgm_example
   support_level: thin_wrapper
   render_strategy: plotkit_style_two_panel

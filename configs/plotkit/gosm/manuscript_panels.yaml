@@ -2,7 +2,6 @@ version: 1
 meta:
   id: gosm_manuscript_panels
   title: Root GOSM manuscript atomic panels
-  journal_target: Nature Plants
   family: gosm_example
   support_level: thin_wrapper
   render_strategy: plotkit_style_panel_bundle

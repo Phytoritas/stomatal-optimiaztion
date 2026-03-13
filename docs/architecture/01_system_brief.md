@@ -870,7 +870,7 @@ The one-hundred-fifth slice hardens the root `GOSM` rerun path:
 
 The one-hundred-sixth slice makes the closed root rerun wave directly inspectable:
 - render Plotkit-style THORP, GOSM, and TDGM comparison bundles that overlay Python reruns against the legacy MATLAB payloads
-- write PNG, PDF, CSV, spec, resolved spec, tokens, and metadata exports under `out/rerun_parity/`
+- write only PNG comparison overlays and paired CSV data exports under `out/rerun_parity/`
 - keep the slow `GOSM` `imag` conductance-loss graph opt-in while the default graph bundle stays bounded to the fast validation set
 
 ## Immediate Deliverables

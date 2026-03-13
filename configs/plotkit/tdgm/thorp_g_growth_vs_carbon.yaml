@@ -2,7 +2,6 @@ version: 1
 meta:
   id: tdgm_thorp_g_growth_vs_carbon
   title: TDGM THORP-G growth versus carbon stress suite
-  journal_target: Nature Plants
   family: tdgm_example
   support_level: thin_wrapper
   render_strategy: plotkit_style_six_panel

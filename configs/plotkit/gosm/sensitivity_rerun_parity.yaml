@@ -2,7 +2,6 @@ version: 1
 meta:
   id: gosm_sensitivity_rerun_parity
   title: Root GOSM sensitivity rerun parity against legacy MATLAB
-  journal_target: Nature Plants
   family: rerun_parity
   support_level: thin_wrapper
   render_strategy: plotkit_style_overlay

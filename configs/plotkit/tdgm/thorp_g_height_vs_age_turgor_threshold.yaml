@@ -2,7 +2,6 @@ version: 1
 meta:
   id: tdgm_thorp_g_height_vs_age_turgor_threshold
   title: TDGM THORP-G height trajectories across turgor thresholds
-  journal_target: Nature Plants
   family: tdgm_example
   support_level: thin_wrapper
   render_strategy: plotkit_style_single_panel

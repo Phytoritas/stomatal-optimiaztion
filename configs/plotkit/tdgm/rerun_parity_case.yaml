@@ -2,7 +2,6 @@ version: 1
 meta:
   id: tdgm_thorp_g_rerun_parity_case
   title: Root TDGM THORP-G rerun parity against legacy MATLAB
-  journal_target: Nature Plants
   family: rerun_parity
   support_level: thin_wrapper
   render_strategy: plotkit_style_overlay
