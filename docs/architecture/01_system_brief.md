@@ -388,8 +388,16 @@ The forty-third slice opens the next bounded TOMATO seam:
 - keep the seam intentionally small and avoid wider optimizer dependencies beyond the migrated contracts
 - leave `TOMATO/tTDGM/src/ttdgm/contracts.py` blocked as the next seam
 
+## Slice 044: TOMATO tTDGM Contracts
+
+The forty-fourth slice opens the next bounded TOMATO seam:
+- move `TOMATO/tTDGM/src/ttdgm/contracts.py` into a new staged `domains/tomato/ttdgm` package
+- preserve growth-step dataclasses, allocation validation semantics, and the package import identity `MODEL_NAME == "tTDGM"`
+- keep the slice contract-first and avoid pulling in `interface.py` or placeholder growth-step behavior yet
+- leave `TOMATO/tTDGM/src/ttdgm/interface.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first nineteen TOMATO bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first twenty TOMATO bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `TOMATO/tTDGM/src/ttdgm/contracts.py`
+3. prepare the next TOMATO source audit for `TOMATO/tTDGM/src/ttdgm/interface.py`
