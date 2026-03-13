@@ -1,0 +1,780 @@
+{
+    "doc": {
+        "id": "Potkay and Feng - 2023 - Do stomata optimize turgor-driven growth A new framework for integrating stomata response with whol_appendix.pdf",
+        "title": "Do stomata optimize turgor-driven growth? A new framework for integrating stomata response with whole-tree carbon and hydraulics (Supporting Information)",
+        "year": 2023,
+        "doi": null,
+        "page_count": 62
+    },
+    "model_card": {
+        "name": "S8 Indirection estimation of model parameters + S9 Description of conductance loss simulations",
+        "aliases": [
+            "Indirect parameter estimation (carbon-use efficiency constraint)",
+            "Drought legacy / post-drought conductance hysteresis simulations"
+        ],
+        "task": [
+            "Indirectly estimate parameters (phi_tilde, RM0, gamma_g, gamma_r) using an NPP:GPP target and NSC/CO2 constraints",
+            "Define simulation procedure for drought-induced xylem conductance loss and post-drought recovery (PLC reporting, vulnerability curve hysteresis)"
+        ],
+        "domain": [
+            "plant carbon balance",
+            "parameter calibration (indirect)",
+            "plant hydraulics",
+            "drought legacy",
+            "xylem conductance loss"
+        ],
+        "assumptions": [
+            {
+                "id": "A1",
+                "text": "Four parameters not directly available from literature are estimated indirectly: effective whole-stem extensibility (phi_tilde), maximum stem+root maintenance respiration (RM0), and NSC-shape parameters (gamma_g, gamma_r) controlling growth/respiration declines under low NSC.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l04_l07",
+                        "char_span": null,
+                        "snippet": "We indirectly estimated four parameters... effective whole-stem extensibility, ϕ̃ ... maximum stem and root maintenance respiration, RM,0 ... shape parameters ... γg and γr"
+                    }
+                ]
+            },
+            {
+                "id": "A2",
+                "text": "Carbon-use efficiency (NPP:GPP) is constrained using a rule-of-thumb; analyses set NPP:GPP = 0.45 to align with more recent estimates.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l08_l11",
+                        "char_span": null,
+                        "snippet": "carbon-use efficiency ... tends to approximately equal 0.5 ... though we set the NPP:GPP ratio equal to 0.45 ... Collalti et al. (2020)"
+                    }
+                ]
+            },
+            {
+                "id": "A3",
+                "text": "Conductance-loss simulations assume xylem do not refill; drought-induced reductions in realized conductance become the new maximum conductances for post-drought simulations, altering vulnerability-curve parameters.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l30_l33",
+                        "char_span": null,
+                        "snippet": "Assuming that xylem do not refill, these conductances become the maximum conductance for subsequent simulations... vulnerability curves... parameters... change"
+                    }
+                ]
+            },
+            {
+                "id": "A4",
+                "text": "Venturas et al. (2018) method distinguishes virgin vs historic vulnerability curves; gc is evaluated to match optimal psiL from virgin curve when applied to historic curve (gc not strictly optimal for the historic curve).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 44,
+                        "block_id": "p44_l14_l20",
+                        "char_span": null,
+                        "snippet": "Venturas et al. (2018) distinguishes between virgin and historic vulnerability curves... optimal ψL ... from virgin... optimal gc ... coincides ... historic... not strictly optimal"
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "Eq.S8.1",
+                "latex": "\\frac{\\mathrm{NPP}}{\\mathrm{GPP}}=0.45",
+                "variables": [
+                    "NPP",
+                    "GPP"
+                ],
+                "explanation": "Target carbon-use efficiency used to indirectly estimate parameter combinations.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l10_l14",
+                        "char_span": null,
+                        "snippet": "we set the NPP:GPP ratio equal to 0.45... we solved for the combinations of ϕ̃ and RM,0 that satisfied NPP:GPP = 0.45"
+                    }
+                ],
+                "candidates": [
+                    {
+                        "latex": "\\frac{\\mathrm{NPP}}{\\mathrm{GPP}}\\approx 0.5",
+                        "evidence": [
+                            {
+                                "page": 43,
+                                "block_id": "p43_l08_l10",
+                                "char_span": null,
+                                "snippet": "ratio of net primary productivity (NPP) to gross primary productivity (GPP)... tends to approximately equal 0.5"
+                            }
+                        ]
+                    }
+                ],
+                "selected": "Eq.S8.1",
+                "selection_reason": "They adopt 0.45 for analyses to align with more recent estimates, while acknowledging 0.5 as a rule-of-thumb."
+            },
+            {
+                "id": "Eq.S8.2",
+                "latex": "\\left(\\frac{\\mathrm{NPP}}{\\mathrm{GPP}}\\right)_{\\text{steady-state}}\\equiv \\frac{G}{R_M+\\frac{G}{1-f_c}}",
+                "variables": [
+                    "NPP",
+                    "GPP",
+                    "G",
+                    "R_M",
+                    "f_c"
+                ],
+                "explanation": "Document-stated steady-state equivalence relating NPP:GPP to growth and respiration terms (notation referenced earlier in the SI).",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l11_l13",
+                        "char_span": null,
+                        "snippet": "In steady-state, the NPP:GPP ratio is equivalent to G/(RM + G/(1 - fc)))"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": "Exact parentheses/definition depend on earlier equations; kept as stated with uncertain:true."
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "\\tilde{\\phi}",
+                "name": "effective whole-stem extensibility",
+                "unit": null,
+                "definition": "Indirectly estimated extensibility parameter referenced to Eqn 7 (earlier in document).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ϕ̃",
+                    "phi_tilde"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l05_l06",
+                        "char_span": null,
+                        "snippet": "effective whole-stem extensibility, ϕ̃ (Eqn 7)"
+                    }
+                ]
+            },
+            {
+                "symbol": "R_{M,0}",
+                "name": "maximum stem and root maintenance respiration",
+                "unit": null,
+                "definition": "Indirectly estimated maximum maintenance respiration term referenced to Eqn 4 (earlier in document).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "RM,0",
+                    "RM0"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l05_l07",
+                        "char_span": null,
+                        "snippet": "maximum stem and root maintenance respiration, RM,0 (Eqn 4)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\gamma_g",
+                "name": "growth-NSC decline shape parameter",
+                "unit": null,
+                "definition": "Shape parameter controlling how growth declines under low NSC storage (referenced Eqn 5).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "γg",
+                    "gamma_g"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l06_l08",
+                        "char_span": null,
+                        "snippet": "shape parameters controlling how growth and respiration decline under low NSC storage, γg and γr (Eqn 5&6)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\gamma_r",
+                "name": "respiration-NSC decline shape parameter",
+                "unit": null,
+                "definition": "Shape parameter controlling how respiration declines under low NSC storage (referenced Eqn 6).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "γr",
+                    "gamma_r"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l06_l08",
+                        "char_span": null,
+                        "snippet": "shape parameters controlling how growth and respiration decline under low NSC storage, γg and γr (Eqn 5&6)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\bar{C}",
+                "name": "steady-state NSC reserve",
+                "unit": "mol",
+                "definition": "Steady-state NSC reserve solved simultaneously during indirect estimation; used for ambient vs elevated CO2 comparison and for selecting (gamma_g, gamma_r).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "C̅",
+                    "Cbar"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l15_l18",
+                        "char_span": null,
+                        "snippet": "Solving for ϕ̃ and RM,0 require simultaneously solving for the steady-state NSC reserve (C̅ )"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\psi_{\\mathrm{soilmin}}",
+                "name": "minimum experienced soil-water potential during drought",
+                "unit": "MPa",
+                "definition": "Drought magnitude control used to induce conductance loss; simulated over a range of values.",
+                "range": [
+                    -2.4,
+                    -0.02
+                ],
+                "dimension": null,
+                "aliases": [
+                    "ψsoilmin"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l27_l29",
+                        "char_span": null,
+                        "snippet": "soil drought... minimum experienced soil-water potential (ψsoilmin; -2.4 to -0.02 MPa)"
+                    }
+                ]
+            },
+            {
+                "symbol": "PLC",
+                "name": "percent loss of conductance",
+                "unit": "percent",
+                "definition": "Reported outcome summarizing whole-tree conductance loss following drought legacy simulations.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 44,
+                        "block_id": "p44_l03_l04",
+                        "char_span": null,
+                        "snippet": "report these results in terms of the percent loss of conductance (PLC) of the whole-tree"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\psi_{\\mathrm{soil}}",
+                "name": "soil water potential (post-drought recovery condition)",
+                "unit": "MPa",
+                "definition": "Non-stressed post-drought simulations are solved at psi_soil = 0 MPa.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ψsoil"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l34_l36",
+                        "char_span": null,
+                        "snippet": "solve for the optimal solutions under non-stressed conditions (ψsoil = 0 MPa)"
+                    }
+                ]
+            },
+            {
+                "symbol": "k_L,k_R,k_S,\\alpha_L,\\beta_L,\\alpha_R,\\beta_R,\\alpha_S,\\beta_S",
+                "name": "organ vulnerability-curve parameters (leaf/root/stem)",
+                "unit": null,
+                "definition": "Parameters updated after drought to represent altered vulnerability curves following conductance loss (as per Mackay et al., 2015).",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l31_l34",
+                        "char_span": null,
+                        "snippet": "parameters... change (i.e., αL, βL, kL, αR, βR, kR, αS, βS, kS in Table 3)"
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "name": "NPP:GPP target",
+                "unit": null,
+                "default": 0.45,
+                "estimation": "Set to align with more recent estimates (Collalti et al., 2020) while acknowledging the 0.5 rule-of-thumb (Waring et al., 1998).",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l08_l11",
+                        "char_span": null,
+                        "snippet": "ratio ... tends to approximately equal 0.5 ... we set ... equal to 0.45 ... Collalti et al. (2020)"
+                    }
+                ]
+            },
+            {
+                "name": "\\gamma_g",
+                "unit": null,
+                "default": 0.26,
+                "estimation": "Chosen from evaluated combinations using NSC and CO2-response criteria (Table 3; Fig. S5–S6).",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l19_l21",
+                        "char_span": null,
+                        "snippet": "we chose γg = 0.26, γr = 0.38, and their corresponding RM,0, ϕ̃ values"
+                    }
+                ]
+            },
+            {
+                "name": "\\gamma_r",
+                "unit": null,
+                "default": 0.38,
+                "estimation": "Chosen from evaluated combinations using NSC and CO2-response criteria (Table 3; Fig. S5–S6).",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l19_l21",
+                        "char_span": null,
+                        "snippet": "we chose γg = 0.26, γr = 0.38, and their corresponding RM,0, ϕ̃ values"
+                    }
+                ]
+            },
+            {
+                "name": "\\psi_{\\mathrm{soilmin}} range",
+                "unit": "MPa",
+                "default": null,
+                "estimation": "Drought magnitudes swept from -2.4 to -0.02 MPa for conductance loss simulations.",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l27_l29",
+                        "char_span": null,
+                        "snippet": "ψsoilmin; -2.4 to -0.02 MPa"
+                    }
+                ]
+            },
+            {
+                "name": "CO2 (elevated)",
+                "unit": "ppm",
+                "default": 700,
+                "estimation": "Used to evaluate percent change in steady-state NSC reserves (Cbar) under elevated atmospheric CO2.",
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l16_l18",
+                        "char_span": null,
+                        "snippet": "predict the percent change in steady-state NSC reserves due to elevated atmospheric CO2 concentrations (700 ppm)"
+                    }
+                ]
+            }
+        ],
+        "algorithm": {
+            "inputs": [
+                "Physiological parameters and environmental conditions (Table 3; referenced)",
+                "Candidate pairs (gamma_g, gamma_r)",
+                "Target NPP:GPP ratio",
+                "Ambient and elevated CO2 scenarios (elevated: 700 ppm)",
+                "Drought magnitude psi_soilmin range for conductance-loss simulations"
+            ],
+            "outputs": [
+                "Estimated parameters: phi_tilde, RM0, gamma_g, gamma_r",
+                "Steady-state NSC reserve Cbar (ambient and elevated CO2)",
+                "Post-drought updated vulnerability parameters (alpha/beta/k for each organ)",
+                "Whole-tree PLC outcomes for post-drought simulations"
+            ],
+            "steps": [
+                "[S8] Choose candidate combinations of (gamma_g, gamma_r) controlling NSC-dependent declines in growth/respiration.",
+                "[S8] Impose carbon-use efficiency constraint NPP:GPP = 0.45 and solve for parameter combinations (phi_tilde, RM0) consistent with steady-state optimization under Table 3 conditions.",
+                "[S8] Simultaneously solve for steady-state NSC reserve Cbar under ambient atmospheric CO2 concentrations.",
+                "[S8] Using estimated (phi_tilde, RM0) for each (gamma_g, gamma_r), predict percent change in Cbar under elevated CO2 (700 ppm).",
+                "[S8] Select (gamma_g, gamma_r) and corresponding (RM0, phi_tilde) meeting criteria: Cbar ~175 mol at ambient CO2 and Cbar increase under elevated CO2 >0% and <=~20%.",
+                "[S9] Run drought simulations by setting psi_soilmin across [-2.4, -0.02] MPa and compute steady-state optimal solutions.",
+                "[S9] From drought solutions, compute realized belowground, stem, and leaf conductances; assume xylem do not refill so these become new maximum conductances.",
+                "[S9] Update organ vulnerability-curve parameters (alpha/beta/k for leaf, root, stem) following the Mackay et al. (2015) approach.",
+                "[S9] With updated conductance parameters, solve for optimal solutions under non-stressed conditions (psi_soil = 0 MPa) to represent post-drought recovery (drought legacy effects).",
+                "[S9] Report outcomes in terms of whole-tree percent loss of conductance (PLC) and compare to Venturas et al. (2018) hysteresis method (virgin vs historic curves) where relevant.",
+                "[S9] For fair comparison among alternative AOH models, simulate all models using conductance losses predicted by the GOSM."
+            ],
+            "pseudocode": null,
+            "evidence": [
+                {
+                    "page": 43,
+                    "block_id": "p43_l13_l18",
+                    "char_span": null,
+                    "snippet": "solved for the combinations of ϕ̃ and RM,0 that satisfied NPP:GPP = 0.45... solving ... requires ... steady-state NSC reserve (C̅ ) ... elevated ... CO2 (700 ppm)"
+                },
+                {
+                    "page": 43,
+                    "block_id": "p43_l27_l36",
+                    "char_span": null,
+                    "snippet": "expose ... to soil drought ... ψsoilmin... calculate realized ... conductances... xylem do not refill... then solve ... non-stressed conditions (ψsoil = 0 MPa)... drought legacy effects"
+                },
+                {
+                    "page": 44,
+                    "block_id": "p44_l03_l29",
+                    "char_span": null,
+                    "snippet": "report ... PLC... compare ... Venturas et al. (2018)... virgin and historic vulnerability curves... For equal comparison among models, all models were simulated given the conductance losses predicted by our GOSM"
+                }
+            ]
+        },
+        "datasets": [],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L1",
+                "text": "Indirect estimation relies on a heuristic carbon-use efficiency constraint (NPP:GPP ~ 0.5; set to 0.45 here), so inferred parameters depend on this assumption and chosen reference studies.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l08_l12",
+                        "char_span": null,
+                        "snippet": "universal rule of thumb... NPP:GPP... approximately equal 0.5... we set... 0.45"
+                    }
+                ]
+            },
+            {
+                "id": "L2",
+                "text": "The conductance-loss simulations assume no xylem refilling, enforcing permanent hysteresis; results may differ if refilling/capacitance dynamics are considered.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l30_l33",
+                        "char_span": null,
+                        "snippet": "Assuming that xylem do not refill... conductances become the maximum conductance for subsequent simulations"
+                    }
+                ]
+            },
+            {
+                "id": "L3",
+                "text": "Venturas et al. (2018) approach can produce gc that is not strictly optimal for the historic vulnerability curve used to evaluate it.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 44,
+                        "block_id": "p44_l18_l20",
+                        "char_span": null,
+                        "snippet": "gc predicted by Venturas et al.’s (2018) is not strictly optimal with regards to the true vulnerability curve (i.e., the historic curve)"
+                    }
+                ]
+            }
+        ],
+        "implementation": {
+            "model_scope": "Section S8 specifies an indirect calibration procedure for parameters (phi_tilde, RM0, gamma_g, gamma_r) using steady-state constraints on NPP:GPP and NSC responses to CO2; Section S9 specifies drought legacy simulation steps to impose conductance loss and evaluate post-drought optimal function and whole-tree PLC.",
+            "state_variables": [
+                "\\bar{C}"
+            ],
+            "exogenous_inputs": [
+                "CO2",
+                "\\psi_{\\mathrm{soil}}"
+            ],
+            "control_inputs": [],
+            "outputs_observables": [
+                "\\tilde{\\phi}",
+                "R_{M,0}",
+                "\\gamma_g",
+                "\\gamma_r",
+                "PLC"
+            ],
+            "io_contract": {
+                "input_schema": null,
+                "output_schema": null,
+                "data_types": [],
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l04_l08",
+                        "char_span": null,
+                        "snippet": "parameters... ϕ̃ ... RM,0 ... γg and γr"
+                    }
+                ]
+            },
+            "dependency_graph": {
+                "nodes": [
+                    "NPP",
+                    "GPP",
+                    "G",
+                    "R_M",
+                    "f_c",
+                    "\\tilde{\\phi}",
+                    "R_{M,0}",
+                    "\\gamma_g",
+                    "\\gamma_r",
+                    "\\bar{C}",
+                    "CO2",
+                    "\\psi_{\\mathrm{soilmin}}",
+                    "k_L,k_R,k_S",
+                    "\\alpha_L,\\beta_L,\\alpha_R,\\beta_R,\\alpha_S,\\beta_S",
+                    "PLC"
+                ],
+                "edges": [
+                    {
+                        "from": "NPP:GPP target",
+                        "to": "\\tilde{\\phi}",
+                        "type": "calibration"
+                    },
+                    {
+                        "from": "NPP:GPP target",
+                        "to": "R_{M,0}",
+                        "type": "calibration"
+                    },
+                    {
+                        "from": "\\gamma_g",
+                        "to": "\\bar{C}",
+                        "type": "calibration"
+                    },
+                    {
+                        "from": "\\gamma_r",
+                        "to": "\\bar{C}",
+                        "type": "calibration"
+                    },
+                    {
+                        "from": "CO2",
+                        "to": "\\bar{C}",
+                        "type": "simulation"
+                    },
+                    {
+                        "from": "\\psi_{\\mathrm{soilmin}}",
+                        "to": "k_L,k_R,k_S",
+                        "type": "simulation"
+                    },
+                    {
+                        "from": "k_L,k_R,k_S",
+                        "to": "PLC",
+                        "type": "metric"
+                    }
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l13_l18",
+                        "char_span": null,
+                        "snippet": "solved for... ϕ̃ and RM,0... require ... NSC reserve (C̅ ) ... elevated ... CO2"
+                    },
+                    {
+                        "page": 43,
+                        "block_id": "p43_l30_l34",
+                        "char_span": null,
+                        "snippet": "conductances become the maximum conductance... vulnerability curves... parameters... change"
+                    }
+                ]
+            },
+            "numerics": {
+                "time_step": null,
+                "time_grid": null,
+                "integration_method": null,
+                "solver": "Implicit: simultaneous solving for steady-state NSC reserve Cbar and parameter combinations; method not specified in this chunk.",
+                "convergence_criteria": null,
+                "stability_notes": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l15_l16",
+                        "char_span": null,
+                        "snippet": "Solving for ϕ̃ and RM,0 require simultaneously solving for the steady-state NSC reserve (C̅ )"
+                    }
+                ]
+            },
+            "initial_conditions": [],
+            "boundary_conditions": [],
+            "preprocessing": {
+                "steps": [],
+                "missing_value_policy": null,
+                "unit_conversions": [],
+                "filters_smoothing": [],
+                "uncertain": true,
+                "evidence": []
+            },
+            "calibration": {
+                "estimated_parameters": [
+                    "\\tilde{\\phi}",
+                    "R_{M,0}",
+                    "\\gamma_g",
+                    "\\gamma_r"
+                ],
+                "objective": "Satisfy NPP:GPP = 0.45 in steady-state optimization while matching ambient Cbar (~175 mol) and elevated-CO2 Cbar increase constraints.",
+                "constraints": "Ambient Cbar ~175 mol; elevated CO2 (700 ppm) increases Cbar >0% and <=~20%.",
+                "optimizer": null,
+                "train_validation_protocol": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l13_l18",
+                        "char_span": null,
+                        "snippet": "solved for combinations... satisfied NPP:GPP = 0.45... solving ... steady-state NSC reserve (C̅ )"
+                    },
+                    {
+                        "page": 43,
+                        "block_id": "p43_l21_l24",
+                        "char_span": null,
+                        "snippet": "criteria... C̅ ... approximately equal 175 mol... percent increase... greater than 0% but did not exceed ~20%"
+                    }
+                ]
+            },
+            "code_blueprint": {
+                "language": null,
+                "modules": [],
+                "functions": [],
+                "tests": []
+            },
+            "unresolved_assets": [
+                {
+                    "type": "table",
+                    "label": "Table 3 (physiological parameters and environmental conditions)",
+                    "page": 43,
+                    "issue": "Indirect estimation references parameter/environment values in Table 3; not included in this chunk text.",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 43,
+                            "block_id": "p43_l12_l14",
+                            "char_span": null,
+                            "snippet": "Given the other physiological parameters and environmental conditions listed in Table 3"
+                        }
+                    ]
+                },
+                {
+                    "type": "figure",
+                    "label": "Figs. S3–S6 (calibration surfaces and Cbar results)",
+                    "page": 43,
+                    "issue": "Selection of (gamma_g, gamma_r) and corresponding (RM0, phi_tilde) is supported by referenced figures; figure contents not present in this chunk extraction.",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 43,
+                            "block_id": "p43_l14_l18",
+                            "char_span": null,
+                            "snippet": "specified combinations of γg and γr (Fig. S3&S4)... (Fig. S5)... (Fig. S6)"
+                        }
+                    ]
+                },
+                {
+                    "type": "algorithm",
+                    "label": "Mackay et al. (2015) approach for updating vulnerability parameters after conductance loss",
+                    "page": 43,
+                    "issue": "S9 states parameters change following Mackay et al. (2015) but does not provide explicit update formulas in this chunk.",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 43,
+                            "block_id": "p43_l32_l34",
+                            "char_span": null,
+                            "snippet": "parameters... change ... following the approach of Mackay et al. (2015)"
+                        }
+                    ]
+                }
+            ],
+            "open_questions": [
+                {
+                    "id": "Q1",
+                    "question": "What numerical procedure (solver type, variables solved simultaneously, stopping criteria) is used to simultaneously solve for steady-state Cbar and the parameter pair (phi_tilde, RM0) under the NPP:GPP constraint?",
+                    "why_needed": "Implementation requires a concrete algorithm to reproduce the indirect estimation step described only qualitatively here.",
+                    "likely_location": "Methods/implementation notes or associated code; potentially main text or supplementary figures/methods not included in this chunk.",
+                    "evidence": [
+                        {
+                            "page": 43,
+                            "block_id": "p43_l15_l16",
+                            "char_span": null,
+                            "snippet": "Solving for ϕ̃ and RM,0 require simultaneously solving for the steady-state NSC reserve (C̅ )"
+                        }
+                    ]
+                },
+                {
+                    "id": "Q2",
+                    "question": "How exactly are post-drought vulnerability parameters (alpha/beta/k) updated from realized conductances under the Mackay et al. (2015) approach (explicit mapping/formulas)?",
+                    "why_needed": "Reproducing conductance-loss hysteresis requires an explicit parameter update rule, not only the qualitative description.",
+                    "likely_location": "Mackay et al. (2015) method details or any model implementation supplement.",
+                    "evidence": [
+                        {
+                            "page": 43,
+                            "block_id": "p43_l31_l34",
+                            "char_span": null,
+                            "snippet": "conductances become the maximum conductance... vulnerability curves... parameters to change... following... Mackay et al. (2015)"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "provenance": {
+        "extraction_time": "2026-01-17T04:14:30Z",
+        "model": "GPT-5.2 Thinking",
+        "notes": "MODE=EXTRACT for chunk C008 covering S8 (indirect parameter estimation) and S9 (conductance-loss/drought legacy simulation design). Extracted up to the line immediately before the S10 header on page 44.",
+        "mode": "EXTRACT",
+        "is_partial": true,
+        "chunk": {
+            "chunk_id": "C008",
+            "page_range": [
+                43,
+                44
+            ]
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C008",
+                "page_range": [
+                    43,
+                    44
+                ],
+                "section_titles": [
+                    "S8 Indirection estimation of model parameters",
+                    "S9 Description of conductance loss simulations"
+                ],
+                "focus_tags": [
+                    "parameters",
+                    "calibration",
+                    "simulation",
+                    "appendix"
+                ],
+                "priority": 1,
+                "rationale": "Defines how key parameters (phi_tilde, RM0, gamma_g, gamma_r) are indirectly calibrated and how drought legacy conductance-loss simulations are constructed and compared.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 43,
+                        "block_id": "p43_l03_l04",
+                        "char_span": null,
+                        "snippet": "S8 Indirection estimation of model parameters"
+                    },
+                    {
+                        "page": 43,
+                        "block_id": "p43_l26_l27",
+                        "char_span": null,
+                        "snippet": "S9 Description of conductance loss simulations"
+                    }
+                ]
+            }
+        ],
+        "next_recommended_chunk_id": "C009"
+    }
+}

@@ -1,0 +1,1550 @@
+{
+    "doc": {
+        "id": "Potkay and Feng - 2023 - Do stomata optimize turgor-driven growth A new framework for integrating stomata response with whol_appendix.pdf",
+        "title": "Do stomata optimize turgor-driven growth? (Supporting Information: Notes S1 – Full model, parameter estimation, simulations)",
+        "year": 2023,
+        "doi": null,
+        "page_count": 62
+    },
+    "model_card": {
+        "name": "S4 Leaf and canopy-level carbon assimilation",
+        "aliases": [
+            "Big-leaf canopy assimilation (Farquhar-style)",
+            "Photosynthesis–respiration–stomata coupling for λ"
+        ],
+        "task": [
+            "compute canopy-mean net assimilation An using a big-leaf hyperbolic-minimum formulation",
+            "compute RuBP carboxylation-limited (Ac) and electron-transport-limited (Aj) rates",
+            "compute electron transport rate J via hyperbolic minimum (Jmax vs light-limited JI)",
+            "derive marginal carbon profit of water λ = dAn/dE needed for stomatal optimization"
+        ],
+        "domain": [
+            "plant ecophysiology",
+            "Farquhar photosynthesis",
+            "stomatal optimization"
+        ],
+        "assumptions": [
+            {
+                "id": "A1",
+                "text": "A big-leaf solution is used to scale leaf-level photosynthesis to canopy-mean assimilation (noting the approach has limitations).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_s4_intro",
+                        "char_span": null,
+                        "snippet": "For simplicity, we here apply a big-leaf solution to scale up for canopy-level carbon assimilation, despite the approach’s limitations..."
+                    }
+                ]
+            },
+            {
+                "id": "A2",
+                "text": "Net assimilation An is represented as the hyperbolic minimum of carboxylation-limited and electron-transport-limited rates (Ac and Aj), smoothed by curvature parameter θc.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_s4_hypmin",
+                        "char_span": null,
+                        "snippet": "The big-leaf solution method applies a hyperbolic minimum of a RuBP carboxylation-limited and an electron transport-limited net rates, Aj and Ac..."
+                    }
+                ]
+            },
+            {
+                "id": "A3",
+                "text": "Electron transport rate J is represented as a hyperbolic minimum of biochemical maximum Jmax and light-limited JI=ϰ·I, with curvature θJ fixed at 0.90.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_J_def",
+                        "char_span": null,
+                        "snippet": "The electron transport rate, J, is given by the hyperbolic minimum of ... Jmax and JI ... where JI = ϰ·I ... The smoothness ... θJ = 0.90."
+                    }
+                ]
+            },
+            {
+                "id": "A4",
+                "text": "For temperature sensitivity ξ, only temperature-dependences of Vc,max, Jmax, and Rd are considered.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_b_xi_note",
+                        "char_span": null,
+                        "snippet": "Similarly, we decompose ξ into its components, noting that we only consider here the temperature-dependences of Vc,max, Jmax, and Rd..."
+                    }
+                ]
+            }
+        ],
+        "equations": [
+            {
+                "id": "Eq.S4.1",
+                "latex": "A_n = g_c\\,(c_a - c_i)",
+                "variables": [
+                    "A_n",
+                    "g_c",
+                    "c_a",
+                    "c_i"
+                ],
+                "explanation": "Supply-limited CO2 diffusion definition of net assimilation.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_eqS4_1",
+                        "char_span": null,
+                        "snippet": "An = gc(ca − ci) (S4.1)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.2",
+                "latex": "A_n = \\frac{A_j + A_c}{2\\,\\theta_c} - \\sqrt{\\left(\\frac{A_j + A_c}{2\\,\\theta_c}\\right)^2 - \\frac{A_j A_c}{\\theta_c}}",
+                "variables": [
+                    "A_n",
+                    "A_j",
+                    "A_c",
+                    "\\theta_c"
+                ],
+                "explanation": "Demand-limited biochemical uptake as hyperbolic minimum of Aj and Ac.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_eqS4_2",
+                        "char_span": null,
+                        "snippet": "An = (Aj + Ac)/(2θc) − sqrt(((Aj + Ac)/(2θc))^2 − AjAc/θc) (S4.2)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.2_quadratic",
+                "latex": "\\theta_c A_n^2 - (A_c + A_j)A_n + A_c A_j = 0",
+                "variables": [
+                    "A_n",
+                    "A_c",
+                    "A_j",
+                    "\\theta_c"
+                ],
+                "explanation": "Quadratic form stated for the hyperbolic-minimum definition.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_s4_quad",
+                        "char_span": null,
+                        "snippet": "i.e., θcAn^2 – (Ac + Aj)An + AcAj = 0"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.3",
+                "latex": "A_c = V_{c,\\max}\\,\\frac{c_i-\\Gamma^*}{c_i + K_c\\left(1+\\frac{o_a}{K_o}\\right)} - R_d",
+                "variables": [
+                    "A_c",
+                    "V_{c,\\max}",
+                    "c_i",
+                    "\\Gamma^*",
+                    "K_c",
+                    "o_a",
+                    "K_o",
+                    "R_d"
+                ],
+                "explanation": "RuBP carboxylation-limited net rate (Farquhar-type).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_eqS4_3",
+                        "char_span": null,
+                        "snippet": "Ac = Vc,max (ci − Γ*)/(ci + Kc(1 + oa/Ko)) − Rd (S4.3)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.4",
+                "latex": "A_j = \\frac{J}{4}\\,\\frac{c_i-\\Gamma^*}{c_i + 2\\Gamma^*} - R_d",
+                "variables": [
+                    "A_j",
+                    "J",
+                    "c_i",
+                    "\\Gamma^*",
+                    "R_d"
+                ],
+                "explanation": "Electron-transport-limited net rate (Farquhar-type).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_eqS4_4",
+                        "char_span": null,
+                        "snippet": "Aj = (J/4) (ci − Γ*)/(ci + 2Γ*) − Rd (S4.4)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.Rd_Q10",
+                "latex": "R_d = 0.01\\,V_{c,\\max,25^\\circ\\mathrm{C}}\\,Q_{10}^{\\frac{(T_L-25)}{10}},\\quad Q_{10}=2",
+                "variables": [
+                    "R_d",
+                    "V_{c,\\max,25^\\circ\\mathrm{C}}",
+                    "Q_{10}",
+                    "T_L"
+                ],
+                "explanation": "Temperature dependence of Rd captured via proportionality with Vc,max at 25°C and a Q10 relationship (as stated).",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_Rd_Q10",
+                        "char_span": null,
+                        "snippet": "Q10 relationship (Q10 = 2; Rd = 0.01 · Vc,max,25°C · Q10^((TL − 25)/10)."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": "TL is defined elsewhere in K; this relation is stated with 25°C. Temperature-unit convention is not fully specified within this chunk."
+            },
+            {
+                "id": "Eq.S4.JI",
+                "latex": "J_I = \\kappa\\,I",
+                "variables": [
+                    "J_I",
+                    "\\kappa",
+                    "I"
+                ],
+                "explanation": "Light-limited electron transport rate is proportional to absorbed insolation.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_JI",
+                        "char_span": null,
+                        "snippet": "light-limited rate ... JI ... where JI = ϰ·I, I is the leaf area-averaged solar insolation..."
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.5",
+                "latex": "J = \\frac{J_{\\max}+J_I}{2\\,\\theta_J} - \\sqrt{\\left(\\frac{J_{\\max}+J_I}{2\\,\\theta_J}\\right)^2 - \\frac{J_{\\max}J_I}{\\theta_J}}",
+                "variables": [
+                    "J",
+                    "J_{\\max}",
+                    "J_I",
+                    "\\theta_J"
+                ],
+                "explanation": "Electron transport rate as hyperbolic minimum of Jmax and JI.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_eqS4_5",
+                        "char_span": null,
+                        "snippet": "J = (Jmax + JI)/(2θJ) − sqrt(((Jmax + JI)/(2θJ))^2 − Jmax JI/θJ) (S4.5)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.6",
+                "latex": "\\lambda = \\frac{dA_n}{dE} = \\frac{\\dfrac{dA_n}{dg_c}}{\\left(\\dfrac{dE}{dg_w}\\right)\\left(\\dfrac{dg_w}{dg_c}\\right)}",
+                "variables": [
+                    "\\lambda",
+                    "A_n",
+                    "E",
+                    "g_c",
+                    "g_w"
+                ],
+                "explanation": "Marginal carbon profit of water expressed via derivatives with respect to conductances.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_eqS4_6",
+                        "char_span": null,
+                        "snippet": "λ = dAn/dE = (dAn/dgc) / ((dE/dgw)(dgw/dgc)) (S4.6)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.7",
+                "latex": "\\frac{dA_n}{dg_c} = \\frac{\\partial A_n}{\\partial g_c} + \\frac{\\partial A_n}{\\partial c_i}\\frac{dc_i}{dg_c} = k\\frac{dc_i}{dg_c} + \\xi\\frac{dT_L}{dg_w}\\frac{dg_w}{dg_c}",
+                "variables": [
+                    "A_n",
+                    "g_c",
+                    "c_i",
+                    "k",
+                    "\\xi",
+                    "T_L",
+                    "g_w"
+                ],
+                "explanation": "Two equivalent expressions for dAn/dgc (supply-based vs biochemical demand curve), introducing k and ξ.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_eqS4_7",
+                        "char_span": null,
+                        "snippet": "dAn/dgc = ∂An/∂gc + ∂An/∂ci · dci/dgc = k·dci/dgc + ξ·dTL/dgw · dgw/dgc (S4.7)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.8",
+                "latex": "\\frac{dA_n}{dg_c} = \\frac{A_n}{g_c} - g_c\\frac{dc_i}{dg_c} = k\\frac{dc_i}{dg_c} + \\xi\\frac{dT_L}{dg_w}\\frac{dg_w}{dg_c}",
+                "variables": [
+                    "A_n",
+                    "g_c",
+                    "c_i",
+                    "k",
+                    "\\xi",
+                    "T_L",
+                    "g_w"
+                ],
+                "explanation": "Supply-side partial derivatives evaluated using An=gc(ca−ci), yielding an equation to solve for dci/dgc.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_eqS4_8",
+                        "char_span": null,
+                        "snippet": "dAn/dgc = An/gc − gc·dci/dgc = k·dci/dgc + ξ·dTL/dgw·dgw/dgc (S4.8)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.9",
+                "latex": "\\frac{dc_i}{dg_c} = \\frac{1}{k+g_c}\\left(\\frac{A_n}{g_c} - \\xi\\frac{dT_L}{dg_w}\\frac{dg_w}{dg_c}\\right)",
+                "variables": [
+                    "c_i",
+                    "g_c",
+                    "k",
+                    "A_n",
+                    "\\xi",
+                    "T_L",
+                    "g_w"
+                ],
+                "explanation": "Rearranged solution for dci/dgc.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_b_eqS4_9",
+                        "char_span": null,
+                        "snippet": "dci/dgc = 1/(k+gc) (An/gc − ξ·dTL/dgw·dgw/dgc) (S4.9)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.10",
+                "latex": "\\frac{dA_n}{dg_c} = \\frac{k}{k+g_c}\\frac{A_n}{g_c} + \\xi\\frac{g_c}{k+g_c}\\frac{dT_L}{dg_w}\\frac{dg_w}{dg_c}",
+                "variables": [
+                    "A_n",
+                    "g_c",
+                    "k",
+                    "\\xi",
+                    "T_L",
+                    "g_w"
+                ],
+                "explanation": "Closed-form expression for dAn/dgc after substituting dci/dgc.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_b_eqS4_10",
+                        "char_span": null,
+                        "snippet": "dAn/dgc = k/(k+gc)·An/gc + ξ·gc/(k+gc)·dTL/dgw·dgw/dgc (S4.10)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.11",
+                "latex": "\\lambda = \\frac{k}{k+g_c}\\,\\frac{A_n}{g_c\\left(\\dfrac{dg_w}{dg_c}\\right)\\left(\\dfrac{dE}{dg_w}\\right)} - \\frac{g_c}{k+g_c}\\,\\frac{\\xi\\,L}{4\\epsilon\\sigma T_L^3 + C_p g_b}",
+                "variables": [
+                    "\\lambda",
+                    "k",
+                    "g_c",
+                    "A_n",
+                    "g_w",
+                    "E",
+                    "\\xi",
+                    "L",
+                    "\\epsilon",
+                    "\\sigma",
+                    "T_L",
+                    "C_p",
+                    "g_b"
+                ],
+                "explanation": "Final closed-form definition of λ combining Eq. S4.6 with Eq. S4.10 and Eq. S3.4 (as stated).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_b_eqS4_11",
+                        "char_span": null,
+                        "snippet": "λ = k/(k+gc) · An/(gc·(dgw/dgc)·(dE/dgw)) − gc/(k+gc) · ξL/(4εσTL^3 + Cp gb) (S4.11)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.12",
+                "latex": "k = \\frac{\\partial A_n}{\\partial c_i} = \\frac{\\partial A_n}{\\partial A_c}\\frac{\\partial A_c}{\\partial c_i} + \\frac{\\partial A_n}{\\partial A_j}\\frac{\\partial A_j}{\\partial c_i}",
+                "variables": [
+                    "k",
+                    "A_n",
+                    "c_i",
+                    "A_c",
+                    "A_j"
+                ],
+                "explanation": "Decomposition of biochemical demand-curve slope k into Ac and Aj components (big-leaf).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_b_eqS4_12",
+                        "char_span": null,
+                        "snippet": "k = ∂An/∂ci = (∂An/∂Ac)(∂Ac/∂ci) + (∂An/∂Aj)(∂Aj/∂ci) (S4.12)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.13",
+                "latex": "\\frac{\\partial A_n}{\\partial A_c} = \\frac{1}{2\\theta_c}\\left[1 - \\frac{A_c + (1-2\\theta_c)A_j}{\\sqrt{(A_j + A_c)^2 - 4\\theta_c A_j A_c}}\\right]",
+                "variables": [
+                    "A_n",
+                    "A_c",
+                    "A_j",
+                    "\\theta_c"
+                ],
+                "explanation": "Derivative of An with respect to Ac implied by the hyperbolic-minimum formulation.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_b_eqS4_13",
+                        "char_span": null,
+                        "snippet": "∂An/∂Ac = (1/(2θc))[1 − (Ac + (1−2θc)Aj)/sqrt((Aj+Ac)^2 − 4θc Aj Ac)] (S4.13)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.14",
+                "latex": "\\frac{\\partial A_c}{\\partial c_i} = V_{c,\\max}\\,\\frac{\\Gamma^* + K_c\\left(1+\\frac{o_a}{K_o}\\right)}{\\left[c_i + K_c\\left(1+\\frac{o_a}{K_o}\\right)\\right]^2}",
+                "variables": [
+                    "A_c",
+                    "c_i",
+                    "V_{c,\\max}",
+                    "\\Gamma^*",
+                    "K_c",
+                    "o_a",
+                    "K_o"
+                ],
+                "explanation": "Derivative of Ac with respect to ci from Eq. S4.3 (as provided).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_b_eqS4_14",
+                        "char_span": null,
+                        "snippet": "∂Ac/∂ci = Vc,max [Γ* + Kc(1 + oa/Ko)] / [ci + Kc(1 + oa/Ko)]^2 (S4.14)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.15",
+                "latex": "\\frac{\\partial A_n}{\\partial A_j} = \\frac{1}{2\\theta_c}\\left[1 - \\frac{A_j + (1-2\\theta_c)A_c}{\\sqrt{(A_j + A_c)^2 - 4\\theta_c A_j A_c}}\\right]",
+                "variables": [
+                    "A_n",
+                    "A_j",
+                    "A_c",
+                    "\\theta_c"
+                ],
+                "explanation": "Derivative of An with respect to Aj implied by the hyperbolic-minimum formulation.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_b_eqS4_15",
+                        "char_span": null,
+                        "snippet": "∂An/∂Aj = (1/(2θc))[1 − (Aj + (1−2θc)Ac)/sqrt((Aj+Ac)^2 − 4θc Aj Ac)] (S4.15)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.16",
+                "latex": "\\frac{\\partial A_j}{\\partial c_i} = \\frac{3}{4}\\,\\frac{J\\,\\Gamma^*}{(c_i + 2\\Gamma^*)^2}",
+                "variables": [
+                    "A_j",
+                    "c_i",
+                    "J",
+                    "\\Gamma^*"
+                ],
+                "explanation": "Derivative of Aj with respect to ci from Eq. S4.4 (as provided).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_b_eqS4_16",
+                        "char_span": null,
+                        "snippet": "∂Aj/∂ci = (3/4)·JΓ*/(ci + 2Γ*)^2 (S4.16)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.17",
+                "latex": "\\xi = \\frac{\\partial A_n}{\\partial T_L} = \\frac{\\partial A_n}{\\partial A_c}\\frac{\\partial A_c}{\\partial T_L} + \\frac{\\partial A_n}{\\partial A_j}\\frac{\\partial A_j}{\\partial T_L} = \\frac{\\partial A_n}{\\partial A_c}\\left(\\frac{\\partial A_c}{\\partial V_{c,\\max}}\\frac{\\partial V_{c,\\max}}{\\partial T_L} + \\frac{\\partial A_c}{\\partial R_d}\\frac{\\partial R_d}{\\partial T_L}\\right) + \\frac{\\partial A_n}{\\partial A_j}\\left(\\frac{\\partial A_j}{\\partial J}\\frac{\\partial J}{\\partial J_{\\max}}\\frac{\\partial J_{\\max}}{\\partial T_L} + \\frac{\\partial A_j}{\\partial R_d}\\frac{\\partial R_d}{\\partial T_L}\\right)",
+                "variables": [
+                    "\\xi",
+                    "A_n",
+                    "T_L",
+                    "A_c",
+                    "A_j",
+                    "V_{c,\\max}",
+                    "R_d",
+                    "J",
+                    "J_{\\max}"
+                ],
+                "explanation": "Decomposition of ξ into components from temperature dependence of Vc,max, Jmax, and Rd (as stated).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_b_eqS4_17",
+                        "char_span": null,
+                        "snippet": "ξ = ∂An/∂TL = (∂An/∂Ac)(∂Ac/∂TL) + (∂An/∂Aj)(∂Aj/∂TL) = ... (S4.17)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            },
+            {
+                "id": "Eq.S4.18",
+                "latex": "\\xi = \\frac{\\partial A_n}{\\partial A_c}\\left(\\frac{A_c+R_d}{V_{c,\\max}}\\frac{\\partial V_{c,\\max}}{\\partial T_L} - \\frac{\\partial R_d}{\\partial T_L}\\right) + \\frac{\\partial A_n}{\\partial A_j}\\left(\\frac{A_j+R_d}{J}\\frac{\\partial J}{\\partial J_{\\max}}\\frac{\\partial J_{\\max}}{\\partial T_L} - \\frac{\\partial R_d}{\\partial T_L}\\right)",
+                "variables": [
+                    "\\xi",
+                    "A_n",
+                    "A_c",
+                    "A_j",
+                    "R_d",
+                    "V_{c,\\max}",
+                    "J",
+                    "J_{\\max}",
+                    "T_L"
+                ],
+                "explanation": "Simplified expression for ξ (as provided).",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 31,
+                        "block_id": "p31_b_eqS4_18",
+                        "char_span": null,
+                        "snippet": "which simplifies further to ... (S4.18)"
+                    }
+                ],
+                "candidates": [],
+                "selected": null,
+                "selection_reason": null
+            }
+        ],
+        "variables": [
+            {
+                "symbol": "A_n",
+                "name": "net assimilation rate (canopy-mean big-leaf)",
+                "unit": "mole carbon meter^-2 second^-1",
+                "definition": "Canopy-mean net assimilation rate defined by supply (Eq. S4.1) and demand (Eq. S4.2) expressions.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "An"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_An_def",
+                        "char_span": null,
+                        "snippet": "leaf-level photosynthesis ... An ... canopy-mean net assimilation rate, An [mol C·m-2·s-1] ... (S4.1) ... (S4.2)"
+                    }
+                ]
+            },
+            {
+                "symbol": "R_d",
+                "name": "leaf area-specific dark respiration rate",
+                "unit": "mole carbon meter^-2 second^-1",
+                "definition": "Leaf area-specific dark respiration rate used in Ac and Aj.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Rd"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_where_defs",
+                        "char_span": null,
+                        "snippet": "Rd is the leaf area-specific dark respiration rate [mol C·m-2·s-1]."
+                    }
+                ]
+            },
+            {
+                "symbol": "A_c",
+                "name": "RuBP carboxylation-limited net rate",
+                "unit": "mole carbon meter^-2 second^-1",
+                "definition": "Carboxylation-limited net rate used in hyperbolic minimum.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Ac"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_s4_hypmin",
+                        "char_span": null,
+                        "snippet": "hyperbolic minimum of a RuBP carboxylation-limited and an electron transport-limited net rates, Aj and Ac [mol C·m-2·s-1]..."
+                    }
+                ]
+            },
+            {
+                "symbol": "A_j",
+                "name": "electron transport-limited net rate",
+                "unit": "mole carbon meter^-2 second^-1",
+                "definition": "Electron transport-limited net rate used in hyperbolic minimum.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Aj"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_s4_hypmin",
+                        "char_span": null,
+                        "snippet": "hyperbolic minimum ... Aj and Ac [mol C·m-2·s-1]..."
+                    }
+                ]
+            },
+            {
+                "symbol": "g_c",
+                "name": "conductance to CO2 transfer",
+                "unit": "mole carbon_dioxide meter^-2 second^-1",
+                "definition": "Conductance controlling supply-limited CO2 diffusion in Eq. S4.1 (referenced to Eq. S3.9).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "gc"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_gc_def",
+                        "char_span": null,
+                        "snippet": "conductance, gc [mol CO2·m-2·s-1] (see Eq. S3.9)..."
+                    }
+                ]
+            },
+            {
+                "symbol": "c_a",
+                "name": "atmospheric CO2 mole fraction",
+                "unit": "mole carbon_dioxide per mole air",
+                "definition": "Atmospheric CO2 mole fraction in the diffusion gradient (ca − ci).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ca"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_ca_ci",
+                        "char_span": null,
+                        "snippet": "difference in mole fraction ... ca − ci [mol CO2·(mol air)-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "c_i",
+                "name": "intercellular CO2 mole fraction",
+                "unit": "mole carbon_dioxide per mole air",
+                "definition": "Intercellular leaf-space CO2 mole fraction in the diffusion gradient (ca − ci).",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ci"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_ca_ci",
+                        "char_span": null,
+                        "snippet": "difference in mole fraction between the atmosphere and the intercellular leaf space, ca - ci [mol CO2·(mol air)-1]"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\theta_c",
+                "name": "curvature (smoothing) parameter for hyperbolic minimum of An",
+                "unit": null,
+                "definition": "Empirical coefficient smoothing transition from irradiance-limited to irradiance-saturated canopy photosynthesis.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "thetac"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_thetac",
+                        "char_span": null,
+                        "snippet": "θc is an empirical coefficient to smooth the transition from irradiance-limited to irradiance-saturated canopy photosynthesis."
+                    }
+                ]
+            },
+            {
+                "symbol": "V_{c,\\max}",
+                "name": "maximum carboxylation rate",
+                "unit": "mole carbon meter^-2 second^-1",
+                "definition": "Maximum carboxylation rate used in Ac.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Vc,max"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_where_defs",
+                        "char_span": null,
+                        "snippet": "Vc,max is the maximum carboxylation rate [mol C·m-2·s-1]..."
+                    }
+                ]
+            },
+            {
+                "symbol": "J",
+                "name": "electron transport rate",
+                "unit": "mole electron meter^-2 second^-1",
+                "definition": "Electron transport rate used in Aj.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_where_defs",
+                        "char_span": null,
+                        "snippet": "J is the electron transport rate [mol e-·m-2·s-1]..."
+                    }
+                ]
+            },
+            {
+                "symbol": "J_{\\max}",
+                "name": "biochemical maximum electron transport rate",
+                "unit": "mole electron meter^-2 second^-1",
+                "definition": "Maximum electron transport rate used in hyperbolic minimum for J.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Jmax"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_J_def",
+                        "char_span": null,
+                        "snippet": "electron transport rate, J, ... hyperbolic minimum of a biochemical maximum rate and a light-limited rate, Jmax and JI ..."
+                    }
+                ]
+            },
+            {
+                "symbol": "J_I",
+                "name": "light-limited electron transport rate",
+                "unit": "mole electron meter^-2 second^-1",
+                "definition": "Light-limited term in Eq. S4.5, defined as JI = ϰ·I.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "JI"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_J_def",
+                        "char_span": null,
+                        "snippet": "light-limited rate, Jmax and JI ... where JI = ϰ·I..."
+                    }
+                ]
+            },
+            {
+                "symbol": "I",
+                "name": "leaf area-averaged solar insolation",
+                "unit": "watt meter^-2",
+                "definition": "Absorbed insolation used to compute JI.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_J_def",
+                        "char_span": null,
+                        "snippet": "I is the leaf area-averaged solar insolation [W·m-2] (see Eq. S3.2)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\kappa",
+                "name": "proportionality constant between electron-transport rate and absorbed insolation",
+                "unit": "mole electron joule^-1",
+                "definition": "ϰ relates JI to I; an approximate numeric value is provided with assumptions on quantum yield and PAR wavelength.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "ϰ"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_kappa",
+                        "char_span": null,
+                        "snippet": "ϰ is a proportionality constant ... (ϰ ≈ 6.90·10-7 mol e-·J-1 ...)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\theta_J",
+                "name": "curvature factor for hyperbolic minimum defining J",
+                "unit": null,
+                "definition": "Smoothness of the hyperbolic minimum for J, set to 0.90.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "thetaJ"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_thetaJ",
+                        "char_span": null,
+                        "snippet": "The smoothness of this hyperbolic minimum is controlled by ... θJ = 0.90."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\Gamma^*",
+                "name": "CO2 compensation point",
+                "unit": "mole carbon_dioxide per mole air",
+                "definition": "CO2 compensation point used in Ac and Aj.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Gamma*"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_where_defs",
+                        "char_span": null,
+                        "snippet": "Γ* is the CO2 compensation point [mol CO2·(mol air)-1]..."
+                    }
+                ]
+            },
+            {
+                "symbol": "o_a",
+                "name": "atmospheric oxygen concentration",
+                "unit": "mole oxygen per mole air",
+                "definition": "Atmospheric oxygen concentration used in Ac denominator.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "oa"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_where_defs",
+                        "char_span": null,
+                        "snippet": "oa is the atmospheric oxygen concentration [mol O2·(mol air)-1]..."
+                    }
+                ]
+            },
+            {
+                "symbol": "K_c",
+                "name": "Michaelis–Menten constant for carboxylation",
+                "unit": "mole carbon_dioxide per mole air",
+                "definition": "Michaelis–Menten constant used in Ac denominator.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Kc"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_where_defs",
+                        "char_span": null,
+                        "snippet": "Kc and Ko are Michaelis–Menten constant for carboxylation ... and oxygenation ... respectively..."
+                    }
+                ]
+            },
+            {
+                "symbol": "K_o",
+                "name": "Michaelis–Menten constant for oxygenation",
+                "unit": "mole oxygen per mole air",
+                "definition": "Michaelis–Menten constant used in Ac oxygen term oa/Ko.",
+                "range": null,
+                "dimension": null,
+                "aliases": [
+                    "Ko"
+                ],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_where_defs",
+                        "char_span": null,
+                        "snippet": "Kc and Ko are Michaelis–Menten constant for carboxylation ... and oxygenation ... respectively..."
+                    }
+                ]
+            },
+            {
+                "symbol": "\\lambda",
+                "name": "marginal carbon profit of water",
+                "unit": "mole carbon per mole water",
+                "definition": "Defined as dAn/dE to solve for the gc that optimizes growth.",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_lambda_def",
+                        "char_span": null,
+                        "snippet": "λ = dAn/dE [mol C·(mol H2O)-1] ... to solve for the gc that optimizes growth."
+                    }
+                ]
+            },
+            {
+                "symbol": "k",
+                "name": "slope of biochemical An vs ci demand curve (constant temperature)",
+                "unit": "mole carbon_dioxide meter^-2 second^-1",
+                "definition": "k = ∂An/∂ci at constant temperature (defined later by Eq. S4.12).",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_k_xi_defs",
+                        "char_span": null,
+                        "snippet": "k is ... slope of ... demand curve ... at constant temperature (k = ∂An/∂ci; defined later by Eq. S4.12)"
+                    }
+                ]
+            },
+            {
+                "symbol": "\\xi",
+                "name": "temperature sensitivity of net assimilation",
+                "unit": null,
+                "definition": "ξ = ∂An/∂TL (defined later by Eq. S4.18).",
+                "range": null,
+                "dimension": null,
+                "aliases": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_k_xi_defs",
+                        "char_span": null,
+                        "snippet": "ξ = ∂An/∂TL (defined later by Eq. S4.18)"
+                    }
+                ]
+            }
+        ],
+        "parameters": [
+            {
+                "name": "theta_c",
+                "unit": null,
+                "default": null,
+                "estimation": "Empirical smoothing coefficient; numeric value not provided in this chunk.",
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_thetac",
+                        "char_span": null,
+                        "snippet": "θc is an empirical coefficient to smooth the transition..."
+                    }
+                ]
+            },
+            {
+                "name": "theta_J",
+                "unit": null,
+                "default": 0.9,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_thetaJ",
+                        "char_span": null,
+                        "snippet": "θJ = 0.90."
+                    }
+                ]
+            },
+            {
+                "name": "kappa",
+                "unit": "mole electron joule^-1",
+                "default": 6.90e-7,
+                "estimation": "Approximate value stated for quantum yield 0.3 mol photon·(mol e-)-1 and average PAR wavelength 550 nm.",
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_kappa",
+                        "char_span": null,
+                        "snippet": "ϰ ≈ 6.90·10-7 mol e-·J-1 ... quantum yield ... average PAR wavelength of 550 nm"
+                    }
+                ]
+            },
+            {
+                "name": "Q10_Rd",
+                "unit": null,
+                "default": 2,
+                "estimation": null,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_Rd_Q10",
+                        "char_span": null,
+                        "snippet": "Q10 relationship (Q10 = 2; Rd = 0.01 · Vc,max,25°C · Q10^((TL - 25)/10)."
+                    }
+                ]
+            },
+            {
+                "name": "Rd_scale_factor",
+                "unit": null,
+                "default": 0.01,
+                "estimation": "Stated proportionality factor linking Rd to Vc,max,25°C.",
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_Rd_Q10",
+                        "char_span": null,
+                        "snippet": "Rd = 0.01 · Vc,max,25°C · Q10^((TL - 25)/10)"
+                    }
+                ]
+            }
+        ],
+        "algorithm": {
+            "inputs": [
+                "g_c",
+                "c_a",
+                "I",
+                "T_L",
+                "V_{c,\\max}",
+                "J_{\\max}",
+                "R_d",
+                "K_c",
+                "K_o",
+                "o_a",
+                "\\Gamma^*",
+                "\\theta_c",
+                "\\theta_J",
+                "\\kappa"
+            ],
+            "outputs": [
+                "A_n",
+                "c_i",
+                "A_c",
+                "A_j",
+                "J",
+                "\\lambda",
+                "k",
+                "\\xi"
+            ],
+            "steps": [
+                "Compute JI = κ·I and then J via the hyperbolic-minimum relation (Eq. S4.5).",
+                "Compute Ac(ci) (Eq. S4.3) and Aj(ci) (Eq. S4.4).",
+                "Compute biochemical demand An_demand(ci) using hyperbolic minimum of Aj and Ac (Eq. S4.2).",
+                "Compute diffusion supply An_supply(ci) = gc(ca − ci) (Eq. S4.1).",
+                "Solve for ci such that An_supply(ci) = An_demand(ci); set An = An_supply = An_demand.",
+                "Compute k using Eq. S4.12–S4.16.",
+                "Compute ξ using Eq. S4.17–S4.18 (requires ∂Vc,max/∂TL, ∂Jmax/∂TL, ∂Rd/∂TL, and ∂J/∂Jmax).",
+                "Compute λ using Eq. S4.11 together with dE/dgw and dgw/dgc (referenced to Eq. S3.8 & S3.10)."
+            ],
+            "pseudocode": null,
+            "evidence": [
+                {
+                    "page": 29,
+                    "block_id": "p29_b_two_simul",
+                    "char_span": null,
+                    "snippet": "The net assimilation rate, An ... is given by two simultaneous expressions..."
+                },
+                {
+                    "page": 31,
+                    "block_id": "p31_b_eqS4_11",
+                    "char_span": null,
+                    "snippet": "final closed form definition of the marginal carbon profit of water ... (S4.11)"
+                }
+            ]
+        },
+        "datasets": [],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L1",
+                "text": "The big-leaf scaling approach is explicitly noted to have limitations.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_s4_intro",
+                        "char_span": null,
+                        "snippet": "apply a big-leaf solution ... despite the approach’s limitations..."
+                    }
+                ]
+            },
+            {
+                "id": "L2",
+                "text": "Exact functional forms for temperature dependence of Vc,max and Jmax are referenced (Harley & Baldocchi, 1995) but not provided in this chunk.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_tempdeps",
+                        "char_span": null,
+                        "snippet": "temperature-dependent ... Vc,max ... following Harley and Baldocchi (1995; their Eq. 1) ... temperature-dependence of Jmax is modeled using Eq. 1..."
+                    }
+                ]
+            },
+            {
+                "id": "L3",
+                "text": "Equation for Rd temperature dependence is stated with reference to 25°C, but TL is defined elsewhere as K; temperature-unit convention is not fully specified within this chunk.",
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_Rd_Q10",
+                        "char_span": null,
+                        "snippet": "Vc,max,25°C ... leaf temperature of 25°C ... Rd = 0.01 · Vc,max,25°C · Q10^((TL - 25)/10)"
+                    }
+                ]
+            }
+        ],
+        "implementation": {
+            "model_scope": "Big-leaf canopy-mean photosynthesis/respiration module and derivation of marginal carbon profit of water (λ) for stomatal optimization.",
+            "state_variables": [],
+            "exogenous_inputs": [
+                "c_a",
+                "I",
+                "T_L",
+                "o_a",
+                "K_c",
+                "K_o",
+                "\\Gamma^*"
+            ],
+            "control_inputs": [
+                "g_c"
+            ],
+            "outputs_observables": [
+                "A_n",
+                "c_i",
+                "A_c",
+                "A_j",
+                "J",
+                "\\lambda"
+            ],
+            "io_contract": {
+                "input_schema": null,
+                "output_schema": null,
+                "data_types": [],
+                "evidence": []
+            },
+            "dependency_graph": {
+                "nodes": [
+                    "g_c",
+                    "c_a",
+                    "c_i",
+                    "A_n",
+                    "A_c",
+                    "A_j",
+                    "V_{c,\\max}",
+                    "J",
+                    "J_{\\max}",
+                    "J_I",
+                    "\\kappa",
+                    "I",
+                    "R_d",
+                    "\\Gamma^*",
+                    "K_c",
+                    "K_o",
+                    "o_a",
+                    "\\theta_c",
+                    "\\theta_J",
+                    "\\lambda",
+                    "k",
+                    "\\xi",
+                    "T_L"
+                ],
+                "edges": [
+                    {
+                        "from": "g_c",
+                        "to": "A_n",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "c_a",
+                        "to": "A_n",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "c_i",
+                        "to": "A_n",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "c_i",
+                        "to": "A_c",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "c_i",
+                        "to": "A_j",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "V_{c,\\max}",
+                        "to": "A_c",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "J",
+                        "to": "A_j",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "J_{\\max}",
+                        "to": "J",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "I",
+                        "to": "J_I",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "J_I",
+                        "to": "J",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "A_c",
+                        "to": "A_n",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "A_j",
+                        "to": "A_n",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "A_n",
+                        "to": "k",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "A_n",
+                        "to": "\\xi",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "k",
+                        "to": "\\lambda",
+                        "type": "equation"
+                    },
+                    {
+                        "from": "\\xi",
+                        "to": "\\lambda",
+                        "type": "equation"
+                    }
+                ],
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 30,
+                        "block_id": "p30_b_eqS4_6",
+                        "char_span": null,
+                        "snippet": "λ = dAn/dE = (dAn/dgc)/((dE/dgw)(dgw/dgc)) (S4.6)"
+                    }
+                ]
+            },
+            "numerics": {
+                "time_step": null,
+                "time_grid": null,
+                "integration_method": null,
+                "solver": null,
+                "convergence_criteria": null,
+                "stability_notes": null,
+                "uncertain": true,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_two_simul",
+                        "char_span": null,
+                        "snippet": "The net assimilation rate, An ... is given by two simultaneous expressions."
+                    }
+                ]
+            },
+            "initial_conditions": [],
+            "boundary_conditions": [],
+            "preprocessing": {
+                "steps": [],
+                "missing_value_policy": null,
+                "unit_conversions": [],
+                "filters_smoothing": [],
+                "uncertain": true,
+                "evidence": []
+            },
+            "calibration": {
+                "estimated_parameters": [],
+                "objective": null,
+                "constraints": null,
+                "optimizer": null,
+                "train_validation_protocol": null,
+                "uncertain": true,
+                "evidence": []
+            },
+            "code_blueprint": {
+                "language": null,
+                "modules": [],
+                "functions": [],
+                "tests": []
+            },
+            "unresolved_assets": [
+                {
+                    "type": "equation",
+                    "label": "Temperature dependence of Vc,max",
+                    "page": 30,
+                    "issue": "Vc,max(TL) is said to follow Harley & Baldocchi (1995; Eq. 1), but the explicit functional form is not included in this chunk.",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 30,
+                            "block_id": "p30_b_tempdeps",
+                            "char_span": null,
+                            "snippet": "temperature-dependent of the maximum carboxylation rate is modeled here following Harley and Baldocchi (1995; their Eq. 1)"
+                        }
+                    ]
+                },
+                {
+                    "type": "equation",
+                    "label": "Temperature dependence of Jmax",
+                    "page": 30,
+                    "issue": "Jmax(TL) is said to follow Harley & Baldocchi (1995; Eq. 1), but the explicit functional form is not included in this chunk.",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 30,
+                            "block_id": "p30_b_tempdeps",
+                            "char_span": null,
+                            "snippet": "The temperature-dependence of Jmax is modeled using Eq. 1 in Harley and Baldocchi (1995)."
+                        }
+                    ]
+                },
+                {
+                    "type": "equation",
+                    "label": "Derivatives needed for ξ",
+                    "page": 31,
+                    "issue": "Eq. S4.18 requires ∂Vc,max/∂TL, ∂Jmax/∂TL, ∂Rd/∂TL, and ∂J/∂Jmax, but these derivative expressions are not provided in this chunk.",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 31,
+                            "block_id": "p31_b_eqS4_18",
+                            "char_span": null,
+                            "snippet": "ξ = ... (Ac+Rd)/Vc,max · ∂Vc,max/∂TL ... (Aj+Rd)/J · (∂J/∂Jmax)(∂Jmax/∂TL) ... − ∂Rd/∂TL (S4.18)"
+                        }
+                    ]
+                },
+                {
+                    "type": "algorithm",
+                    "label": "Solver for ci from simultaneous supply/demand equations",
+                    "page": 29,
+                    "issue": "An is defined by two simultaneous expressions (Eq. S4.1 and Eq. S4.2–S4.4), but the numerical procedure to solve for ci (and thus An) is not specified in this chunk.",
+                    "uncertain": true,
+                    "evidence": [
+                        {
+                            "page": 29,
+                            "block_id": "p29_b_two_simul",
+                            "char_span": null,
+                            "snippet": "The net assimilation rate, An ... is given by two simultaneous expressions."
+                        }
+                    ]
+                }
+            ],
+            "open_questions": [
+                {
+                    "id": "Q1",
+                    "question": "What is the explicit functional form for Vc,max(TL) (referenced as Harley & Baldocchi, 1995; Eq. 1) and its parameter values used here?",
+                    "why_needed": "Vc,max(TL) is required to compute Ac and ξ via ∂Vc,max/∂TL.",
+                    "likely_location": "Harley & Baldocchi (1995) Eq. 1 or elsewhere in the SI/methods where parameters are specified.",
+                    "evidence": [
+                        {
+                            "page": 30,
+                            "block_id": "p30_b_tempdeps",
+                            "char_span": null,
+                            "snippet": "Vc,max ... following Harley and Baldocchi (1995; their Eq. 1)"
+                        }
+                    ]
+                },
+                {
+                    "id": "Q2",
+                    "question": "What is the explicit functional form for Jmax(TL) (referenced as Harley & Baldocchi, 1995; Eq. 1) and its parameter values used here?",
+                    "why_needed": "Jmax(TL) is required to compute J (Eq. S4.5) and ξ via ∂Jmax/∂TL.",
+                    "likely_location": "Harley & Baldocchi (1995) Eq. 1 or elsewhere in the SI/methods where parameters are specified.",
+                    "evidence": [
+                        {
+                            "page": 30,
+                            "block_id": "p30_b_tempdeps",
+                            "char_span": null,
+                            "snippet": "temperature-dependence of Jmax is modeled using Eq. 1 in Harley and Baldocchi (1995)"
+                        }
+                    ]
+                },
+                {
+                    "id": "Q3",
+                    "question": "What numerical method is used to solve the simultaneous equations for An and ci (Eq. S4.1 vs Eq. S4.2–S4.4) for a given gc?",
+                    "why_needed": "Implementation requires a reproducible solver for ci and An before λ can be computed.",
+                    "likely_location": "Implementation details in main text methods or code supplement (if any).",
+                    "evidence": [
+                        {
+                            "page": 29,
+                            "block_id": "p29_b_two_simul",
+                            "char_span": null,
+                            "snippet": "An ... is given by two simultaneous expressions."
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "provenance": {
+        "extraction_time": "2026-01-17T03:31:51Z",
+        "model": "GPT-5.2 Thinking",
+        "notes": "MODE=EXTRACT; chunk_id=C004. Extracted Section S4 content spanning pp.29–31 (big-leaf assimilation, electron transport, and λ derivation through Eq. S4.18). Dependencies on S3 (dE/dgw, dgw/dgc, dTL/dgw) are referenced but not re-derived here.",
+        "mode": "EXTRACT",
+        "is_partial": true,
+        "chunk": {
+            "chunk_id": "C004",
+            "page_range": [
+                29,
+                31
+            ]
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C004",
+                "page_range": [
+                    29,
+                    31
+                ],
+                "section_titles": [
+                    "S4 Leaf and canopy-level carbon assimilation"
+                ],
+                "focus_tags": [
+                    "model",
+                    "theory",
+                    "equations"
+                ],
+                "priority": 1,
+                "rationale": "Defines Farquhar-style big-leaf canopy assimilation and derives λ=dAn/dE needed for stomatal optimization in S2.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 29,
+                        "block_id": "p29_b_s4_header",
+                        "char_span": null,
+                        "snippet": "S4 Leaf and canopy-level carbon assimilation"
+                    },
+                    {
+                        "page": 31,
+                        "block_id": "p31_b_eqS4_11",
+                        "char_span": null,
+                        "snippet": "final closed form definition of the marginal carbon profit of water ... (S4.11)"
+                    }
+                ]
+            }
+        ],
+        "next_recommended_chunk_id": "C005"
+    }
+}

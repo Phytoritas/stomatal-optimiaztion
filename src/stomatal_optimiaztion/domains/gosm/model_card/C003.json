@@ -1,0 +1,1281 @@
+{
+  "doc": {
+    "id": "Potkay and Feng - 2023 - Do stomata optimize turgor-driven growth A new framework for integrating stomata response with whol_appendix.pdf",
+    "title": "Do stomata optimize turgor-driven growth? (Supporting Information: Notes S1 – Full Model, Parameter Estimation, and Simulation description)",
+    "year": 2023,
+    "doi": null,
+    "page_count": 62
+  },
+  "model_card": {
+    "name": "S3 Leaf temperature and stomatal conductances",
+    "aliases": [
+      "Leaf energy balance + conductance transforms",
+      "Leaf temperature & conductance module"
+    ],
+    "task": [
+      "compute leaf temperature TL from energy balance",
+      "compute transpiration E from diffusion conductances",
+      "derive dE/dgw and mapping between gw and gc for downstream λ=dAn/dE"
+    ],
+    "domain": [
+      "plant ecophysiology",
+      "leaf energy balance",
+      "gas exchange conductances"
+    ],
+    "assumptions": [
+      {
+        "id": "A1",
+        "text": "Leaf temperature TL is obtained numerically as the root of the leaf energy balance.",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b1",
+            "char_span": null,
+            "snippet": "Leaf temperature is calculated numerically as the value that satisfies the energy balance ... I = εσTL^4 + LE + Cp gb,H(TL − Ta), (S3.1)"
+          }
+        ]
+      },
+      {
+        "id": "A2",
+        "text": "Boundary-layer conductance to heat transfer gb,H is approximated by boundary-layer conductance to vapor transfer gb (difference only by a factor 1.08 under laminar flow with stomata on both sides).",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b2",
+            "char_span": null,
+            "snippet": "gb,H ... we approximate by ... gb, since the heat and vapor conductances differ only by a factor of 1.08 under laminar flow for leaves with stomata on both sides"
+          }
+        ]
+      },
+      {
+        "id": "A3",
+        "text": "Absorbed solar insolation I is computed via a Beer–Lambert canopy formulation; φ is treated constant and LAI relates to total leaf area aL via canopy width W.",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b3",
+            "char_span": null,
+            "snippet": "I = Is cos(Φ)/(φ LAI) [1 − exp(−κL LAI sec(Φ))], (S3.2)"
+          },
+          {
+            "page": 28,
+            "block_id": "p28_b0",
+            "char_span": null,
+            "snippet": "φ ... treated as a constant ... LAI ... related to ... aL ... by canopy width W ... (LAI = aL·φ−1·W−2)"
+          }
+        ]
+      },
+      {
+        "id": "A4",
+        "text": "Transpiration E can be expressed using diffusion conductances gw and gb and the air-to-leaf vapor pressure gradient (DL or e′L(TL)−ea).",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b1",
+            "char_span": null,
+            "snippet": "E = DL / (Patm(1/gw + 1/gb)) = (e′L(TL) − ea(Ta,RH)) / (Patm(1/gw + 1/gb)), (S3.3)"
+          }
+        ]
+      },
+      {
+        "id": "A5",
+        "text": "Total conductance to CO2 transfer gc is derived from gw and gb using fixed coefficients (1.6 and 1.37).",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 29,
+            "block_id": "p29_b1",
+            "char_span": null,
+            "snippet": "1/gc = 1.6/gw + 1.37/gb, (S3.9)"
+          }
+        ]
+      }
+    ],
+    "equations": [
+      {
+        "id": "Eq.S3.1",
+        "latex": "I = \\epsilon\\,\\sigma\\,T_L^{4} + L\\,E + C_p\\,g_{b,H}\\,(T_L - T_a)",
+        "variables": [
+          "I",
+          "\\epsilon",
+          "\\sigma",
+          "T_L",
+          "L",
+          "E",
+          "C_p",
+          "g_{b,H}",
+          "T_a"
+        ],
+        "explanation": "Leaf energy balance used to solve leaf temperature.",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b1",
+            "char_span": null,
+            "snippet": "I=εσTL^4 + LE + Cp gb,H(TL − Ta), (S3.1)"
+          }
+        ],
+        "candidates": [],
+        "selected": null,
+        "selection_reason": null
+      },
+      {
+        "id": "Eq.S3.2",
+        "latex": "I = \\frac{I_s\\,\\cos(\\Phi)}{\\phi\\,\\mathrm{LAI}}\\left[1-\\exp\\left(-\\kappa_L\\,\\mathrm{LAI}\\,\\sec(\\Phi)\\right)\\right]",
+        "variables": [
+          "I",
+          "I_s",
+          "\\Phi",
+          "\\phi",
+          "\\mathrm{LAI}",
+          "\\kappa_L"
+        ],
+        "explanation": "Beer–Lambert canopy formulation for absorbed solar insolation (leaf-area averaged).",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b3",
+            "char_span": null,
+            "snippet": "I = Is cos(Φ)/(φ LAI) [1 − exp(−κL LAI sec(Φ))], (S3.2)"
+          }
+        ],
+        "candidates": [],
+        "selected": null,
+        "selection_reason": null
+      },
+      {
+        "id": "Eq.S3.LAI",
+        "latex": "\\mathrm{LAI} = a_L\\,\\phi^{-1}\\,W^{-2}",
+        "variables": [
+          "\\mathrm{LAI}",
+          "a_L",
+          "\\phi",
+          "W"
+        ],
+        "explanation": "Relationship between leaf area index and total leaf area via canopy width.",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b0",
+            "char_span": null,
+            "snippet": "LAI ... related to total leaf area, aL, by ... W ... (LAI = aL·φ-1·W-2)"
+          }
+        ],
+        "candidates": [],
+        "selected": null,
+        "selection_reason": null
+      },
+      {
+        "id": "Eq.S3.3",
+        "latex": "E = \\frac{D_L}{P_{atm}\\left(\\frac{1}{g_w}+\\frac{1}{g_b}\\right)} = \\frac{e_L'(T_L)-e_a(T_a, RH)}{P_{atm}\\left(\\frac{1}{g_w}+\\frac{1}{g_b}\\right)}",
+        "variables": [
+          "E",
+          "D_L",
+          "P_{atm}",
+          "g_w",
+          "g_b",
+          "e_L'(T_L)",
+          "e_a(T_a, RH)",
+          "T_L",
+          "T_a",
+          "RH"
+        ],
+        "explanation": "Transpiration from vapor-pressure gradient and series conductances (stomatal+boundary layer).",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b1",
+            "char_span": null,
+            "snippet": "E = DL/(Patm(1/gw + 1/gb)) = (e′L(TL) − ea(Ta,RH))/(Patm(1/gw + 1/gb)), (S3.3)"
+          }
+        ],
+        "candidates": [],
+        "selected": null,
+        "selection_reason": null
+      },
+      {
+        "id": "Eq.S3.4",
+        "latex": "\\frac{dT_L}{dg_w} = -\\frac{L\\,\\frac{dE}{dg_w}}{4\\epsilon\\sigma T_L^{3} + C_p\\,g_b}",
+        "variables": [
+          "T_L",
+          "g_w",
+          "L",
+          "E",
+          "\\epsilon",
+          "\\sigma",
+          "C_p",
+          "g_b"
+        ],
+        "explanation": "Sensitivity of leaf temperature to stomatal water-vapor conductance from differentiated energy balance.",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b2",
+            "char_span": null,
+            "snippet": "dTL/dgw = − L (dE/dgw) / (4εσTL^3 + Cp gb). (S3.4)"
+          }
+        ],
+        "candidates": [],
+        "selected": null,
+        "selection_reason": null
+      },
+      {
+        "id": "Eq.S3.5",
+        "latex": "\\frac{dE}{dg_w}=\\frac{\\partial E}{\\partial g_w}+\\frac{\\partial E}{\\partial e_L'}\\,\\frac{de_L'}{dT_L}\\,\\frac{dT_L}{dg_w}",
+        "variables": [
+          "E",
+          "g_w",
+          "e_L'",
+          "T_L"
+        ],
+        "explanation": "Total derivative of E w.r.t. gw accounting for TL-dependence of saturation vapor pressure.",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b3",
+            "char_span": null,
+            "snippet": "dE/dgw = ∂E/∂gw + ∂E/∂e′L · (de′L/dTL) · (dTL/dgw), (S3.5)"
+          }
+        ],
+        "candidates": [],
+        "selected": null,
+        "selection_reason": null
+      },
+      {
+        "id": "Eq.S3.6",
+        "latex": "\\frac{\\partial E}{\\partial g_w}=\\frac{D_L}{P_{atm}\\left(1+\\frac{g_w}{g_b}\\right)^2}",
+        "variables": [
+          "E",
+          "g_w",
+          "D_L",
+          "P_{atm}",
+          "g_b"
+        ],
+        "explanation": "Partial derivative from Eq. S3.3.",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b3",
+            "char_span": null,
+            "snippet": "∂E/∂gw = DL / (Patm(1+gw/gb)^2) (S3.6)"
+          }
+        ],
+        "candidates": [],
+        "selected": null,
+        "selection_reason": null
+      },
+      {
+        "id": "Eq.S3.7",
+        "latex": "\\frac{\\partial E}{\\partial e_L'}=\\frac{1}{P_{atm}\\left(\\frac{1}{g_w}+\\frac{1}{g_b}\\right)}",
+        "variables": [
+          "E",
+          "e_L'",
+          "P_{atm}",
+          "g_w",
+          "g_b"
+        ],
+        "explanation": "Partial derivative from Eq. S3.3.",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b3",
+            "char_span": null,
+            "snippet": "∂E/∂e′L = 1 / (Patm(1/gw + 1/gb)). (S3.7)"
+          }
+        ],
+        "candidates": [],
+        "selected": null,
+        "selection_reason": null
+      },
+      {
+        "id": "Eq.S3.8",
+        "latex": "\\frac{dE}{dg_w}=\\frac{E}{g_w^{2}}\\,\\frac{1}{\\left(\\frac{1}{g_w}+\\frac{1}{g_b}\\right)}+\\frac{s_L/P_{atm}}{4\\epsilon\\sigma T_L^{3}+C_p g_b}",
+        "variables": [
+          "E",
+          "g_w",
+          "g_b",
+          "s_L",
+          "P_{atm}",
+          "\\epsilon",
+          "\\sigma",
+          "T_L",
+          "C_p"
+        ],
+        "explanation": "Closed-form expression for dE/dgw used downstream to compute λ.",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b4",
+            "char_span": null,
+            "snippet": "dE/dgw = E/gw^2 · 1/(1/gw + 1/gb) + (sL/Patm)/(4εσTL^3 + Cp gb), (S3.8)"
+          }
+        ],
+        "candidates": [],
+        "selected": null,
+        "selection_reason": null
+      },
+      {
+        "id": "Eq.S3.9",
+        "latex": "\\frac{1}{g_c}=\\frac{1.6}{g_w}+\\frac{1.37}{g_b}",
+        "variables": [
+          "g_c",
+          "g_w",
+          "g_b"
+        ],
+        "explanation": "Transform between water-vapor conductances and total CO2 conductance.",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 29,
+            "block_id": "p29_b1",
+            "char_span": null,
+            "snippet": "1/gc = 1.6/gw + 1.37/gb, (S3.9)"
+          }
+        ],
+        "candidates": [],
+        "selected": null,
+        "selection_reason": null
+      },
+      {
+        "id": "Eq.S3.10",
+        "latex": "\\frac{\\partial g_w}{\\partial g_c}=\\frac{1}{1.6\\,\\left(1.6+1.37\\,\\frac{g_w}{g_b}\\right)^2}",
+        "variables": [
+          "g_w",
+          "g_c",
+          "g_b"
+        ],
+        "explanation": "Derivative needed downstream (Section S4) when λ uses gc.",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 29,
+            "block_id": "p29_b1",
+            "char_span": null,
+            "snippet": "∂gw/∂gc = 1 / (1.6(1.6+1.37 gw/gb)^2), (S3.10)"
+          }
+        ],
+        "candidates": [],
+        "selected": null,
+        "selection_reason": null
+      }
+    ],
+    "variables": [
+      {
+        "symbol": "T_L",
+        "name": "leaf temperature",
+        "unit": "kelvin",
+        "definition": "Leaf temperature solved from the energy balance (Eq. S3.1).",
+        "range": null,
+        "dimension": null,
+        "aliases": [
+          "TL"
+        ],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b1",
+            "char_span": null,
+            "snippet": "Leaf temperature, TL [K] ... calculated numerically ... energy balance ... (S3.1)"
+          }
+        ]
+      },
+      {
+        "symbol": "T_a",
+        "name": "air temperature",
+        "unit": "kelvin",
+        "definition": "Air temperature in the energy balance and vapor-pressure terms.",
+        "range": null,
+        "dimension": null,
+        "aliases": [
+          "Ta"
+        ],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b2",
+            "char_span": null,
+            "snippet": "Ta is the air temperature [K]"
+          }
+        ]
+      },
+      {
+        "symbol": "I",
+        "name": "leaf area-averaged absorbed solar insolation",
+        "unit": "watt meter^-2",
+        "definition": "Absorbed solar radiation term used in the leaf energy balance.",
+        "range": null,
+        "dimension": null,
+        "aliases": [],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b1",
+            "char_span": null,
+            "snippet": "I is the leaf area-averaged absorbed solar insolation [W∙m-2]"
+          }
+        ]
+      },
+      {
+        "symbol": "I_s",
+        "name": "incoming insolation",
+        "unit": "watt meter^-2",
+        "definition": "Incoming shortwave radiation used in Eq. S3.2.",
+        "range": null,
+        "dimension": null,
+        "aliases": [
+          "Is"
+        ],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b0",
+            "char_span": null,
+            "snippet": "Is is the incoming insolation [W∙m-2]"
+          }
+        ]
+      },
+      {
+        "symbol": "\\Phi",
+        "name": "solar elevation below the zenith",
+        "unit": null,
+        "definition": "Angular term used in Eq. S3.2 (cos, sec).",
+        "range": null,
+        "dimension": null,
+        "aliases": [
+          "Phi"
+        ],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b0",
+            "char_span": null,
+            "snippet": "Φ is the solar elevation below the zenith [-]"
+          }
+        ]
+      },
+      {
+        "symbol": "\\kappa_L",
+        "name": "canopy extinction coefficient",
+        "unit": null,
+        "definition": "Dimensionless extinction coefficient in Beer–Lambert canopy light attenuation.",
+        "range": null,
+        "dimension": null,
+        "aliases": [
+          "kappaL"
+        ],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b0",
+            "char_span": null,
+            "snippet": "κL is a dimensionless canopy extinction coefficient [-]"
+          }
+        ]
+      },
+      {
+        "symbol": "\\phi",
+        "name": "ratio of total- to projected-leaf area",
+        "unit": null,
+        "definition": "Used in Eq. S3.2 and the LAI–aL relation; treated constant here.",
+        "range": null,
+        "dimension": null,
+        "aliases": [],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b0",
+            "char_span": null,
+            "snippet": "φ is the ratio of total- to projected-leaf area [-] which is here treated as a constant"
+          }
+        ]
+      },
+      {
+        "symbol": "\\mathrm{LAI}",
+        "name": "leaf area index",
+        "unit": null,
+        "definition": "Leaf area index used in Eq. S3.2.",
+        "range": null,
+        "dimension": null,
+        "aliases": [
+          "LAI"
+        ],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b0",
+            "char_span": null,
+            "snippet": "LAI is the leaf area index [-]"
+          }
+        ]
+      },
+      {
+        "symbol": "a_L",
+        "name": "total leaf area",
+        "unit": "meter^2",
+        "definition": "Total leaf area used to derive LAI.",
+        "range": null,
+        "dimension": null,
+        "aliases": [
+          "aL"
+        ],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b0",
+            "char_span": null,
+            "snippet": "LAI is related to total leaf area, aL, by the canopy width, W ... (LAI = aL·φ-1·W-2)"
+          }
+        ]
+      },
+      {
+        "symbol": "W",
+        "name": "canopy width",
+        "unit": "meter",
+        "definition": "Canopy width used in LAI = aL·φ−1·W−2.",
+        "range": null,
+        "dimension": null,
+        "aliases": [],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b0",
+            "char_span": null,
+            "snippet": "LAI ... related to ... aL, by the canopy width, W [m] (LAI = aL·φ-1·W-2)"
+          }
+        ]
+      },
+      {
+        "symbol": "E",
+        "name": "transpiration rate",
+        "unit": "mole H2O meter^-2 second^-1",
+        "definition": "Transpiration expressed via vapor pressure gradient and conductances (Eq. S3.3).",
+        "range": null,
+        "dimension": null,
+        "aliases": [],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b1",
+            "char_span": null,
+            "snippet": "transpiration ... E ... defined by ... conductance to water vapor ... gw ... (S3.3)"
+          }
+        ]
+      },
+      {
+        "symbol": "g_w",
+        "name": "diffusional conductance to water vapor from the leaf",
+        "unit": "mole meter^-2 second^-1",
+        "definition": "Leaf conductance to water vapor (stomatal-side term used in Eq. S3.3).",
+        "range": null,
+        "dimension": null,
+        "aliases": [
+          "gw"
+        ],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b1",
+            "char_span": null,
+            "snippet": "diffusional conductance to water vapor from the leaf, gw [mol∙m-2∙s-1]"
+          }
+        ]
+      },
+      {
+        "symbol": "g_b",
+        "name": "boundary-layer conductance to vapor transfer",
+        "unit": "mole meter^-2 second^-1",
+        "definition": "Boundary-layer conductance to vapor transfer (series with gw in Eq. S3.3).",
+        "range": null,
+        "dimension": null,
+        "aliases": [
+          "gb"
+        ],
+        "uncertain": true,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b2",
+            "char_span": null,
+            "snippet": "gb,H ... we approximate by ... gb ... boundary layer conductance to vapor transfer (gb)"
+          }
+        ]
+      },
+      {
+        "symbol": "g_{b,H}",
+        "name": "boundary-layer conductance to heat transfer",
+        "unit": "mole meter^-2 second^-1",
+        "definition": "Approximated by gb (see A2) for laminar flow leaves with stomata on both sides.",
+        "range": null,
+        "dimension": null,
+        "aliases": [
+          "gb,H"
+        ],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b2",
+            "char_span": null,
+            "snippet": "gb,H is the boundary layer conductance to heat transfer [mol∙m-2∙s-1]"
+          }
+        ]
+      },
+      {
+        "symbol": "D_L",
+        "name": "air-to-leaf vapor pressure deficit",
+        "unit": "kilopascal",
+        "definition": "Vapor pressure deficit used in Eq. S3.3.",
+        "range": null,
+        "dimension": null,
+        "aliases": [
+          "DL"
+        ],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b1",
+            "char_span": null,
+            "snippet": "DL is the air-to-leaf vapor pressure deficit [kPa]"
+          }
+        ]
+      },
+      {
+        "symbol": "P_{atm}",
+        "name": "atmospheric pressure",
+        "unit": "kilopascal",
+        "definition": "Atmospheric pressure used in Eq. S3.3 and derivatives.",
+        "range": null,
+        "dimension": null,
+        "aliases": [
+          "Patm"
+        ],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b1",
+            "char_span": null,
+            "snippet": "Patm is the atmospheric pressure [kPa]"
+          }
+        ]
+      },
+      {
+        "symbol": "e_L'(T_L)",
+        "name": "saturation vapor pressure at leaf temperature",
+        "unit": "kilopascal",
+        "definition": "Saturation vapor pressure evaluated at TL.",
+        "range": null,
+        "dimension": null,
+        "aliases": [
+          "e′L"
+        ],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b1",
+            "char_span": null,
+            "snippet": "e’L is the saturation vapor pressure of the leaf at TL [kPa]"
+          }
+        ]
+      },
+      {
+        "symbol": "e_a(T_a, RH)",
+        "name": "air vapor pressure at air temperature and RH",
+        "unit": "kilopascal",
+        "definition": "Air vapor pressure evaluated for RH and Ta.",
+        "range": null,
+        "dimension": null,
+        "aliases": [
+          "ea"
+        ],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b1",
+            "char_span": null,
+            "snippet": "ea is the vapor pressure of the air evaluated for the RH and Ta [kPa]"
+          }
+        ]
+      },
+      {
+        "symbol": "RH",
+        "name": "relative humidity",
+        "unit": null,
+        "definition": "Relative humidity used to compute ea(Ta,RH) in Eq. S3.3.",
+        "range": null,
+        "dimension": null,
+        "aliases": [],
+        "uncertain": true,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b1",
+            "char_span": null,
+            "snippet": "ea is the vapor pressure of the air evaluated for the RH and Ta [kPa]"
+          }
+        ]
+      },
+      {
+        "symbol": "s_L",
+        "name": "slope of saturation vapor pressure response to temperature at TL",
+        "unit": "kilopascal kelvin^-1",
+        "definition": "Shorthand for de′L/dTL in Eq. S3.8.",
+        "range": null,
+        "dimension": null,
+        "aliases": [
+          "s"
+        ],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b4",
+            "char_span": null,
+            "snippet": "s is the slope ... shorthand for de’L/dTL [kPa∙K-1]"
+          }
+        ]
+      },
+      {
+        "symbol": "g_c",
+        "name": "total conductance to CO2 transfer",
+        "unit": "mole CO2 meter^-2 second^-1",
+        "definition": "Derived from gw and gb (Eq. S3.9).",
+        "range": null,
+        "dimension": null,
+        "aliases": [
+          "gc"
+        ],
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b4",
+            "char_span": null,
+            "snippet": "Once gw is known, we calculate the total conductance to CO2 transfer, gc [mol CO2∙m-2∙s-1]"
+          }
+        ]
+      }
+    ],
+    "parameters": [
+      {
+        "name": "epsilon",
+        "unit": null,
+        "default": null,
+        "estimation": null,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b1",
+            "char_span": null,
+            "snippet": "ε is the emissivity [-]"
+          }
+        ]
+      },
+      {
+        "name": "sigma_SB",
+        "unit": "watt meter^-2 kelvin^-4",
+        "default": null,
+        "estimation": null,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b1",
+            "char_span": null,
+            "snippet": "σ is the Stefan–Boltzmann constant [W∙m-2∙K-4]"
+          }
+        ]
+      },
+      {
+        "name": "L_v",
+        "unit": "joule mole(H2O)^-1",
+        "default": null,
+        "estimation": null,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b1",
+            "char_span": null,
+            "snippet": "L is the latent heat of vaporization [J∙(mol H2O)-1]"
+          }
+        ]
+      },
+      {
+        "name": "C_p",
+        "unit": "joule mole^-1 kelvin^-1",
+        "default": null,
+        "estimation": "Approximated by theoretical specific heat capacity of dry air.",
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b2",
+            "char_span": null,
+            "snippet": "Cp is the ... specific heat capacity ... which we approximate by the theoretical specific heat capacity of dry air"
+          }
+        ]
+      },
+      {
+        "name": "kappa_L",
+        "unit": null,
+        "default": null,
+        "estimation": null,
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b0",
+            "char_span": null,
+            "snippet": "κL is a dimensionless canopy extinction coefficient [-]"
+          }
+        ]
+      },
+      {
+        "name": "phi",
+        "unit": null,
+        "default": null,
+        "estimation": "Treated as a constant in this section.",
+        "evidence": [
+          {
+            "page": 28,
+            "block_id": "p28_b0",
+            "char_span": null,
+            "snippet": "φ ... treated as a constant"
+          }
+        ]
+      },
+      {
+        "name": "coef_1_over_gw_in_1_over_gc",
+        "unit": null,
+        "default": 1.6,
+        "estimation": null,
+        "evidence": [
+          {
+            "page": 29,
+            "block_id": "p29_b1",
+            "char_span": null,
+            "snippet": "1/gc = 1.6/gw + 1.37/gb, (S3.9)"
+          }
+        ]
+      },
+      {
+        "name": "coef_1_over_gb_in_1_over_gc",
+        "unit": null,
+        "default": 1.37,
+        "estimation": null,
+        "evidence": [
+          {
+            "page": 29,
+            "block_id": "p29_b1",
+            "char_span": null,
+            "snippet": "1/gc = 1.6/gw + 1.37/gb, (S3.9)"
+          }
+        ]
+      }
+    ],
+    "algorithm": {
+      "inputs": [
+        "I_s",
+        "\\Phi",
+        "\\kappa_L",
+        "\\phi",
+        "\\mathrm{LAI}",
+        "a_L",
+        "W",
+        "T_a",
+        "RH",
+        "P_{atm}",
+        "g_w",
+        "g_b"
+      ],
+      "outputs": [
+        "T_L",
+        "I",
+        "E",
+        "dE/dg_w",
+        "g_c",
+        "\\partial g_w/\\partial g_c"
+      ],
+      "steps": [
+        "Compute LAI from aL, φ, and W (LAI = aL·φ−1·W−2).",
+        "Compute absorbed insolation I using Eq. S3.2.",
+        "Solve for leaf temperature TL numerically such that the energy balance Eq. S3.1 holds.",
+        "Compute transpiration E using Eq. S3.3.",
+        "Compute dE/dgw using Eqs. S3.4–S3.8 (including sL = de′L/dTL).",
+        "Compute gc from gw and gb using Eq. S3.9 and compute ∂gw/∂gc using Eq. S3.10."
+      ],
+      "pseudocode": null,
+      "evidence": [
+        {
+          "page": 27,
+          "block_id": "p27_b1",
+          "char_span": null,
+          "snippet": "Leaf temperature is calculated numerically as the value that satisfies the energy balance ... (S3.1)"
+        },
+        {
+          "page": 28,
+          "block_id": "p28_b4",
+          "char_span": null,
+          "snippet": "Substituting ... we have a closed solution for dE/dgw required in the Section S4 ... (S3.8)"
+        },
+        {
+          "page": 29,
+          "block_id": "p29_b1",
+          "char_span": null,
+          "snippet": "1/gc = 1.6/gw + 1.37/gb, (S3.9) ... ∂gw/∂gc ... (S3.10)"
+        }
+      ]
+    },
+    "datasets": [],
+    "metrics": [],
+    "limitations": [
+      {
+        "id": "L1",
+        "text": "The numerical method used to solve TL from the energy balance is not specified in this section.",
+        "uncertain": true,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b1",
+            "char_span": null,
+            "snippet": "Leaf temperature is calculated numerically as the value that satisfies the energy balance"
+          }
+        ]
+      },
+      {
+        "id": "L2",
+        "text": "gb,H is approximated by gb (heat vs vapor conductances differ by a factor 1.08), which may not hold outside the stated flow/leaf assumptions.",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b2",
+            "char_span": null,
+            "snippet": "we approximate ... gb ... differ only by a factor of 1.08 under laminar flow for leaves with stomata on both sides"
+          }
+        ]
+      }
+    ],
+    "implementation": {
+      "model_scope": "Instantaneous leaf energy balance and conductance transformations used to compute TL, E, and derivatives for stomatal optimization and photosynthesis coupling.",
+      "state_variables": [],
+      "exogenous_inputs": [
+        "I_s",
+        "\\Phi",
+        "T_a",
+        "RH",
+        "P_{atm}",
+        "\\kappa_L",
+        "\\phi",
+        "a_L",
+        "W"
+      ],
+      "control_inputs": [
+        "g_c"
+      ],
+      "outputs_observables": [
+        "T_L",
+        "E",
+        "g_w",
+        "g_c",
+        "dE/dg_w",
+        "\\partial g_w/\\partial g_c"
+      ],
+      "io_contract": {
+        "input_schema": null,
+        "output_schema": null,
+        "data_types": [],
+        "evidence": []
+      },
+      "dependency_graph": {
+        "nodes": [
+          "I_s",
+          "\\Phi",
+          "\\kappa_L",
+          "\\phi",
+          "a_L",
+          "W",
+          "\\mathrm{LAI}",
+          "I",
+          "T_L",
+          "T_a",
+          "RH",
+          "e_L'(T_L)",
+          "e_a(T_a,RH)",
+          "P_{atm}",
+          "g_w",
+          "g_b",
+          "E",
+          "g_c"
+        ],
+        "edges": [
+          {
+            "from": "I_s",
+            "to": "I",
+            "type": "equation"
+          },
+          {
+            "from": "\\mathrm{LAI}",
+            "to": "I",
+            "type": "equation"
+          },
+          {
+            "from": "I",
+            "to": "T_L",
+            "type": "equation"
+          },
+          {
+            "from": "g_w",
+            "to": "E",
+            "type": "equation"
+          },
+          {
+            "from": "g_b",
+            "to": "E",
+            "type": "equation"
+          },
+          {
+            "from": "T_L",
+            "to": "E",
+            "type": "equation"
+          },
+          {
+            "from": "g_w",
+            "to": "g_c",
+            "type": "equation"
+          },
+          {
+            "from": "g_b",
+            "to": "g_c",
+            "type": "equation"
+          }
+        ],
+        "uncertain": true,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b1",
+            "char_span": null,
+            "snippet": "Leaf temperature ... satisfies the energy balance ... (S3.1)"
+          },
+          {
+            "page": 28,
+            "block_id": "p28_b1",
+            "char_span": null,
+            "snippet": "E ... defined by ... gw ... (S3.3)"
+          },
+          {
+            "page": 29,
+            "block_id": "p29_b1",
+            "char_span": null,
+            "snippet": "1/gc = 1.6/gw + 1.37/gb, (S3.9)"
+          }
+        ]
+      },
+      "numerics": {
+        "time_step": null,
+        "time_grid": null,
+        "integration_method": null,
+        "solver": null,
+        "convergence_criteria": null,
+        "stability_notes": null,
+        "uncertain": true,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b1",
+            "char_span": null,
+            "snippet": "Leaf temperature is calculated numerically as the value that satisfies the energy balance"
+          }
+        ]
+      },
+      "initial_conditions": [],
+      "boundary_conditions": [],
+      "preprocessing": {
+        "steps": [],
+        "missing_value_policy": null,
+        "unit_conversions": [],
+        "filters_smoothing": [],
+        "uncertain": true,
+        "evidence": []
+      },
+      "calibration": {
+        "estimated_parameters": [],
+        "objective": null,
+        "constraints": null,
+        "optimizer": null,
+        "train_validation_protocol": null,
+        "uncertain": true,
+        "evidence": []
+      },
+      "code_blueprint": {
+        "language": null,
+        "modules": [],
+        "functions": [],
+        "tests": []
+      },
+      "unresolved_assets": [
+        {
+          "type": "equation",
+          "label": "gb (boundary-layer conductance) formulation",
+          "page": 28,
+          "issue": "Section S3 uses gb in E and gc transforms but does not specify how gb is calculated (e.g., from wind speed/leaf dimension).",
+          "uncertain": true,
+          "evidence": [
+            {
+              "page": 28,
+              "block_id": "p28_b1",
+              "char_span": null,
+              "snippet": "E ... (1/gw + 1/gb) ... (S3.3)"
+            }
+          ]
+        },
+        {
+          "type": "equation",
+          "label": "e′(T) and slope sL = de′/dT",
+          "page": 28,
+          "issue": "Section S3 defines sL as de′L/dTL and uses e′L(TL), but does not provide explicit functional forms in this section.",
+          "uncertain": true,
+          "evidence": [
+            {
+              "page": 28,
+              "block_id": "p28_b4",
+              "char_span": null,
+              "snippet": "s ... shorthand for de’L/dTL [kPa∙K-1]"
+            }
+          ]
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "Q1",
+          "question": "What exact formula(s) are used to compute boundary-layer conductance gb (and gb,H if not approximated), including required inputs (wind speed, leaf width, etc.)?",
+          "why_needed": "gb is required for E (Eq. S3.3), dE/dgw (Eq. S3.8), and gc transform (Eq. S3.9–S3.10).",
+          "likely_location": "Elsewhere in SI or main text (methods/parameterization) or referenced sources (e.g., Campbell & Norman).",
+          "evidence": [
+            {
+              "page": 28,
+              "block_id": "p28_b1",
+              "char_span": null,
+              "snippet": "E ... (1/gw + 1/gb) ... (S3.3)"
+            },
+            {
+              "page": 29,
+              "block_id": "p29_b1",
+              "char_span": null,
+              "snippet": "1/gc = 1.6/gw + 1.37/gb, (S3.9)"
+            }
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "What functional forms are used for saturation vapor pressure e′(T) and for ea(Ta,RH), and how is DL defined numerically (units/temperature conventions)?",
+          "why_needed": "E depends on e′L(TL) − ea(Ta,RH) (Eq. S3.3) and dE/dgw uses sL = de′L/dTL (Eq. S3.8).",
+          "likely_location": "Referenced psychrometric relations or a dedicated methods/appendix section.",
+          "evidence": [
+            {
+              "page": 28,
+              "block_id": "p28_b1",
+              "char_span": null,
+              "snippet": "e’L ... saturation vapor pressure ... ea ... vapor pressure ... (S3.3)"
+            },
+            {
+              "page": 28,
+              "block_id": "p28_b4",
+              "char_span": null,
+              "snippet": "s ... shorthand for de’L/dTL [kPa∙K-1]"
+            }
+          ]
+        },
+        {
+          "id": "Q3",
+          "question": "Which numerical solver/root-finding method is used to solve TL from Eq. S3.1 and what convergence criteria are applied?",
+          "why_needed": "Implementation requires a stable and reproducible TL solution to feed photosynthetic temperature dependencies in S4.",
+          "likely_location": "Implementation details in main text methods or code supplement (if any).",
+          "evidence": [
+            {
+              "page": 27,
+              "block_id": "p27_b1",
+              "char_span": null,
+              "snippet": "Leaf temperature is calculated numerically as the value that satisfies the energy balance"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "provenance": {
+    "extraction_time": "2026-01-17T03:20:39Z",
+    "model": "GPT-5.2 Thinking",
+    "notes": "MODE=EXTRACT; chunk_id=C003. Section S3 begins on p27 and its final equations (S3.9–S3.10) appear at the top of p29; extraction includes those lines but excludes subsequent S4 content.",
+    "mode": "EXTRACT",
+    "is_partial": true,
+    "chunk": {
+      "chunk_id": "C003",
+      "page_range": [
+        27,
+        29
+      ]
+    },
+    "chunk_plan": [
+      {
+        "chunk_id": "C003",
+        "page_range": [
+          27,
+          29
+        ],
+        "section_titles": [
+          "S3 Leaf temperature and stomatal conductances"
+        ],
+        "focus_tags": [
+          "model",
+          "theory",
+          "equations"
+        ],
+        "priority": 1,
+        "rationale": "Defines TL via energy balance, transpiration via diffusion conductances, and derivatives/transforms needed to couple stomata control with photosynthesis in S4.",
+        "uncertain": false,
+        "evidence": [
+          {
+            "page": 27,
+            "block_id": "p27_b1",
+            "char_span": null,
+            "snippet": "S3 Leaf temperature and stomatal conductances ... energy balance ... (S3.1)"
+          },
+          {
+            "page": 29,
+            "block_id": "p29_b1",
+            "char_span": null,
+            "snippet": "1/gc = 1.6/gw + 1.37/gb, (S3.9) ... ∂gw/∂gc ... (S3.10)"
+          }
+        ]
+      }
+    ],
+    "next_recommended_chunk_id": "C004"
+  }
+}

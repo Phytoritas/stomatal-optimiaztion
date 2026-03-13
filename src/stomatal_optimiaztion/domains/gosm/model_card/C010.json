@@ -1,0 +1,214 @@
+{
+    "doc": {
+        "id": "Potkay and Feng - 2023 - Do stomata optimize turgor-driven growth A new framework for integrating stomata response with whol_appendix.pdf",
+        "title": "Do stomata optimize turgor-driven growth? A new framework for integrating stomata response with whole-tree carbon and hydraulics (Supporting Information)",
+        "year": 2023,
+        "doi": null,
+        "page_count": 62
+    },
+    "model_card": {
+        "name": "References",
+        "aliases": [
+            "Bibliography"
+        ],
+        "task": [
+            "Provide reference list for supporting information"
+        ],
+        "domain": [
+            "bibliography"
+        ],
+        "assumptions": [],
+        "equations": [],
+        "variables": [],
+        "parameters": [],
+        "algorithm": {
+            "inputs": [],
+            "outputs": [],
+            "steps": [],
+            "pseudocode": null,
+            "evidence": []
+        },
+        "datasets": [],
+        "metrics": [],
+        "limitations": [
+            {
+                "id": "L1",
+                "text": "Reference headers were captured as year-bearing lines extracted from pages 49–62; due to line breaks, some headers may be truncated or start mid-author list. Full citations remain in the raw page text.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 49,
+                        "block_id": "p49_refs_header",
+                        "char_span": null,
+                        "snippet": "References"
+                    }
+                ]
+            }
+        ],
+        "implementation": {
+            "model_scope": "Reference list (no executable model content).",
+            "state_variables": [],
+            "exogenous_inputs": [],
+            "control_inputs": [],
+            "outputs_observables": [],
+            "io_contract": {
+                "input_schema": null,
+                "output_schema": null,
+                "data_types": [],
+                "evidence": [
+                    {
+                        "page": 49,
+                        "block_id": "p49_refs_header",
+                        "char_span": null,
+                        "snippet": "References"
+                    }
+                ]
+            },
+            "dependency_graph": {
+                "nodes": [],
+                "edges": [],
+                "uncertain": true,
+                "evidence": []
+            },
+            "numerics": {
+                "time_step": null,
+                "time_grid": null,
+                "integration_method": null,
+                "solver": null,
+                "convergence_criteria": null,
+                "stability_notes": null,
+                "uncertain": true,
+                "evidence": []
+            },
+            "initial_conditions": [],
+            "boundary_conditions": [],
+            "preprocessing": {
+                "steps": [
+                    "Extract text from pages 49–62 and record year-bearing header lines."
+                ],
+                "missing_value_policy": null,
+                "unit_conversions": [],
+                "filters_smoothing": [],
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 49,
+                        "block_id": "p49_refs_header",
+                        "char_span": null,
+                        "snippet": "References"
+                    }
+                ]
+            },
+            "calibration": {
+                "estimated_parameters": [],
+                "objective": null,
+                "constraints": null,
+                "optimizer": null,
+                "train_validation_protocol": null,
+                "uncertain": true,
+                "evidence": []
+            },
+            "code_blueprint": {
+                "language": null,
+                "modules": [],
+                "functions": [],
+                "tests": []
+            },
+            "unresolved_assets": [],
+            "open_questions": []
+        },
+        "bibliography": {
+            "chunk_id": "C010",
+            "page_range": [
+                49,
+                62
+            ],
+            "reference_header_count": 140,
+            "reference_headers_sample_text": "p49 | Ainsworth, E. A., & Rogers, A. (2007). The response of photosynthesis and stomatal conductance\np49 | S. (2018). Woody plants optimise stomatal behaviour relative to hydraulic risk. Ecology\np49 | S., & Thompson, J. R. (2021). Defoliated trees die below a critical threshold of stored\np49 | Bartlett, M. K., Scoffoni, C., & Sack, L. (2012). The determinants of leaf turgor loss point and\np49 | Bartlett, M. K., Zhang, Y., Kreidler, N., Sun, S., Ardy, R., Cao, K., & Sack, L. (2014). Global\np49 | Bartlett, M. K., Detto, M., & Pacala, S. W. (2019). Predicting shifts in the functional composi tion\np49 | Bassiouni, M., & Vico, G. (2021). Parsimony vs predictive and functional performance of three\np49 | Bentley LP, Stegen JC, Savage VM, Smith DD, von Allmen EI, Sperry JS, Enquist BJ . (2013) . An\np49 | Brodribb, T. J., & Cochard, H. (2009). Hydraulic failure defines the recovery and point of death\np49 | Buckley, T. N., Sack, L., & Farquhar, G. D. (2017). Optimal plant water economy. Plant, cell &\np49 | Buckley, T. N., & Schymanski, S. J. (2014). Stomatal optimisation in relation to atmospheric CO 2.\np50 | Vilalta, J., & De Cáceres, M. (2020). Water potential control of turgor‐driven tracheid\np50 | Cabrita, P., Thorpe, M., & Huber, G. J. (2013). Hydrodynamics of steady state phloem transport\np50 | Campbell G.S. & Norman J.N. (1998) An Introduction to Environmental Biophysics 2nd edn.\np50 | Chan, T., Hölttä, T., Berninger, F., Mäkinen, H., Nöjd, P., Mencuccini, M., & Nikinmaa, E. (2016).\np50 | Cheng, D. L., & Niklas, K. J. (2007). Above -and below -ground biomass relati onships across 1534\np50 | Cowan, I. R. (1982). Regulation of water use in relati on to carbon gain in higher plants. In O.L.\np50 | Cowan, I. R., & Farquhar, G. D. (1977). Stomatal function in relation to leaf metaboli sm and\np50 | Daudet, F. A., Lacointe, A., Gaudillere, J. P., & Cruiziat, P. (2002). Generalized Münch coupling\np50 | De Pury, D. G. G., & Farquhar, G. D. (1997). Simple scaling of photosynthesis from leaves to\np50 | De Schepper, V., & Steppe, K. (2010). Development and verification of a water and sugar transport\np51 | Deans, R. M., Brodribb, T. J., Busch, F. A., & Farquhar, G. D. (2020). Optimization can provide\np51 | Detto, M., & Xu, X. (2020). Optimal lea f life strategies determine Vc,max dynamic during ontogeny.\np51 | Dewar, R. C. (1993). A root -shoot partitioning model based on carbon -nitrogen -water interactions\np51 | Dewar, R., Ma uranen, A., Mäkelä, A., Hölttä, T., Medlyn, B., & Vesala, T. (2018). New insights\np51 | Dewar, R., Hölttä, T., & Salmon, Y (2022) . Exploring optimal stomatal control under alternative\np51 | Dong, N., Prentice, I. C., Evans, B. J ., Caddy -Retalic, S., Lowe, A. J., & Wright, I. J. (2017). Leaf\np51 | Dong, N., Wright, I. J., Chen, J. M., Luo, X., Wang, H., Keenan, T. F., ... & Prentice, I. C. (2022).\np51 | Cox, P. (2018). Modelling tropical forest responses to drought and El Niño with a\np51 | the Royal Society B: Biological Sciences , 373(1760), 20170315.\n... (80 headers omitted) ...\np59 | Smith, N. G., & Keenan, T. F. (2020). Mechanisms underlying leaf photosynthetic acclimation to\np59 | Zhou, S. X. (2019). Global photosynthetic capacity is optimized to the\np59 | Sperry, J. S., & Love, D. M. (2015). What plant hydraulics can tell us about responses to climate‐\np59 | Sperry, J. S., Adler, F. R., Campbell, G. S., & Comstock, J. P. (1998). Limitation of plant water\np59 | Love, D. M. (2017). Predicting stomatal responses to the environment from the\np60 | Pockman, W. T. (2016). Pragmatic hydraulic theory predicts stomatal responses to clima tic\np60 | Stanfield, R. C., & Bartlett, M. K. (2022). Coordination Between Phloem Loading and Structure\np60 | Steppe, K., De Pauw, D. J., Lemeur, R., & Vanrolleghem, P. A. (2006). A mathematical model\np60 | Thompson, M. V., & Holbrook, N. M. (2003b). Scaling phloem transport: water potential\np60 | Thornley, J. H. M. (1970). Respiration, growth and maintenance in plants. Nature , 227(5255),\np60 | Thornley, J. H. M. (1971). Energy, respiration, and growth in plants. Annals of Botany , 35(4), 721 -\np60 | Thornley, J. H. M. (1972). A balanced quantitative model for root: shoot ratios in vegetative plants.\np60 | Tjoelker, M. G., Oleksyn, J., Lorenc‐Plucinska , G., & Reich, P. B. (2009). Acclimation of\np60 | Urli, M., Porté, A. J., Cochard, H., Guengant, Y., Burlett, R., & Delzon, S. (2013). Xylem\np60 | Valentine, H. T., & Mäkelä, A. (2012). Modeling forest stand dynamics from optimal balances of\np60 | Vargas, R., Trumbore, S. E., & Allen, M. F. (2009). Evidence of old carbon used to grow new fine\np61 | W. R. (2018). A stomatal control model based on optimization of carbon gain versus\np61 | Venturas, M. D., Todd, H. N., Trugman, A. T., & Anderegg, W. R. (2021). Understanding and\np61 | von A llmen EI, Sperry JS, Smith DD, Savage VM, Enquist BJ, Reich PB, Bentley LP . (2012) . A\np61 | Prentice, I. C. (2020). Acclimation of leaf respiration consistent with optimal\np61 | C. (2017). Towards a universal model for carbon dioxide uptake by plants. Nature plants ,\np61 | Waring, R. H., Landsberg, J. J., & Williams, M. (1998). Net primary production of forests: a\np61 | Witelski, T., & Bowen, M. (2015). Variational principles. In Methods of Mathematical\np61 | Wolf, A., Anderegg, W. R., & Pacala, S. W. (2016). Optimal stomatal behavior with competition\np62 | Woodruff, D. R. (2014). The impacts of water stress on phloem transport in Douglas -fir trees. Tree\np62 | Woodruff, D. R., Bond, B. J., & Meinzer, F. C. (2004). Does turgor limit growth in tall trees?.\np62 | Woodruff, D. R., & Meinzer, F. C. (2011). Water stress, shoot growth and storage of non‐structural\np62 | Wright, I. J., Reich, P. B., & Westoby, M. (2003). Least -cost input mixtures of water and nitrogen\np62 | Xia, J., Yuan, W., Lienert, S., Joos, F., Ciais, P., Viovy, N., ... & Tian, X. (2019). Global patterns\np62 | Zenes, N., Kerr, K. L., Trugman, A. T., & Anderegg, W. R. (2020). Competition and drought alter",
+            "reference_headers_omitted_count": 80,
+            "key_entries": [
+                {
+                    "id": "K1",
+                    "search_term": "Ainsworth, E. A., & Rogers",
+                    "page": 49,
+                    "snippet": "References Ainsworth, E. A., & Rogers, A. (2007). The response of photosynthesis and stomatal conductance to"
+                },
+                {
+                    "id": "K2",
+                    "search_term": "Cowan, I. R., & Farquhar",
+                    "page": 50,
+                    "snippet": ", H. Ziegler (Eds.) Physiological plant ecology II (pp. 589-613). Springer, Berlin, Heidelberg. Cowan, I. R., & Farquhar, G. D. (1977). Stomatal function in relation to leaf metaboli sm and envir"
+                },
+                {
+                    "id": "K3",
+                    "search_term": "Mackay, D. S., Roberts",
+                    "page": 55,
+                    "snippet": "analysis of irreversible plant cell elongation. Journal of theoretical biology , 8(2), 264 -275. Mackay, D. S., Roberts, D. E., Ewers, B. E., Sperry, J. S., McDowell, N. G., & Pockman, W. T. (2015"
+                },
+                {
+                    "id": "K4",
+                    "search_term": "Venturas, M. D., Sperry",
+                    "page": 61,
+                    "snippet": "Venturas, M. D., Sperry, J. S., Love, D. M., Frehner, E. H., Allred, M. G., Wang, Y., & A nderegg,"
+                },
+                {
+                    "id": "K5",
+                    "search_term": "Waring, R. H., Landsberg",
+                    "page": 61,
+                    "snippet": "s predicted by a hydraulic trait -based optimization model. Tree physiology , 39(8), 1416 -1427. Waring, R. H., Landsberg, J. J., & Williams, M. (1998). Net primary production of forests: a consta"
+                },
+                {
+                    "id": "K6",
+                    "search_term": "Zenes, N., Kerr",
+                    "page": 62,
+                    "snippet": ": A model‐data comparison. Journal of Geophysical Research: Biogeosciences , 124(7), 2039 -2059. Zenes, N., Kerr, K. L., Trugman, A. T., & Anderegg, W. R. (2020). Competition and drought alter opt"
+                }
+            ],
+            "raw_text_samples": {
+                "page_49_head": "References Ainsworth, E. A., & Rogers, A. (2007). The response of photosynthesis and stomatal conductance to rising [CO 2]: mechanisms and environmental interactions. Plant, cell & environment , 30(3), 258 -270. Anderegg",
+                "page_62_tail": "Woodruff, D. R. (2014). The impacts of water stress on phloem transport in Douglas -fir trees. Tree physiology , 34(1), 5 -14. Woodruff, D. R., Bond, B. J., & Meinzer, F. C. (2004). Does turgor limit growth in tall trees"
+            }
+        }
+    },
+    "provenance": {
+        "extraction_time": "2026-01-17T04:56:56Z",
+        "model": "GPT-5.2 Thinking",
+        "notes": "MODE=EXTRACT for chunk C010 (References). Provides a header-line sample (first/last 30) + key reference snippets.",
+        "mode": "EXTRACT",
+        "is_partial": true,
+        "chunk": {
+            "chunk_id": "C010",
+            "page_range": [
+                49,
+                62
+            ]
+        },
+        "chunk_plan": [
+            {
+                "chunk_id": "C010",
+                "page_range": [
+                    49,
+                    62
+                ],
+                "section_titles": [
+                    "References"
+                ],
+                "focus_tags": [
+                    "bibliography"
+                ],
+                "priority": 3,
+                "rationale": "Bibliography list supporting the SI sections.",
+                "uncertain": false,
+                "evidence": [
+                    {
+                        "page": 49,
+                        "block_id": "p49_refs_header",
+                        "char_span": null,
+                        "snippet": "References"
+                    }
+                ]
+            }
+        ],
+        "next_recommended_chunk_id": null
+    }
+}

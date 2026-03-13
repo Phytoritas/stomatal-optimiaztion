@@ -5,7 +5,7 @@
 - Keep architecture decisions, validation seams, and staged code migration explicit before broad implementation.
 
 ## Inputs
-- Legacy source domains from `THORP`, `TOMATO`, and `load-cell-data`
+- Legacy source domains from `THORP`, `GOSM`, `TDGM`, `TOMATO`, and `load-cell-data`
 - Canonical variable names in [`docs/variable_glossary.md`](docs/variable_glossary.md)
 - Curated THORP `model_card` JSON assets for equation traceability
 - Representative THORP forcing netCDF under `data/forcing/`
@@ -95,6 +95,7 @@ poetry run ruff check .
 - THORP params compatibility seam is migrated as slice 068.
 - THORP package-level smoke validation note is recorded as slice 069.
 - Second-domain utility comparison note is recorded as slice 070.
+- Root GOSM model-card and traceability foundation is migrated as slice 071.
 
 ## Next validation
-- Monitor for new structural requirements before opening another slice.
+- Migrate the parallel root TDGM model-card and traceability foundation seam.

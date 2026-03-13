@@ -13,6 +13,8 @@ The new `stomatal-optimiaztion` repo exists to provide:
 
 This repository will stay a single Python package with staged domain subpackages:
 - `src/stomatal_optimiaztion/domains/thorp`
+- `src/stomatal_optimiaztion/domains/gosm`
+- `src/stomatal_optimiaztion/domains/tdgm`
 - `src/stomatal_optimiaztion/domains/tomato`
 - `src/stomatal_optimiaztion/domains/load_cell`
 - `configs/` for migration and experiment settings
@@ -26,6 +28,16 @@ Shared helpers can be introduced later under `src/stomatal_optimiaztion/shared/`
 - model-oriented Python package
 - includes equations, forcing, hydraulics, growth, and simulation modules
 - likely best first candidate for source mapping
+
+### GOSM
+- standalone Python package for the growth-optimizing stomata model
+- includes model-card assets, parameter defaults, runtime kernels, example adapters, and traceability tests
+- should remain a root migrated domain instead of being conflated with TOMATO `tGOSM`
+
+### TDGM
+- standalone Python package for the turgor-driven growth model and THORP-G coupling
+- includes model-card assets, PTM/TDGM kernels, coupling helpers, and THORP-backed regression tooling
+- should remain a root migrated domain instead of being conflated with TOMATO `tTDGM`
 
 ### TOMATO
 - nested package workspace with `tTHORP`, `tGOSM`, and `tTDGM`
@@ -604,8 +616,16 @@ The seventieth slice closes the final open architecture gap:
 - keep `shared/` blocked because the current contracts, dependencies, and reuse pressure still diverge by domain
 - leave the architecture in monitor mode until a new structural uncertainty appears
 
+## Slice 071: Root GOSM Model-Card And Traceability Foundation
+
+The seventy-first slice reopens the architecture after the false "all gaps closed" state:
+- move the root `GOSM` model-card JSON assets into a staged `domains/gosm` package
+- preserve packaged equation-id access and `@implements(...)` metadata helpers
+- open a legacy-style `domains/gosm/utils/traceability.py` compatibility path so later numerical ports can land without import churn
+- leave `GOSM/src/gosm/params/defaults.py` and the wider `model/` runtime blocked as later seams
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` foundation seam, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. monitor for new structural uncertainty before opening another slice
+3. open the parallel root `TDGM` foundation seam next

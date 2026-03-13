@@ -11,7 +11,7 @@
 Target repo profile:
 - single Python package rooted at `src/stomatal_optimiaztion/`
 - architecture-first migration repo with staged domain subpackages
-- domain layout: `domains/thorp`, `domains/tomato`, `domains/load_cell`
+- domain layout: `domains/thorp`, `domains/gosm`, `domains/tdgm`, `domains/tomato`, `domains/load_cell`
 - code migration rule: move one bounded seam at a time, keep each seam independently testable
 
 Legacy source profile:
@@ -21,6 +21,8 @@ Legacy source profile:
 ## Observed Legacy Top Level
 
 - `THORP`: Python package repo with `src`, `tests`, `docs`, `scripts`, `data`, `example`, and `model_card`
+- `GOSM`: Python package repo with `src`, `tests`, `docs`, `scripts`, `data`, `example`, and `model_card`
+- `TDGM`: Python package repo with `src`, `tests`, `docs`, `scripts`, `example`, and `model_card`
 - `TOMATO`: umbrella tree containing `tTHORP`, `tGOSM`, `tTDGM`, plus integration docs and output artifacts
 - `load-cell-data`: separate pipeline-oriented Python project with preprocessing and visualization outputs
 - `.venv`, `.pytest_cache`, `.codex-home`, and generated outputs exist inside the legacy workspace and should not be treated as migration sources
@@ -28,14 +30,14 @@ Legacy source profile:
 ## Initial Structural Findings
 
 1. The legacy source is already split into domain-oriented subprojects, but the umbrella folder mixes source, tooling, caches, and generated artifacts.
-2. `THORP` appears closest to a modern single-package layout and can serve as the first reference domain for boundary design.
+2. `THORP`, `GOSM`, and `TDGM` each already exist as Python package repos inside the umbrella workspace, so the migrated target should preserve them as first-class root domains instead of hiding them under crop-specific packages.
 3. `TOMATO` contains nested packages and integration tests, which suggests future migration work needs explicit cross-package contracts.
 4. `load-cell-data` behaves more like a pipeline project than a model-core package and may need its own adapter boundary.
 
 ## Early Risks
 
 - generated outputs and caches may be copied into the new repo accidentally
-- duplicated concepts across `THORP`, `TOMATO`, and `load-cell-data` may create naming drift
+- duplicated concepts across `THORP`, `GOSM`, `TDGM`, `TOMATO`, and `load-cell-data` may create naming drift
 - nested package layouts inside `TOMATO` can blur migration boundaries
 - validation commands for the umbrella folder are not yet normalized in this new repo
 
@@ -43,8 +45,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 070
-- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slice 069 recorded as THORP package-level smoke evidence, slice 070 recorded as the cross-domain utility comparison decision, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
+- Gate C. Validation plan ready through slice 071
+- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slice 069 recorded as THORP package-level smoke evidence, slice 070 recorded as the cross-domain utility comparison decision, slice 071 approved for root `GOSM`, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -467,3 +469,9 @@ Slice 070:
 - target: `docs/architecture/system/second-domain-utility-comparison-note.md`
 - scope: bounded architecture decision note comparing utility pressure across domains and deciding whether `shared/` should stay blocked
 - excluded: new shared code extraction and fresh domain refactors
+
+Slice 071:
+- source: `GOSM/model_card/C001.json` through `GOSM/model_card/C010.json`, `GOSM/src/gosm/utils/traceability.py`, and `GOSM/src/gosm/__init__.py`
+- target: `src/stomatal_optimiaztion/domains/gosm/`, `src/stomatal_optimiaztion/domains/gosm/utils/`, packaged model-card assets, and `tests/test_gosm_{model_card,traceability,import_surface}.py`
+- scope: bounded root `GOSM` foundation surface covering packaged model-card access, equation-id validation, traceability metadata helpers, and legacy-style `utils.traceability` compatibility
+- excluded: `GOSM/src/gosm/params/defaults.py`, numerical runtime modules under `GOSM/src/gosm/model/`, and root `TDGM` migration seams

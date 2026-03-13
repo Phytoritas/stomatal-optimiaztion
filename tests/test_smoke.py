@@ -1,5 +1,6 @@
 from importlib import import_module
 
+import stomatal_optimiaztion.domains.gosm as gosm
 import stomatal_optimiaztion.domains.thorp as thorp
 
 io_pkg = import_module("stomatal_optimiaztion.domains.thorp.io")
@@ -10,6 +11,7 @@ utils_pkg = import_module("stomatal_optimiaztion.domains.thorp.utils")
 
 def test_smoke() -> None:
     assert len(thorp.model_card_document_names()) == 11
+    assert len(gosm.model_card_document_names()) == 10
 
 
 def test_thorp_package_import_surface_smoke() -> None:
