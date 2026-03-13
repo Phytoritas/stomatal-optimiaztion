@@ -12,4 +12,5 @@ Current status:
 - Target repo shape finalized as a staged single-package domain workspace
 - Slices 001-024 migrated: THORP bounded runtime, reporting, config, IO, and CLI seams
 - Slices 025-045 migrated: TOMATO `tTHORP` contracts, interface, forcing, adapters, `TomatoModel`, runner, partitioning-package, package-level legacy pipeline, shared IO, shared scheduler, dayrun pipeline, repo-level scripts, feature-builder script, THORP reference adapter, plotting seams, `tGOSM` contract/interface seams, and `tTDGM` contract/interface seams
-- Next blocked seam: `load-cell-data` config seam at `loadcell_pipeline/config.py`
+- Slice 046 migrated: `load-cell-data` config seam
+- Next blocked seam: `load-cell-data` ingestion seam at `loadcell_pipeline/io.py`

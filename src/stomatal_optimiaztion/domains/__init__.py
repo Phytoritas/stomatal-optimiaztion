@@ -1,1 +1,1 @@
-__all__ = ["thorp", "tomato"]
+__all__ = ["load_cell", "thorp", "tomato"]

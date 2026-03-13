@@ -404,8 +404,16 @@ The forty-fifth slice opens the next bounded TOMATO seam:
 - keep the seam intentionally small and avoid wider physiology or shared abstractions beyond the migrated contracts
 - leave `load-cell-data/loadcell_pipeline/config.py` blocked as the next seam
 
+## Slice 046: load-cell-data Config
+
+The forty-sixth slice opens the first bounded `load-cell-data` seam:
+- move `load-cell-data/loadcell_pipeline/config.py` into a new staged `domains/load_cell` package
+- preserve `PipelineConfig` defaults, `to_dict()` path serialization, YAML loading, and override precedence
+- keep the slice config-first and avoid widening into ingestion, preprocessing, workflow, or CLI seams yet
+- leave `load-cell-data/loadcell_pipeline/io.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first twenty-one TOMATO bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first `load-cell-data` bounded seam
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/config.py`
+3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/io.py`
