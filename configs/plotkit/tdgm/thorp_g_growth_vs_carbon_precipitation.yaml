@@ -31,8 +31,8 @@ colorbar:
   v_limits: [0.5, 1.4]
   label: Annual precipitation relative to 10-year mean [-]
 theme:
-  name: nature_plants_like
-  tokens: ../themes/nature_plants_like_tokens.yaml
+  name: Phytoritas
+  tokens: ../themes/Phytoritas_tokens.yaml
 export:
   formats: [png, pdf]
   dpi: 300

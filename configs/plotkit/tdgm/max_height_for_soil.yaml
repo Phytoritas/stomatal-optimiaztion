@@ -22,8 +22,8 @@ figure:
   width_mm: 180
   height_mm: 90
 theme:
-  name: nature_plants_like
-  tokens: ../themes/nature_plants_like_tokens.yaml
+  name: Phytoritas
+  tokens: ../themes/Phytoritas_tokens.yaml
 export:
   formats: [png, pdf]
   dpi: 300
