@@ -13,8 +13,11 @@ import yaml
 @dataclass(frozen=True)
 class FigureBundleArtifacts:
     output_dir: Path
-    data_csv_path: Path
     png_path: Path
+    data_csv_path: Path | None = None
+    python_csv_path: Path | None = None
+    legacy_csv_path: Path | None = None
+    diff_csv_path: Path | None = None
     spec_copy_path: Path | None = None
     resolved_spec_path: Path | None = None
     tokens_copy_path: Path | None = None
@@ -24,10 +27,13 @@ class FigureBundleArtifacts:
     def to_summary(self) -> dict[str, Any]:
         summary = {
             "output_dir": str(self.output_dir),
-            "data_csv": str(self.data_csv_path),
             "png": str(self.png_path),
         }
         optional_paths = {
+            "data_csv": self.data_csv_path,
+            "python_csv": self.python_csv_path,
+            "legacy_csv": self.legacy_csv_path,
+            "diff_csv": self.diff_csv_path,
             "spec_copy": self.spec_copy_path,
             "resolved_spec": self.resolved_spec_path,
             "tokens_copy": self.tokens_copy_path,

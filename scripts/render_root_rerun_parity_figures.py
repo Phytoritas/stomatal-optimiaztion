@@ -18,7 +18,7 @@ DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "out" / "rerun_parity"
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Render Plotkit-style root rerun parity comparison figures for THORP, GOSM, and TDGM.")
+    parser = argparse.ArgumentParser(description="Render Plotkit-style rerun parity comparison figures for THORP, GOSM, and TDGM.")
     parser.add_argument(
         "--output-dir",
         type=Path,
@@ -38,10 +38,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="Include the slow GOSM imag conductance-loss rerun parity bundle.",
     )
     parser.add_argument(
+        "--fast-smoke",
+        action="store_true",
+        help="Render the fast bounded rerun-parity bundles instead of the default full-series dynamic reruns.",
+    )
+    parser.add_argument(
         "--tdgm-case",
         action="append",
         default=None,
-        help="Optional TDGM THORP-G case filename to render. May be passed multiple times.",
+        help="Optional TDGM THORP-G case filename to render. By default only the control turgor case is rendered for full-series comparison.",
     )
     return parser
 
@@ -50,11 +55,13 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     output_dir = args.output_dir.resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
+    max_steps = 60 if args.fast_smoke else None
 
     summary: dict[str, object] = {}
     if "thorp" in args.domains:
         summary["thorp"] = render_thorp_rerun_parity_bundle(
             output_dir=output_dir / "thorp" / "control_06rh",
+            max_steps=max_steps,
         ).to_summary()
     if "gosm" in args.domains:
         summary["gosm"] = render_gosm_rerun_parity_suite(
@@ -65,6 +72,7 @@ def main(argv: list[str] | None = None) -> int:
         summary["tdgm"] = render_tdgm_rerun_parity_suite(
             output_dir=output_dir / "tdgm",
             case_names=args.tdgm_case,
+            max_steps=max_steps,
         ).to_summary()
 
     print(json.dumps(summary, indent=2))

@@ -12,32 +12,35 @@ from scipy.io import loadmat
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from stomatal_optimiaztion.domains.gosm.examples._plotkit import (
+from stomatal_optimiaztion.domains.gosm.examples.control import run_control_plot_data
+from stomatal_optimiaztion.domains.gosm.examples.sensitivity import (
+    run_sensitivity_environmental_conditions,
+    run_sensitivity_p_soil_min_conductance_loss,
+)
+from stomatal_optimiaztion.domains.gosm.params import BaselineInputs
+from stomatal_optimiaztion.shared_plotkit import (
     FigureBundleArtifacts,
     apply_axis_theme,
     load_yaml,
     resolve_figure_paths,
 )
-from stomatal_optimiaztion.domains.gosm.examples.control_figure import (
-    PANEL_GROUPS,
-    build_control_example_payload,
-)
-from stomatal_optimiaztion.domains.gosm.examples.sensitivity import (
-    run_sensitivity_environmental_conditions,
-    run_sensitivity_p_soil_min_conductance_loss,
-)
-from stomatal_optimiaztion.domains.gosm.examples.sensitivity_figures import (
-    DEFAULT_LEGACY_GOSM_EXAMPLE_DIR,
-    ETA_NORMALIZER,
-    PARAM_METADATA,
-)
 
 REPO_ROOT = Path(__file__).resolve().parents[5]
+WORKSPACE_ROOT = REPO_ROOT.parents[1]
+DEFAULT_LEGACY_GOSM_EXAMPLE_DIR = WORKSPACE_ROOT / "00. Stomatal Optimization" / "GOSM" / "example"
 DEFAULT_RERUN_PARITY_OUTPUT_DIR = REPO_ROOT / "out" / "rerun_parity" / "gosm"
 DEFAULT_CONTROL_RERUN_PARITY_SPEC_PATH = REPO_ROOT / "configs" / "plotkit" / "gosm" / "control_rerun_parity.yaml"
 DEFAULT_SENSITIVITY_RERUN_PARITY_SPEC_PATH = REPO_ROOT / "configs" / "plotkit" / "gosm" / "sensitivity_rerun_parity.yaml"
 DEFAULT_CONTROL_RERUN_LEGACY_MAT_PATH = DEFAULT_LEGACY_GOSM_EXAMPLE_DIR / "Example_Growth_Opt__control.mat"
 
+PANEL_GROUPS: dict[str, tuple[str, ...]] = {
+    "panel_a_left": ("g0_umol_c_s", "g_umol_c_s"),
+    "panel_a_right": ("c_nsc_mol",),
+    "panel_b_left": ("a_n_umol_m2_s", "e_mmol_m2_s"),
+    "panel_c_left": ("t_l_c",),
+    "panel_c_right": ("vpd_kpa",),
+    "panel_d_left": ("neg_psi_l_mpa", "neg_psi_s_mpa", "neg_psi_rc_mpa"),
+}
 _CONTROL_LEGACY_GROUPS = {
     "panel_a_left": (0, 0),
     "panel_a_right": (0, 1),
@@ -45,6 +48,25 @@ _CONTROL_LEGACY_GROUPS = {
     "panel_c_left": (2, 0),
     "panel_c_right": (2, 1),
     "panel_d_left": (3, 0),
+}
+ETA_NORMALIZER = 1.0 - BaselineInputs.matlab_default().f_c
+PARAM_METADATA = {
+    "RH": {
+        "x_label": "Vapor pressure deficit (VPD), D_L [kPa]",
+        "multiplier": 1.0,
+    },
+    "c_a": {
+        "x_label": "Atmospheric CO2 pressure, c_a [Pa]",
+        "multiplier": 101.325 * 1e3,
+    },
+    "P_soil": {
+        "x_label": "Soil water potential, -psi_soil [MPa]",
+        "multiplier": -1.0,
+    },
+    "P_soil_min": {
+        "x_label": "Minimum experienced soil water potential, -psi_soil^min [MPa]",
+        "multiplier": -1.0,
+    },
 }
 
 _SENSITIVITY_CASES: tuple[dict[str, Any], ...] = (
@@ -157,7 +179,7 @@ def _panel_label(ax: Any, *, tokens: dict[str, Any], letter: str) -> None:
     )
 
 
-def _y_limits(values: np.ndarray, *, padding_fraction: float, scale: str) -> tuple[float, float]:
+def _y_limits(values: np.ndarray, *, padding_fraction: float, scale: str = "linear") -> tuple[float, float]:
     if scale == "log":
         positive = values[np.isfinite(values) & (values > 0)]
         lower = float(np.nanmin(positive))
@@ -173,7 +195,24 @@ def _y_limits(values: np.ndarray, *, padding_fraction: float, scale: str) -> tup
     return y_min - pad, y_max + pad
 
 
-def _control_legacy_group_map(legacy_mat_path: Path) -> tuple[np.ndarray, dict[str, np.ndarray]]:
+def _add_diff_columns(diff_frame: pd.DataFrame) -> pd.DataFrame:
+    legacy_value = diff_frame["legacy_value"].to_numpy(dtype=float)
+    python_value = diff_frame["python_value"].to_numpy(dtype=float)
+    same_inf = (
+        np.isinf(legacy_value)
+        & np.isinf(python_value)
+        & (np.signbit(legacy_value) == np.signbit(python_value))
+    )
+    same_nan = np.isnan(legacy_value) & np.isnan(python_value)
+    with np.errstate(invalid="ignore"):
+        signed_diff = python_value - legacy_value
+    signed_diff[same_inf | same_nan] = 0.0
+    diff_frame["signed_diff"] = signed_diff
+    diff_frame["abs_diff"] = np.abs(signed_diff)
+    return diff_frame
+
+
+def _load_control_group_map(legacy_mat_path: Path) -> tuple[np.ndarray, dict[str, np.ndarray]]:
     mat = loadmat(str(legacy_mat_path))
     y_plot = mat["Y_plot_data"]
     return (
@@ -182,25 +221,28 @@ def _control_legacy_group_map(legacy_mat_path: Path) -> tuple[np.ndarray, dict[s
     )
 
 
-def build_control_rerun_parity_frame(
+def _python_control_group_map() -> tuple[np.ndarray, dict[str, np.ndarray]]:
+    y_plot_data, g_c_vect = run_control_plot_data()
+    return (
+        _as_1d_float(g_c_vect),
+        {group_name: np.asarray(y_plot_data[row_idx, col_idx], dtype=float) for group_name, (row_idx, col_idx) in _CONTROL_LEGACY_GROUPS.items()},
+    )
+
+
+def build_control_rerun_parity_tables(
     *,
     legacy_mat_path: Path | None = None,
-) -> pd.DataFrame:
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     legacy_mat_path = (legacy_mat_path or DEFAULT_CONTROL_RERUN_LEGACY_MAT_PATH).resolve()
-    legacy_g_c_vec, legacy_groups = _control_legacy_group_map(legacy_mat_path)
-    python_payload = build_control_example_payload()
+    legacy_g_c_vec, legacy_groups = _load_control_group_map(legacy_mat_path)
+    python_g_c_vec, python_groups = _python_control_group_map()
 
-    records: list[dict[str, Any]] = []
-    for group_name, keys in PANEL_GROUPS.items():
-        panel_id, axis_name = group_name.rsplit("_", maxsplit=1)
-        python_group = python_payload.grouped_arrays()[group_name]
-        legacy_group = legacy_groups[group_name]
-
-        for series_idx, key in enumerate(keys):
-            for source, g_c_vec, matrix in (
-                ("legacy", legacy_g_c_vec, legacy_group),
-                ("python", python_payload.g_c_vec, python_group),
-            ):
+    def _build_frame(*, g_c_vec: np.ndarray, group_map: dict[str, np.ndarray], source: str) -> pd.DataFrame:
+        records: list[dict[str, Any]] = []
+        for group_name, keys in PANEL_GROUPS.items():
+            panel_id, axis_name = group_name.rsplit("_", maxsplit=1)
+            matrix = group_map[group_name]
+            for series_idx, key in enumerate(keys):
                 for x_value, y_value in zip(g_c_vec, matrix[series_idx], strict=True):
                     records.append(
                         {
@@ -212,7 +254,23 @@ def build_control_rerun_parity_frame(
                             "value": float(y_value),
                         }
                     )
-    return pd.DataFrame.from_records(records)
+        return pd.DataFrame.from_records(records)
+
+    legacy_frame = _build_frame(g_c_vec=legacy_g_c_vec, group_map=legacy_groups, source="legacy")
+    python_frame = _build_frame(g_c_vec=python_g_c_vec, group_map=python_groups, source="python")
+    diff_frame = (
+        legacy_frame.drop(columns="source")
+        .rename(columns={"value": "legacy_value"})
+        .merge(
+            python_frame.drop(columns="source").rename(columns={"value": "python_value"}),
+            on=["panel_id", "axis", "series_key", "g_c"],
+            how="outer",
+            validate="one_to_one",
+        )
+        .sort_values(["panel_id", "axis", "series_key", "g_c"])
+        .reset_index(drop=True)
+    )
+    return legacy_frame, python_frame, _add_diff_columns(diff_frame)
 
 
 def render_control_rerun_parity_bundle(
@@ -229,12 +287,20 @@ def render_control_rerun_parity_bundle(
     spec = load_yaml(spec_path)
     tokens_path = (spec_path.parent / spec["theme"]["tokens"]).resolve()
     tokens = load_yaml(tokens_path)
-    frame = build_control_rerun_parity_frame(legacy_mat_path=legacy_mat_path)
+    legacy_frame, python_frame, diff_frame = build_control_rerun_parity_tables(
+        legacy_mat_path=legacy_mat_path,
+    )
+    frame = pd.concat([legacy_frame, python_frame], ignore_index=True)
     figure_id = spec["meta"]["id"]
     file_paths = resolve_figure_paths(output_dir, figure_id)
+    python_csv_path = output_dir / f"{figure_id}_python.csv"
+    legacy_csv_path = output_dir / f"{figure_id}_legacy.csv"
+    diff_csv_path = output_dir / f"{figure_id}_diff.csv"
 
-    frame.to_csv(file_paths["data_csv"], index=False)
-    for extra_key in ("spec_copy", "resolved_spec", "tokens_copy", "metadata", "pdf"):
+    legacy_frame.to_csv(legacy_csv_path, index=False)
+    python_frame.to_csv(python_csv_path, index=False)
+    diff_frame.to_csv(diff_csv_path, index=False)
+    for extra_key in ("data_csv", "spec_copy", "resolved_spec", "tokens_copy", "metadata", "pdf"):
         file_paths[extra_key].unlink(missing_ok=True)
 
     width_mm = float(spec["figure"]["width_mm"])
@@ -344,14 +410,29 @@ def render_control_rerun_parity_bundle(
         frameon=tokens["legend"]["frameon"],
         fontsize=fonts["legend_size_pt"],
     )
-    fig.text(0.44, 0.975, spec["meta"]["title"], ha="center", va="center", fontsize=fonts["title_size_pt"] + 2, fontweight="bold")
+    fig.text(
+        0.44,
+        0.975,
+        spec["meta"]["title"],
+        ha="center",
+        va="center",
+        fontsize=fonts["title_size_pt"] + 2,
+        fontweight="bold",
+    )
 
-    fig.savefig(file_paths["png"], dpi=dpi, transparent=spec["export"]["transparent"], facecolor=tokens["figure"]["background"])
+    fig.savefig(
+        file_paths["png"],
+        dpi=dpi,
+        transparent=spec["export"]["transparent"],
+        facecolor=tokens["figure"]["background"],
+    )
     plt.close(fig)
     return FigureBundleArtifacts(
         output_dir=output_dir,
-        data_csv_path=file_paths["data_csv"],
         png_path=file_paths["png"],
+        python_csv_path=python_csv_path,
+        legacy_csv_path=legacy_csv_path,
+        diff_csv_path=diff_csv_path,
     )
 
 
@@ -386,13 +467,13 @@ def _sensitivity_payload_from_result(result: dict[str, Any]) -> _SensitivityPayl
     )
 
 
-def build_sensitivity_case_rerun_parity_frame(
+def build_sensitivity_case_rerun_parity_tables(
     *,
     legacy_mat_path: Path,
     mode: str,
     param: str | None = None,
     conductance_loss: str | None = None,
-) -> tuple[pd.DataFrame, dict[str, Any]]:
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict[str, Any]]:
     legacy = loadmat(str(legacy_mat_path))
     legacy_payload = _sensitivity_payload_from_result(legacy)
 
@@ -417,8 +498,8 @@ def build_sensitivity_case_rerun_parity_frame(
 
     python_payload = _sensitivity_payload_from_result(python_result)
 
-    records: list[dict[str, Any]] = []
-    for source, payload in (("legacy", legacy_payload), ("python", python_payload)):
+    def _build_frame(*, payload: _SensitivityPayload, source: str) -> pd.DataFrame:
+        records: list[dict[str, Any]] = []
         for panel_id, metric_key, x_matrix, y_matrix in (
             ("g_c_steady_state", "g_c", payload.x_ss_mat, payload.steady_state["g_c"]),
             ("growth_steady_state", "growth", payload.x_ss_mat, payload.steady_state["growth"]),
@@ -426,6 +507,7 @@ def build_sensitivity_case_rerun_parity_frame(
             ("growth_instantaneous", "growth", payload.x_in_mat, payload.instantaneous["growth"]),
         ):
             for line_idx in range(y_matrix.shape[0]):
+                eta_factor = None if "steady" in panel_id else float(payload.eta_test[line_idx] / ETA_NORMALIZER)
                 for x_value, y_value in zip(x_matrix[line_idx], y_matrix[line_idx], strict=True):
                     records.append(
                         {
@@ -433,22 +515,29 @@ def build_sensitivity_case_rerun_parity_frame(
                             "metric": metric_key,
                             "source": source,
                             "line_index": line_idx,
-                            "eta_factor": None if "steady" in panel_id else float(payload.eta_test[line_idx] / ETA_NORMALIZER),
+                            "eta_factor": eta_factor,
                             "x": float(x_value),
                             "y": float(y_value),
                         }
                     )
+        return pd.DataFrame.from_records(records)
 
-    diff_summary = {
-        "g_c_steady_state": float(np.nanmax(np.abs(python_payload.steady_state["g_c"] - legacy_payload.steady_state["g_c"]))),
-        "growth_steady_state": float(np.nanmax(np.abs(python_payload.steady_state["growth"] - legacy_payload.steady_state["growth"]))),
-        "g_c_instantaneous": float(np.nanmax(np.abs(python_payload.instantaneous["g_c"] - legacy_payload.instantaneous["g_c"]))),
-        "growth_instantaneous": float(np.nanmax(np.abs(python_payload.instantaneous["growth"] - legacy_payload.instantaneous["growth"]))),
-    }
-    return pd.DataFrame.from_records(records), {
+    legacy_frame = _build_frame(payload=legacy_payload, source="legacy")
+    python_frame = _build_frame(payload=python_payload, source="python")
+    diff_frame = (
+        legacy_frame.drop(columns="source")
+        .rename(columns={"y": "legacy_value"})
+        .merge(
+            python_frame.drop(columns="source").rename(columns={"y": "python_value"}),
+            on=["panel_id", "metric", "line_index", "eta_factor", "x"],
+            how="outer",
+            validate="one_to_one",
+        )
+        .sort_values(["panel_id", "metric", "line_index", "x"])
+        .reset_index(drop=True)
+    )
+    return legacy_frame, python_frame, _add_diff_columns(diff_frame), {
         "x_label": legacy_payload.x_label,
-        "param": legacy_payload.param,
-        "diff_summary": diff_summary,
         "eta_factors": [float(value / ETA_NORMALIZER) for value in legacy_payload.eta_test],
     }
 
@@ -472,29 +561,26 @@ def render_sensitivity_case_rerun_parity_bundle(
     spec = load_yaml(spec_path)
     tokens_path = (spec_path.parent / spec["theme"]["tokens"]).resolve()
     tokens = load_yaml(tokens_path)
-    frame, info = build_sensitivity_case_rerun_parity_frame(
+    legacy_frame, python_frame, diff_frame, info = build_sensitivity_case_rerun_parity_tables(
         legacy_mat_path=legacy_mat_path,
         mode=mode,
         param=param,
         conductance_loss=conductance_loss,
     )
+    frame = pd.concat([legacy_frame, python_frame], ignore_index=True)
     figure_id = f"{spec['meta']['id']}_{case_id}"
     file_paths = resolve_figure_paths(output_dir, figure_id)
+    python_csv_path = output_dir / f"{figure_id}_python.csv"
+    legacy_csv_path = output_dir / f"{figure_id}_legacy.csv"
+    diff_csv_path = output_dir / f"{figure_id}_diff.csv"
 
-    resolved_title = f"{spec['meta']['title']} ({case_title})"
-    resolved_y_limits: dict[str, tuple[float, float]] = {}
-    for panel_id in spec["panel_order"]:
-        panel_frame = frame[frame["panel_id"] == panel_id]
-        resolved_y_limits[panel_id] = _y_limits(
-            panel_frame["y"].to_numpy(dtype=float),
-            padding_fraction=float(spec["panels"][panel_id].get("y_padding_fraction", 0.08)),
-            scale=str(spec["panels"][panel_id]["scale"]),
-        )
-
-    frame.to_csv(file_paths["data_csv"], index=False)
-    for extra_key in ("spec_copy", "resolved_spec", "tokens_copy", "metadata", "pdf"):
+    legacy_frame.to_csv(legacy_csv_path, index=False)
+    python_frame.to_csv(python_csv_path, index=False)
+    diff_frame.to_csv(diff_csv_path, index=False)
+    for extra_key in ("data_csv", "spec_copy", "resolved_spec", "tokens_copy", "metadata", "pdf"):
         file_paths[extra_key].unlink(missing_ok=True)
 
+    resolved_title = f"{spec['meta']['title']} ({case_title})"
     width_mm = float(spec["figure"]["width_mm"])
     height_mm = float(spec["figure"]["height_mm"])
     dpi = int(spec["export"]["dpi"])
@@ -523,7 +609,13 @@ def render_sensitivity_case_rerun_parity_bundle(
         if show_xlabels:
             ax.set_xlabel(info["x_label"], fontsize=fonts["axis_label_size_pt"])
         ax.set_yscale(panel_spec["scale"])
-        ax.set_ylim(resolved_y_limits[panel_id])
+        ax.set_ylim(
+            _y_limits(
+                panel_frame["y"].to_numpy(dtype=float),
+                padding_fraction=float(panel_spec.get("y_padding_fraction", 0.08)),
+                scale=str(panel_spec["scale"]),
+            )
+        )
         ax.set_xlim(
             float(panel_frame["x"].min()),
             float(panel_frame["x"].max()),
@@ -586,12 +678,19 @@ def render_sensitivity_case_rerun_parity_bundle(
     )
     fig.text(0.44, 0.965, resolved_title, ha="center", va="center", fontsize=fonts["title_size_pt"] + 2, fontweight="bold")
 
-    fig.savefig(file_paths["png"], dpi=dpi, transparent=spec["export"]["transparent"], facecolor=tokens["figure"]["background"])
+    fig.savefig(
+        file_paths["png"],
+        dpi=dpi,
+        transparent=spec["export"]["transparent"],
+        facecolor=tokens["figure"]["background"],
+    )
     plt.close(fig)
     return FigureBundleArtifacts(
         output_dir=output_dir,
-        data_csv_path=file_paths["data_csv"],
         png_path=file_paths["png"],
+        python_csv_path=python_csv_path,
+        legacy_csv_path=legacy_csv_path,
+        diff_csv_path=diff_csv_path,
     )
 
 
