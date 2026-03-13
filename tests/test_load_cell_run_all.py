@@ -3,9 +3,8 @@ from __future__ import annotations
 import importlib
 from pathlib import Path
 
-import pytest
-
 from stomatal_optimiaztion.domains import load_cell
+from stomatal_optimiaztion.domains.load_cell import almemo_preprocess
 from stomatal_optimiaztion.domains.load_cell import run_all
 
 load_cell_run_all = importlib.import_module("stomatal_optimiaztion.domains.load_cell.run_all")
@@ -13,11 +12,52 @@ load_cell_run_all = importlib.import_module("stomatal_optimiaztion.domains.load_
 
 def test_load_cell_import_surface_exposes_run_all_helper() -> None:
     assert load_cell.run_all is run_all
+    assert load_cell.preprocess_raw_folder is almemo_preprocess.preprocess_raw_folder
 
 
-def test_run_all_raises_when_preprocess_is_required_but_missing() -> None:
-    with pytest.raises(RuntimeError, match="skip_preprocess=True|inject preprocess_raw_folder"):
-        run_all(raw_input_dir=Path("raw"))
+def test_run_all_resolves_package_preprocess_by_default() -> None:
+    preprocess_calls: list[dict[str, object]] = []
+    captures: dict[str, object] = {}
+
+    def fake_preprocess(
+        input_dir: Path,
+        output_dir: Path,
+        *,
+        pattern: str,
+        max_files: int | None,
+        overwrite: bool,
+        encoding: str,
+        interpolate_1s: bool,
+    ) -> list[Path]:
+        preprocess_calls.append(
+            {
+                "input_dir": input_dir,
+                "output_dir": output_dir,
+                "pattern": pattern,
+                "max_files": max_files,
+                "overwrite": overwrite,
+                "encoding": encoding,
+                "interpolate_1s": interpolate_1s,
+            }
+        )
+        return []
+
+    def fake_run_workflow(**kwargs: object) -> None:
+        captures.update(kwargs)
+
+    original_preprocess = almemo_preprocess.preprocess_raw_folder
+    original_run_workflow = load_cell_run_all.workflow.run_workflow
+    almemo_preprocess.preprocess_raw_folder = fake_preprocess
+    load_cell_run_all.workflow.run_workflow = fake_run_workflow
+    try:
+        run_all(raw_input_dir=Path("raw-data"))
+    finally:
+        almemo_preprocess.preprocess_raw_folder = original_preprocess
+        load_cell_run_all.workflow.run_workflow = original_run_workflow
+
+    assert [call["interpolate_1s"] for call in preprocess_calls] == [False, True]
+    assert captures["raw_dir"] == Path("data/preprocessed_csv")
+    assert captures["interpolated_dir"] == Path("data/preprocessed_csv_interpolated")
 
 
 def test_run_all_preprocesses_then_dispatches_workflow() -> None:
