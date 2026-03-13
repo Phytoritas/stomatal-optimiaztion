@@ -340,8 +340,16 @@ The thirty-seventh slice opens the next bounded TOMATO seam:
 - keep the seam bounded to the pipeline-runner script instead of opening `scripts/make_features.py` or broader automation entrypoints
 - leave `scripts/make_features.py` blocked as the next seam
 
+## Slice 038: TOMATO tTHORP Feature-Builder Script
+
+The thirty-eighth slice opens the next bounded TOMATO seam:
+- move `TOMATO/tTHORP/scripts/make_features.py` into the repo-local `scripts/` surface
+- port the shared `core.util_units` PAR conversion helper as a direct dependency instead of duplicating the conversion logic again
+- preserve deterministic feature CSV naming, SW-to-PAR derivation, forcing defaults, and printed output-path behavior
+- leave `models/thorp_ref/adapter.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first thirteen TOMATO `tTHORP` seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first fourteen TOMATO `tTHORP` seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `scripts/make_features.py`
+3. prepare the next TOMATO source audit for `models/thorp_ref/adapter.py`

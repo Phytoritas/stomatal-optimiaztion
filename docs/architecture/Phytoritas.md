@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 037 completed and slice 038 planning
+- Current phase: slice 038 completed and slice 039 planning
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. audit the TOMATO feature-builder script seam at `scripts/make_features.py`
-2. decide how much of `scripts/make_features.py` can land without opening broader non-TOMATO entrypoints prematurely
+1. audit the TOMATO THORP reference adapter seam at `models/thorp_ref/adapter.py`
+2. decide how much of `models/thorp_ref/adapter.py` can land without reopening broader THORP workspace assumptions prematurely
 3. keep `tGOSM`, `tTDGM`, and `load-cell-data` blocked until their source audits are deeper
