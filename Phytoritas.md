@@ -52,4 +52,5 @@ Current status:
 - Slice 083 migrated: root GOSM runtime pipeline seam
 - Slice 084 migrated: root GOSM future-work helper seam
 - Slice 085 migrated: root GOSM stomatal-model comparison seam
-- Current open architecture gaps: root GOSM instantaneous optimum seam
+- Slice 086 migrated: root GOSM instantaneous optimum seam
+- Current open architecture gaps: root GOSM steady-state helper seam

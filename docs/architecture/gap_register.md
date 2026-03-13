@@ -2,6 +2,6 @@
 
 | ID | Gap | Impact | Required Artifact |
 | --- | --- | --- | --- |
-| G-086 | Root GOSM instantaneous optimum seam is still missing from the migrated repo | Blocks the fixed-eta/fixed-NSC operating-point helper used by legacy sensitivity analyses | `docs/architecture/architecture/module_specs/module-086-gosm-instantaneous-optimum.md` |
+| G-087 | Root GOSM steady-state helper seam is still missing from the migrated repo | Blocks the steady-state NSC, CUE, and operating-point helper used by the legacy control and sensitivity analyses | `docs/architecture/architecture/module_specs/module-087-gosm-steady-state.md` |
 
-Current open gaps: G-086.
+Current open gaps: G-087.
