@@ -33,11 +33,16 @@ from stomatal_optimiaztion.domains.load_cell.preprocessing import (
 from stomatal_optimiaztion.domains.load_cell.thresholds import (
     auto_detect_step_thresholds,
 )
+from stomatal_optimiaztion.domains.load_cell.workflow import (
+    config_signature,
+    run_workflow,
+)
 
 __all__ = [
     "auto_detect_step_thresholds",
     "build_parser",
     "compute_fluxes_per_second",
+    "config_signature",
     "daily_summary",
     "detect_and_correct_outliers",
     "group_events",
@@ -51,6 +56,7 @@ __all__ = [
     "merge_close_events_with_df",
     "read_load_cell_csv",
     "run_pipeline",
+    "run_workflow",
     "smooth_weight",
     "write_multi_resolution_results",
     "write_results",
