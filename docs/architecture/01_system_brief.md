@@ -556,8 +556,16 @@ The sixty-fourth slice opens the next bounded THORP compatibility seam:
 - keep the seam compatibility-bounded without redesigning the existing traceability helper layer
 - leave `THORP/src/thorp/utils/__init__.py` blocked as the next seam
 
+## Slice 065: THORP Utilities Namespace
+
+The sixty-fifth slice opens the next bounded THORP namespace-wrapper seam:
+- move `THORP/src/thorp/utils/__init__.py` into the staged `domains/thorp/utils/` package
+- preserve the grouped convenience imports for equation-registry, implements, and model-card helpers
+- keep the seam wrapper-bounded without widening into new shared utility abstractions
+- leave `THORP/src/thorp/io/__init__.py` blocked as the next seam
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next THORP namespace-wrapper audit for `THORP/src/thorp/utils/__init__.py`
+3. prepare the next THORP namespace-wrapper audit for `THORP/src/thorp/io/__init__.py`

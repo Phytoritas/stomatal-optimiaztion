@@ -31,4 +31,5 @@ Current status:
 - Slice 062 migrated: `load-cell-data` static preprocess-compare viewer seam
 - Slice 063 migrated: THORP stable `sim` runner seam
 - Slice 064 migrated: THORP equation-registry seam
-- Next blocked seam: THORP utilities namespace seam at `THORP/src/thorp/utils/__init__.py`
+- Slice 065 migrated: THORP utilities namespace seam
+- Next blocked seam: THORP IO namespace seam at `THORP/src/thorp/io/__init__.py`

@@ -89,6 +89,7 @@ poetry run ruff check .
 - `load-cell-data` static preprocess-compare viewer seam is migrated as slice 062.
 - THORP stable `sim` runner seam is migrated as slice 063.
 - THORP equation-registry seam is migrated as slice 064.
+- THORP utilities namespace seam is migrated as slice 065.
 
 ## Next validation
-- Audit the THORP utilities namespace seam at `THORP/src/thorp/utils/__init__.py`.
+- Audit the THORP IO namespace seam at `THORP/src/thorp/io/__init__.py`.
