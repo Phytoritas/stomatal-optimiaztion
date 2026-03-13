@@ -28,6 +28,9 @@ from stomatal_optimiaztion.domains.gosm.model.optimal_control import (
     objective_total_growth,
     theta_cost,
 )
+from stomatal_optimiaztion.domains.gosm.model.pipeline import (
+    rad_hydr_grow_temp_cassimilation,
+)
 from stomatal_optimiaztion.domains.gosm.model.radiation import radiation_absorbed
 
 __all__ = [
@@ -46,6 +49,7 @@ __all__ = [
     "nsc_rate_of_change",
     "nsc_rate_of_change_full",
     "objective_total_growth",
+    "rad_hydr_grow_temp_cassimilation",
     "radiation_absorbed",
     "sigma_nsc_limitation",
     "steady_state_npp_gpp_ratio",

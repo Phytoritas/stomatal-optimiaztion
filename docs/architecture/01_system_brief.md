@@ -701,8 +701,15 @@ The eighty-second slice opens the next coupled root `GOSM` runtime kernel:
 - preserve `Eq.S5.1` through `Eq.S6.15` tagging plus hydraulic state outputs, turgor-growth outputs, and derivative propagation
 - keep the seam kernel-bounded and leave `pipeline.py` as the next fully wired runtime seam
 
+## Slice 083: Root GOSM Runtime Pipeline
+
+The eighty-third slice closes the first fully wired root `GOSM` runtime path:
+- move `GOSM/src/gosm/model/pipeline.py` into the staged `domains/gosm/model/` package
+- preserve the S3 through S6 stage tagging plus the canonical radiation, hydraulics, conductance-temperature, and carbon-assimilation orchestration order
+- keep the seam runtime-pipeline-bounded and leave `future_work.py` as the next small helper seam
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate `GOSM/src/gosm/model/pipeline.py` as the next bounded GOSM runtime pipeline seam
+3. migrate `GOSM/src/gosm/model/future_work.py` as the next bounded GOSM helper seam

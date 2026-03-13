@@ -2,6 +2,6 @@
 
 | ID | Gap | Impact | Required Artifact |
 | --- | --- | --- | --- |
-| G-083 | Root GOSM pipeline seam is still missing from the migrated repo | Blocks the first fully wired root GOSM runtime path after the migrated hydraulics kernel | `docs/architecture/architecture/module_specs/module-083-gosm-runtime-pipeline.md` |
+| G-084 | Root GOSM future-work helper seam is still missing from the migrated repo | Blocks the remaining root `gosm.model` helper surface that is referenced by the legacy paper-alternative analysis layer | `docs/architecture/architecture/module_specs/module-084-gosm-future-work-helpers.md` |
 
-Current open gaps: G-083.
+Current open gaps: G-084.
