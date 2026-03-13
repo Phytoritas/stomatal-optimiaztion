@@ -736,8 +736,15 @@ The eighty-seventh slice closes the remaining root `GOSM` control-analysis helpe
 - preserve `Eq.S1.9` and `Eq.S2.4b` tagging plus the vectorized Newton branch, quadratic NSC shortcut, and no-crossing/no-anchor contracts
 - keep the seam analysis-bounded and leave root `TDGM` `turgor_growth.py` as the next runtime seam
 
+## Slice 088: Root TDGM Turgor-Driven Growth
+
+The eighty-eighth slice opens the first numerical root `TDGM` runtime seam:
+- move `TDGM/src/tdgm/turgor_growth.py` into the staged `domains/tdgm/` package
+- preserve `Eq_S2.12` and `Eq_S2.16` tagging plus scalar/vector whole-tree growth-rate behavior
+- keep the seam kernel-bounded and leave `ptm.py` as the next runtime seam
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate `TDGM/src/tdgm/turgor_growth.py` as the next bounded root TDGM runtime seam
+3. migrate `TDGM/src/tdgm/ptm.py` as the next bounded root TDGM runtime seam

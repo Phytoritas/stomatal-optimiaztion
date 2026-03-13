@@ -16,6 +16,9 @@ from stomatal_optimiaztion.domains.tdgm.traceability import (
     build_mapping,
     iter_annotated_callables,
 )
+from stomatal_optimiaztion.domains.tdgm.turgor_growth import (
+    turgor_driven_growth_rate,
+)
 
 __all__ = [
     "EquationMapping",
@@ -30,4 +33,5 @@ __all__ = [
     "model_card_document_names",
     "qualname",
     "require_equation_ids",
+    "turgor_driven_growth_rate",
 ]
