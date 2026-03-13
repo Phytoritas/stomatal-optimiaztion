@@ -11,6 +11,10 @@ from stomatal_optimiaztion.domains.load_cell.io import (
     write_multi_resolution_results,
     write_results,
 )
+from stomatal_optimiaztion.domains.load_cell.preprocessing import (
+    detect_and_correct_outliers,
+    smooth_weight,
+)
 from stomatal_optimiaztion.domains.load_cell.thresholds import (
     auto_detect_step_thresholds,
 )
@@ -18,10 +22,12 @@ from stomatal_optimiaztion.domains.load_cell.thresholds import (
 __all__ = [
     "auto_detect_step_thresholds",
     "daily_summary",
+    "detect_and_correct_outliers",
     "PipelineConfig",
     "resample_flux_timeseries",
     "load_config",
     "read_load_cell_csv",
+    "smooth_weight",
     "write_multi_resolution_results",
     "write_results",
 ]

@@ -436,8 +436,16 @@ The forty-ninth slice opens the next bounded `load-cell-data` seam:
 - keep the seam threshold-bounded without widening into preprocessing, workflow, or CLI surfaces
 - leave `load-cell-data/loadcell_pipeline/preprocessing.py` blocked as the next seam
 
+## Slice 050: load-cell-data Preprocessing
+
+The fiftieth slice opens the next bounded `load-cell-data` seam:
+- move `load-cell-data/loadcell_pipeline/preprocessing.py` into the staged `domains/load_cell` package
+- preserve impulsive outlier detection/correction, moving-average and Savitzky-Golay smoothing, and derivative reconstruction behavior
+- keep the seam preprocessing-bounded without widening into event detection, flux decomposition, workflow, or CLI surfaces
+- leave `load-cell-data/loadcell_pipeline/events.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first four `load-cell-data` bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first five `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/preprocessing.py`
+3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/events.py`
