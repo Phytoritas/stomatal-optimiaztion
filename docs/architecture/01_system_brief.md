@@ -476,8 +476,16 @@ The fifty-fourth slice opens the next bounded `load-cell-data` seam:
 - keep the seam workflow-bounded without widening into sweep, end-to-end batch runners, or raw preprocessing surfaces
 - leave `load-cell-data/loadcell_pipeline/sweep.py` blocked as the next seam
 
+## Slice 055: load-cell-data Sweep
+
+The fifty-fifth slice opens the next bounded `load-cell-data` seam:
+- move `load-cell-data/loadcell_pipeline/sweep.py` into the staged `domains/load_cell` package
+- preserve grid parsing, generated config emission, workflow dispatch, run collection, and ranking behavior
+- keep the seam sweep-bounded without widening into raw preprocessing or end-to-end runner surfaces
+- leave `load-cell-data/loadcell_pipeline/run_all.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first nine `load-cell-data` bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first ten `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/sweep.py`
+3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/run_all.py`

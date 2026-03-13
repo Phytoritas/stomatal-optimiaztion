@@ -21,4 +21,5 @@ Current status:
 - Slice 052 migrated: `load-cell-data` flux-decomposition seam
 - Slice 053 migrated: `load-cell-data` pipeline CLI seam
 - Slice 054 migrated: `load-cell-data` workflow seam
-- Next blocked seam: `load-cell-data` sweep seam at `loadcell_pipeline/sweep.py`
+- Slice 055 migrated: `load-cell-data` sweep seam
+- Next blocked seam: `load-cell-data` end-to-end runner seam at `loadcell_pipeline/run_all.py`

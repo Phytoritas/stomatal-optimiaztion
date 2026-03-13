@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 054
-- Gate D. Bounded slices 001 through 024 approved for THORP, slices 025 through 045 approved for TOMATO, and slices 046 through 054 approved for `load-cell-data`
+- Gate C. Validation plan ready through slice 055
+- Gate D. Bounded slices 001 through 024 approved for THORP, slices 025 through 045 approved for TOMATO, and slices 046 through 055 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -371,3 +371,9 @@ Slice 054:
 - target: `src/stomatal_optimiaztion/domains/load_cell/workflow.py`, package exports, and `tests/test_load_cell_workflow.py`
 - scope: bounded `load-cell-data` workflow surface covering config signatures, filename matching, environment export, substrate joins, and per-variant/per-config batch orchestration
 - excluded: `loadcell_pipeline/sweep.py`, `run_all.py`, raw preprocessing, and dashboard entrypoints
+
+Slice 055:
+- source: `load-cell-data/loadcell_pipeline/sweep.py`
+- target: `src/stomatal_optimiaztion/domains/load_cell/sweep.py`, package exports, and `tests/test_load_cell_sweep.py`
+- scope: bounded `load-cell-data` sweep surface covering grid parsing, generated config emission, workflow dispatch, run collection, and ranking outputs
+- excluded: `loadcell_pipeline/run_all.py`, raw preprocessing, and dashboard entrypoints
