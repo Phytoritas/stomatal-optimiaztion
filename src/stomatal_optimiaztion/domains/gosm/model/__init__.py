@@ -15,6 +15,10 @@ from stomatal_optimiaztion.domains.gosm.model.carbon_assimilation import (
 from stomatal_optimiaztion.domains.gosm.model.conductance_temperature import (
     conductances_and_temperature,
 )
+from stomatal_optimiaztion.domains.gosm.model.future_work import (
+    augmented_lagrangian,
+    growth_from_turgor_profile,
+)
 from stomatal_optimiaztion.domains.gosm.model.hydraulics import hydraulics
 from stomatal_optimiaztion.domains.gosm.model.npp_gpp import (
     steady_state_npp_gpp_ratio,
@@ -39,9 +43,11 @@ __all__ = [
     "growth_respiration",
     "chi_w",
     "conductances_and_temperature",
+    "growth_from_turgor_profile",
     "hydraulics",
     "eta_dot",
     "eta_from_marginals",
+    "augmented_lagrangian",
     "lagrangian",
     "leaf_area_index",
     "maintenance_respiration",

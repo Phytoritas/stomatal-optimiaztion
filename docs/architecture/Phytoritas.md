@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 083 closed the first fully wired root GOSM runtime path and left the small future-work helper seam as the next bounded gap
+- Current phase: slice 084 restored the small future-work helper seam and left the stomatal-model comparison layer as the next bounded gap
 
 ## Scope
 
@@ -100,6 +100,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 ## Immediate Next Actions
 
 1. keep the current validation gates green as root `GOSM` and `TDGM` slices land
-2. continue from the bounded GOSM runtime helpers into the remaining paper-alternative helper seam at `GOSM/src/gosm/model/future_work.py`
+2. continue from the bounded GOSM runtime helpers into the stomatal-model comparison seam at `GOSM/src/gosm/model/stomata_models.py`
 3. keep using the same package-first discipline when opening the remaining root `GOSM` and then root `TDGM` runtime seams
 4. keep shared utilities blocked until a concrete cross-domain helper emerges
