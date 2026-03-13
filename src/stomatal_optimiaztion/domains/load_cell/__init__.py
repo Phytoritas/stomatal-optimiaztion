@@ -11,8 +11,12 @@ from stomatal_optimiaztion.domains.load_cell.io import (
     write_multi_resolution_results,
     write_results,
 )
+from stomatal_optimiaztion.domains.load_cell.thresholds import (
+    auto_detect_step_thresholds,
+)
 
 __all__ = [
+    "auto_detect_step_thresholds",
     "daily_summary",
     "PipelineConfig",
     "resample_flux_timeseries",

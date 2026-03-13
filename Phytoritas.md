@@ -15,4 +15,5 @@ Current status:
 - Slice 046 migrated: `load-cell-data` config seam
 - Slice 047 migrated: `load-cell-data` IO seam
 - Slice 048 migrated: `load-cell-data` aggregation seam
-- Next blocked seam: `load-cell-data` threshold-detection seam at `loadcell_pipeline/thresholds.py`
+- Slice 049 migrated: `load-cell-data` threshold-detection seam
+- Next blocked seam: `load-cell-data` preprocessing seam at `loadcell_pipeline/preprocessing.py`

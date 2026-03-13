@@ -73,6 +73,7 @@ poetry run ruff check .
 - `load-cell-data` config seam is migrated as slice 046.
 - `load-cell-data` IO seam is migrated as slice 047.
 - `load-cell-data` aggregation seam is migrated as slice 048.
+- `load-cell-data` threshold-detection seam is migrated as slice 049.
 
 ## Next validation
-- Audit the `load-cell-data` threshold-detection seam at `loadcell_pipeline/thresholds.py`.
+- Audit the `load-cell-data` preprocessing seam at `loadcell_pipeline/preprocessing.py`.
