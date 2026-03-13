@@ -1,0 +1,30 @@
+version: 1
+meta:
+  id: tdgm_max_height_for_soil
+  title: TDGM maximum height versus soil water balance
+  journal_target: Nature Plants
+  family: tdgm_example
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_two_panel
+panels:
+  water_potential_vs_height:
+    x_label: Height, H [m]
+    y_label: Water potential [MPa]
+    x_limits: [0.0, 50.0]
+    y_limits: [-2.2, 0.0]
+  max_height_vs_p_minus_pet:
+    x_label: P - PET [mm]
+    y_label: Maximum height, H_max [m]
+    x_limits: [-900.0, 100.0]
+    y_limits: [1.0, 300.0]
+    y_scale: log
+figure:
+  width_mm: 180
+  height_mm: 90
+theme:
+  name: nature_plants_like
+  tokens: ../themes/nature_plants_like_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false

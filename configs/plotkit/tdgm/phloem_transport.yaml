@@ -1,0 +1,25 @@
+version: 1
+meta:
+  id: tdgm_phloem_transport
+  title: TDGM phloem transport distribution
+  journal_target: Nature Plants
+  family: tdgm_example
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_single_panel
+panels:
+  distribution:
+    x_label: c_p(z=1) / c_p,S [-]
+    y_label: Cumulative distribution and probability density
+    y_limits: [0.0, 1.0]
+legend:
+  loc: upper left
+figure:
+  width_mm: 120
+  height_mm: 85
+theme:
+  name: nature_plants_like
+  tokens: ../themes/nature_plants_like_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false

@@ -23,6 +23,7 @@ poetry run python scripts/render_thorp_example_figures.py --legacy-example-dir "
 poetry run python scripts/render_gosm_control_example.py --output-dir out/gosm/control_example
 poetry run python scripts/render_gosm_sensitivity_figures.py --legacy-example-dir "../00. Stomatal Optimization/GOSM/example"
 poetry run python scripts/render_gosm_manuscript_panels.py --output-dir out/gosm/manuscript_panels
+poetry run python scripts/render_tdgm_example_figures.py --output-dir out/tdgm/example_figures
 poetry run pytest
 poetry run ruff check .
 ```
@@ -128,6 +129,7 @@ poetry run ruff check .
 - Root GOSM control example figure workflow is migrated as slice 097.
 - Root GOSM sensitivity and manuscript figure workflows are migrated as slice 098.
 - Root THORP main-text example figure workflows are migrated as slice 099.
+- Root TDGM supplementary offline and THORP-G example figure workflows are migrated as slice 100.
 
 ## Next validation
-- Move next to root `TDGM` supplementary example workflows while keeping the new shared Plotkit helper narrowly scoped.
+- Keep `pytest`, `ruff`, and the Plotkit example renderers green while the architecture remains in monitor mode.

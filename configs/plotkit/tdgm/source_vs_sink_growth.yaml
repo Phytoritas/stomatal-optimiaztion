@@ -1,0 +1,34 @@
+version: 1
+meta:
+  id: tdgm_source_vs_sink_growth
+  title: TDGM source-versus-sink growth comparison
+  journal_target: Nature Plants
+  family: tdgm_example
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_three_panel
+panels:
+  ratio_over_age:
+    x_label: Age, t [yr]
+    y_label: DeltaH_source / DeltaH_sink [m m^-1]
+    x_limits: [15.0, 110.0]
+    y_limits: [0.0, 9.0]
+  source_growth:
+    x_label: Height, H [m]
+    y_label: Source-limited annual height growth, DeltaH_source [m]
+    x_limits: [0.0, 40.0]
+    y_limits: [0.0, 1.0]
+  sink_growth:
+    x_label: Height, H [m]
+    y_label: Sink-limited annual height growth, DeltaH_sink [m]
+    x_limits: [0.0, 40.0]
+    y_limits: [0.0, 1.0]
+figure:
+  width_mm: 180
+  height_mm: 140
+theme:
+  name: nature_plants_like
+  tokens: ../themes/nature_plants_like_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false

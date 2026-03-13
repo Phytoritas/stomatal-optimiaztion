@@ -1,0 +1,31 @@
+version: 1
+meta:
+  id: tdgm_turgor_water_potentials
+  title: TDGM turgor water potential regressions
+  journal_target: Nature Plants
+  family: tdgm_example
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_two_panel
+panels:
+  predawn:
+    x_label: Height, H [m]
+    y_label: Predawn xylem water potential [MPa]
+    x_limits: [0.0, 50.0]
+    y_limits: [-2.2, -0.4]
+  midday:
+    x_label: Height, H [m]
+    y_label: Midday xylem water potential [MPa]
+    x_limits: [0.0, 50.0]
+    y_limits: [-2.2, -0.4]
+legend:
+  loc: lower left
+figure:
+  width_mm: 180
+  height_mm: 80
+theme:
+  name: nature_plants_like
+  tokens: ../themes/nature_plants_like_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false

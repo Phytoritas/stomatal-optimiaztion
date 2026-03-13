@@ -823,8 +823,16 @@ The ninety-ninth slice closes the root `THORP` main-text example wave:
 - lock parity with fixed frame digests and visually spot-check the rendered PNGs against the legacy figure exports
 - introduce a narrow `shared_plotkit.py` helper because the figure-bundle contract is now shared by more than one domain
 
+## Slice 100: Root TDGM Example Figure Workflows
+
+The one-hundredth slice closes the remaining root `TDGM` supplementary example wave:
+- reproduce the offline-analysis and THORP-G figure workflows from the real legacy TDGM `.mat` payloads and literature tables embedded in the MATLAB scripts
+- render Plotkit-style bundles with PNG, PDF, CSV, spec, resolved spec, tokens, and metadata exports
+- lock parity with fixed frame digests and visually spot-check representative THORP-G growth, height, and soil-moisture panels against the MATLAB script intent
+- leave the repository in monitor mode because the documented example-parity scope is now closed
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. move next to root `TDGM` supplementary example workflows
+3. keep the example figure suites and shared Plotkit bundle contract stable under regression
