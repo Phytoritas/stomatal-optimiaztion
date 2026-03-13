@@ -492,8 +492,16 @@ The fifty-sixth slice opens the next bounded `load-cell-data` seam:
 - keep raw preprocessing behind a lazy-or-injected dependency instead of widening into `almemo_preprocess.py` in the same slice
 - leave `load-cell-data/loadcell_pipeline/almemo_preprocess.py` blocked as the next seam
 
+## Slice 057: load-cell-data Raw ALMEMO Preprocessing
+
+The fifty-seventh slice opens the next bounded `load-cell-data` seam:
+- move `load-cell-data/loadcell_pipeline/almemo_preprocess.py` into the staged `domains/load_cell` package
+- preserve raw ALMEMO CSV parsing, canonical channel mapping, duplicate-timestamp merge, optional 1-second interpolation, and precision-aware per-day CSV writing
+- reconnect the migrated `run_all` seam to the concrete preprocessing implementation without widening into synthetic validation harnesses in the same slice
+- leave `load-cell-data/loadcell_pipeline/synthetic_test.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first eleven `load-cell-data` bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first twelve `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/almemo_preprocess.py`
+3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/synthetic_test.py`
