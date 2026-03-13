@@ -6,4 +6,4 @@
 Current open gaps: `none`.
 
 Last closed wave:
-- slices `101-104` restored direct root Python rerun parity against legacy MATLAB outputs for `THORP`, `GOSM`, and `TDGM`
+- slices `101-105` restored direct root Python rerun parity against legacy MATLAB outputs for `THORP`, `GOSM`, and `TDGM`, and closed the remaining root `GOSM` rerun warning gap

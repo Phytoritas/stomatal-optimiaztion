@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import warnings
+
 import numpy as np
 import pytest
 import scipy.io
@@ -19,7 +21,9 @@ def test_example_control_matches_matlab_baseline() -> None:
     Y_mat = mat["Y_plot_data"]
     g_c_mat = mat["g_c_vect"]
 
-    Y_py, g_c_py = run_control_plot_data()
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", RuntimeWarning)
+        Y_py, g_c_py = run_control_plot_data()
 
     atol = 1e-6
     rtol = 0.0

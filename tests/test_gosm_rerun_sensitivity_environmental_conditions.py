@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import warnings
 
 import numpy as np
 import pytest
@@ -55,7 +56,9 @@ def test_sensitivity_environmental_conditions_matches_matlab_baseline(baseline_p
     mat = scipy.io.loadmat(str(baseline_path))
     param = _matlab_str(mat["PARAM"]).strip()
 
-    out = run_sensitivity_environmental_conditions(param=param, param_test=mat["PARAM_TEST"], eta_test=mat["eta_test"])
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", RuntimeWarning)
+        out = run_sensitivity_environmental_conditions(param=param, param_test=mat["PARAM_TEST"], eta_test=mat["eta_test"])
 
     assert _matlab_str(out["PARAM"]) == _matlab_str(mat["PARAM"])
     assert _legend_list(out["study_legend"]) == _legend_list(mat["study_legend"])

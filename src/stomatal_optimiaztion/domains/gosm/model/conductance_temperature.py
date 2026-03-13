@@ -76,14 +76,15 @@ def conductances_and_temperature(
     e_a = rh * 0.61078 * np.exp(17.27 * t_a_c / (t_a_c + 237.3))
     vpd_vec = e_l_vec - e_a
 
-    g_w_vec = 1.0 / (vpd_vec / p_atm / e_vec - 1.0 / g_b)
-    g_c_vec = 1.0 / (1.6 / g_w_vec + 1.37 / g_b)
+    with np.errstate(divide="ignore", invalid="ignore", over="ignore"):
+        g_w_vec = 1.0 / (vpd_vec / p_atm / e_vec - 1.0 / g_b)
+        g_c_vec = 1.0 / (1.6 / g_w_vec + 1.37 / g_b)
 
-    s_vec = 17.27 * 237.3 * e_l_vec / (t_l_c + 237.3) ** 2
+        s_vec = 17.27 * 237.3 * e_l_vec / (t_l_c + 237.3) ** 2
 
-    d_e_d_g_w_vec = e_vec / g_w_vec**2 / (
-        1.0 / g_w_vec + 1.0 / g_b + s_vec * latent_heat / p_atm / (4 * emiss * sigma * t_l_k**3 + c_p * g_b)
-    )
+        d_e_d_g_w_vec = e_vec / g_w_vec**2 / (
+            1.0 / g_w_vec + 1.0 / g_b + s_vec * latent_heat / p_atm / (4 * emiss * sigma * t_l_k**3 + c_p * g_b)
+        )
     d_e_d_g_w_vec[g_w_vec == 0] = vpd_vec[g_w_vec == 0] / p_atm
 
     d_g_w_d_g_c_vec = (1.6 + 1.37 * g_w_vec / g_b) ** 2 / 1.6
