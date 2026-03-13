@@ -33,4 +33,5 @@ Current status:
 - Slice 064 migrated: THORP equation-registry seam
 - Slice 065 migrated: THORP utilities namespace seam
 - Slice 066 migrated: THORP IO namespace seam
-- Next blocked seam: THORP model namespace seam at `THORP/src/thorp/model/__init__.py`
+- Slice 067 migrated: THORP model namespace seam
+- Next blocked seam: THORP params compatibility seam at `THORP/src/thorp/params/__init__.py`
