@@ -5,6 +5,7 @@ from stomatal_optimiaztion.domains.tomato.ttdgm.contracts import (
     OrganCarbonPools,
     validate_allocations,
 )
+from stomatal_optimiaztion.domains.tomato.ttdgm.interface import run_growth_step
 
 MODEL_NAME = "tTDGM"
 
@@ -15,4 +16,5 @@ __all__ = [
     "OrganAllocationFractions",
     "OrganCarbonPools",
     "validate_allocations",
+    "run_growth_step",
 ]
