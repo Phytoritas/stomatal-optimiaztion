@@ -49,4 +49,5 @@ Current status:
 - Slice 080 migrated: root GOSM carbon-assimilation kernel
 - Slice 081 migrated: root GOSM math helper seam
 - Slice 082 migrated: root GOSM hydraulics kernel
-- Current open architecture gaps: root GOSM runtime pipeline seam
+- Slice 083 migrated: root GOSM runtime pipeline seam
+- Current open architecture gaps: root GOSM future-work helper seam

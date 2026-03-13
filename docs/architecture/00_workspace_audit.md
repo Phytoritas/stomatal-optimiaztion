@@ -45,8 +45,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 074
-- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slice 069 recorded as THORP package-level smoke evidence, slice 070 recorded as the cross-domain utility comparison decision, slices 071 through 074 approved for root `GOSM` and `TDGM` foundations plus the first GOSM runtime seams, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
+- Gate C. Validation plan ready through slice 083
+- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slice 069 recorded as THORP package-level smoke evidence, slice 070 recorded as the cross-domain utility comparison decision, slices 071 through 083 approved for root `GOSM` and `TDGM` foundations plus the first fully wired GOSM runtime path, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -541,3 +541,9 @@ Slice 082:
 - target: `src/stomatal_optimiaztion/domains/gosm/model/` and `tests/test_gosm_hydraulics.py`
 - scope: bounded root `GOSM` runtime seam covering hydraulic state outputs, turgor-growth outputs, and derivative propagation plus equation-tag preservation
 - excluded: `GOSM/src/gosm/model/pipeline.py`, wider policy layers, and root `TDGM` runtime seams
+
+Slice 083:
+- source: `GOSM/src/gosm/model/pipeline.py` and `GOSM/src/gosm/model/__init__.py`
+- target: `src/stomatal_optimiaztion/domains/gosm/model/` and `tests/test_gosm_pipeline.py`
+- scope: bounded root `GOSM` runtime seam covering the first fully wired radiation-hydraulics-temperature-assimilation orchestration path plus stage-tag preservation
+- excluded: `GOSM/src/gosm/model/future_work.py`, wider policy layers, and root `TDGM` runtime seams
