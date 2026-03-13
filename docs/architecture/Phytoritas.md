@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 055 completed and slice 056 planning
+- Current phase: slice 056 completed and slice 057 planning
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. audit the `load-cell-data` end-to-end runner seam at `loadcell_pipeline/run_all.py`
-2. preserve the config-plus-IO-plus-aggregation-plus-thresholds-plus-preprocessing-plus-events-plus-fluxes-plus-cli-plus-workflow-plus-sweep package boundary while deciding how the top-level runner should compose raw preprocessing and migrated orchestration seams
+1. audit the `load-cell-data` raw preprocessing seam at `loadcell_pipeline/almemo_preprocess.py`
+2. preserve the config-plus-IO-plus-aggregation-plus-thresholds-plus-preprocessing-plus-events-plus-fluxes-plus-cli-plus-workflow-plus-sweep-plus-runner package boundary while deciding how raw ALMEMO ingestion should land behind the migrated orchestration seams
 3. keep `load-cell-data` blocked until its source audit is deeper

@@ -484,8 +484,16 @@ The fifty-fifth slice opens the next bounded `load-cell-data` seam:
 - keep the seam sweep-bounded without widening into raw preprocessing or end-to-end runner surfaces
 - leave `load-cell-data/loadcell_pipeline/run_all.py` blocked as the next seam
 
+## Slice 056: load-cell-data End-to-End Runner
+
+The fifty-sixth slice opens the next bounded `load-cell-data` seam:
+- move `load-cell-data/loadcell_pipeline/run_all.py` into the staged `domains/load_cell` package
+- preserve parser construction plus orchestration across raw preprocessing, workflow dispatch, and sweep dispatch
+- keep raw preprocessing behind a lazy-or-injected dependency instead of widening into `almemo_preprocess.py` in the same slice
+- leave `load-cell-data/loadcell_pipeline/almemo_preprocess.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first ten `load-cell-data` bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first eleven `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/run_all.py`
+3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/almemo_preprocess.py`
