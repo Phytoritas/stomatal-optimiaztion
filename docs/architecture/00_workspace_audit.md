@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 038
-- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 038 approved for TOMATO
+- Gate C. Validation plan ready through slice 039
+- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 039 approved for TOMATO
 
 ## Migrated THORP Slices
 
@@ -275,3 +275,9 @@ Slice 038:
 - target: `scripts/make_features.py`, `src/stomatal_optimiaztion/domains/tomato/tthorp/core/util_units.py`, and feature/unit-conversion tests
 - scope: bounded TOMATO feature-building surface covering deterministic feature CSV output, SW-to-PAR derivation, forcing defaults, and shared PAR conversion helpers
 - excluded: `models/thorp_ref/adapter.py`, plotting scripts, and broader non-TOMATO entrypoints
+
+Slice 039:
+- source: `TOMATO/tTHORP/src/tthorp/models/thorp_ref/{adapter.py,__init__.py}`
+- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/models/thorp_ref/`, package exports, and `tests/test_tomato_tthorp_thorp_ref_adapter.py`
+- scope: bounded TOMATO THORP-reference bridge covering forcing-column normalization, migrated THORP runtime binding, and legacy-shaped DataFrame outputs
+- excluded: repo-level plotting scripts, PNG summary generation, and broader non-TOMATO entrypoints

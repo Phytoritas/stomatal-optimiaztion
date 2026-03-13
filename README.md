@@ -63,6 +63,7 @@ poetry run ruff check .
 - TOMATO `tTHORP` dayrun pipeline seam is migrated as slice 036.
 - TOMATO `tTHORP` repo-level pipeline script seam is migrated as slice 037.
 - TOMATO `tTHORP` feature-builder script seam is migrated as slice 038.
+- TOMATO `tTHORP` THORP reference adapter seam is migrated as slice 039.
 
 ## Next validation
-- Audit the TOMATO THORP reference adapter seam at `models/thorp_ref/adapter.py`.
+- Audit the TOMATO simulation plotting seam at `scripts/plot_simulation_png.py`.
