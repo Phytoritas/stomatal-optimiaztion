@@ -1,0 +1,39 @@
+version: 1
+meta:
+  id: tdgm_thorp_g_growth_vs_carbon_soil_moisture_detrended
+  title: TDGM THORP-G growth versus carbon colored by detrended annual soil moisture
+  journal_target: Nature Plants
+  family: tdgm_example
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_two_panel
+panels:
+  control:
+    title: Control
+    x_label: Mean annual dry mass, C [mol C]
+    y_label: Annual growth, G [(mol C) s^-1]
+    x_limits: [10.0, 10000000.0]
+    y_limits: [1.0e-10, 1.0e-2]
+    reference_anchor_x: 1000.0
+    reference_anchor_y: 1.0e-7
+  rh_80:
+    title: 80% RH
+    x_label: Mean annual dry mass, C [mol C]
+    y_label: Annual growth, G [(mol C) s^-1]
+    x_limits: [10.0, 10000000.0]
+    y_limits: [1.0e-10, 1.0e-2]
+    reference_anchor_x: 1000.0
+    reference_anchor_y: 1.0e-7
+figure:
+  width_mm: 180
+  height_mm: 90
+colorbar:
+  cmap: coolwarm
+  v_limits: [-0.04, 0.04]
+  label: Deviation from tree-size soil-moisture regression, epsilon_<Se> [-]
+theme:
+  name: nature_plants_like
+  tokens: ../themes/nature_plants_like_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false

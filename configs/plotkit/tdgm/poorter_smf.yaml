@@ -1,0 +1,26 @@
+version: 1
+meta:
+  id: tdgm_poorter_smf
+  title: TDGM Poorter SMF reference
+  journal_target: Nature Plants
+  family: tdgm_example
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_single_panel
+panels:
+  poorter_smf:
+    x_label: Total dry mass in C equivalents, C [mol C]
+    y_label: Stem mass fraction, SMF [mol C mol C^-1]
+    x_limits: [0.00001, 10000000000.0]
+    y_limits: [0.0, 0.9]
+legend:
+  loc: upper left
+figure:
+  width_mm: 120
+  height_mm: 85
+theme:
+  name: nature_plants_like
+  tokens: ../themes/nature_plants_like_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false

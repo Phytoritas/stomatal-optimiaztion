@@ -84,7 +84,7 @@ Primary MATLAB entrypoints:
 
 Current repo status:
 - the root `tdgm` runtime and THORP-G helper wave are migrated
-- the repo does not yet provide supplementary-analysis runners, reference-data adapters, or Plotkit-style TDGM/THORP-G figure workflows
+- the repo now provides supplementary-analysis adapters plus Plotkit-style TDGM offline and THORP-G figure workflows with digest-locked metadata and rendered bundle exports
 
 ## Findings
 
@@ -92,14 +92,16 @@ Current repo status:
 2. The user reopened the program with a broader workflow-reproduction goal, so the gap register had to distinguish model parity from example parity.
 3. The root `GOSM` wave provided the first reusable Plotkit-style figure-bundle contract, and root `THORP` confirmed that the contract is now cross-domain rather than GOSM-local.
 4. Root `THORP` example parity is now closed against the real legacy `.mat` payloads plus the empirical tables embedded in the original MATLAB scripts.
+5. Root `TDGM` example parity is now closed against the real legacy offline and THORP-G `.mat` payloads plus the literature/reference tables embedded in the original MATLAB scripts.
 
 ## Open Gaps
 
-1. Root `TDGM` supplementary analysis and THORP-G figure workflows under both example directories.
+1. None in the currently documented example-parity scope.
 
 ## Next Actions
 
 1. `slice 097` closed the root `GOSM` control-example figure workflow with Plotkit-style, spec-first exports
 2. `slice 098` closed the remaining root `GOSM` sensitivity and manuscript figure workflows
 3. `slice 099` closed the root `THORP` main-text example figure workflows with real legacy-data digest locking and visual spot checks
-4. move next to root `TDGM`
+4. `slice 100` closed the root `TDGM` supplementary offline and THORP-G example figure workflows with real legacy-data digest locking and visual spot checks
+5. keep the architecture in monitor mode until a new non-example structural gap appears

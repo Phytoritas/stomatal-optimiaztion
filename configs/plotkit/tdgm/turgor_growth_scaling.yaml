@@ -1,0 +1,43 @@
+version: 1
+meta:
+  id: tdgm_turgor_growth_scaling
+  title: TDGM turgor growth scaling analysis
+  journal_target: Nature Plants
+  family: tdgm_example
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_four_panel
+panels:
+  growth_rate:
+    x_label: Total dry mass in C equivalents, C [mol C]
+    y_label: Growth rate, G [(mol C) s^-1]
+    x_limits: [1.0, 10000000000.0]
+    y_limits: [1.0e-10, 100.0]
+    x_scale: log
+    y_scale: log
+  regressed_exponent:
+    x_label: Growth threshold, Gamma [MPa]
+    y_label: Regressed scaling exponent [-]
+    x_limits: [0.0, 1.1]
+    y_limits: [0.4, 1.2]
+  local_exponent:
+    x_label: Total dry mass in C equivalents, C [mol C]
+    y_label: Local scaling exponent, dlog(G)/dlog(C) [-]
+    x_limits: [1.0, 10000000000.0]
+    y_limits: [-0.5, 1.5]
+    x_scale: log
+  max_height:
+    x_label: Growth threshold, Gamma [MPa]
+    y_label: Maximum height, H_max [m]
+    x_limits: [0.0, 1.1]
+    y_limits: [1.0, 120.0]
+    y_scale: log
+figure:
+  width_mm: 180
+  height_mm: 150
+theme:
+  name: nature_plants_like
+  tokens: ../themes/nature_plants_like_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false
