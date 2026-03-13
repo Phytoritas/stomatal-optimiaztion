@@ -94,13 +94,11 @@ Current repo status:
 
 ## Open Gaps
 
-1. Root `GOSM` control example figure workflow: `Growth_Opt_Stomata_plot_example.m` plus `Example_Growth_Opt__control.mat`.
-2. Root `GOSM` sensitivity and manuscript figure workflows: `PLOT_sensitivity_analyses.m`, `PLOT_true_vs_imag_conductance_loss.m`, and `Inkscape_figure_plots.m`.
-3. Root `THORP` example figure workflows under `PLOT_data.m` and `PLOT_data_*.m`.
-4. Root `TDGM` supplementary analysis and THORP-G figure workflows under both example directories.
+1. Root `THORP` example figure workflows under `PLOT_data.m` and `PLOT_data_*.m`.
+2. Root `TDGM` supplementary analysis and THORP-G figure workflows under both example directories.
 
 ## Next Actions
 
-1. `slice 097` closes the root `GOSM` control-example figure workflow with Plotkit-style, spec-first exports
-2. move next to root `GOSM` sensitivity and manuscript figure workflows
-3. keep `THORP` and `TDGM` example workflows blocked until the GOSM figure pattern is reused or generalized
+1. `slice 097` closed the root `GOSM` control-example figure workflow with Plotkit-style, spec-first exports
+2. `slice 098` closed the remaining root `GOSM` sensitivity and manuscript figure workflows
+3. move next to root `THORP` example figure workflows, then root `TDGM`

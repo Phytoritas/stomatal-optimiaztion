@@ -1,0 +1,54 @@
+version: 1
+meta:
+  id: gosm_sensitivity_all
+  title: Growth-optimizing responses to the environment
+  journal_target: Nature Plants
+  family: gosm_example
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_composite
+  description: Re-render the full root GOSM sensitivity figure with steady-state, instantaneous, and selected AOH responses.
+layout:
+  rows: 4
+  cols: 4
+rows:
+  - metric_key: g_c
+    y_label: g_c [mol m^-2 s^-1]
+    limits: [0.0, 0.2]
+    scale: linear
+    include_selected_studies: true
+  - metric_key: lambda
+    y_label: lambda [mol mol^-1]
+    limits: [0.0002, 0.02]
+    scale: log
+    include_selected_studies: true
+  - metric_key: growth
+    y_label: G [umol C s^-1]
+    limits: [0.0, 30.0]
+    scale: linear
+    include_selected_studies: false
+  - metric_key: c_nsc
+    y_label: C [mol]
+    limits: [0.0, 300.0]
+    scale: linear
+    include_selected_studies: false
+styling:
+  steady_state_color: '#0A9396'
+  steady_state_linestyle: '-'
+  steady_state_linewidth_pt: 2.2
+  instantaneous_cmap: Greys
+  instantaneous_linestyle: '-'
+  instantaneous_linewidth_pt: 1.0
+  instantaneous_alpha: 0.85
+  study_linewidth_pt: 1.4
+figure:
+  width_mm: 180
+  height_mm: 180
+theme:
+  name: nature_plants_like
+  tokens: ../themes/nature_plants_like_tokens.yaml
+export:
+  formats:
+    - png
+    - pdf
+  dpi: 300
+  transparent: false

@@ -31,7 +31,7 @@ Shared helpers can be introduced later under `src/stomatal_optimiaztion/shared/`
 
 ### GOSM
 - standalone Python package for the growth-optimizing stomata model
-- includes model-card assets, parameter defaults, runtime kernels, example adapters, and traceability tests
+- includes model-card assets, parameter defaults, runtime kernels, example adapters, Plotkit-style example renderers, and traceability tests
 - should remain a root migrated domain instead of being conflated with TOMATO `tGOSM`
 
 ### TDGM
