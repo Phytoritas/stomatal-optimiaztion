@@ -3,6 +3,7 @@ from stomatal_optimiaztion.domains.tomato.tgosm.contracts import (
     OptimizationResult,
     clamp_nonnegative,
 )
+from stomatal_optimiaztion.domains.tomato.tgosm.interface import run_stomatal_optimization
 
 MODEL_NAME = "tGOSM"
 
@@ -11,4 +12,5 @@ __all__ = [
     "OptimizationRequest",
     "OptimizationResult",
     "clamp_nonnegative",
+    "run_stomatal_optimization",
 ]

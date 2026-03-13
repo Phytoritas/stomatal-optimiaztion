@@ -380,8 +380,16 @@ The forty-second slice opens the next bounded TOMATO seam:
 - keep the slice contract-first and avoid pulling in `interface.py` or wider optimizer behavior yet
 - leave `TOMATO/tGOSM/src/tgosm/interface.py` blocked as the next seam
 
+## Slice 043: TOMATO tGOSM Interface
+
+The forty-third slice opens the next bounded TOMATO seam:
+- move `TOMATO/tGOSM/src/tgosm/interface.py` into the staged `domains/tomato/tgosm` package
+- preserve the placeholder optimizer behavior that maps request stress to a nonnegative conductance target and explicit WUE/objective placeholders
+- keep the seam intentionally small and avoid wider optimizer dependencies beyond the migrated contracts
+- leave `TOMATO/tTDGM/src/ttdgm/contracts.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first eighteen TOMATO bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first nineteen TOMATO bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `TOMATO/tGOSM/src/tgosm/interface.py`
+3. prepare the next TOMATO source audit for `TOMATO/tTDGM/src/ttdgm/contracts.py`
