@@ -785,8 +785,15 @@ The ninety-fourth slice closes the last remaining core root `GOSM` MATLAB helper
 - preserve the MATLAB-style logspace search, respiration rescaling, and `E_vect = 0:1e-5:1e-2` regression contract
 - keep the seam helper-bounded and leave only the small supplementary root `TDGM` initial mean-allocation helper gap open
 
+## Slice 095: Root TDGM Initial Mean-Allocation Helper
+
+The ninety-fifth slice closes the last helper gap reopened by the MATLAB parity audit:
+- move `TDGM/example/Supplementary Code __THORP_code_v1.4/FUNCTION_Initial_Mean_Allocation_Fractions.m` into the staged `domains/tdgm/coupling.py` surface
+- preserve the fixed stem-leaf-root split and biomass-proportional horizontal/vertical root partitioning contract
+- keep the seam helper-bounded and leave the current THORP/GOSM/TDGM model-kernel wave parity-complete within the documented audit scope
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate the reopened root `TDGM` initial mean-allocation helper as the next bounded slice
+3. stay in monitor mode unless a new MATLAB parity mismatch or workflow-reproduction goal is opened

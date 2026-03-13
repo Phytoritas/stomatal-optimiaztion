@@ -61,4 +61,5 @@ Current status:
 - Slice 092 migrated: root TDGM THORP-G postprocess seam
 - Slice 093 recorded: MATLAB source parity audit for root THORP, GOSM, and TDGM
 - Slice 094 migrated: root GOSM steady-state inversion helper
-- Current open architecture gaps: root TDGM initial mean-allocation helper
+- Slice 095 migrated: root TDGM initial mean-allocation helper
+- Current open architecture gaps: none in the current MATLAB parity audit
