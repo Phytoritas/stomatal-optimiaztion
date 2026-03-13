@@ -420,8 +420,16 @@ The forty-seventh slice opens the next bounded `load-cell-data` seam:
 - keep optional Excel export behavior explicit without widening into aggregation, preprocessing, workflow, or CLI seams
 - leave `load-cell-data/loadcell_pipeline/aggregation.py` blocked as the next seam
 
+## Slice 048: load-cell-data Aggregation
+
+The forty-eighth slice opens the next bounded `load-cell-data` seam:
+- move `load-cell-data/loadcell_pipeline/aggregation.py` into the staged `domains/load_cell` package
+- preserve coarse-timescale flux aggregation, daily summary assembly, event counts, label-derived durations, and metadata passthrough
+- keep the seam aggregation-bounded without widening into threshold detection, preprocessing, workflow, or CLI surfaces
+- leave `load-cell-data/loadcell_pipeline/thresholds.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first two `load-cell-data` bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first three `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/aggregation.py`
+3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/thresholds.py`

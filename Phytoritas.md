@@ -14,4 +14,5 @@ Current status:
 - Slices 025-045 migrated: TOMATO `tTHORP` contracts, interface, forcing, adapters, `TomatoModel`, runner, partitioning-package, package-level legacy pipeline, shared IO, shared scheduler, dayrun pipeline, repo-level scripts, feature-builder script, THORP reference adapter, plotting seams, `tGOSM` contract/interface seams, and `tTDGM` contract/interface seams
 - Slice 046 migrated: `load-cell-data` config seam
 - Slice 047 migrated: `load-cell-data` IO seam
-- Next blocked seam: `load-cell-data` aggregation seam at `loadcell_pipeline/aggregation.py`
+- Slice 048 migrated: `load-cell-data` aggregation seam
+- Next blocked seam: `load-cell-data` threshold-detection seam at `loadcell_pipeline/thresholds.py`
