@@ -24,4 +24,5 @@ Current status:
 - Slice 055 migrated: `load-cell-data` sweep seam
 - Slice 056 migrated: `load-cell-data` end-to-end runner seam
 - Slice 057 migrated: `load-cell-data` raw ALMEMO preprocessing seam
-- Next blocked seam: `load-cell-data` synthetic validation harness seam at `loadcell_pipeline/synthetic_test.py`
+- Slice 058 migrated: `load-cell-data` synthetic validation harness seam
+- Next blocked seam: `load-cell-data` real-data benchmark harness seam at `real_data_benchmark.py`
