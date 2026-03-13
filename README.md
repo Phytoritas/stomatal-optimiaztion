@@ -120,6 +120,7 @@ poetry run ruff check .
 - MATLAB source parity audit is recorded as slice 093 and reopens only the bounded gaps that remain against the original THORP, GOSM, and TDGM `.m` source.
 - Root GOSM steady-state inversion helper is migrated as slice 094.
 - Root TDGM initial mean-allocation helper is migrated as slice 095.
+- Legacy example and figure parity audit is recorded as slice 096 and reopens bounded workflow-reproduction gaps for root `GOSM`, `THORP`, and `TDGM`.
 
 ## Next validation
-- Keep monitor mode unless a new MATLAB parity gap or broader workflow-reproduction goal is opened.
+- Land the first example parity slice on root `GOSM` control figure reproduction with Plotkit-style, spec-first publication outputs.

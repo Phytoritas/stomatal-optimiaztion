@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 095 closed the last remaining helper gap reopened by the MATLAB parity audit, leaving the current THORP/GOSM/TDGM model wave parity-complete
+- Current phase: slice 096 reopens the architecture for legacy example and figure workflow parity while leaving the root THORP/GOSM/TDGM model-kernel wave parity-complete
 
 ## Scope
 
@@ -99,7 +99,7 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. keep the current validation gates green as root `GOSM` and `TDGM` slices land
-2. keep the remaining MATLAB plotting and manuscript scripts explicitly out of scope unless full figure-workflow reproduction becomes a goal
-3. reopen the gap register only when a new bounded parity mismatch or workflow gap is identified
-4. keep shared utilities blocked until a concrete cross-domain helper emerges
+1. keep the current validation gates green as the example parity wave opens
+2. land the first bounded example slice on root `GOSM` control figure reproduction using Plotkit-style tokens and spec-first exports
+3. keep the remaining `THORP`, `GOSM`, and `TDGM` example workflows bounded in the gap register until each one is reproduced with explicit parity evidence
+4. keep shared utilities blocked until a concrete cross-domain plotting helper emerges from at least two migrated example slices
