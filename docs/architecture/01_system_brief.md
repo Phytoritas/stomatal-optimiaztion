@@ -452,8 +452,16 @@ The fifty-first slice opens the next bounded `load-cell-data` seam:
 - keep the seam events-bounded without widening into flux decomposition, workflow, or CLI surfaces
 - leave `load-cell-data/loadcell_pipeline/fluxes.py` blocked as the next seam
 
+## Slice 052: load-cell-data Fluxes
+
+The fifty-second slice opens the next bounded `load-cell-data` seam:
+- move `load-cell-data/loadcell_pipeline/fluxes.py` into the staged `domains/load_cell` package
+- preserve irrigation/drainage/transpiration decomposition, event-gap transpiration interpolation, cumulative sums, and water-balance scaling behavior
+- keep the seam flux-bounded without widening into package-level pipeline orchestration, workflow, or batch-runner surfaces
+- leave `load-cell-data/loadcell_pipeline/cli.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first six `load-cell-data` bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams, the first twenty-one TOMATO bounded seams, and the first seven `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/fluxes.py`
+3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/cli.py`
