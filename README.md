@@ -91,6 +91,7 @@ poetry run ruff check .
 - THORP equation-registry seam is migrated as slice 064.
 - THORP utilities namespace seam is migrated as slice 065.
 - THORP IO namespace seam is migrated as slice 066.
+- THORP model namespace seam is migrated as slice 067.
 
 ## Next validation
-- Audit the THORP model namespace seam at `THORP/src/thorp/model/__init__.py`.
+- Audit the THORP params compatibility seam at `THORP/src/thorp/params/__init__.py`.
