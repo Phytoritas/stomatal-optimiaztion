@@ -87,6 +87,7 @@ poetry run ruff check .
 - `load-cell-data` incremental preprocess harness seam is migrated as slice 060.
 - `load-cell-data` preprocess-compare local server seam is migrated as slice 061.
 - `load-cell-data` static preprocess-compare viewer seam is migrated as slice 062.
+- THORP stable `sim` runner seam is migrated as slice 063.
 
 ## Next validation
-- Re-audit the remaining legacy workspace outside `load-cell-data/src/` to select the next bounded seam.
+- Audit the THORP equation-registry seam at `THORP/src/thorp/equation_registry.py`.

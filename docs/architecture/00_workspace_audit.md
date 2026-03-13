@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 061
-- Gate D. Bounded slices 001 through 024 approved for THORP, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
+- Gate C. Validation plan ready through slice 063
+- Gate D. Bounded slices 001 through 024 plus slice 063 approved for THORP, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -419,3 +419,9 @@ Slice 062:
 - target: `scripts/build_preprocess_compare_viewer.py` and `tests/test_load_cell_build_preprocess_compare_viewer_script.py`
 - scope: bounded `load-cell-data` static viewer-builder surface covering canonical day discovery, transpiration fallback loading, static asset writing, and per-day JSON generation
 - excluded: broader UI redesign, new frontend packaging, and next-domain seam selection
+
+Slice 063:
+- source: `THORP/src/thorp/sim/{runner.py,__init__.py}`
+- target: `src/stomatal_optimiaztion/domains/thorp/sim/` and `tests/test_thorp_sim_runner.py`
+- scope: bounded THORP compatibility surface covering the stable `thorp.sim.run` wrapper import path and passthrough delegation to the migrated simulation runtime
+- excluded: THORP equation-registry imports, package-wide export redesign, and numerical runtime changes
