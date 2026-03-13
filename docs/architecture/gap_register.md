@@ -2,6 +2,6 @@
 
 | ID | Gap | Impact | Required Artifact |
 | --- | --- | --- | --- |
-| G-078 | Root GOSM carbon-dynamics helper seam is still missing from the migrated repo | Blocks the next bounded carbon-balance seam after the migrated optimal-control helpers | `docs/architecture/architecture/module_specs/module-078-gosm-carbon-dynamics-helpers.md` |
+| G-079 | Root GOSM conductance-temperature kernel is still missing from the migrated repo | Blocks the first coupled leaf-energy runtime kernel after the migrated carbon-dynamics helpers | `docs/architecture/architecture/module_specs/module-079-gosm-conductance-temperature-kernel.md` |
 
-Current open gaps: G-078.
+Current open gaps: G-079.

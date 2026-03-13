@@ -511,3 +511,9 @@ Slice 077:
 - target: `src/stomatal_optimiaztion/domains/gosm/model/` and `tests/test_gosm_optimal_control.py`
 - scope: bounded root `GOSM` runtime seam covering objective, eta, chi, theta, and eta-dot helper calculations plus equation-tag preservation
 - excluded: `GOSM/src/gosm/model/carbon_dynamics.py`, conductance-temperature or hydraulics kernels, and root `TDGM` runtime seams
+
+Slice 078:
+- source: `GOSM/src/gosm/model/carbon_dynamics.py` and `GOSM/src/gosm/model/__init__.py`
+- target: `src/stomatal_optimiaztion/domains/gosm/model/` and `tests/test_gosm_carbon_dynamics.py`
+- scope: bounded root `GOSM` runtime seam covering NSC limitation, respiration, growth, and compact/full NSC-rate helpers plus equation-tag preservation
+- excluded: `GOSM/src/gosm/model/conductance_temperature.py`, hydraulics or carbon-assimilation kernels, and root `TDGM` runtime seams

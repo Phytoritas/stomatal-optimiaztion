@@ -666,8 +666,15 @@ The seventy-seventh slice extends the bounded root `GOSM` runtime package with t
 - preserve `Eq.S2.1` through `Eq.S2.6` tagging plus vectorized objective, eta, chi, theta, and eta-dot behavior
 - keep the seam helper-bounded and leave `carbon_dynamics.py`, conductance-temperature kernels, and pipeline orchestration blocked
 
+## Slice 078: Root GOSM Carbon Dynamics Helpers
+
+The seventy-eighth slice extends the bounded root `GOSM` runtime package with the next carbon-balance helpers:
+- move `GOSM/src/gosm/model/carbon_dynamics.py` into the staged `domains/gosm/model/` package
+- preserve `Eq.S1.1` through `Eq.S1.9` tagging plus NSC limitation, respiration, growth, and compact/full NSC-rate behavior
+- keep the seam helper-bounded and leave `conductance_temperature.py`, hydraulics kernels, and pipeline orchestration blocked
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate `GOSM/src/gosm/model/carbon_dynamics.py` as the next bounded GOSM carbon-balance seam
+3. migrate `GOSM/src/gosm/model/conductance_temperature.py` as the next bounded GOSM coupled runtime seam
