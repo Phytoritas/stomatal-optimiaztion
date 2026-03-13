@@ -396,8 +396,16 @@ The forty-fourth slice opens the next bounded TOMATO seam:
 - keep the slice contract-first and avoid pulling in `interface.py` or placeholder growth-step behavior yet
 - leave `TOMATO/tTDGM/src/ttdgm/interface.py` blocked as the next seam
 
+## Slice 045: TOMATO tTDGM Interface
+
+The forty-fifth slice opens the next bounded TOMATO seam:
+- move `TOMATO/tTDGM/src/ttdgm/interface.py` into the staged `domains/tomato/ttdgm` package
+- preserve placeholder growth-step behavior that validates allocations and returns explicit zeroed leaf/stem/root/fruit growth channels
+- keep the seam intentionally small and avoid wider physiology or shared abstractions beyond the migrated contracts
+- leave `load-cell-data/loadcell_pipeline/config.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first twenty TOMATO bounded seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first twenty-one TOMATO bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `TOMATO/tTDGM/src/ttdgm/interface.py`
+3. prepare the next `load-cell-data` source audit for `loadcell_pipeline/config.py`
