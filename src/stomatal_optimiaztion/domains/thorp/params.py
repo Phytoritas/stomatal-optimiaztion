@@ -34,6 +34,17 @@ DEFAULT_FORCING_REPEAT_Q = 15
 DEFAULT_FORCING_RH_SCALE = 0.6
 DEFAULT_FORCING_PRECIP_SCALE = 1.0
 
+__all__ = [
+    "BottomBoundaryCondition",
+    "ResponseCurve",
+    "SoilHydraulics",
+    "THORPParams",
+    "TemperatureResponse",
+    "WeibullVC",
+    "default_params",
+    "thorp_params_from_defaults",
+]
+
 
 @dataclass(frozen=True, slots=True)
 class THORPParams:
@@ -207,3 +218,9 @@ def thorp_params_from_defaults(
         forcing_rh_scale=float(forcing_rh_scale),
         forcing_precip_scale=float(forcing_precip_scale),
     )
+
+
+def default_params() -> THORPParams:
+    """Return the legacy flat THORP params surface expected by compatibility callers."""
+
+    return thorp_params_from_defaults()

@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 067
-- Gate D. Bounded slices 001 through 024 plus slices 063 through 067 approved for THORP, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
+- Gate C. Validation plan ready through slice 068
+- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -449,3 +449,9 @@ Slice 067:
 - target: `src/stomatal_optimiaztion/domains/thorp/model/__init__.py` and `tests/test_thorp_model_namespace.py`
 - scope: bounded THORP namespace-wrapper surface covering grouped model-core helper re-exports across allocation, growth, hydraulics, radiation, and soil modules
 - excluded: THORP params compatibility broadening, root package export redesign, and numerical runtime changes
+
+Slice 068:
+- source: `THORP/src/thorp/params/__init__.py` and `THORP/src/thorp/config.py`
+- target: `src/stomatal_optimiaztion/domains/thorp/params.py` and `tests/test_thorp_params_compatibility.py`
+- scope: bounded THORP compatibility surface covering legacy grouped exports plus flat `default_params()` over the migrated params module
+- excluded: package-level smoke validation, root package export redesign, and shared utility abstraction decisions

@@ -92,6 +92,7 @@ poetry run ruff check .
 - THORP utilities namespace seam is migrated as slice 065.
 - THORP IO namespace seam is migrated as slice 066.
 - THORP model namespace seam is migrated as slice 067.
+- THORP params compatibility seam is migrated as slice 068.
 
 ## Next validation
-- Audit the THORP params compatibility seam at `THORP/src/thorp/params/__init__.py`.
+- Add the THORP package-level smoke validation note to close the remaining validation gap.

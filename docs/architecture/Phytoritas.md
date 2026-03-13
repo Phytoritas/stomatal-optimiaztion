@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 067 completed and THORP namespace-wrapper planning
+- Current phase: slice 068 completed and THORP validation-gap planning
 
 ## Scope
 
@@ -99,6 +99,6 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. confirm the THORP `model` namespace surface is closed after migrating `model/__init__.py`
-2. audit `THORP/src/thorp/params/__init__.py` as the next bounded compatibility seam
-3. prepare the next module spec only after the params surface is scoped against the existing defaults and flat params module
+1. confirm the THORP `params` compatibility surface is closed after broadening `params.py`
+2. add the THORP package-level smoke validation note as the next bounded artifact
+3. compare at least two domains before justifying any shared utility layer
