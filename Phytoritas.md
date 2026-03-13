@@ -11,5 +11,5 @@ Current status:
 - Architecture scaffold seeded
 - Target repo shape finalized as a staged single-package domain workspace
 - Slices 001-024 migrated: THORP bounded runtime, reporting, config, IO, and CLI seams
-- Slices 025-036 migrated: TOMATO `tTHORP` contracts, interface, forcing, adapter, `TomatoModel`, runner, partitioning-package, package-level legacy pipeline, shared IO, shared scheduler, and dayrun pipeline seams
-- Next blocked seam: TOMATO `tTHORP` repo-level pipeline script at `scripts/run_pipeline.py`
+- Slices 025-037 migrated: TOMATO `tTHORP` contracts, interface, forcing, adapter, `TomatoModel`, runner, partitioning-package, package-level legacy pipeline, shared IO, shared scheduler, dayrun pipeline, and repo-level pipeline script seams
+- Next blocked seam: TOMATO `tTHORP` feature-builder script at `scripts/make_features.py`
