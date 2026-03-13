@@ -348,8 +348,16 @@ The thirty-eighth slice opens the next bounded TOMATO seam:
 - preserve deterministic feature CSV naming, SW-to-PAR derivation, forcing defaults, and printed output-path behavior
 - leave `models/thorp_ref/adapter.py` blocked as the next seam
 
+## Slice 039: TOMATO tTHORP THORP Reference Adapter
+
+The thirty-ninth slice opens the next bounded TOMATO seam:
+- move `TOMATO/tTHORP/src/tthorp/models/thorp_ref/adapter.py` and its package export into the staged `domains/tomato/tthorp` package
+- bind the adapter to the migrated `stomatal_optimiaztion.domains.thorp` runtime instead of requiring an external THORP source checkout
+- preserve forcing-column normalization, default fallback values, and the legacy-shaped output DataFrame contract
+- leave `scripts/plot_simulation_png.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first fourteen TOMATO `tTHORP` seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first fifteen TOMATO `tTHORP` seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `models/thorp_ref/adapter.py`
+3. prepare the next TOMATO source audit for `scripts/plot_simulation_png.py`

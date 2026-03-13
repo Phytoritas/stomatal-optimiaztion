@@ -15,6 +15,7 @@ from stomatal_optimiaztion.domains.tomato.tthorp.models.tomato_legacy import (
     iter_forcing_csv,
     make_tomato_legacy_model,
 )
+from stomatal_optimiaztion.domains.tomato.tthorp.models.thorp_ref import THORPReferenceAdapter
 from stomatal_optimiaztion.domains.tomato.tthorp.pipelines import (
     TomatoDayrunArtifacts,
     config_payload_for_exp_key,
@@ -42,6 +43,7 @@ __all__ = [
     "TomatoLegacyModule",
     "make_tomato_legacy_model",
     "TomatoModel",
+    "THORPReferenceAdapter",
     "create_sample_input_csv",
     "TomatoDayrunArtifacts",
     "resolve_repo_root",
