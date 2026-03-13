@@ -708,8 +708,15 @@ The eighty-third slice closes the first fully wired root `GOSM` runtime path:
 - preserve the S3 through S6 stage tagging plus the canonical radiation, hydraulics, conductance-temperature, and carbon-assimilation orchestration order
 - keep the seam runtime-pipeline-bounded and leave `future_work.py` as the next small helper seam
 
+## Slice 084: Root GOSM Future-Work Helpers
+
+The eighty-fourth slice restores the small paper-alternative helper layer:
+- move `GOSM/src/gosm/model/future_work.py` into the staged `domains/gosm/model/` package
+- preserve `Eq.S10.1` and `Eq.S10.2` tagging plus the growth-integral helper, legacy `Gamma` alias, and augmented-Lagrangian helper behavior
+- keep the seam helper-bounded and leave `stomata_models.py` as the next analysis seam
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate `GOSM/src/gosm/model/future_work.py` as the next bounded GOSM helper seam
+3. migrate `GOSM/src/gosm/model/stomata_models.py` as the next bounded GOSM analysis seam
