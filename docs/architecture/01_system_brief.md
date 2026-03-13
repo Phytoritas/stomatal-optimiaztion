@@ -364,8 +364,16 @@ The fortieth slice opens the next bounded TOMATO seam:
 - keep `matplotlib` as an optional plotting dependency instead of widening the core package runtime
 - leave `scripts/plot_allocation_compare_png.py` blocked as the next seam
 
+## Slice 041: TOMATO tTHORP Allocation-Comparison Plotting Script
+
+The forty-first slice opens the next bounded TOMATO seam:
+- move `TOMATO/tTHORP/scripts/plot_allocation_compare_png.py` into the repo-local `scripts/` surface
+- preserve allocation-column ingestion, datetime alignment, overlap filtering, subsampling, and four-panel comparison plotting behavior
+- keep `matplotlib` as an optional plotting dependency instead of widening the core package runtime
+- leave `TOMATO/tGOSM/src/tgosm/contracts.py` blocked as the next seam
+
 ## Immediate Deliverables
 
-1. keep `poetry run pytest` green for the migrated THORP seams plus the first sixteen TOMATO `tTHORP` seams
+1. keep `poetry run pytest` green for the migrated THORP seams plus the first seventeen TOMATO bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. prepare the next TOMATO source audit for `scripts/plot_allocation_compare_png.py`
+3. prepare the next TOMATO source audit for `TOMATO/tGOSM/src/tgosm/contracts.py`
