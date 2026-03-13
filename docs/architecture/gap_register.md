@@ -2,6 +2,6 @@
 
 | ID | Gap | Impact | Required Artifact |
 | --- | --- | --- | --- |
-| G-076 | Root GOSM NPP/GPP helper seam is still missing from the migrated repo | Blocks the next small runtime helper after the migrated allometry seam | `docs/architecture/architecture/module_specs/module-076-gosm-npp-gpp-helper.md` |
+| G-077 | Root GOSM optimal-control helper seam is still missing from the migrated repo | Blocks the next bounded objective-layer seam after the migrated NPP/GPP helpers | `docs/architecture/architecture/module_specs/module-077-gosm-optimal-control-helpers.md` |
 
-Current open gaps: G-076.
+Current open gaps: G-077.

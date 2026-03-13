@@ -652,8 +652,15 @@ The seventy-fifth slice extends the bounded root `GOSM` runtime package with the
 - preserve `Eq.S3.LAI` tagging plus scalar and vector `leaf_area_index()` behavior
 - keep the seam helper-bounded and leave `npp_gpp.py`, steady-state kernels, and pipeline orchestration blocked
 
+## Slice 076: Root GOSM NPP GPP Helper
+
+The seventy-sixth slice extends the bounded root `GOSM` runtime package with the next metabolic helpers:
+- move `GOSM/src/gosm/model/npp_gpp.py` into the staged `domains/gosm/model/` package
+- preserve `Eq.S8.1` and `Eq.S8.2` tagging plus scalar and vector steady-state NPP/GPP ratio behavior
+- keep the seam helper-bounded and leave `optimal_control.py`, carbon-dynamics kernels, and pipeline orchestration blocked
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate `GOSM/src/gosm/model/npp_gpp.py` as the next bounded GOSM helper seam
+3. migrate `GOSM/src/gosm/model/optimal_control.py` as the next bounded GOSM objective seam

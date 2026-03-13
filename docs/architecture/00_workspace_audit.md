@@ -499,3 +499,9 @@ Slice 075:
 - target: `src/stomatal_optimiaztion/domains/gosm/model/` and `tests/test_gosm_allometry.py`
 - scope: bounded root `GOSM` runtime seam covering the `leaf_area_index()` helper, scalar/vector NumPy coercion, and equation-tag preservation
 - excluded: `GOSM/src/gosm/model/npp_gpp.py`, higher-order steady-state/runtime kernels, and root `TDGM` runtime seams
+
+Slice 076:
+- source: `GOSM/src/gosm/model/npp_gpp.py` and `GOSM/src/gosm/model/__init__.py`
+- target: `src/stomatal_optimiaztion/domains/gosm/model/` and `tests/test_gosm_npp_gpp.py`
+- scope: bounded root `GOSM` runtime seam covering target and steady-state NPP/GPP helper calculations plus equation-tag preservation
+- excluded: `GOSM/src/gosm/model/optimal_control.py`, larger carbon-dynamics/runtime kernels, and root `TDGM` runtime seams
