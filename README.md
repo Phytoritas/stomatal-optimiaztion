@@ -105,6 +105,7 @@ poetry run ruff check .
 - Root GOSM carbon-dynamics helper seam is migrated as slice 078.
 - Root GOSM conductance-temperature kernel is migrated as slice 079.
 - Root GOSM carbon-assimilation kernel is migrated as slice 080.
+- Root GOSM math helper seam is migrated as slice 081.
 
 ## Next validation
 - Migrate the root GOSM hydraulics kernel.

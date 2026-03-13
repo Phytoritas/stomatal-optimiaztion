@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 080 extended the coupled root GOSM runtime with the carbon-assimilation kernel and left the hydraulic-growth kernel as the next gap
+- Current phase: slice 081 repaired the last small root GOSM utility dependency before the hydraulics kernel and left the hydraulic-growth kernel as the next gap
 
 ## Scope
 

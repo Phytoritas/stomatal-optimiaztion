@@ -687,6 +687,13 @@ The eightieth slice extends the coupled root `GOSM` runtime with the next bioche
 - preserve `Eq.S4.1` through `Eq.S4.18` tagging plus the bounded assimilation solve, respiratory terms, and marginal-WUE calculation
 - keep the seam kernel-bounded and leave `hydraulics.py`, full pipeline orchestration, and root `TDGM` runtime seams blocked
 
+## Slice 081: Root GOSM Math Helper
+
+The eighty-first slice repairs the small utility dependency required before hydraulics can land:
+- move `GOSM/src/gosm/utils/math.py` into the staged `domains/gosm/utils/` package
+- preserve `polylog2()` scalar and vector behavior and export it from `gosm.utils`
+- keep the seam utility-bounded and leave `hydraulics.py` as the next coupled runtime kernel
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
