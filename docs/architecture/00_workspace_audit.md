@@ -595,3 +595,9 @@ Slice 091:
 - target: `src/stomatal_optimiaztion/domains/tdgm/equation_registry.py` and `tests/test_tdgm_equation_registry.py`
 - scope: bounded root `TDGM` traceability seam covering no-argument registry assembly across the migrated PTM, turgor-growth, and coupling modules
 - excluded: `TDGM/src/tdgm/thorp_g_postprocess.py`, root package import-surface rewiring, and MATLAB-control-data validation
+
+Slice 092:
+- source: `TDGM/src/tdgm/thorp_g_postprocess.py`
+- target: `src/stomatal_optimiaztion/domains/tdgm/thorp_g_postprocess.py` and `tests/test_tdgm_thorp_g_postprocess.py`
+- scope: bounded root `TDGM` runtime bridge seam covering MATLAB-output loading, forcing-temperature alignment, and synthetic THORP-G postprocess reconstruction
+- excluded: external example control datasets, fresh THORP execution, and broader workflow tooling

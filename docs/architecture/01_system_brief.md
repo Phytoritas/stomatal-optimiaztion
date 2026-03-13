@@ -764,8 +764,15 @@ The ninety-first slice restores the bounded root `TDGM` equation-registry layer:
 - preserve the no-argument registry surface that groups annotated PTM, turgor-growth, and coupling callables by equation id
 - keep the seam traceability-bounded and leave `thorp_g_postprocess.py` as the next runtime bridge seam
 
+## Slice 092: Root TDGM THORP-G Postprocess
+
+The ninety-second slice closes the current root `TDGM` runtime wave:
+- move `TDGM/src/tdgm/thorp_g_postprocess.py` into the staged `domains/tdgm/` package
+- preserve MATLAB-output loading, forcing-temperature alignment, and the synthetic `g_rate_from_eq_ts == g_rate_ts` reconstruction contract
+- keep the seam postprocess-bounded and leave the repository in monitor mode until a new bounded architecture gap is identified
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate `TDGM/src/tdgm/thorp_g_postprocess.py` as the next bounded root TDGM runtime bridge seam
+3. re-audit the remaining legacy source only if a new bounded gap is opened after the current root TDGM wave closes

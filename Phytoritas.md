@@ -58,4 +58,5 @@ Current status:
 - Slice 089 migrated: root TDGM phloem-transport seam
 - Slice 090 migrated: root TDGM coupling seam
 - Slice 091 migrated: root TDGM equation-registry seam
-- Current open architecture gaps: root TDGM THORP-G postprocess seam
+- Slice 092 migrated: root TDGM THORP-G postprocess seam
+- Current open architecture gaps: none in the current audit
