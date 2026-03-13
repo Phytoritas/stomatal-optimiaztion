@@ -99,6 +99,7 @@ poetry run ruff check .
 - Root TDGM model-card and traceability foundation is migrated as slice 072.
 - Root GOSM parameter-defaults seam is migrated as slice 073.
 - Root GOSM radiation kernel seam is migrated as slice 074.
+- Root GOSM allometry helper seam is migrated as slice 075.
 
 ## Next validation
-- Migrate the root GOSM allometry helper seam.
+- Migrate the root GOSM NPP/GPP helper seam.

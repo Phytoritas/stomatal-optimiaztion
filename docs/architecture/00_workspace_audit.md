@@ -493,3 +493,9 @@ Slice 074:
 - target: `src/stomatal_optimiaztion/domains/gosm/model/` and `tests/test_gosm_radiation.py`
 - scope: bounded root `GOSM` runtime seam covering leaf-area-specific absorbed-radiation computation, zenith-angle clamping, negative-radiation guardrails, and equation-tag preservation
 - excluded: `GOSM/src/gosm/model/allometry.py`, wider `gosm.model` exports, and downstream hydraulics or pipeline seams
+
+Slice 075:
+- source: `GOSM/src/gosm/model/allometry.py` and `GOSM/src/gosm/model/__init__.py`
+- target: `src/stomatal_optimiaztion/domains/gosm/model/` and `tests/test_gosm_allometry.py`
+- scope: bounded root `GOSM` runtime seam covering the `leaf_area_index()` helper, scalar/vector NumPy coercion, and equation-tag preservation
+- excluded: `GOSM/src/gosm/model/npp_gpp.py`, higher-order steady-state/runtime kernels, and root `TDGM` runtime seams

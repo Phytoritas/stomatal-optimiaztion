@@ -645,8 +645,15 @@ The seventy-fourth slice opens the first bounded root `GOSM` runtime kernel:
 - preserve `Eq.S3.2` tagging, zenith-angle clamping, and the negative-radiation guardrail
 - keep the seam runtime-kernel-bounded and leave `allometry.py`, `hydraulics.py`, and higher-order orchestration blocked
 
+## Slice 075: Root GOSM Allometry Helper
+
+The seventy-fifth slice extends the bounded root `GOSM` runtime package with the next structural helper:
+- move `GOSM/src/gosm/model/allometry.py` into the staged `domains/gosm/model/` package
+- preserve `Eq.S3.LAI` tagging plus scalar and vector `leaf_area_index()` behavior
+- keep the seam helper-bounded and leave `npp_gpp.py`, steady-state kernels, and pipeline orchestration blocked
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate `GOSM/src/gosm/model/allometry.py` as the next bounded GOSM structural seam
+3. migrate `GOSM/src/gosm/model/npp_gpp.py` as the next bounded GOSM helper seam
