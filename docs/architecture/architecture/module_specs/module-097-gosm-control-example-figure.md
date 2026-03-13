@@ -15,7 +15,7 @@ Reproduce the root `GOSM` control example workflow from the original MATLAB exam
 - `src/stomatal_optimiaztion/domains/gosm/examples/control_figure.py`
 - `scripts/render_gosm_control_example.py`
 - `configs/plotkit/gosm/control_example_figure.yaml`
-- `configs/plotkit/themes/nature_plants_like_tokens.yaml`
+- `configs/plotkit/themes/Phytoritas_tokens.yaml`
 - `tests/test_gosm_control_example_figure.py`
 
 ## Requirements

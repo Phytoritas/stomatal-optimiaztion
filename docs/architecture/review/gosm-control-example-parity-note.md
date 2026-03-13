@@ -15,7 +15,7 @@ Record the first bounded example-parity evidence packet after the legacy example
 - payload builder: `src/stomatal_optimiaztion/domains/gosm/examples/control_figure.py`
 - repo-level renderer: `scripts/render_gosm_control_example.py`
 - Plotkit-style spec: `configs/plotkit/gosm/control_example_figure.yaml`
-- Plotkit-style tokens: `configs/plotkit/themes/nature_plants_like_tokens.yaml`
+- Plotkit-style tokens: `configs/plotkit/themes/Phytoritas_tokens.yaml`
 - output bundle:
   - `out/gosm/control_example/gosm_control_example_figure.png`
   - `out/gosm/control_example/gosm_control_example_figure.pdf`
