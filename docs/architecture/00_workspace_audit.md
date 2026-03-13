@@ -45,8 +45,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 084
-- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slice 069 recorded as THORP package-level smoke evidence, slice 070 recorded as the cross-domain utility comparison decision, slices 071 through 084 approved for root `GOSM` and `TDGM` foundations plus the first fully wired GOSM runtime path and its future-work helper seam, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
+- Gate C. Validation plan ready through slice 085
+- Gate D. Bounded slices 001 through 024 plus slices 063 through 068 approved for THORP, slice 069 recorded as THORP package-level smoke evidence, slice 070 recorded as the cross-domain utility comparison decision, slices 071 through 085 approved for root `GOSM` and `TDGM` foundations plus the first fully wired GOSM runtime path, its future-work helper seam, and its stomatal-model comparison layer, slices 025 through 045 approved for TOMATO, and slices 046 through 062 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -553,3 +553,9 @@ Slice 084:
 - target: `src/stomatal_optimiaztion/domains/gosm/model/` and `tests/test_gosm_future_work.py`
 - scope: bounded root `GOSM` helper seam covering the future-work growth-integral helper, legacy `Gamma` alias, augmented-Lagrangian helper behavior, and equation-tag preservation
 - excluded: `GOSM/src/gosm/model/stomata_models.py`, wider control layers, and root `TDGM` runtime seams
+
+Slice 085:
+- source: `GOSM/src/gosm/model/stomata_models.py` and `GOSM/src/gosm/model/__init__.py`
+- target: `src/stomatal_optimiaztion/domains/gosm/model/` and `tests/test_gosm_stomata_models.py`
+- scope: bounded root `GOSM` analysis seam covering alternative stomatal-model comparison helpers, shared interpolation logic, `HC_vec` alias handling, and equation-tag preservation
+- excluded: `GOSM/src/gosm/model/instantaneous.py`, `GOSM/src/gosm/model/steady_state.py`, and root `TDGM` runtime seams

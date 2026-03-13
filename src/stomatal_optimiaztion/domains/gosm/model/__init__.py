@@ -36,6 +36,17 @@ from stomatal_optimiaztion.domains.gosm.model.pipeline import (
     rad_hydr_grow_temp_cassimilation,
 )
 from stomatal_optimiaztion.domains.gosm.model.radiation import radiation_absorbed
+from stomatal_optimiaztion.domains.gosm.model.stomata_models import (
+    StomataModelSolution,
+    stomata_anderegg_2018,
+    stomata_cowan_and_farquhar_1977,
+    stomata_dewar_2018,
+    stomata_eller_2018,
+    stomata_maximize_assimilation,
+    stomata_prentice_2014,
+    stomata_sperry_2017,
+    stomata_wang_2020,
+)
 
 __all__ = [
     "carbon_assimilation",
@@ -62,4 +73,13 @@ __all__ = [
     "theta_cost",
     "total_respiration",
     "target_npp_gpp_ratio",
+    "StomataModelSolution",
+    "stomata_anderegg_2018",
+    "stomata_cowan_and_farquhar_1977",
+    "stomata_dewar_2018",
+    "stomata_eller_2018",
+    "stomata_maximize_assimilation",
+    "stomata_prentice_2014",
+    "stomata_sperry_2017",
+    "stomata_wang_2020",
 ]

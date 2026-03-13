@@ -715,8 +715,15 @@ The eighty-fourth slice restores the small paper-alternative helper layer:
 - preserve `Eq.S10.1` and `Eq.S10.2` tagging plus the growth-integral helper, legacy `Gamma` alias, and augmented-Lagrangian helper behavior
 - keep the seam helper-bounded and leave `stomata_models.py` as the next analysis seam
 
+## Slice 085: Root GOSM Stomatal-Model Comparison
+
+The eighty-fifth slice restores the bounded alternative-stomatal optimization layer:
+- move `GOSM/src/gosm/model/stomata_models.py` into the staged `domains/gosm/model/` package
+- preserve the `Eq.S7.*` tagging, shared interpolation logic, `HC_vec` legacy alias, and no-crossing `NaN` contracts
+- keep the seam analysis-bounded and leave `instantaneous.py` as the next control seam
+
 ## Immediate Deliverables
 
 1. keep `poetry run pytest` green for the migrated THORP seams, the root `GOSM` and `TDGM` foundation seams plus the first GOSM runtime seams, the first twenty-one TOMATO bounded seams, and the first sixteen `load-cell-data` bounded seams
 2. keep `poetry run ruff check .` green as the minimum lint gate
-3. migrate `GOSM/src/gosm/model/stomata_models.py` as the next bounded GOSM analysis seam
+3. migrate `GOSM/src/gosm/model/instantaneous.py` as the next bounded GOSM control seam
