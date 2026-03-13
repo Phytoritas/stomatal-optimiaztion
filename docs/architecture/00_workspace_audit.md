@@ -43,8 +43,8 @@ Legacy source profile:
 
 - Gate A. Source audit complete for top-level legacy domains
 - Gate B. Target architecture chosen
-- Gate C. Validation plan ready through slice 045
-- Gate D. Bounded slices 001 through 024 approved for THORP and slices 025 through 045 approved for TOMATO
+- Gate C. Validation plan ready through slice 046
+- Gate D. Bounded slices 001 through 024 approved for THORP, slices 025 through 045 approved for TOMATO, and slice 046 approved for `load-cell-data`
 
 ## Migrated THORP Slices
 
@@ -317,3 +317,9 @@ Slice 045:
 - target: `src/stomatal_optimiaztion/domains/tomato/ttdgm/interface.py`, package exports, and `tests/test_tomato_ttdgm_interface.py`
 - scope: bounded TOMATO `tTDGM` interface surface covering placeholder growth-step behavior, allocation validation, and explicit four-organ growth outputs
 - excluded: `load-cell-data`, non-placeholder growth dynamics, and broader cross-domain abstractions
+
+Slice 046:
+- source: `load-cell-data/loadcell_pipeline/config.py`
+- target: `src/stomatal_optimiaztion/domains/load_cell/`, root domain exports, and `tests/test_load_cell_config.py`
+- scope: bounded `load-cell-data` config surface covering pipeline defaults, path serialization, YAML loading, and override precedence
+- excluded: `loadcell_pipeline/io.py`, preprocessing, workflow, CLI, and dashboard entrypoints
