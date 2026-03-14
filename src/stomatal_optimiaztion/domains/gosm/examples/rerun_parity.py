@@ -186,8 +186,9 @@ def _source_plot_kwargs(
     base_linewidth: float,
     color: Any,
 ) -> dict[str, Any]:
+    resolved_color = source_spec.get("color_override", color)
     kwargs: dict[str, Any] = {
-        "color": color,
+        "color": resolved_color,
         "linestyle": source_spec["linestyle"],
         "linewidth": base_linewidth * float(source_spec.get("linewidth_scale", 1.0)),
         "alpha": float(source_spec.get("alpha", 1.0)),
@@ -199,7 +200,8 @@ def _source_plot_kwargs(
         kwargs["markersize"] = float(source_spec.get("markersize_pt", 3.0))
         kwargs["markevery"] = int(source_spec.get("markevery", 1))
         if "markerfacecolor" in source_spec:
-            kwargs["markerfacecolor"] = source_spec["markerfacecolor"]
+            markerfacecolor = source_spec["markerfacecolor"]
+            kwargs["markerfacecolor"] = resolved_color if markerfacecolor == "series_color" else markerfacecolor
         if "markeredgecolor" in source_spec:
             kwargs["markeredgecolor"] = source_spec["markeredgecolor"]
         if "markeredgewidth_pt" in source_spec:
@@ -235,6 +237,33 @@ def _y_limits(values: np.ndarray, *, padding_fraction: float, scale: str = "line
         return y_min - baseline * padding_fraction, y_max + baseline * padding_fraction
     pad = (y_max - y_min) * padding_fraction
     return y_min - pad, y_max + pad
+
+
+def _resolve_control_x_limits(frame: pd.DataFrame, spec: dict[str, Any]) -> tuple[float, float]:
+    limits = spec["x_axis"].get("limits")
+    if isinstance(limits, list):
+        return float(limits[0]), float(limits[1])
+
+    if limits != "matlab_control_auto":
+        raise ValueError(f"Unsupported control x-axis limit mode: {limits}")
+
+    valid_leaf_frame = frame[
+        (frame["panel_id"] == "panel_d")
+        & (frame["series_key"] == "neg_psi_l_mpa")
+        & np.isfinite(frame["value"])
+    ]
+    if valid_leaf_frame.empty:
+        x_max = float(np.nanmax(frame["g_c"].to_numpy(dtype=float)))
+    else:
+        x_max = float(np.nanmax(valid_leaf_frame["g_c"].to_numpy(dtype=float)))
+    x_max = np.floor(10.0 * x_max) / 10.0
+    if x_max <= 0.0:
+        raise ValueError("Control rerun parity x-axis upper bound must be positive.")
+    return 0.0, x_max
+
+
+def _resolve_control_panel_frame_id(panel_id: str) -> str:
+    return panel_id if panel_id.startswith("panel_") else f"panel_{panel_id}"
 
 
 def _add_diff_columns(diff_frame: pd.DataFrame) -> pd.DataFrame:
@@ -360,10 +389,12 @@ def render_control_rerun_parity_bundle(
 
     fonts = tokens["fonts"]
     source_styles = spec["styling"]["sources"]
+    x_limits = _resolve_control_x_limits(frame, spec)
     for idx, (ax, panel_spec) in enumerate(zip(np.atleast_1d(axes), spec["panels"], strict=True)):
         show_xlabels = idx == len(spec["panels"]) - 1
+        panel_frame_id = _resolve_control_panel_frame_id(str(panel_spec["id"]))
         apply_axis_theme(ax, tokens=tokens, show_xlabels=show_xlabels)
-        ax.set_xlim(tuple(spec["x_axis"]["limits"]))
+        ax.set_xlim(x_limits)
         ax.set_ylabel(panel_spec["left_axis"]["label"], fontsize=fonts["axis_label_size_pt"])
         ax.set_ylim(tuple(panel_spec["left_axis"]["limits"]))
         ax.set_yscale(panel_spec["left_axis"]["scale"])
@@ -372,7 +403,7 @@ def render_control_rerun_parity_bundle(
 
         left_handles: list[Any] = []
         left_labels: list[str] = []
-        panel_frame = frame[(frame["panel_id"] == panel_spec["id"]) & (frame["axis"] == "left")]
+        panel_frame = frame[(frame["panel_id"] == panel_frame_id) & (frame["axis"] == "left")]
         for series_spec in panel_spec["left_axis"]["series"]:
             for source in ("legacy", "python"):
                 source_spec = source_styles[source]
@@ -411,7 +442,7 @@ def render_control_rerun_parity_bundle(
 
             right_handles: list[Any] = []
             right_labels: list[str] = []
-            panel_frame = frame[(frame["panel_id"] == panel_spec["id"]) & (frame["axis"] == "right")]
+            panel_frame = frame[(frame["panel_id"] == panel_frame_id) & (frame["axis"] == "right")]
             for series_spec in panel_spec["right_axis"]["series"]:
                 for source in ("legacy", "python"):
                     source_spec = source_styles[source]
