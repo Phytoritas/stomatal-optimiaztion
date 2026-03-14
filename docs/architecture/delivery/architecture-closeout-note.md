@@ -2,9 +2,9 @@
 
 ## Status
 
-- recursive architecture refactoring is closed through slices `101-108`
+- recursive architecture refactoring is closed through slices `101-113`
 - the architecture artifact spine under `docs/architecture/` is present and internally consistent
-- the repository is ready for the next bounded implementation slice, not for a blanket "all drift is solved" claim
+- the repository is in monitor mode, not in "open parity gap" mode
 
 ## What Changed
 
@@ -12,19 +12,15 @@
 - reduced live rerun artifacts to the canonical Plotkit-style `python/legacy/diff` bundle contract under `out/rerun_parity/`
 - added `docs/architecture/review/appendix-equation-coverage-audit-note.md` to record paper-appendix coverage across `THORP`, `GOSM`, and `TDGM`
 - slice `109` identified and fixed the first proven `TDGM` long-horizon control-drift seam in `tdgm.thorp_g.hydraulics.stomata()` and locked it with a bounded `max_steps=2050` regression
-- the remaining `TDGM` long-horizon drift is now narrowed to a later post-day-`791.5` follow-up slice:
-  - diagnosis note: `docs/architecture/review/tdgm-full-series-control-drift-diagnosis-note.md`
-  - module `110` diagnosis note: `docs/architecture/review/tdgm-post-791d-stomata-sensitivity-diagnosis-note.md`
-  - module `111` diagnosis note: `docs/architecture/review/tdgm-root-sensitivity-zero-point-diagnosis-note.md`
-  - module `112` diagnosis note: `docs/architecture/review/tdgm-root-dk-canopy-max-derivative-diagnosis-note.md`
-  - next module spec: `docs/architecture/architecture/module_specs/module-113-tdgm-root-dk-canopy-max-derivative-branch.md`
-  - next executor packet: `docs/architecture/executor/issue-224-bug-tdgm-root-dk-canopy-max-derivative-branch.md`
-  - GitHub tracking: issue `#224` should be the next `Ready` bounded bug slice
+- the former post-day-`791.5` `TDGM` reopening is now closed as reference-payload provenance:
+  - closeout note: `docs/architecture/review/tdgm-reference-payload-resume-provenance-note.md`
+  - continuous Python rerun remains exact through day `784.5`
+  - the shipped later-horizon payload is explained by a one-off MATLAB resume from the last weekly checkpoint after the day-`787` file save
 
 ## Verification
 
 - `.\.venv\Scripts\python.exe -m pytest -q`
-  - last recorded result: `419 passed, 1 skipped`
+  - last recorded result: `420 passed, 1 skipped`
 - `.\.venv\Scripts\ruff.exe check .`
   - last recorded result: pass
 - targeted appendix-coverage guard:
@@ -33,11 +29,9 @@
 
 ## Open Gap
 
-- `D-108`: root `TDGM` canonical full-series control rerun still reopens against the legacy MATLAB payload after day `791.5`; module `112` narrows the next likely culprit to the root-specific `dk_canopy_max` derivative branch inside the `THORP-G` sensitivity path
-- this gap is not treated as a scaffold failure; it is a bounded numerical diagnosis slice queued for the next implementation wave
+- none
 
 ## Next Action
 
-- start from module `113` / issue `#224`
-- audit the root-specific `dk_canopy_max` derivative terms inside the `THORP-G` sensitivity path
-- keep the next slice bounded to one fix or one tighter culprit
+- keep the rerun parity and provenance guards green when `tdgm.thorp_g` kernels change
+- open a new bounded issue only if a future change breaks either the continuous exact window through day `784.5` or the shipped-payload provenance replay

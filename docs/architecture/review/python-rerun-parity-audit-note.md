@@ -37,13 +37,13 @@ Out of scope for this note:
 4. Root `GOSM` also exposes the legacy `imag` conductance-loss rerun path. That branch remains opt-in behind `GOSM_RUN_SLOW=1` to keep the default validation loop bounded, and it was executed under `warnings-as-errors` to confirm that the slower path still reproduces the legacy MATLAB payload without emitting `RuntimeWarning`.
 5. Root `TDGM` rerun parity required restoring the legacy `tdgm.thorp_g` runtime surface. With that seam restored, the current Python runtime matches ten representative THORP-G MATLAB scenarios for the time axis and the first three stored points after `max_steps=60`.
 6. Slice `109` fixed the first proven long-horizon `TDGM` control-drift seam in `tdgm.thorp_g.hydraulics.stomata()`. The canonical control rerun now matches the legacy MATLAB payload through the historical first-drift window near day `497.5`, and that bounded window is locked by a `max_steps=2050` regression.
-7. The canonical root `TDGM` control case still has a regenerated full stored-series graph/data export path, and that full-horizon comparison now exposes a later residual long-horizon drift:
+7. The canonical root `TDGM` control case still has a regenerated full stored-series graph/data export path, and that full-horizon comparison exposes a later reopening if compared naively against the shipped control payload:
    - first reopened divergence near day `791.5`
    - `assimilation` `max_abs_diff ~= 0.8675`
    - `transpiration` `max_abs_diff ~= 0.2879`
    - `height` `max_abs_diff ~= 0.03108`
    - `diameter` `max_abs_diff ~= 0.0004614`
-   This remains an open bounded architecture gap rather than a closed parity claim.
+   The later slices below explain that reopening as payload provenance rather than a remaining live-kernel mismatch.
 8. Module `110` narrows that remaining post-day-`791.5` gap further:
    - the first reopened mismatch is simultaneous across hydraulics, daily optimal allocation fractions, and downstream growth states at stored index `113`
    - a bounded A/B experiment shows that replacing the runtime mean-allocation filter with an exact exponential update makes the drift much worse, so the mean-allocation realization is not the next fix direction
@@ -57,12 +57,16 @@ Out of scope for this note:
    - at day `791.5`, the direct `k_canopy_max * d_psi_rc0_d_c_r_*` contribution is tiny, while the `i_var * dk_canopy_max_d_c_r_*` contribution dominates both root sensitivity branches
    - scaling only the `dk_canopy_max` contribution improves the day-`791.5` legacy allocation fit by about twenty-fold, while scaling only the direct `d_psi_rc0` contribution does almost nothing
    - the next likely culprit is therefore the root-specific `dk_canopy_max_d_c_r_*` branch, especially the vertical-root path
-11. Root rerun parity is now directly inspectable without reading pytest internals. `scripts/render_root_rerun_parity_figures.py` renders Plotkit-style bundles under `out/rerun_parity/` with:
+11. Module `113` closes `D-108` by resolving the shipped payload provenance:
+   - the continuous Python rerun is exact through day `784.5`
+   - the MATLAB restart surface (`STORE_data.m` + `LOAD_data.m`) can resume from the last weekly checkpoint at day `784.5` after the day-`787` file save, while leaving the mean-allocation history at its fresh-run initialization
+   - replaying that one-off resume reproduces the shipped day-`791.5` to `819.5` payload within tight tolerances, so the later reopening is not treated as a remaining live `tdgm.thorp_g` kernel bug
+12. Root rerun parity is now directly inspectable without reading pytest internals. `scripts/render_root_rerun_parity_figures.py` renders Plotkit-style bundles under `out/rerun_parity/` with:
    - `THORP` control `png + python/legacy/diff csv`
    - `GOSM` control plus fast sensitivity `png + python/legacy/diff csv`
    - `TDGM` canonical control `png + python/legacy/diff csv` by default
-12. The old legacy-only example plotting scripts/specs/tests have been pruned from the live repository surface so that `out/rerun_parity/` is the only supported graph inspection entrypoint for root rerun comparison.
-13. Within the documented rerun-comparison scope, root `THORP` and root `GOSM` are currently closed, but root `TDGM` still reopens one bounded later-horizon full-series control-drift gap.
+13. The old legacy-only example plotting scripts/specs/tests have been pruned from the live repository surface so that `out/rerun_parity/` is the only supported graph inspection entrypoint for root rerun comparison.
+14. Within the documented rerun-comparison scope, root `THORP`, root `GOSM`, and root `TDGM` are currently closed. The former post-day-`791.5` `TDGM` reopening is now explained by shipped-payload resume provenance.
 
 ## Validation Executed
 
@@ -94,7 +98,7 @@ Out of scope for this note:
 
 - root `THORP`: direct Python rerun vs legacy MATLAB output comparison available and passing, with regenerated full stored-series control exports matching the legacy payload to machine precision
 - root `GOSM`: direct Python rerun vs legacy MATLAB output comparison available and passing for the default fast control and sensitivity set, warning-free under `warnings-as-errors`, with the slower `imag` conductance-loss branch manually verified the same way
-- root `TDGM`: direct Python rerun vs legacy MATLAB output comparison available and passing for the fast THORP-G regression set, and slice `109` closes the former first long-horizon seam, but the regenerated full stored-series control bundle still reveals a remaining later-horizon control-drift gap
+- root `TDGM`: direct Python rerun vs legacy MATLAB output comparison available and passing for the fast THORP-G regression set, with exact continuous parity through day `784.5` and a closed explanation for the shipped post-day-`791.5` payload reopening
 - root rerun parity graph bundles: reproducible Plotkit-style rerun-only overlays available under `out/rerun_parity/`
 
 ## Next Actions
@@ -102,4 +106,4 @@ Out of scope for this note:
 1. keep the rerun parity tests green whenever root hydraulic or growth kernels change
 2. rerun the opt-in slow `GOSM` `imag` conductance-loss branch when touching root `gosm` hydraulics or stomatal-model logic
 3. rerender `scripts/render_root_rerun_parity_figures.py` whenever root rerun kernels change
-4. investigate the remaining post-day-`791.5` root `TDGM` full-series control drift through the bounded root-specific `dk_canopy_max` derivative slice before declaring that domain fully parity-complete over the long horizon
+4. use `docs/architecture/review/tdgm-reference-payload-resume-provenance-note.md` if later-horizon root `TDGM` payload diffs need to be interpreted again

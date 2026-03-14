@@ -34,7 +34,7 @@ poetry run ruff check .
 - Issue `#218` / module `110` diagnosed the remaining post-day-`791.5` reopening point and ruled out the mean-allocation filter as the next fix direction.
 - Issue `#220` / module `111` rejected the stale stem-curve candidate and narrowed the remaining drift to the root-specific zero-point derivative branch, with the vertical-root sensitivity path most inflated.
 - Issue `#222` / module `112` exonerated the direct `d_psi_rc0_d_c_r_*` branch and narrowed the remaining drift to the root-specific `dk_canopy_max_d_c_r_*` derivative branch, with the vertical-root path still more inflated than the horizontal-root path.
-- One bounded follow-up gap remains open: the remaining post-day-`791.5` root `TDGM` full-series control drift (`D-108`), prepared next as module `113` and GitHub issue `#224`.
+- Issue `#224` / module `113` closes `D-108`: continuous root `TDGM` parity is exact through day `784.5`, and the shipped post-day-`791.5` control reopening is explained by a one-off MATLAB resume artifact after the day-`787` file save.
 - Gates A through C are satisfied for the first bounded migration slice.
 - THORP `model_card` and traceability helpers are migrated into the new package layout.
 - THORP `radiation` runtime seam is migrated as slice 002.
@@ -147,8 +147,7 @@ poetry run ruff check .
 
 ## Next validation
 - Keep `pytest`, `ruff`, and the root rerun parity renderers green while the architecture remains in monitor mode.
-- Start the next implementation wave only from `docs/architecture/architecture/module_specs/module-113-tdgm-root-dk-canopy-max-derivative-branch.md` and GitHub issue `#224`.
 - Keep the fast root `GOSM` rerun tests warning-free and run the opt-in slow `imag` branch whenever root `gosm` hydraulics or stomatal logic changes.
 - Run the opt-in slow `GOSM` `imag` conductance-loss parity branch when root `gosm` hydraulics or stomatal logic changes.
 - Re-render `scripts/render_root_rerun_parity_figures.py` whenever root `THORP`, `GOSM`, or `TDGM` rerun kernels change.
-- Investigate the remaining root `TDGM` full-series control drift exposed by `out/rerun_parity/tdgm/..._diff.csv`.
+- Use `docs/architecture/review/tdgm-reference-payload-resume-provenance-note.md` if later-horizon root `TDGM` control payload diffs need to be interpreted again.
