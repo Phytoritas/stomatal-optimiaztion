@@ -28,6 +28,9 @@ poetry run ruff check .
 `THORP` and `TDGM` full-series control rerenders are long-running. On the current workstation, the canonical full rerender completed in about 52 minutes for `THORP` and 56 minutes for `TDGM`.
 
 ## Current status
+- Recursive architecture refactoring is closed through slices `101-108`; the closeout summary lives in [`docs/architecture/delivery/architecture-closeout-note.md`](docs/architecture/delivery/architecture-closeout-note.md).
+- The architecture spine, validation contract, and rerun-parity bundle contract are stable enough for monitor mode.
+- One bounded follow-up gap remains open: root `TDGM` full-series control drift (`D-108`), prepared as module `109` and GitHub issue `#209`.
 - Gates A through C are satisfied for the first bounded migration slice.
 - THORP `model_card` and traceability helpers are migrated into the new package layout.
 - THORP `radiation` runtime seam is migrated as slice 002.
@@ -140,6 +143,7 @@ poetry run ruff check .
 
 ## Next validation
 - Keep `pytest`, `ruff`, and the root rerun parity renderers green while the architecture remains in monitor mode.
+- Start the next implementation wave only from `docs/architecture/architecture/module_specs/module-109-tdgm-full-series-control-drift-investigation.md` and GitHub issue `#209`.
 - Keep the fast root `GOSM` rerun tests warning-free and run the opt-in slow `imag` branch whenever root `gosm` hydraulics or stomatal logic changes.
 - Run the opt-in slow `GOSM` `imag` conductance-loss parity branch when root `gosm` hydraulics or stomatal logic changes.
 - Re-render `scripts/render_root_rerun_parity_figures.py` whenever root `THORP`, `GOSM`, or `TDGM` rerun kernels change.
