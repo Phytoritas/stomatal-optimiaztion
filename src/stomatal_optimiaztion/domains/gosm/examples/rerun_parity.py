@@ -385,7 +385,7 @@ def render_control_rerun_parity_bundle(
         facecolor=tokens["figure"]["background"],
         constrained_layout=False,
     )
-    fig.subplots_adjust(hspace=float(spec["layout"]["hspace"]), left=0.14, right=0.84, top=0.96, bottom=0.09)
+    fig.subplots_adjust(hspace=float(spec["layout"]["hspace"]), left=0.17, right=0.89, top=0.91, bottom=0.10)
 
     fonts = tokens["fonts"]
     source_styles = spec["styling"]["sources"]
@@ -478,17 +478,16 @@ def render_control_rerun_parity_bundle(
     fig.legend(
         [_source_legend_handle(source_spec=source_styles[source], tokens=tokens) for source in ("python", "legacy")],
         source_order,
-        loc="center right",
-        bbox_to_anchor=(0.98, 0.5),
+        loc="upper center",
+        bbox_to_anchor=(0.5, 0.955),
+        ncol=2,
         frameon=tokens["legend"]["frameon"],
         fontsize=fonts["legend_size_pt"],
     )
-    fig.text(
-        0.44,
-        0.975,
+    fig.suptitle(
         spec["meta"]["title"],
-        ha="center",
-        va="center",
+        x=0.5,
+        y=0.985,
         fontsize=fonts["title_size_pt"] + 2,
         fontweight="bold",
     )
@@ -665,7 +664,7 @@ def render_sensitivity_case_rerun_parity_bundle(
         facecolor=tokens["figure"]["background"],
         constrained_layout=False,
     )
-    fig.subplots_adjust(left=0.10, right=0.83, bottom=0.12, top=0.90, hspace=float(spec["layout"]["hspace"]), wspace=float(spec["layout"]["wspace"]))
+    fig.subplots_adjust(left=0.11, right=0.98, bottom=0.19, top=0.88, hspace=float(spec["layout"]["hspace"]), wspace=float(spec["layout"]["wspace"]))
 
     source_styles = spec["styling"]["source_styles"]
     eta_handles: dict[str, Any] = {}
@@ -674,12 +673,9 @@ def render_sensitivity_case_rerun_parity_bundle(
     for idx, (ax, panel_id) in enumerate(zip(np.atleast_1d(axes).reshape(-1), spec["panel_order"], strict=True)):
         panel_spec = spec["panels"][panel_id]
         panel_frame = frame[frame["panel_id"] == panel_id]
-        show_xlabels = idx >= 2
-        apply_axis_theme(ax, tokens=tokens, show_xlabels=show_xlabels)
+        apply_axis_theme(ax, tokens=tokens, show_xlabels=True)
         ax.set_title(panel_spec["title"], fontsize=fonts["title_size_pt"], loc="left", pad=6)
         ax.set_ylabel(panel_spec["y_label"], fontsize=fonts["axis_label_size_pt"])
-        if show_xlabels:
-            ax.set_xlabel(info["x_label"], fontsize=fonts["axis_label_size_pt"])
         ax.set_yscale(panel_spec["scale"])
         ax.set_ylim(
             _y_limits(
@@ -731,24 +727,38 @@ def render_sensitivity_case_rerun_parity_bundle(
         _panel_label(ax, tokens=tokens, letter=next(panel_letters))
 
     source_order = [source_styles[source]["label"] for source in ("python", "legacy")]
-    fig.legend(
+    source_legend = fig.legend(
         [_source_legend_handle(source_spec=source_styles[source], tokens=tokens) for source in ("python", "legacy")],
         source_order,
-        loc="upper right",
-        bbox_to_anchor=(0.985, 0.95),
+        loc="upper center",
+        bbox_to_anchor=(0.5, 0.965),
+        ncol=2,
         frameon=tokens["legend"]["frameon"],
         fontsize=fonts["legend_size_pt"],
     )
+    fig.add_artist(source_legend)
     eta_order = sorted(eta_handles)
     fig.legend(
         [eta_handles[label] for label in eta_order],
         eta_order,
-        loc="center right",
-        bbox_to_anchor=(0.995, 0.40),
+        loc="lower center",
+        bbox_to_anchor=(0.5, 0.02),
+        ncol=3,
         frameon=tokens["legend"]["frameon"],
         fontsize=fonts["legend_size_pt"] - 0.4,
     )
-    fig.text(0.44, 0.965, resolved_title, ha="center", va="center", fontsize=fonts["title_size_pt"] + 2, fontweight="bold")
+    fig.supxlabel(
+        info["x_label"],
+        y=0.09,
+        fontsize=fonts["axis_label_size_pt"],
+    )
+    fig.suptitle(
+        resolved_title,
+        x=0.5,
+        y=0.985,
+        fontsize=fonts["title_size_pt"] + 2,
+        fontweight="bold",
+    )
 
     fig.savefig(
         file_paths["png"],

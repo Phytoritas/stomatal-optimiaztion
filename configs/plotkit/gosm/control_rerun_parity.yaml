@@ -9,7 +9,7 @@ meta:
 layout:
   rows: 4
   cols: 1
-  hspace: 0.32
+  hspace: 0.48
 x_axis:
   label: Total conductance to CO2, g_c [mol m^-2 s^-1]
   limits: matlab_control_auto
@@ -121,7 +121,7 @@ styling:
       zorder: 2
 figure:
   width_mm: 180
-  height_mm: 165
+  height_mm: 188
 theme:
   name: Phytoritas
   tokens: ../themes/Phytoritas_tokens.yaml

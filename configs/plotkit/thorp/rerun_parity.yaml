@@ -9,7 +9,7 @@ meta:
 layout:
   rows: 2
   cols: 2
-  hspace: 0.30
+  hspace: 0.34
   wspace: 0.28
 panel_order:
   - height
@@ -57,7 +57,7 @@ styling:
       linewidth_pt: 1.5
 figure:
   width_mm: 180
-  height_mm: 128
+  height_mm: 136
 theme:
   name: Phytoritas
   tokens: ../themes/Phytoritas_tokens.yaml
