@@ -5,6 +5,7 @@ Use this directory for architecture reviews, regression reviews, and change crit
 Current notes:
 
 - `python-rerun-parity-audit-note.md`: direct Python rerun vs legacy MATLAB payload audit for root `THORP`, `GOSM`, and `TDGM`
+- `tdgm-reference-payload-resume-provenance-note.md`: closeout note showing that the shipped post-`791.5` `TDGM` control drift comes from a one-off MATLAB resume artifact after the day-`787` file-save boundary
 - `tdgm-full-series-control-drift-diagnosis-note.md`: bounded diagnosis summary for the first proven root `TDGM` long-horizon control-drift seam and its post-`791.5` handoff
 - `tdgm-post-791d-stomata-sensitivity-diagnosis-note.md`: bounded diagnosis summary for the remaining post-`791.5` TDGM drift, including why the next seam is in the THORP-G sensitivity path rather than the mean-allocation filter
 - `tdgm-root-sensitivity-zero-point-diagnosis-note.md`: bounded diagnosis summary showing that the remaining post-`791.5` TDGM drift is now narrowed to the root-specific zero-point sensitivity derivatives, with the vertical-root branch most inflated

@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: the recursive architecture refactoring wave is closed through slices `101-108`, slice `109` has fixed the first proven root `TDGM` long-horizon control-drift seam, slice `110` has diagnosed the remaining post-day-`791.5` reopening point, slice `111` has narrowed the remaining gap to the root-specific zero-point derivative branch, slice `112` has further narrowed that gap to the root-specific `dk_canopy_max` derivative branch, the architecture spine and validation contract are green, and the repository is now in delivery-closeout mode with one bounded follow-up gap still open: the remaining post-day-`791.5` root `TDGM` control drift (`D-108`, prepared next as module `113` and GitHub issue `#224`)
+- Current phase: the recursive architecture refactoring wave is closed, including the former root `TDGM` later-horizon control gap `D-108`; the architecture spine and validation contract are green, continuous root `TDGM` parity is exact through day `784.5`, and the shipped post-day-`791.5` control reopening is now recorded as a reference-payload resume artifact in `docs/architecture/review/tdgm-reference-payload-resume-provenance-note.md`
 
 ## Scope
 
@@ -102,5 +102,5 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 1. treat the current architecture scaffold, ADR spine, module-spec chain, and rerun parity bundle contract as the stable baseline for further work
 2. keep the validation gates green by rerunning the fast root parity tests and `scripts/render_root_rerun_parity_figures.py --fast-smoke` whenever `THORP`, `GOSM`, or `TDGM` runtime kernels change
 3. rerender the default full-series control bundles for root `THORP` and `TDGM` whenever their runtime kernels change so the canonical `python/legacy/diff` CSV evidence stays current
-4. resume implementation only through the bounded follow-up slice in `docs/architecture/architecture/module_specs/module-113-tdgm-root-dk-canopy-max-derivative-branch.md` and GitHub issue `#224`
-5. do not declare the root `TDGM` parity wave closed until new full-series evidence shows the remaining post-day-`791.5` drift is either explained or removed by the narrowed root-specific `dk_canopy_max` derivative slice
+4. use `docs/architecture/review/tdgm-reference-payload-resume-provenance-note.md` as the source of truth if later-horizon shipped `TDGM` control diffs are revisited
+5. open a new bounded issue only if a future change breaks either the continuous exact guard through day `784.5` or the shipped-payload provenance replay guard
