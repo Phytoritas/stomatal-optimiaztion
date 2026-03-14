@@ -36,18 +36,20 @@ Out of scope for this note:
 3. Root `GOSM` reruns are now warning-free for the fast control and sensitivity paths. The rerun regressions promote `RuntimeWarning` to test failures, so the current `hydraulics`, `conductance_temperature`, stomata-model, and example helper branches no longer emit transient NumPy warnings during parity checks.
 4. Root `GOSM` also exposes the legacy `imag` conductance-loss rerun path. That branch remains opt-in behind `GOSM_RUN_SLOW=1` to keep the default validation loop bounded, and it was executed under `warnings-as-errors` to confirm that the slower path still reproduces the legacy MATLAB payload without emitting `RuntimeWarning`.
 5. Root `TDGM` rerun parity required restoring the legacy `tdgm.thorp_g` runtime surface. With that seam restored, the current Python runtime matches ten representative THORP-G MATLAB scenarios for the time axis and the first three stored points after `max_steps=60`.
-6. The canonical root `TDGM` control case now also has a regenerated full stored-series graph/data export path, and that full-horizon comparison exposes a residual long-horizon drift:
-   - `assimilation` `max_abs_diff ~= 1.2340`
-   - `transpiration` `max_abs_diff ~= 0.3832`
-   - `height` `max_abs_diff ~= 0.01637`
-   - `diameter` `max_abs_diff ~= 0.0002401`
-   This is now treated as an open bounded architecture gap rather than a closed parity claim.
-7. Root rerun parity is now directly inspectable without reading pytest internals. `scripts/render_root_rerun_parity_figures.py` renders Plotkit-style bundles under `out/rerun_parity/` with:
+6. Slice `109` fixed the first proven long-horizon `TDGM` control-drift seam in `tdgm.thorp_g.hydraulics.stomata()`. The canonical control rerun now matches the legacy MATLAB payload through the historical first-drift window near day `497.5`, and that bounded window is locked by a `max_steps=2050` regression.
+7. The canonical root `TDGM` control case still has a regenerated full stored-series graph/data export path, and that full-horizon comparison now exposes a later residual long-horizon drift:
+   - first reopened divergence near day `791.5`
+   - `assimilation` `max_abs_diff ~= 0.8675`
+   - `transpiration` `max_abs_diff ~= 0.2879`
+   - `height` `max_abs_diff ~= 0.03108`
+   - `diameter` `max_abs_diff ~= 0.0004614`
+   This remains an open bounded architecture gap rather than a closed parity claim.
+8. Root rerun parity is now directly inspectable without reading pytest internals. `scripts/render_root_rerun_parity_figures.py` renders Plotkit-style bundles under `out/rerun_parity/` with:
    - `THORP` control `png + python/legacy/diff csv`
    - `GOSM` control plus fast sensitivity `png + python/legacy/diff csv`
    - `TDGM` canonical control `png + python/legacy/diff csv` by default
-8. The old legacy-only example plotting scripts/specs/tests have been pruned from the live repository surface so that `out/rerun_parity/` is the only supported graph inspection entrypoint for root rerun comparison.
-9. Within the documented rerun-comparison scope, root `THORP` and root `GOSM` are currently closed, but root `TDGM` reopens one bounded full-series control-drift gap.
+9. The old legacy-only example plotting scripts/specs/tests have been pruned from the live repository surface so that `out/rerun_parity/` is the only supported graph inspection entrypoint for root rerun comparison.
+10. Within the documented rerun-comparison scope, root `THORP` and root `GOSM` are currently closed, but root `TDGM` still reopens one bounded later-horizon full-series control-drift gap.
 
 ## Validation Executed
 
@@ -68,8 +70,10 @@ Out of scope for this note:
 - result: canonical root `THORP` full-series control rerun bundle regenerated under `out/rerun_parity/`
 - `.\.venv\Scripts\python.exe scripts\render_root_rerun_parity_figures.py --output-dir out/rerun_parity --domains tdgm`
 - result: canonical root `TDGM` full-series control rerun bundle regenerated under `out/rerun_parity/`
+- `.\.venv\Scripts\python.exe -m pytest tests/test_tdgm_thorp_g_rerun_parity.py tests/test_root_rerun_parity_figures.py -q`
+  - result: `19 passed`
 - `.\.venv\Scripts\python.exe -m pytest`
-- result: `414 passed, 1 skipped`
+- result: `419 passed, 1 skipped`
 - `.\.venv\Scripts\ruff.exe check .`
 - result: `passed`
 
@@ -77,7 +81,7 @@ Out of scope for this note:
 
 - root `THORP`: direct Python rerun vs legacy MATLAB output comparison available and passing, with regenerated full stored-series control exports matching the legacy payload to machine precision
 - root `GOSM`: direct Python rerun vs legacy MATLAB output comparison available and passing for the default fast control and sensitivity set, warning-free under `warnings-as-errors`, with the slower `imag` conductance-loss branch manually verified the same way
-- root `TDGM`: direct Python rerun vs legacy MATLAB output comparison available and passing for the fast THORP-G regression set, but the regenerated full stored-series control bundle reveals a remaining long-horizon control-drift gap
+- root `TDGM`: direct Python rerun vs legacy MATLAB output comparison available and passing for the fast THORP-G regression set, and slice `109` closes the former first long-horizon seam, but the regenerated full stored-series control bundle still reveals a remaining later-horizon control-drift gap
 - root rerun parity graph bundles: reproducible Plotkit-style rerun-only overlays available under `out/rerun_parity/`
 
 ## Next Actions
@@ -85,4 +89,4 @@ Out of scope for this note:
 1. keep the rerun parity tests green whenever root hydraulic or growth kernels change
 2. rerun the opt-in slow `GOSM` `imag` conductance-loss branch when touching root `gosm` hydraulics or stomatal-model logic
 3. rerender `scripts/render_root_rerun_parity_figures.py` whenever root rerun kernels change
-4. investigate the root `TDGM` full-series control drift before declaring that domain fully parity-complete over the long horizon
+4. investigate the remaining post-day-`791.5` root `TDGM` full-series control drift before declaring that domain fully parity-complete over the long horizon

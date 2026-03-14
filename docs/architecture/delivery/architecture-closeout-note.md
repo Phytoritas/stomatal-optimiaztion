@@ -11,15 +11,17 @@
 - completed the rerun-parity architecture wave for root `THORP`, `GOSM`, and `TDGM`
 - reduced live rerun artifacts to the canonical Plotkit-style `python/legacy/diff` bundle contract under `out/rerun_parity/`
 - added `docs/architecture/review/appendix-equation-coverage-audit-note.md` to record paper-appendix coverage across `THORP`, `GOSM`, and `TDGM`
-- converted the remaining `TDGM` long-horizon drift into a bounded follow-up slice:
-  - module spec: `docs/architecture/architecture/module_specs/module-109-tdgm-full-series-control-drift-investigation.md`
-  - executor packet: `docs/architecture/executor/issue-209-bug-tdgm-full-series-control-rerun-drift.md`
-  - GitHub tracking: issue `#209` set to `Ready`
+- slice `109` identified and fixed the first proven `TDGM` long-horizon control-drift seam in `tdgm.thorp_g.hydraulics.stomata()` and locked it with a bounded `max_steps=2050` regression
+- the remaining `TDGM` long-horizon drift is now narrowed to a later post-day-`791.5` follow-up slice:
+  - diagnosis note: `docs/architecture/review/tdgm-full-series-control-drift-diagnosis-note.md`
+  - module spec: `docs/architecture/architecture/module_specs/module-110-tdgm-post-791d-control-drift-investigation.md`
+  - executor packet: `docs/architecture/executor/issue-218-bug-tdgm-post-791d-control-rerun-drift.md`
+  - GitHub tracking: issue `#218` should be the next `Ready` bounded bug slice
 
 ## Verification
 
 - `.\.venv\Scripts\python.exe -m pytest -q`
-  - last recorded result: `418 passed, 1 skipped`
+  - last recorded result: `419 passed, 1 skipped`
 - `.\.venv\Scripts\ruff.exe check .`
   - last recorded result: pass
 - targeted appendix-coverage guard:
@@ -28,11 +30,11 @@
 
 ## Open Gap
 
-- `D-108`: root `TDGM` canonical full-series control rerun still drifts from the legacy MATLAB payload over the full stored horizon even though the fast bounded parity tests pass
+- `D-108`: root `TDGM` canonical full-series control rerun still reopens against the legacy MATLAB payload after day `791.5` even though slice `109` fixed the first proven seam near day `497.5`
 - this gap is not treated as a scaffold failure; it is a bounded numerical diagnosis slice queued for the next implementation wave
 
 ## Next Action
 
-- start from module `109` / issue `#209`
-- identify the first divergence point in the full-series root `TDGM` control rerun
+- start from module `110` / issue `#218`
+- identify the first remaining post-day-`791.5` divergence point in the full-series root `TDGM` control rerun
 - narrow the cause to one runtime seam before changing numerical kernels broadly

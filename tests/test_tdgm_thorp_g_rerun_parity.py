@@ -86,3 +86,44 @@ def test_thorp_g_v14_regression_cases_match_matlab_first_2_weeks(
             atol=1e-12,
             equal_nan=True,
         ), key
+
+
+@pytest.mark.skipif(not DEFAULT_LEGACY_TDGM_THORP_G_DIR.exists(), reason="legacy TDGM THORP-G dir not available")
+def test_thorp_g_control_case_matches_matlab_through_first_long_horizon_drift_window() -> None:
+    matlab_path = DEFAULT_LEGACY_TDGM_THORP_G_DIR / "THORP_data_Control_Turgor.mat"
+    matlab = load_mat(matlab_path)
+
+    params0 = default_params(forcing_rh_scale=1.0, forcing_precip_scale=1.0)
+    params = replace(params0, gamma_turgor_shift=0.0)
+
+    # The historical full-series drift first appeared near day 497.5. Keep a
+    # bounded regression window that extends beyond that point without forcing
+    # the default test suite to run the full multi-decade horizon.
+    out = run(params=params, max_steps=2050)
+    py = out.as_mat_dict()
+
+    expected_t = _as_1d(matlab["t_stor"])[: out.t_ts.size]
+    assert np.array_equal(out.t_ts, expected_t)
+
+    for key in [
+        "A_n_stor",
+        "E_stor",
+        "P_x_l_stor",
+        "P_x_s_stor",
+        "P_x_r_stor",
+        "u_l_stor",
+        "u_sw_stor",
+        "c_NSC_stor",
+        "c_l_stor",
+        "c_sw_stor",
+        "H_stor",
+        "D_stor",
+        "U_stor",
+    ]:
+        assert np.allclose(
+            _as_1d(py[key]),
+            _as_1d(matlab[key])[: out.t_ts.size],
+            rtol=0,
+            atol=1e-12,
+            equal_nan=True,
+        ), key

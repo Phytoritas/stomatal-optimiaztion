@@ -30,7 +30,8 @@ poetry run ruff check .
 ## Current status
 - Recursive architecture refactoring is closed through slices `101-108`; the closeout summary lives in [`docs/architecture/delivery/architecture-closeout-note.md`](docs/architecture/delivery/architecture-closeout-note.md).
 - The architecture spine, validation contract, and rerun-parity bundle contract are stable enough for monitor mode.
-- One bounded follow-up gap remains open: root `TDGM` full-series control drift (`D-108`), prepared as module `109` and GitHub issue `#209`.
+- Issue `#209` / module `109` fixed the first proven root `TDGM` long-horizon control-drift seam and locked it with a bounded regression.
+- One bounded follow-up gap remains open: the remaining post-day-`791.5` root `TDGM` full-series control drift (`D-108`), prepared as module `110` and GitHub issue `#218`.
 - Gates A through C are satisfied for the first bounded migration slice.
 - THORP `model_card` and traceability helpers are migrated into the new package layout.
 - THORP `radiation` runtime seam is migrated as slice 002.
@@ -143,7 +144,7 @@ poetry run ruff check .
 
 ## Next validation
 - Keep `pytest`, `ruff`, and the root rerun parity renderers green while the architecture remains in monitor mode.
-- Start the next implementation wave only from `docs/architecture/architecture/module_specs/module-109-tdgm-full-series-control-drift-investigation.md` and GitHub issue `#209`.
+- Start the next implementation wave only from `docs/architecture/architecture/module_specs/module-110-tdgm-post-791d-control-drift-investigation.md` and GitHub issue `#218`.
 - Keep the fast root `GOSM` rerun tests warning-free and run the opt-in slow `imag` branch whenever root `gosm` hydraulics or stomatal logic changes.
 - Run the opt-in slow `GOSM` `imag` conductance-loss parity branch when root `gosm` hydraulics or stomatal logic changes.
 - Re-render `scripts/render_root_rerun_parity_figures.py` whenever root `THORP`, `GOSM`, or `TDGM` rerun kernels change.

@@ -653,7 +653,10 @@ def stomata(
         # as a runtime warning. Silence the warning without changing numerics.
         with np.errstate(invalid="ignore", divide="ignore"):
             d_f_d_psi_l = np.diff(f_obj) / np.diff(psi_l_curve)
-        idx = 0
+        # MATLAB iterates `i = 1, 2, ...` over `diff(F)` and then selects the
+        # same curve index `P_x_l(i)`. In 0-based Python indexing that means
+        # checking `d_f_d_psi_l[0]` together with `g_w_curve[0]` first.
+        idx = -1
         while True:
             idx += 1
             if idx >= d_f_d_psi_l.size:
