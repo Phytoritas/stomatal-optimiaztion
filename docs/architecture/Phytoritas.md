@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: slice 108 keeps only Plotkit-style `Python rerun vs MATLAB reference` bundles under `out/rerun_parity/`, finishes the canonical full-series control rerenders for root `THORP` and `TDGM`, and reopens a bounded follow-up gap because root `TDGM` still drifts from the legacy MATLAB control payload over the full stored horizon
+- Current phase: the recursive architecture refactoring wave is closed through slices `101-108`, the architecture spine and validation contract are green, and the repository is now in delivery-closeout mode with one bounded follow-up gap still open: root `TDGM` full-series control drift (`D-108`, prepared as module `109` and GitHub issue `#209`)
 
 ## Scope
 
@@ -99,8 +99,8 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 
 ## Immediate Next Actions
 
-1. keep the current validation gates green now that the root rerun parity wave also has canonical `png + python/legacy/diff csv` bundles on disk
-2. rerun the fast root parity tests and `scripts/render_root_rerun_parity_figures.py --fast-smoke` when touching `THORP`, `GOSM`, or `TDGM` runtime kernels
-3. rerender the default full-series control bundles for root `THORP` and `TDGM` whenever their runtime kernels change
-4. investigate the newly exposed root `TDGM` long-horizon control drift from the legacy MATLAB payload
-5. run the opt-in slow `GOSM` `imag` conductance-loss branch and bundle when root `gosm` hydraulics or stomatal logic changes
+1. treat the current architecture scaffold, ADR spine, module-spec chain, and rerun parity bundle contract as the stable baseline for further work
+2. keep the validation gates green by rerunning the fast root parity tests and `scripts/render_root_rerun_parity_figures.py --fast-smoke` whenever `THORP`, `GOSM`, or `TDGM` runtime kernels change
+3. rerender the default full-series control bundles for root `THORP` and `TDGM` whenever their runtime kernels change so the canonical `python/legacy/diff` CSV evidence stays current
+4. resume implementation only through the bounded follow-up slice in `docs/architecture/architecture/module_specs/module-109-tdgm-full-series-control-drift-investigation.md` and GitHub issue `#209`
+5. do not declare the root `TDGM` parity wave closed until new full-series evidence shows the long-horizon drift is either explained or removed
