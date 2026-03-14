@@ -87,6 +87,7 @@ def test_render_gosm_control_bundle_applies_source_visibility_styles(
     original_plot = Axes.plot
 
     def tracked_plot(self: Axes, *args: object, **kwargs: object) -> list[object]:
+        x_values = args[0]
         plot_calls.append(
             {
                 "linestyle": kwargs.get("linestyle"),
@@ -94,6 +95,7 @@ def test_render_gosm_control_bundle_applies_source_visibility_styles(
                 "marker": kwargs.get("marker"),
                 "markevery": int(kwargs["markevery"]) if "markevery" in kwargs else None,
                 "zorder": float(kwargs["zorder"]) if "zorder" in kwargs else None,
+                "data_len": len(x_values),
             }
         )
         return original_plot(self, *args, **kwargs)
@@ -103,17 +105,44 @@ def test_render_gosm_control_bundle_applies_source_visibility_styles(
     artifacts = render_control_rerun_parity_bundle(output_dir=tmp_path / "gosm_control")
 
     assert artifacts.png_path.exists()
-    python_calls = [call for call in plot_calls if call["marker"] == "o" and call["markevery"] == 18]
+    python_calls = [call for call in plot_calls if call["marker"] == "o" and call["markevery"] == 10]
     legacy_calls = [call for call in plot_calls if call["linestyle"] == "--" and call["marker"] is None]
 
     assert python_calls
     assert legacy_calls
+    assert all(call["data_len"] > 0 for call in python_calls)
+    assert all(call["data_len"] > 0 for call in legacy_calls)
     assert min(call["linewidth"] for call in legacy_calls if call["linewidth"] is not None) > max(
         call["linewidth"] for call in python_calls if call["linewidth"] is not None
     )
     assert max(call["zorder"] for call in python_calls if call["zorder"] is not None) > max(
         call["zorder"] for call in legacy_calls if call["zorder"] is not None
     )
+
+
+@pytest.mark.skipif(not DEFAULT_LEGACY_GOSM_EXAMPLE_DIR.exists(), reason="legacy GOSM rerun MATs not available")
+def test_render_gosm_control_bundle_uses_legacy_like_x_limits(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    x_limits: list[tuple[float, float]] = []
+    original_set_xlim = Axes.set_xlim
+
+    def tracked_set_xlim(self: Axes, *args: object, **kwargs: object) -> object:
+        if len(args) >= 2:
+            x_limits.append((float(args[0]), float(args[1])))
+        elif len(args) == 1 and isinstance(args[0], tuple):
+            x_limits.append((float(args[0][0]), float(args[0][1])))
+        return original_set_xlim(self, *args, **kwargs)
+
+    monkeypatch.setattr(Axes, "set_xlim", tracked_set_xlim)
+
+    artifacts = render_control_rerun_parity_bundle(output_dir=tmp_path / "gosm_control")
+
+    assert artifacts.png_path.exists()
+    assert x_limits
+    assert all(lower == pytest.approx(0.0) for lower, _ in x_limits)
+    assert all(upper == pytest.approx(0.3) for _, upper in x_limits)
 
 
 @pytest.mark.skipif(not DEFAULT_LEGACY_TDGM_THORP_G_DIR.exists(), reason="legacy TDGM THORP-G MATs not available")

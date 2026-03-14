@@ -12,9 +12,7 @@ layout:
   hspace: 0.32
 x_axis:
   label: Total conductance to CO2, g_c [mol m^-2 s^-1]
-  limits:
-    - 0.0
-    - 0.3
+  limits: matlab_control_auto
 panels:
   - id: a
     title: Growth and NSC
@@ -106,19 +104,20 @@ styling:
       label: Python rerun
       linestyle: "-"
       alpha: 1.0
-      linewidth_scale: 0.9
+      linewidth_scale: 1.35
       marker: "o"
-      markersize_pt: 3.0
-      markerfacecolor: "#FFFFFF"
-      markeredgecolor: "#000000"
-      markeredgewidth_pt: 0.7
-      markevery: 18
-      zorder: 3
+      markersize_pt: 4.2
+      markerfacecolor: "series_color"
+      markeredgecolor: "#FFFFFF"
+      markeredgewidth_pt: 0.9
+      markevery: 10
+      zorder: 4
     legacy:
       label: Legacy MATLAB
       linestyle: "--"
-      alpha: 0.7
-      linewidth_scale: 1.5
+      alpha: 0.9
+      color_override: "#2B2D42"
+      linewidth_scale: 2.1
       zorder: 2
 figure:
   width_mm: 180
