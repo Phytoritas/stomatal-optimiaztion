@@ -16,9 +16,10 @@
   - diagnosis note: `docs/architecture/review/tdgm-full-series-control-drift-diagnosis-note.md`
   - module `110` diagnosis note: `docs/architecture/review/tdgm-post-791d-stomata-sensitivity-diagnosis-note.md`
   - module `111` diagnosis note: `docs/architecture/review/tdgm-root-sensitivity-zero-point-diagnosis-note.md`
-  - next module spec: `docs/architecture/architecture/module_specs/module-112-tdgm-root-sensitivity-zero-point-derivative-branch.md`
-  - next executor packet: `docs/architecture/executor/issue-222-bug-tdgm-root-sensitivity-zero-point-derivative-branch.md`
-  - GitHub tracking: issue `#222` should be the next `Ready` bounded bug slice
+  - module `112` diagnosis note: `docs/architecture/review/tdgm-root-dk-canopy-max-derivative-diagnosis-note.md`
+  - next module spec: `docs/architecture/architecture/module_specs/module-113-tdgm-root-dk-canopy-max-derivative-branch.md`
+  - next executor packet: `docs/architecture/executor/issue-224-bug-tdgm-root-dk-canopy-max-derivative-branch.md`
+  - GitHub tracking: issue `#224` should be the next `Ready` bounded bug slice
 
 ## Verification
 
@@ -32,11 +33,11 @@
 
 ## Open Gap
 
-- `D-108`: root `TDGM` canonical full-series control rerun still reopens against the legacy MATLAB payload after day `791.5`; module `111` narrows the next likely culprit to the root-specific zero-point derivative branch inside the `THORP-G` sensitivity path
+- `D-108`: root `TDGM` canonical full-series control rerun still reopens against the legacy MATLAB payload after day `791.5`; module `112` narrows the next likely culprit to the root-specific `dk_canopy_max` derivative branch inside the `THORP-G` sensitivity path
 - this gap is not treated as a scaffold failure; it is a bounded numerical diagnosis slice queued for the next implementation wave
 
 ## Next Action
 
-- start from module `112` / issue `#222`
-- audit the root-specific zero-point derivative terms inside the `THORP-G` sensitivity path
+- start from module `113` / issue `#224`
+- audit the root-specific `dk_canopy_max` derivative terms inside the `THORP-G` sensitivity path
 - keep the next slice bounded to one fix or one tighter culprit
