@@ -48,12 +48,16 @@ Out of scope for this note:
    - the first reopened mismatch is simultaneous across hydraulics, daily optimal allocation fractions, and downstream growth states at stored index `113`
    - a bounded A/B experiment shows that replacing the runtime mean-allocation filter with an exact exponential update makes the drift much worse, so the mean-allocation realization is not the next fix direction
    - the most likely next seam is the `THORP-G` stomata/hydraulic sensitivity path that feeds `allocation_fractions()`
-9. Root rerun parity is now directly inspectable without reading pytest internals. `scripts/render_root_rerun_parity_figures.py` renders Plotkit-style bundles under `out/rerun_parity/` with:
+9. Module `111` narrows that remaining gap again:
+   - a bounded stem-curve candidate that swapped `VC_sw(min(0, psi_l_i))` for `VC_sw(min(0, psi_s_i))` is rejected because it breaks the fast THORP-G parity guard immediately
+   - day-`791.5` allocation-fit experiments show that scaling only the root sensitivity derivatives improves the legacy match more than scaling all `dE` derivatives together
+   - the vertical-root sensitivity branch is more overestimated than the horizontal-root branch, so the next likely culprit is the root-specific zero-point derivative branch rather than sapwood or the shared mean-allocation logic
+10. Root rerun parity is now directly inspectable without reading pytest internals. `scripts/render_root_rerun_parity_figures.py` renders Plotkit-style bundles under `out/rerun_parity/` with:
    - `THORP` control `png + python/legacy/diff csv`
    - `GOSM` control plus fast sensitivity `png + python/legacy/diff csv`
    - `TDGM` canonical control `png + python/legacy/diff csv` by default
-10. The old legacy-only example plotting scripts/specs/tests have been pruned from the live repository surface so that `out/rerun_parity/` is the only supported graph inspection entrypoint for root rerun comparison.
-11. Within the documented rerun-comparison scope, root `THORP` and root `GOSM` are currently closed, but root `TDGM` still reopens one bounded later-horizon full-series control-drift gap.
+11. The old legacy-only example plotting scripts/specs/tests have been pruned from the live repository surface so that `out/rerun_parity/` is the only supported graph inspection entrypoint for root rerun comparison.
+12. Within the documented rerun-comparison scope, root `THORP` and root `GOSM` are currently closed, but root `TDGM` still reopens one bounded later-horizon full-series control-drift gap.
 
 ## Validation Executed
 
@@ -93,4 +97,4 @@ Out of scope for this note:
 1. keep the rerun parity tests green whenever root hydraulic or growth kernels change
 2. rerun the opt-in slow `GOSM` `imag` conductance-loss branch when touching root `gosm` hydraulics or stomatal-model logic
 3. rerender `scripts/render_root_rerun_parity_figures.py` whenever root rerun kernels change
-4. investigate the remaining post-day-`791.5` root `TDGM` full-series control drift through the bounded `THORP-G` sensitivity-path slice before declaring that domain fully parity-complete over the long horizon
+4. investigate the remaining post-day-`791.5` root `TDGM` full-series control drift through the bounded root-specific zero-point derivative slice before declaring that domain fully parity-complete over the long horizon

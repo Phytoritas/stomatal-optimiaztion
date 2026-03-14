@@ -32,7 +32,8 @@ poetry run ruff check .
 - The architecture spine, validation contract, and rerun-parity bundle contract are stable enough for monitor mode.
 - Issue `#209` / module `109` fixed the first proven root `TDGM` long-horizon control-drift seam and locked it with a bounded regression.
 - Issue `#218` / module `110` diagnosed the remaining post-day-`791.5` reopening point and ruled out the mean-allocation filter as the next fix direction.
-- One bounded follow-up gap remains open: the remaining post-day-`791.5` root `TDGM` full-series control drift (`D-108`), prepared next as module `111` and GitHub issue `#220`.
+- Issue `#220` / module `111` rejected the stale stem-curve candidate and narrowed the remaining drift to the root-specific zero-point derivative branch, with the vertical-root sensitivity path most inflated.
+- One bounded follow-up gap remains open: the remaining post-day-`791.5` root `TDGM` full-series control drift (`D-108`), prepared next as module `112` and GitHub issue `#222`.
 - Gates A through C are satisfied for the first bounded migration slice.
 - THORP `model_card` and traceability helpers are migrated into the new package layout.
 - THORP `radiation` runtime seam is migrated as slice 002.
@@ -145,7 +146,7 @@ poetry run ruff check .
 
 ## Next validation
 - Keep `pytest`, `ruff`, and the root rerun parity renderers green while the architecture remains in monitor mode.
-- Start the next implementation wave only from `docs/architecture/architecture/module_specs/module-111-tdgm-stomata-sensitivity-allocation-seam.md` and GitHub issue `#220`.
+- Start the next implementation wave only from `docs/architecture/architecture/module_specs/module-112-tdgm-root-sensitivity-zero-point-derivative-branch.md` and GitHub issue `#222`.
 - Keep the fast root `GOSM` rerun tests warning-free and run the opt-in slow `imag` branch whenever root `gosm` hydraulics or stomatal logic changes.
 - Run the opt-in slow `GOSM` `imag` conductance-loss parity branch when root `gosm` hydraulics or stomatal logic changes.
 - Re-render `scripts/render_root_rerun_parity_figures.py` whenever root `THORP`, `GOSM`, or `TDGM` rerun kernels change.
