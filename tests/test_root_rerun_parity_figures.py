@@ -9,12 +9,16 @@ import numpy as np
 import pandas as pd
 import pytest
 from matplotlib.axes import Axes
+from matplotlib.figure import Figure
 
 from stomatal_optimiaztion.domains.gosm.examples import (
     DEFAULT_LEGACY_GOSM_EXAMPLE_DIR,
     render_rerun_parity_suite as render_gosm_rerun_parity_suite,
 )
-from stomatal_optimiaztion.domains.gosm.examples.rerun_parity import render_control_rerun_parity_bundle
+from stomatal_optimiaztion.domains.gosm.examples.rerun_parity import (
+    render_control_rerun_parity_bundle,
+    render_sensitivity_case_rerun_parity_bundle,
+)
 from stomatal_optimiaztion.domains.tdgm.examples import (
     DEFAULT_LEGACY_TDGM_THORP_G_DIR,
     render_rerun_parity_suite as render_tdgm_rerun_parity_suite,
@@ -61,6 +65,42 @@ def test_render_thorp_rerun_parity_bundle_writes_outputs(tmp_path: Path) -> None
     assert artifacts.metadata_path is None
     assert _max_abs_diff_from_diff(frame[frame["panel_id"] == "height"], count=3) == pytest.approx(0.0)
     assert _max_abs_diff_from_diff(frame[frame["panel_id"] == "assimilation"], count=3) == pytest.approx(0.0)
+
+
+@pytest.mark.skipif(not DEFAULT_LEGACY_GOSM_EXAMPLE_DIR.exists(), reason="legacy GOSM rerun MATs not available")
+def test_render_thorp_rerun_parity_bundle_uses_shared_x_label_and_top_legend(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    supxlabel_calls: list[str] = []
+    legend_calls: list[dict[str, object | None]] = []
+    original_supxlabel = Figure.supxlabel
+    original_legend = Figure.legend
+
+    def tracked_supxlabel(self: Figure, text: str, *args: object, **kwargs: object) -> object:
+        supxlabel_calls.append(text)
+        return original_supxlabel(self, text, *args, **kwargs)
+
+    def tracked_legend(self: Figure, *args: object, **kwargs: object) -> object:
+        legend_calls.append(
+            {
+                "loc": kwargs.get("loc"),
+                "bbox_to_anchor": kwargs.get("bbox_to_anchor"),
+                "ncol": kwargs.get("ncol"),
+            }
+        )
+        return original_legend(self, *args, **kwargs)
+
+    monkeypatch.setattr(Figure, "supxlabel", tracked_supxlabel)
+    monkeypatch.setattr(Figure, "legend", tracked_legend)
+
+    artifacts = render_thorp_rerun_parity_bundle(output_dir=tmp_path / "thorp_shared_layout", max_steps=60)
+
+    assert artifacts.png_path.exists()
+    assert supxlabel_calls == ["Time [day]"]
+    assert legend_calls
+    assert legend_calls[0]["loc"] == "upper center"
+    assert legend_calls[0]["ncol"] == 2
 
 
 @pytest.mark.skipif(not DEFAULT_LEGACY_GOSM_EXAMPLE_DIR.exists(), reason="legacy GOSM rerun MATs not available")
@@ -143,6 +183,51 @@ def test_render_gosm_control_bundle_uses_legacy_like_x_limits(
     assert x_limits
     assert all(lower == pytest.approx(0.0) for lower, _ in x_limits)
     assert all(upper == pytest.approx(0.3) for _, upper in x_limits)
+
+
+@pytest.mark.skipif(not DEFAULT_LEGACY_TDGM_THORP_G_DIR.exists(), reason="legacy TDGM THORP-G MATs not available")
+def test_render_gosm_sensitivity_bundle_uses_shared_x_label_and_external_legends(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    supxlabel_calls: list[str] = []
+    legend_calls: list[dict[str, object | None]] = []
+    original_supxlabel = Figure.supxlabel
+    original_legend = Figure.legend
+
+    def tracked_supxlabel(self: Figure, text: str, *args: object, **kwargs: object) -> object:
+        supxlabel_calls.append(text)
+        return original_supxlabel(self, text, *args, **kwargs)
+
+    def tracked_legend(self: Figure, *args: object, **kwargs: object) -> object:
+        legend_calls.append(
+            {
+                "loc": kwargs.get("loc"),
+                "bbox_to_anchor": kwargs.get("bbox_to_anchor"),
+                "ncol": kwargs.get("ncol"),
+            }
+        )
+        return original_legend(self, *args, **kwargs)
+
+    monkeypatch.setattr(Figure, "supxlabel", tracked_supxlabel)
+    monkeypatch.setattr(Figure, "legend", tracked_legend)
+
+    artifacts = render_sensitivity_case_rerun_parity_bundle(
+        legacy_mat_path=DEFAULT_LEGACY_GOSM_EXAMPLE_DIR / "Growth_Opt_Stomata__test_sensitivity__RH.mat",
+        case_id="rh",
+        case_title="RH sensitivity",
+        mode="environmental",
+        param="RH",
+        output_dir=tmp_path / "gosm_sensitivity_layout",
+    )
+
+    assert artifacts.png_path.exists()
+    assert supxlabel_calls == ["Vapor pressure deficit (VPD), D_L [kPa]"]
+    assert len(legend_calls) == 2
+    assert legend_calls[0]["loc"] == "upper center"
+    assert legend_calls[0]["ncol"] == 2
+    assert legend_calls[1]["loc"] == "lower center"
+    assert legend_calls[1]["ncol"] == 3
 
 
 @pytest.mark.skipif(not DEFAULT_LEGACY_TDGM_THORP_G_DIR.exists(), reason="legacy TDGM THORP-G MATs not available")

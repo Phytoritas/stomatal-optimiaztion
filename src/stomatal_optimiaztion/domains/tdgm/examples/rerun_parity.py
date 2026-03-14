@@ -208,10 +208,10 @@ def render_case_rerun_parity_bundle(
         constrained_layout=False,
     )
     fig.subplots_adjust(
-        left=0.10,
-        right=0.84,
-        bottom=0.12,
-        top=0.90,
+        left=0.11,
+        right=0.98,
+        bottom=0.18,
+        top=0.87,
         hspace=float(spec["layout"]["hspace"]),
         wspace=float(spec["layout"]["wspace"]),
     )
@@ -223,7 +223,6 @@ def render_case_rerun_parity_bundle(
         panel_frame = frame[frame["panel_id"] == panel_id]
         apply_axis_theme(ax, tokens=tokens, show_xlabels=True)
         ax.set_title(panel_spec["title"], fontsize=fonts["title_size_pt"], loc="left", pad=6)
-        ax.set_xlabel(panel_spec["x_label"], fontsize=fonts["axis_label_size_pt"])
         ax.set_ylabel(panel_spec["y_label"], fontsize=fonts["axis_label_size_pt"])
         ax.set_yscale(panel_spec["scale"])
         ax.set_xlim(float(panel_frame["time_day"].min()) - 0.5, float(panel_frame["time_day"].max()) + 0.5)
@@ -254,17 +253,21 @@ def render_case_rerun_parity_bundle(
     fig.legend(
         [handles[label] for label in legend_order],
         legend_order,
-        loc="center right",
-        bbox_to_anchor=(0.985, 0.5),
+        loc="upper center",
+        bbox_to_anchor=(0.5, 0.955),
+        ncol=2,
         frameon=tokens["legend"]["frameon"],
         fontsize=fonts["legend_size_pt"],
     )
-    fig.text(
-        0.43,
-        0.965,
+    fig.supxlabel(
+        spec["panels"][spec["panel_order"][0]]["x_label"],
+        y=0.045,
+        fontsize=fonts["axis_label_size_pt"],
+    )
+    fig.suptitle(
         f"{spec['meta']['title']} ({_case_label(legacy_mat_path.name)})",
-        ha="center",
-        va="center",
+        x=0.5,
+        y=0.985,
         fontsize=fonts["title_size_pt"] + 2,
         fontweight="bold",
     )
