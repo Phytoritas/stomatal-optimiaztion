@@ -11,6 +11,7 @@ from scipy.io import loadmat
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 
 from stomatal_optimiaztion.domains.gosm.examples.control import run_control_plot_data
 from stomatal_optimiaztion.domains.gosm.examples.sensitivity import (
@@ -179,6 +180,47 @@ def _panel_label(ax: Any, *, tokens: dict[str, Any], letter: str) -> None:
     )
 
 
+def _source_plot_kwargs(
+    *,
+    source_spec: dict[str, Any],
+    base_linewidth: float,
+    color: Any,
+) -> dict[str, Any]:
+    kwargs: dict[str, Any] = {
+        "color": color,
+        "linestyle": source_spec["linestyle"],
+        "linewidth": base_linewidth * float(source_spec.get("linewidth_scale", 1.0)),
+        "alpha": float(source_spec.get("alpha", 1.0)),
+        "zorder": float(source_spec.get("zorder", 2.0)),
+    }
+    marker = source_spec.get("marker")
+    if marker:
+        kwargs["marker"] = marker
+        kwargs["markersize"] = float(source_spec.get("markersize_pt", 3.0))
+        kwargs["markevery"] = int(source_spec.get("markevery", 1))
+        if "markerfacecolor" in source_spec:
+            kwargs["markerfacecolor"] = source_spec["markerfacecolor"]
+        if "markeredgecolor" in source_spec:
+            kwargs["markeredgecolor"] = source_spec["markeredgecolor"]
+        if "markeredgewidth_pt" in source_spec:
+            kwargs["markeredgewidth"] = float(source_spec["markeredgewidth_pt"])
+    return kwargs
+
+
+def _source_legend_handle(*, source_spec: dict[str, Any], tokens: dict[str, Any]) -> Line2D:
+    legend_color = str(tokens["axes"]["tick_color"])
+    return Line2D(
+        [0],
+        [0],
+        label=source_spec["label"],
+        **_source_plot_kwargs(
+            source_spec=source_spec,
+            base_linewidth=1.8,
+            color=legend_color,
+        ),
+    )
+
+
 def _y_limits(values: np.ndarray, *, padding_fraction: float, scale: str = "linear") -> tuple[float, float]:
     if scale == "log":
         positive = values[np.isfinite(values) & (values > 0)]
@@ -317,7 +359,7 @@ def render_control_rerun_parity_bundle(
     fig.subplots_adjust(hspace=float(spec["layout"]["hspace"]), left=0.14, right=0.84, top=0.96, bottom=0.09)
 
     fonts = tokens["fonts"]
-    source_handles: dict[str, Any] = {}
+    source_styles = spec["styling"]["sources"]
     for idx, (ax, panel_spec) in enumerate(zip(np.atleast_1d(axes), spec["panels"], strict=True)):
         show_xlabels = idx == len(spec["panels"]) - 1
         apply_axis_theme(ax, tokens=tokens, show_xlabels=show_xlabels)
@@ -333,7 +375,7 @@ def render_control_rerun_parity_bundle(
         panel_frame = frame[(frame["panel_id"] == panel_spec["id"]) & (frame["axis"] == "left")]
         for series_spec in panel_spec["left_axis"]["series"]:
             for source in ("legacy", "python"):
-                source_spec = spec["styling"]["sources"][source]
+                source_spec = source_styles[source]
                 sub = panel_frame[
                     (panel_frame["series_key"] == series_spec["key"])
                     & (panel_frame["source"] == source)
@@ -341,12 +383,12 @@ def render_control_rerun_parity_bundle(
                 line = ax.plot(
                     sub["g_c"],
                     sub["value"],
-                    color=series_spec["color"],
-                    linestyle=source_spec["linestyle"],
-                    linewidth=float(series_spec["linewidth_pt"]),
-                    alpha=float(source_spec["alpha"]),
+                    **_source_plot_kwargs(
+                        source_spec=source_spec,
+                        base_linewidth=float(series_spec["linewidth_pt"]),
+                        color=series_spec["color"],
+                    ),
                 )[0]
-                source_handles.setdefault(source_spec["label"], line)
                 if source == "python":
                     left_handles.append(line)
                     left_labels.append(series_spec["label"])
@@ -372,7 +414,7 @@ def render_control_rerun_parity_bundle(
             panel_frame = frame[(frame["panel_id"] == panel_spec["id"]) & (frame["axis"] == "right")]
             for series_spec in panel_spec["right_axis"]["series"]:
                 for source in ("legacy", "python"):
-                    source_spec = spec["styling"]["sources"][source]
+                    source_spec = source_styles[source]
                     sub = panel_frame[
                         (panel_frame["series_key"] == series_spec["key"])
                         & (panel_frame["source"] == source)
@@ -380,12 +422,12 @@ def render_control_rerun_parity_bundle(
                     line = ax_right.plot(
                         sub["g_c"],
                         sub["value"],
-                        color=series_spec["color"],
-                        linestyle=source_spec["linestyle"],
-                        linewidth=float(series_spec["linewidth_pt"]),
-                        alpha=float(source_spec["alpha"]),
+                        **_source_plot_kwargs(
+                            source_spec=source_spec,
+                            base_linewidth=float(series_spec["linewidth_pt"]),
+                            color=series_spec["color"],
+                        ),
                     )[0]
-                    source_handles.setdefault(source_spec["label"], line)
                     if source == "python":
                         right_handles.append(line)
                         right_labels.append(series_spec["label"])
@@ -401,9 +443,9 @@ def render_control_rerun_parity_bundle(
         _panel_label(ax, tokens=tokens, letter=panel_spec["id"])
         ax.set_title(panel_spec["title"], fontsize=fonts["title_size_pt"], loc="left", pad=10)
 
-    source_order = [spec["styling"]["sources"][source]["label"] for source in ("python", "legacy")]
+    source_order = [source_styles[source]["label"] for source in ("python", "legacy")]
     fig.legend(
-        [source_handles[label] for label in source_order],
+        [_source_legend_handle(source_spec=source_styles[source], tokens=tokens) for source in ("python", "legacy")],
         source_order,
         loc="center right",
         bbox_to_anchor=(0.98, 0.5),
@@ -595,7 +637,6 @@ def render_sensitivity_case_rerun_parity_bundle(
     fig.subplots_adjust(left=0.10, right=0.83, bottom=0.12, top=0.90, hspace=float(spec["layout"]["hspace"]), wspace=float(spec["layout"]["wspace"]))
 
     source_styles = spec["styling"]["source_styles"]
-    source_handles: dict[str, Any] = {}
     eta_handles: dict[str, Any] = {}
     fonts = tokens["fonts"]
     panel_letters = iter("abcd")
@@ -628,12 +669,12 @@ def render_sensitivity_case_rerun_parity_bundle(
                 handle = ax.plot(
                     sub["x"],
                     sub["y"],
-                    color=source_spec["color"],
-                    linestyle=source_spec["linestyle"],
-                    linewidth=float(spec["styling"]["steady_state_linewidth_pt"]),
-                    alpha=float(source_spec["alpha"]),
+                    **_source_plot_kwargs(
+                        source_spec=source_spec,
+                        base_linewidth=float(spec["styling"]["steady_state_linewidth_pt"]),
+                        color=source_spec["color"],
+                    ),
                 )[0]
-                source_handles.setdefault(source_spec["label"], handle)
         else:
             eta_values = sorted(value for value in panel_frame["eta_factor"].dropna().unique())
             colors = plt.get_cmap(spec["styling"]["instantaneous_cmap"])(np.linspace(0.25, 0.85, len(eta_values)))
@@ -648,19 +689,19 @@ def render_sensitivity_case_rerun_parity_bundle(
                     handle = ax.plot(
                         sub["x"],
                         sub["y"],
-                        color=color,
-                        linestyle=source_spec["linestyle"],
-                        linewidth=float(spec["styling"]["instantaneous_linewidth_pt"]),
-                        alpha=float(source_spec["alpha"]),
+                        **_source_plot_kwargs(
+                            source_spec=source_spec,
+                            base_linewidth=float(spec["styling"]["instantaneous_linewidth_pt"]),
+                            color=color,
+                        ),
                     )[0]
-                    source_handles.setdefault(source_spec["label"], handle)
                     eta_handles.setdefault(eta_label, handle)
 
         _panel_label(ax, tokens=tokens, letter=next(panel_letters))
 
     source_order = [source_styles[source]["label"] for source in ("python", "legacy")]
     fig.legend(
-        [source_handles[label] for label in source_order],
+        [_source_legend_handle(source_spec=source_styles[source], tokens=tokens) for source in ("python", "legacy")],
         source_order,
         loc="upper right",
         bbox_to_anchor=(0.985, 0.95),

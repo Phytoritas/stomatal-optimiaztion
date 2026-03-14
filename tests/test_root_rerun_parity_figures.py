@@ -8,11 +8,13 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import pytest
+from matplotlib.axes import Axes
 
 from stomatal_optimiaztion.domains.gosm.examples import (
     DEFAULT_LEGACY_GOSM_EXAMPLE_DIR,
     render_rerun_parity_suite as render_gosm_rerun_parity_suite,
 )
+from stomatal_optimiaztion.domains.gosm.examples.rerun_parity import render_control_rerun_parity_bundle
 from stomatal_optimiaztion.domains.tdgm.examples import (
     DEFAULT_LEGACY_TDGM_THORP_G_DIR,
     render_rerun_parity_suite as render_tdgm_rerun_parity_suite,
@@ -74,6 +76,44 @@ def test_render_gosm_rerun_parity_suite_writes_outputs(tmp_path: Path) -> None:
     assert "metadata" not in summary["control"]
     assert _max_abs_diff_from_diff(control_frame[control_frame["series_key"] == "g0_umol_c_s"]) < 1e-8
     assert _max_abs_diff_from_diff(rh_frame[rh_frame["panel_id"] == "g_c_steady_state"]) < 1e-8
+
+
+@pytest.mark.skipif(not DEFAULT_LEGACY_GOSM_EXAMPLE_DIR.exists(), reason="legacy GOSM rerun MATs not available")
+def test_render_gosm_control_bundle_applies_source_visibility_styles(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    plot_calls: list[dict[str, float | str | int | None]] = []
+    original_plot = Axes.plot
+
+    def tracked_plot(self: Axes, *args: object, **kwargs: object) -> list[object]:
+        plot_calls.append(
+            {
+                "linestyle": kwargs.get("linestyle"),
+                "linewidth": float(kwargs["linewidth"]) if "linewidth" in kwargs else None,
+                "marker": kwargs.get("marker"),
+                "markevery": int(kwargs["markevery"]) if "markevery" in kwargs else None,
+                "zorder": float(kwargs["zorder"]) if "zorder" in kwargs else None,
+            }
+        )
+        return original_plot(self, *args, **kwargs)
+
+    monkeypatch.setattr(Axes, "plot", tracked_plot)
+
+    artifacts = render_control_rerun_parity_bundle(output_dir=tmp_path / "gosm_control")
+
+    assert artifacts.png_path.exists()
+    python_calls = [call for call in plot_calls if call["marker"] == "o" and call["markevery"] == 18]
+    legacy_calls = [call for call in plot_calls if call["linestyle"] == "--" and call["marker"] is None]
+
+    assert python_calls
+    assert legacy_calls
+    assert min(call["linewidth"] for call in legacy_calls if call["linewidth"] is not None) > max(
+        call["linewidth"] for call in python_calls if call["linewidth"] is not None
+    )
+    assert max(call["zorder"] for call in python_calls if call["zorder"] is not None) > max(
+        call["zorder"] for call in legacy_calls if call["zorder"] is not None
+    )
 
 
 @pytest.mark.skipif(not DEFAULT_LEGACY_TDGM_THORP_G_DIR.exists(), reason="legacy TDGM THORP-G MATs not available")

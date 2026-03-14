@@ -106,10 +106,20 @@ styling:
       label: Python rerun
       linestyle: "-"
       alpha: 1.0
+      linewidth_scale: 0.9
+      marker: "o"
+      markersize_pt: 3.0
+      markerfacecolor: "#FFFFFF"
+      markeredgecolor: "#000000"
+      markeredgewidth_pt: 0.7
+      markevery: 18
+      zorder: 3
     legacy:
       label: Legacy MATLAB
       linestyle: "--"
-      alpha: 0.95
+      alpha: 0.7
+      linewidth_scale: 1.5
+      zorder: 2
 figure:
   width_mm: 180
   height_mm: 165
