@@ -1,4 +1,5 @@
 version: 1
+kind: architecture_scatter_summary
 meta:
   id: summary_plot
   title: TOMICS allocation architecture candidates
@@ -6,9 +7,22 @@ meta:
   support_level: thin_wrapper
   render_strategy: plotkit_style_scatter
   description: Rank architecture candidates by score against final fruit dry weight and canopy-collapse pressure.
+data:
+  frame_role: tomics_allocation_architecture_metrics
+mapping:
+  fruit_weight_column: final_fruit_dry_weight
+  score_column: score
+  color_column: canopy_collapse_days
 layout:
+  preset: publication_single_panel_scatter
   rows: 1
   cols: 1
+  margins:
+    left: 0.11
+    right: 0.92
+    bottom: 0.16
+    top: 0.84
+  title_y: 0.972
 panel_order:
   - architecture_score
 panels:
@@ -25,6 +39,6 @@ theme:
   name: phytoritas_legacy_muted_botanical
   tokens: ../themes/phytoritas_legacy_muted_botanical_tokens.yaml
 export:
-  formats: [png, pdf]
+  formats: [png]
   dpi: 300
   transparent: false

@@ -64,13 +64,13 @@
 - 이 repo에서 **재사용 가능하거나 검증 산출물로 남는 그래프**는 기본적으로 `$plotkit-publication-graphs` 방식의 **spec-first Plotkit workflow**를 사용한다.
 - 새 그래프 spec은 우선 `configs/plotkit/` 아래에 둔다. TOMICS tomato-facing figure는 `configs/plotkit/tomics/`를 기본 위치로 본다.
 - 기본 theme는 `phytoritas_legacy_muted_botanical`로 두고, 별도 지시가 있을 때만 다른 theme를 선택한다.
-- figure output은 가능하면 `png`만 남기지 말고 아래 bundle을 함께 남긴다.
-  - `pdf`
+- figure output은 `png` raster를 기준으로 하고, 아래 bundle을 함께 남긴다.
   - spec copy
   - resolved spec
   - tokens copy
   - metadata
   - 필요하면 derived/data CSV
+- 이 repo의 기본 graph bundle은 **PDF를 생성하지 않는다**. 별도 지시가 없는 한 vector export를 추가하지 않는다.
 - ad-hoc `matplotlib` 코드로 스크립트 안에서 바로 `savefig`하는 방식은 새 작업의 기본값으로 쓰지 않는다. 예외가 필요하면 최소한 thin-wrapper renderer 뒤에서 spec/tokens 계약을 먼저 고정한다.
 
 ### README 계약

@@ -1,4 +1,5 @@
 version: 1
+kind: paired_summary_panels
 meta:
   id: summary_plot
   title: TOMICS factorial summary
@@ -6,11 +7,33 @@ meta:
   support_level: thin_wrapper
   render_strategy: plotkit_style_scatter_and_line
   description: Summarize TOMICS factorial outcomes with a yield scatter and a root-moderation profile.
+data:
+  frame_role: tomics_factorial_metrics
+mapping:
+  policy_column: partition_policy
+  theta_column: theta_substrate
+  outcome_x_column: final_lai
+  outcome_y_column: final_total_dry_weight_g_m2
+  root_metric_column: mean_alloc_frac_root
 layout:
+  preset: publication_two_panel_summary
   rows: 1
   cols: 2
-  hspace: 0.24
-  wspace: 0.30
+  margins:
+    left: 0.10
+    right: 0.98
+    bottom: 0.16
+    top: 0.74
+    hspace: 0.24
+    wspace: 0.30
+  title_y: 0.970
+legend:
+  enabled: true
+  order: [legacy, thorp_fruit_veg, tomics]
+  loc: upper center
+  bbox_to_anchor: [0.5, 0.895]
+  ncol: 3
+  font_size_pt: 8.2
 panel_order:
   - factorial_outcomes
   - root_moderation
@@ -50,6 +73,6 @@ theme:
   name: phytoritas_legacy_muted_botanical
   tokens: ../themes/phytoritas_legacy_muted_botanical_tokens.yaml
 export:
-  formats: [png, pdf]
+  formats: [png]
   dpi: 300
   transparent: false

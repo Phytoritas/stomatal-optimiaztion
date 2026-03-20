@@ -1,4 +1,5 @@
 version: 1
+kind: multi_panel_timeseries
 meta:
   id: comparison_plot
   title: TOMICS tomato partition policy comparison
@@ -6,11 +7,31 @@ meta:
   support_level: thin_wrapper
   render_strategy: plotkit_style_multiline
   description: Compare legacy sink-based, raw THORP, and TOMICS hybrid allocation traces under one forcing payload.
+data:
+  frame_role: tomics_partition_compare_timeseries
+mapping:
+  source_column: source
+  datetime_column: datetime
+  value_column: value
 layout:
+  preset: publication_2x2_timeseries
   rows: 2
   cols: 2
-  hspace: 0.34
-  wspace: 0.28
+  margins:
+    left: 0.11
+    right: 0.98
+    bottom: 0.12
+    top: 0.82
+    hspace: 0.34
+    wspace: 0.28
+  title_y: 0.972
+legend:
+  enabled: true
+  order: [legacy, thorp_fruit_veg, tomics]
+  loc: upper center
+  bbox_to_anchor: [0.5, 0.915]
+  ncol: 3
+  font_size_pt: 8.2
 panel_order:
   - alloc_frac_fruit
   - alloc_frac_root
@@ -74,6 +95,6 @@ theme:
   name: phytoritas_legacy_muted_botanical
   tokens: ../themes/phytoritas_legacy_muted_botanical_tokens.yaml
 export:
-  formats: [png, pdf]
+  formats: [png]
   dpi: 300
   transparent: false

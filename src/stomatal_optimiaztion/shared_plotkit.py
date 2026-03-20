@@ -22,7 +22,6 @@ class FigureBundleArtifacts:
     resolved_spec_path: Path | None = None
     tokens_copy_path: Path | None = None
     metadata_path: Path | None = None
-    pdf_path: Path | None = None
 
     def to_summary(self) -> dict[str, Any]:
         summary = {
@@ -38,7 +37,6 @@ class FigureBundleArtifacts:
             "resolved_spec": self.resolved_spec_path,
             "tokens_copy": self.tokens_copy_path,
             "metadata": self.metadata_path,
-            "pdf": self.pdf_path,
         }
         for key, path in optional_paths.items():
             if path is not None:
@@ -82,7 +80,6 @@ def resolve_figure_paths(output_dir: Path, figure_id: str) -> dict[str, Path]:
         "tokens_copy": output_dir / f"{figure_id}_tokens.yaml",
         "metadata": output_dir / f"{figure_id}_metadata.json",
         "png": output_dir / f"{figure_id}.png",
-        "pdf": output_dir / f"{figure_id}.pdf",
     }
 
 

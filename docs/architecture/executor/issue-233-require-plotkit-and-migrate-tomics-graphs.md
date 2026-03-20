@@ -2,6 +2,7 @@
 - The repo already had a partial Plotkit-style figure contract for root rerun parity, but the live TOMICS graph scripts still rendered from ad-hoc `matplotlib` code.
 - Reusable validation figures need the same spec/tokens/metadata bundle contract across compare, factorial, and tomato plotting helpers.
 - Future graph work in this repo should default to `$plotkit-publication-graphs` rather than one-off chart code.
+- The repo-local bundle contract should stay PNG-first; PDF is not a required artifact here.
 
 ## Affected model
 - repo-local graph-rendering workflow

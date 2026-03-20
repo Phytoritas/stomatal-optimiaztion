@@ -103,13 +103,12 @@ def test_compare_runner_writes_expected_artifacts(tmp_path: Path) -> None:
     comparison_plot = experiment_dir / "comparison_plot.png"
     assert summary_csv.exists()
     assert comparison_plot.exists()
-    assert (experiment_dir / "comparison_plot.pdf").exists()
+    assert not (experiment_dir / "comparison_plot.pdf").exists()
     assert (experiment_dir / "comparison_plot_data.csv").exists()
     assert (experiment_dir / "comparison_plot_spec.yaml").exists()
     assert (experiment_dir / "comparison_plot_resolved_spec.yaml").exists()
     assert (experiment_dir / "comparison_plot_tokens.yaml").exists()
     assert (experiment_dir / "comparison_plot_metadata.json").exists()
-    assert Path(summary["comparison_plot_pdf"]).exists()
     assert Path(summary["comparison_plot_metadata"]).exists()
 
     summary_df = pd.read_csv(summary_csv)
