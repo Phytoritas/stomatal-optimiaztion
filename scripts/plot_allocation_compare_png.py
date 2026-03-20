@@ -3,8 +3,18 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+import sys
 
 import pandas as pd
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+SRC_DIR = PROJECT_ROOT / "src"
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
+
+from stomatal_optimiaztion.domains.tomato.tomics.plotting import (  # noqa: E402
+    render_allocation_compare_bundle,
+)
 
 
 ALLOC_COLS: tuple[str, ...] = (
@@ -13,6 +23,7 @@ ALLOC_COLS: tuple[str, ...] = (
     "alloc_frac_stem",
     "alloc_frac_root",
 )
+DEFAULT_ALLOCATION_COMPARE_SPEC_PATH = PROJECT_ROOT / "configs" / "plotkit" / "tomics" / "allocation_compare.yaml"
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -54,6 +65,11 @@ def _build_parser() -> argparse.ArgumentParser:
         default=170,
         help="PNG DPI.",
     )
+    parser.add_argument(
+        "--spec",
+        default=str(DEFAULT_ALLOCATION_COMPARE_SPEC_PATH),
+        help="Plotkit spec path for the allocation-comparison figure.",
+    )
     return parser
 
 
@@ -75,46 +91,15 @@ def _plot(
     candidate_label: str,
     out_path: Path,
     dpi: int,
+    spec_path: Path,
 ) -> None:
-    try:
-        import matplotlib.dates as mdates
-        import matplotlib.pyplot as plt
-    except ModuleNotFoundError as exc:  # pragma: no cover
-        raise ModuleNotFoundError(
-            "Plotting requires matplotlib. Install with: python -m pip install matplotlib"
-        ) from exc
-
-    x = merged["datetime"]
-
-    fig, axes = plt.subplots(nrows=4, ncols=1, sharex=True, figsize=(14, 10), constrained_layout=True)
-    mapping = (
-        ("fruit", "alloc_frac_fruit"),
-        ("leaf", "alloc_frac_leaf"),
-        ("stem", "alloc_frac_stem"),
-        ("root", "alloc_frac_root"),
+    render_allocation_compare_bundle(
+        merged=merged,
+        baseline_label=baseline_label,
+        candidate_label=candidate_label,
+        out_path=out_path,
+        spec_path=spec_path,
     )
-
-    for ax, (name, col) in zip(axes, mapping, strict=True):
-        base = pd.to_numeric(merged[f"{col}__baseline"], errors="coerce")
-        cand = pd.to_numeric(merged[f"{col}__candidate"], errors="coerce")
-
-        ax.plot(x, base, label=baseline_label, color="black", linewidth=0.9, alpha=0.85)
-        ax.plot(x, cand, label=candidate_label, color="tab:blue", linewidth=0.9, alpha=0.85)
-        ax.set_ylabel(f"{name} (-)")
-        ax.set_ylim(-0.05, 1.05)
-        ax.grid(True, alpha=0.25)
-        if ax is axes[0]:
-            ax.legend(loc="upper left", fontsize=9)
-
-    locator = mdates.AutoDateLocator(minticks=4, maxticks=10)
-    axes[-1].xaxis.set_major_locator(locator)
-    axes[-1].xaxis.set_major_formatter(mdates.ConciseDateFormatter(locator))
-    axes[-1].set_xlabel("datetime")
-
-    axes[0].set_title("Allocation Fractions Comparison")
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_path, dpi=int(dpi), bbox_inches="tight")
-    plt.close(fig)
 
 
 def main() -> int:
@@ -145,6 +130,7 @@ def main() -> int:
         candidate_label=str(args.candidate_label),
         out_path=out_path,
         dpi=int(args.dpi),
+        spec_path=Path(args.spec).resolve(),
     )
     print(out_path)
     return 0

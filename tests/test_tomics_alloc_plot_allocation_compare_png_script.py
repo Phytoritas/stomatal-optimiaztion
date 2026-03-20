@@ -85,12 +85,14 @@ def test_plot_allocation_compare_script_main_merges_subsamples_and_prints_output
         candidate_label: str,
         out_path: Path,
         dpi: int,
+        spec_path: Path,
     ) -> None:
         captured["rows"] = len(merged)
         captured["baseline_label"] = baseline_label
         captured["candidate_label"] = candidate_label
         captured["out_path"] = out_path
         captured["dpi"] = dpi
+        captured["spec_path"] = spec_path
         out_path.parent.mkdir(parents=True, exist_ok=True)
         out_path.write_text("fake-png", encoding="utf-8")
 
@@ -124,6 +126,7 @@ def test_plot_allocation_compare_script_main_merges_subsamples_and_prints_output
         "candidate_label": "candidate-run",
         "out_path": output_path.resolve(),
         "dpi": 210,
+        "spec_path": module.DEFAULT_ALLOCATION_COMPARE_SPEC_PATH.resolve(),
     }
     assert output_path.exists()
     assert Path(capsys.readouterr().out.strip()) == output_path.resolve()
@@ -183,11 +186,12 @@ def test_plot_allocation_compare_script_plot_raises_helpful_error_without_matplo
 
     monkeypatch.setattr(builtins, "__import__", fake_import)
 
-    with pytest.raises(ModuleNotFoundError, match="Plotting requires matplotlib"):
+    with pytest.raises(ModuleNotFoundError, match="Plotkit-style rendering requires matplotlib"):
         module._plot(
             merged,
             baseline_label="baseline",
             candidate_label="candidate",
             out_path=out_path,
             dpi=170,
+            spec_path=module.DEFAULT_ALLOCATION_COMPARE_SPEC_PATH.resolve(),
         )

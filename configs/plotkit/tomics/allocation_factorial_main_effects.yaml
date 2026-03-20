@@ -1,0 +1,30 @@
+version: 1
+meta:
+  id: main_effects
+  title: Main effects summary
+  family: tomics_allocation_main_effects
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_barh
+  description: Plot the top mean-score main effects from the TOMICS architecture screening run.
+layout:
+  rows: 1
+  cols: 1
+panel_order:
+  - top_effects
+panels:
+  top_effects:
+    title: Highest-mean-score factor levels
+    x_label: Mean score
+    y_label: Factor level
+    top_n: 12
+    color: "#6D597A"
+figure:
+  width_mm: 180
+  height_mm: 110
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false

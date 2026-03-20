@@ -22,3 +22,6 @@ paths:
   repo_root: ../..
   output_root: out/tomics_partition_compare
   features_dir: artifacts/tomics_alloc_features
+
+plots:
+  comparison_plot_spec: configs/plotkit/tomics/partition_compare.yaml

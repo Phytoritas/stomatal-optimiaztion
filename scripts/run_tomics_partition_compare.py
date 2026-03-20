@@ -27,6 +27,9 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.pipelines import (  # noq
     run_tomato_legacy_pipeline,
     summarize_tomato_legacy_metrics,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.plotting import (  # noqa: E402
+    render_partition_compare_bundle,
+)
 
 
 POLICY_ORDER: tuple[str, ...] = ("legacy", "thorp_fruit_veg", "tomics")
@@ -35,6 +38,7 @@ POLICY_LABELS = {
     "thorp_fruit_veg": "Raw THORP",
     "tomics": "TOMICS hybrid",
 }
+DEFAULT_COMPARE_SPEC_PATH = PROJECT_ROOT / "configs" / "plotkit" / "tomics" / "partition_compare.yaml"
 
 
 def _as_dict(raw: object) -> dict[str, Any]:
@@ -48,6 +52,14 @@ def _resolve_output_root(config: dict[str, Any], repo_root: Path, override: str 
         raw = Path(override)
     else:
         raw = Path(str(_as_dict(config.get("paths")).get("output_root", "out/tomics_partition_compare")))
+    if raw.is_absolute():
+        return raw
+    return (repo_root / raw).resolve()
+
+
+def _resolve_plot_spec_path(config: dict[str, Any], repo_root: Path) -> Path:
+    plots_cfg = _as_dict(config.get("plots"))
+    raw = Path(str(plots_cfg.get("comparison_plot_spec", DEFAULT_COMPARE_SPEC_PATH)))
     if raw.is_absolute():
         return raw
     return (repo_root / raw).resolve()
@@ -121,52 +133,14 @@ def _plot_compare(
     runs: dict[str, pd.DataFrame],
     *,
     out_path: Path,
-) -> None:
-    try:
-        import matplotlib.dates as mdates
-        import matplotlib.pyplot as plt
-    except ModuleNotFoundError as exc:  # pragma: no cover
-        raise ModuleNotFoundError("Plotting requires matplotlib.") from exc
-
-    fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(14, 9), constrained_layout=True)
-    panels = (
-        ("alloc_frac_fruit", "Fruit allocation (-)"),
-        ("alloc_frac_root", "Root allocation (-)"),
-        ("LAI", "LAI"),
-        ("total_dry_weight_g_m2", "Total dry weight (g/m2)"),
+    spec_path: Path,
+) -> dict[str, str]:
+    artifacts = render_partition_compare_bundle(
+        runs=runs,
+        out_path=out_path,
+        spec_path=spec_path,
     )
-    colors = {"legacy": "black", "thorp_fruit_veg": "tab:blue", "tomics": "tab:green"}
-
-    for ax, (column, ylabel) in zip(axes.flat, panels, strict=True):
-        for policy_name in POLICY_ORDER:
-            df = runs[policy_name]
-            if column not in df.columns:
-                continue
-            x = pd.to_datetime(df["datetime"])
-            y = pd.to_numeric(df[column], errors="coerce")
-            ax.plot(
-                x,
-                y,
-                label=POLICY_LABELS.get(policy_name, policy_name),
-                color=colors.get(policy_name),
-                linewidth=1.2,
-            )
-        ax.set_ylabel(ylabel)
-        ax.grid(True, alpha=0.25)
-        if column.startswith("alloc_frac"):
-            ax.set_ylim(-0.05, 1.05)
-
-    axes[0, 0].legend(loc="upper left", fontsize=9)
-    locator = mdates.AutoDateLocator(minticks=4, maxticks=8)
-    for ax in axes[1, :]:
-        ax.xaxis.set_major_locator(locator)
-        ax.xaxis.set_major_formatter(mdates.ConciseDateFormatter(locator))
-        ax.set_xlabel("datetime")
-
-    axes[0, 0].set_title("TOMICS tomato partition policy comparison")
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_path, dpi=170, bbox_inches="tight")
-    plt.close(fig)
+    return artifacts.to_summary()
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -228,6 +202,7 @@ def main() -> int:
     )
 
     output_root = ensure_dir(_resolve_output_root(config, repo_root, args.output_root) / exp_key)
+    plot_spec_path = _resolve_plot_spec_path(config, repo_root)
 
     runs: dict[str, pd.DataFrame] = {}
     summary_rows: list[dict[str, object]] = []
@@ -255,12 +230,14 @@ def main() -> int:
     summary_path = output_root / "summary.csv"
     summary_df.to_csv(summary_path, index=False)
     plot_path = output_root / "comparison_plot.png"
-    _plot_compare(runs, out_path=plot_path)
+    plot_summary = _plot_compare(runs, out_path=plot_path, spec_path=plot_spec_path)
 
     print(
         json.dumps(
             {
                 "comparison_plot": str(plot_path),
+                "comparison_plot_pdf": plot_summary.get("pdf"),
+                "comparison_plot_metadata": plot_summary.get("metadata"),
                 "exp_key": exp_key,
                 "output_root": str(output_root),
                 "summary_csv": str(summary_path),

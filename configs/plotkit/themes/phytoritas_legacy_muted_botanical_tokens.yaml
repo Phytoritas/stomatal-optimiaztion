@@ -1,0 +1,46 @@
+version: 1
+theme_name: phytoritas_legacy_muted_botanical
+fonts:
+  primary: DejaVu Sans
+  fallback: Arial
+  base_size_pt: 8.5
+  axis_label_size_pt: 10.5
+  title_size_pt: 9.0
+  panel_label_size_pt: 10.5
+  legend_size_pt: 8.5
+  weight_labels: bold
+figure:
+  background: "#FFFFFF"
+  single_column_width_mm: 90
+  double_column_width_mm: 180
+  max_depth_mm: 170
+  default_dpi: 300
+axes:
+  spine_color: "#000000"
+  spine_width_pt: 0.8
+  grid_color: "#D9D9D9"
+  grid_width_pt: 0.6
+  grid_alpha: 1.0
+  grid_major: y
+  tick_direction: out
+  tick_length_pt: 3.5
+  tick_width_pt: 0.8
+  label_color: "#000000"
+  tick_color: "#000000"
+legend:
+  frameon: false
+  handlelength: 1.8
+  borderpad: 0.2
+panel_labels:
+  style: lowercase_bold
+  prefix: "("
+  suffix: ")"
+  x: 0.02
+  y: 0.98
+  ha: left
+  va: top
+exports:
+  formats:
+    - png
+    - pdf
+  transparent: false

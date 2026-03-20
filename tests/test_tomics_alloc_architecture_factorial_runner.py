@@ -116,7 +116,11 @@ def test_architecture_factorial_runner_writes_required_bundle(tmp_path: Path) ->
         "decision_bundle_md",
         "equation_traceability_csv",
         "summary_plot",
+        "summary_plot_pdf",
+        "summary_plot_metadata",
         "main_effects_plot",
+        "main_effects_plot_pdf",
+        "main_effects_plot_metadata",
     }
     assert required.issubset(summary)
 

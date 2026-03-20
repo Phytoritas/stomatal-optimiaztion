@@ -1,0 +1,115 @@
+version: 1
+meta:
+  id: simulation_summary
+  title: TOMICS-Alloc tomato legacy simulation summary
+  family: tomics_simulation_summary
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_multiline_dual_axis
+  description: Summarize a single TOMICS tomato simulation run with canopy, biomass, flux, and allocation panels.
+layout:
+  rows: 4
+  cols: 1
+  hspace: 0.42
+panel_order:
+  - canopy
+  - dry_weight
+  - fluxes
+  - allocation
+panels:
+  canopy:
+    title: Canopy state
+    x_label: datetime
+    primary:
+      y_label: LAI
+      series:
+        - column: LAI
+          label: LAI
+          color: "#2A9D8F"
+          linewidth_pt: 1.4
+    secondary:
+      y_label: T_canopy [C]
+      series:
+        - column: T_canopy_C
+          label: T_canopy_C
+          color: "#AE2012"
+          linewidth_pt: 1.2
+  dry_weight:
+    title: Dry weight pools
+    x_label: datetime
+    primary:
+      y_label: Dry weight [g m^-2]
+      series:
+        - column: total_dry_weight_g_m2
+          label: total
+          color: "#111111"
+          linewidth_pt: 1.5
+        - column: leaf_dry_weight_g_m2
+          label: leaf
+          color: "#2A9D8F"
+          linewidth_pt: 1.1
+        - column: stem_dry_weight_g_m2
+          label: stem
+          color: "#6D597A"
+          linewidth_pt: 1.1
+        - column: root_dry_weight_g_m2
+          label: root
+          color: "#7F5539"
+          linewidth_pt: 1.1
+        - column: fruit_dry_weight_g_m2
+          label: fruit
+          color: "#E76F51"
+          linewidth_pt: 1.1
+  fluxes:
+    title: Carbon and water fluxes
+    x_label: datetime
+    primary:
+      y_label: CO2 flux [g m^-2 s^-1]
+      series:
+        - column: co2_flux_g_m2_s
+          label: co2_flux_g_m2_s
+          color: "#1D4E89"
+          linewidth_pt: 1.2
+    secondary:
+      y_label: Transpiration [g s^-1 m^-2]
+      series:
+        - column: transpiration_rate_g_s_m2
+          label: transpiration_rate_g_s_m2
+          color: "#8E5EA2"
+          linewidth_pt: 1.2
+  allocation:
+    title: Allocation fractions
+    x_label: datetime
+    primary:
+      y_label: Allocation fraction (-)
+      y_limits: [-0.05, 1.05]
+      series:
+        - column: alloc_frac_fruit
+          label: fruit
+          color: "#E76F51"
+          linewidth_pt: 1.1
+        - column: alloc_frac_leaf
+          label: leaf
+          color: "#2A9D8F"
+          linewidth_pt: 1.1
+        - column: alloc_frac_stem
+          label: stem
+          color: "#7F5539"
+          linewidth_pt: 1.1
+        - column: alloc_frac_root
+          label: root
+          color: "#6C757D"
+          linewidth_pt: 1.1
+        - column: alloc_frac_shoot
+          label: shoot
+          color: "#4CC9F0"
+          linewidth_pt: 1.1
+figure:
+  width_mm: 180
+  height_mm: 185
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false

@@ -41,11 +41,12 @@ def test_plot_simulation_script_main_subsamples_rows_and_prints_output(
 
     captured: dict[str, object] = {}
 
-    def fake_plot(df: pd.DataFrame, *, out_path: Path, dpi: int) -> None:
+    def fake_plot(df: pd.DataFrame, *, out_path: Path, dpi: int, spec_path: Path) -> None:
         captured["rows"] = len(df)
         captured["datetimes"] = list(df["datetime"])
         captured["out_path"] = out_path
         captured["dpi"] = dpi
+        captured["spec_path"] = spec_path
         out_path.parent.mkdir(parents=True, exist_ok=True)
         out_path.write_text("fake-png", encoding="utf-8")
 
@@ -70,6 +71,7 @@ def test_plot_simulation_script_main_subsamples_rows_and_prints_output(
     assert captured["rows"] == 3
     assert captured["dpi"] == 200
     assert captured["out_path"] == output_path.resolve()
+    assert captured["spec_path"] == module.DEFAULT_SIMULATION_SPEC_PATH.resolve()
     assert output_path.exists()
     assert Path(capsys.readouterr().out.strip()) == output_path.resolve()
 
@@ -104,5 +106,10 @@ def test_plot_simulation_script_plot_raises_helpful_error_without_matplotlib(
 
     monkeypatch.setattr(builtins, "__import__", fake_import)
 
-    with pytest.raises(ModuleNotFoundError, match="Plotting requires matplotlib"):
-        module._plot(df, out_path=out_path, dpi=160)
+    with pytest.raises(ModuleNotFoundError, match="Plotkit-style rendering requires matplotlib"):
+        module._plot(
+            df,
+            out_path=out_path,
+            dpi=160,
+            spec_path=module.DEFAULT_SIMULATION_SPEC_PATH.resolve(),
+        )

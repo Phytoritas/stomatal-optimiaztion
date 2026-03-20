@@ -31,6 +31,10 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.pipelines import (  # noq
     resolve_forcing_path,
     run_tomato_legacy_pipeline,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.plotting import (  # noqa: E402
+    render_architecture_summary_bundle,
+    render_main_effects_bundle,
+)
 
 
 FACTOR_COLUMNS = [
@@ -47,6 +51,8 @@ FACTOR_COLUMNS = [
     "temporal_coupling_mode",
     "allocation_scheme",
 ]
+DEFAULT_ALLOCATION_SUMMARY_SPEC_PATH = PROJECT_ROOT / "configs" / "plotkit" / "tomics" / "allocation_factorial_summary.yaml"
+DEFAULT_ALLOCATION_MAIN_EFFECTS_SPEC_PATH = PROJECT_ROOT / "configs" / "plotkit" / "tomics" / "allocation_factorial_main_effects.yaml"
 
 
 def _as_dict(raw: object) -> dict[str, Any]:
@@ -63,6 +69,12 @@ def _as_list(raw: object) -> list[Any]:
 
 def _resolve_output_root(config: dict[str, Any], repo_root: Path, override: str | None = None) -> Path:
     raw = Path(override) if override else Path(str(_as_dict(config.get("paths")).get("output_root", "out/tomics_allocation_factorial")))
+    return raw if raw.is_absolute() else (repo_root / raw).resolve()
+
+
+def _resolve_plot_spec_path(config: dict[str, Any], repo_root: Path, key: str, default_path: Path) -> Path:
+    plots_cfg = _as_dict(config.get("plots"))
+    raw = Path(str(plots_cfg.get(key, default_path)))
     return raw if raw.is_absolute() else (repo_root / raw).resolve()
 
 
@@ -396,31 +408,22 @@ def _candidate_ranking(metrics_df: pd.DataFrame) -> pd.DataFrame:
     )
 
 
-def _plot_metric(metrics_df: pd.DataFrame, out_path: Path) -> None:
-    import matplotlib.pyplot as plt
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.scatter(metrics_df["final_fruit_dry_weight"], metrics_df["score"], c=metrics_df["canopy_collapse_days"], cmap="viridis")
-    ax.set_xlabel("final_fruit_dry_weight")
-    ax.set_ylabel("score")
-    ax.set_title("TOMICS allocation architecture candidates")
-    ax.grid(True, alpha=0.25)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_path, dpi=170, bbox_inches="tight")
-    plt.close(fig)
+def _plot_metric(metrics_df: pd.DataFrame, out_path: Path, spec_path: Path) -> dict[str, str]:
+    artifacts = render_architecture_summary_bundle(
+        metrics_df=metrics_df,
+        out_path=out_path,
+        spec_path=spec_path,
+    )
+    return artifacts.to_summary()
 
 
-def _plot_main_effects(interactions_df: pd.DataFrame, out_path: Path) -> None:
-    import matplotlib.pyplot as plt
-    top = interactions_df.sort_values("mean_score", ascending=False).head(12)
-    fig, ax = plt.subplots(figsize=(12, 6))
-    labels = [f"{row.factor}={row.level}" for row in top.itertuples(index=False)]
-    ax.barh(labels, top["mean_score"])
-    ax.set_xlabel("mean_score")
-    ax.set_title("Main effects summary")
-    ax.grid(True, axis="x", alpha=0.25)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_path, dpi=170, bbox_inches="tight")
-    plt.close(fig)
+def _plot_main_effects(interactions_df: pd.DataFrame, out_path: Path, spec_path: Path) -> dict[str, str]:
+    artifacts = render_main_effects_bundle(
+        interactions_df=interactions_df,
+        out_path=out_path,
+        spec_path=spec_path,
+    )
+    return artifacts.to_summary()
 
 
 def main() -> int:
@@ -433,6 +436,18 @@ def main() -> int:
     config = load_config(config_path)
     repo_root = resolve_repo_root(config, config_path=config_path)
     output_root = ensure_dir(_resolve_output_root(config, repo_root, args.output_root))
+    summary_spec_path = _resolve_plot_spec_path(
+        config,
+        repo_root,
+        key="summary_plot_spec",
+        default_path=DEFAULT_ALLOCATION_SUMMARY_SPEC_PATH,
+    )
+    main_effects_spec_path = _resolve_plot_spec_path(
+        config,
+        repo_root,
+        key="main_effects_plot_spec",
+        default_path=DEFAULT_ALLOCATION_MAIN_EFFECTS_SPEC_PATH,
+    )
     config = _prepare_repeated_forcing(
         config,
         repo_root=repo_root,
@@ -492,8 +507,8 @@ def main() -> int:
     metrics_df.to_csv(output_root / "run_metrics.csv", index=False)
     interaction_df.to_csv(output_root / "interaction_summary.csv", index=False)
     ranking_df.to_csv(output_root / "candidate_ranking.csv", index=False)
-    _plot_metric(metrics_df, output_root / "summary_plot.png")
-    _plot_main_effects(interaction_df, output_root / "main_effects.png")
+    summary_plot = _plot_metric(metrics_df, output_root / "summary_plot.png", summary_spec_path)
+    main_effects_plot = _plot_main_effects(interaction_df, output_root / "main_effects.png", main_effects_spec_path)
 
     selected_payload = {
         "selected_architecture_id": selected_architecture_id,
@@ -541,7 +556,11 @@ def main() -> int:
                 "decision_bundle_md": str(output_root / "decision_bundle.md"),
                 "equation_traceability_csv": str(output_root / "equation_traceability.csv"),
                 "summary_plot": str(output_root / "summary_plot.png"),
+                "summary_plot_pdf": summary_plot.get("pdf"),
+                "summary_plot_metadata": summary_plot.get("metadata"),
                 "main_effects_plot": str(output_root / "main_effects.png"),
+                "main_effects_plot_pdf": main_effects_plot.get("pdf"),
+                "main_effects_plot_metadata": main_effects_plot.get("metadata"),
                 "selected_architecture": selected_architecture_id,
             },
             sort_keys=True,

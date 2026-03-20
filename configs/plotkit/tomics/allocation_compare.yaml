@@ -1,0 +1,66 @@
+version: 1
+meta:
+  id: comparison_plot
+  title: Allocation fractions comparison
+  family: tomics_allocation_compare
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_multiline
+  description: Compare baseline and candidate tomato allocation fractions over time.
+layout:
+  rows: 4
+  cols: 1
+  hspace: 0.42
+panel_order:
+  - alloc_frac_fruit
+  - alloc_frac_leaf
+  - alloc_frac_stem
+  - alloc_frac_root
+panels:
+  alloc_frac_fruit:
+    column: alloc_frac_fruit
+    title: Fruit allocation
+    x_label: datetime
+    y_label: fruit (-)
+    y_limits: [-0.05, 1.05]
+  alloc_frac_leaf:
+    column: alloc_frac_leaf
+    title: Leaf allocation
+    x_label: datetime
+    y_label: leaf (-)
+    y_limits: [-0.05, 1.05]
+  alloc_frac_stem:
+    column: alloc_frac_stem
+    title: Stem allocation
+    x_label: datetime
+    y_label: stem (-)
+    y_limits: [-0.05, 1.05]
+  alloc_frac_root:
+    column: alloc_frac_root
+    title: Root allocation
+    x_label: datetime
+    y_label: root (-)
+    y_limits: [-0.05, 1.05]
+styling:
+  sources:
+    baseline:
+      label: Baseline
+      color: "#111111"
+      linestyle: "-"
+      marker: "o"
+      linewidth_pt: 1.2
+    candidate:
+      label: Candidate
+      color: "#1D4E89"
+      linestyle: "--"
+      marker: "s"
+      linewidth_pt: 1.2
+figure:
+  width_mm: 180
+  height_mm: 185
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false

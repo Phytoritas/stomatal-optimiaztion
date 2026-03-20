@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: the recursive architecture refactoring wave is closed, including the former root `TDGM` later-horizon control gap `D-108`; the architecture spine and validation contract are green, continuous root `TDGM` parity is exact through day `784.5`, the shipped post-day-`791.5` control reopening is now recorded as a reference-payload resume artifact in `docs/architecture/review/tdgm-reference-payload-resume-provenance-note.md`, the TOMICS naming and first hybrid tomato partition-policy slice is complete through issue `#227` / module `114`, and the active follow-up slice is issue `#231` / module `115` for a primary-source TOMICS-Alloc architecture pipeline with research-only candidate screening
+- Current phase: the recursive architecture refactoring wave is closed, including the former root `TDGM` later-horizon control gap `D-108`; the architecture spine and validation contract are green, continuous root `TDGM` parity is exact through day `784.5`, the shipped post-day-`791.5` control reopening is now recorded as a reference-payload resume artifact in `docs/architecture/review/tdgm-reference-payload-resume-provenance-note.md`, the TOMICS naming and first hybrid tomato partition-policy slice is complete through issue `#227` / module `114`, the TOMICS-Alloc research-only architecture pipeline is complete through issue `#231` / module `115`, and issue `#233` / module `116` now standardizes reusable repo-local graph rendering on Plotkit spec bundles with the live TOMICS figure scripts migrated onto that contract
 
 ## Scope
 
@@ -104,3 +104,4 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 3. rerender the default full-series control bundles for root `THORP` and `TDGM` whenever their runtime kernels change so the canonical `python/legacy/diff` CSV evidence stays current
 4. use `docs/architecture/review/tdgm-reference-payload-resume-provenance-note.md` as the source of truth if later-horizon shipped `TDGM` control diffs are revisited
 5. keep the shipped `tomics` path stable and use issue `#231` / module `115` to evaluate only opt-in TOMICS-Alloc research architectures against the local tomato primary-source corpus before any future default promotion
+6. keep reusable graphs on the Plotkit spec-first path and update the saved TOMICS specs under `configs/plotkit/tomics/` whenever live tomato figure structure changes

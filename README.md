@@ -14,6 +14,7 @@
 - Architecture artifacts under `docs/architecture/`
 - Domain packages under `src/stomatal_optimiaztion/`
 - Validation artifacts from `pytest` and `ruff`
+- Reproducible Plotkit figure bundles under `out/` with saved spec, resolved spec, tokens, metadata, and raster/vector exports
 
 ## How to run
 ```bash
@@ -38,6 +39,7 @@ poetry run ruff check .
 - Issue `#222` / module `112` exonerated the direct `d_psi_rc0_d_c_r_*` branch and narrowed the remaining drift to the root-specific `dk_canopy_max_d_c_r_*` derivative branch, with the vertical-root path still more inflated than the horizontal-root path.
 - Issue `#224` / module `113` closes `D-108`: continuous root `TDGM` parity is exact through day `784.5`, and the shipped post-day-`791.5` control reopening is explained by a one-off MATLAB resume artifact after the day-`787` file save.
 - Issue `#227` / module `114` adds the TOMICS tomato-facing naming layer, a bounded `tomics` hybrid partition policy, and deterministic comparison/factorial workflows while preserving tomato-slice provenance in dedicated migration/history documents.
+- Issue `#233` / module `116` makes Plotkit spec-first rendering the repo-local default for reusable graphs and migrates the live TOMICS graph scripts onto Plotkit bundle outputs.
 - Gates A through C are satisfied for the first bounded migration slice.
 - THORP `model_card` and traceability helpers are migrated into the new package layout.
 - THORP `radiation` runtime seam is migrated as slice 002.
@@ -153,4 +155,5 @@ poetry run ruff check .
 - Keep the fast root `GOSM` rerun tests warning-free and run the opt-in slow `imag` branch whenever root `gosm` hydraulics or stomatal logic changes.
 - Run the opt-in slow `GOSM` `imag` conductance-loss parity branch when root `gosm` hydraulics or stomatal logic changes.
 - Re-render `scripts/render_root_rerun_parity_figures.py` whenever root `THORP`, `GOSM`, or `TDGM` rerun kernels change.
+- Keep TOMICS compare/factorial plotting tests green and update the saved Plotkit specs under `configs/plotkit/tomics/` whenever tomato figure structure changes.
 - Use `docs/architecture/review/tdgm-reference-payload-resume-provenance-note.md` if later-horizon root `TDGM` control payload diffs need to be interpreted again.
