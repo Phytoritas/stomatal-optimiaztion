@@ -14,6 +14,19 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.partitioning i
     PartitionPolicy,
     coerce_partition_policy,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.partitioning.common_structure import (
+    build_common_structure_snapshot,
+)
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.partitioning.fruit_feedback import (
+    apply_fruit_feedback_proxy,
+)
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.partitioning.research_modes import (
+    TomicsResearchArchitecture,
+    coerce_tomics_research_architecture,
+)
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.partitioning.reserve_buffer import (
+    resolve_realized_growth_with_buffer,
+)
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.contracts import (
     EnvStep,
     water_supply_stress_from_theta,
@@ -267,6 +280,26 @@ class TomatoModel:
         self.vegetative_dw = self.W_lv + self.W_st + self.W_rt
         self.fruit_dw = self.W_fr
 
+        self.buffer_pool_g = 0.0
+        self.fruit_abort_fraction = 0.0
+        self.fruit_set_feedback_events = 0
+        self.maintenance_respiration_share = 0.0
+        self.mean_stage_residence_time_d = 0.0
+        self.common_structure_snapshot = build_common_structure_snapshot(
+            assimilate_buffer_g=self.reserve_ch2o_g,
+            leaf_biomass_g=self.W_lv,
+            stem_root_biomass_g=self.W_st + self.W_rt,
+            fruit_biomass_g=self.W_fr,
+            photosynthesis_g=0.0,
+            growth_respiration_g=0.0,
+            growth_g=0.0,
+            maintenance_g=0.0,
+            fruit_harvest_g=self.W_fr_harvested,
+            leaf_harvest_g=0.0,
+        )
+        self._tomics_research_prev_root_fraction = None
+        self._tomics_research_prev_root_target = None
+
         self._last_row_cols: set[str] = set()
         self._last_row_used_T_rad = False
         self.eps_eff_last = 0.0
@@ -371,7 +404,19 @@ class TomatoModel:
         self.u_CO2 = check_and_clip_value(row["CO2_ppm"], 300.0, 2000.0, 400.0)
         self.RH = check_and_clip_value(row["RH_percent"], 0.0, 100.0, 70.0) / 100.0
         self.u = check_and_clip_value(row["wind_speed_ms"], 0.01, 10.0, 0.1)
-        self.n_f = int(round(check_and_clip_value(row["n_fruits_per_truss"], 1.0, 12.0, 4.0)))
+        fruit_load_multiplier = _finite_float(
+            getattr(self, "partition_policy_params", {}).get("fruit_load_multiplier", 1.0),
+            default=1.0,
+        )
+        try:
+            research_arch = self._current_research_architecture()
+        except Exception:
+            research_arch = None
+        if research_arch is not None:
+            fruit_load_multiplier = max(float(research_arch.fruit_load_multiplier), 0.25)
+
+        base_n_f = check_and_clip_value(row["n_fruits_per_truss"], 1.0, 12.0, 4.0)
+        self.n_f = int(round(check_and_clip_value(base_n_f * fruit_load_multiplier, 1.0, 12.0, 4.0)))
         self.Ci = self.u_CO2 * 0.7
 
         sw_in_candidate = row.get("SW_in_Wm2", math.nan)
@@ -429,6 +474,22 @@ class TomatoModel:
             "alloc_frac_stem": check_and_clip_value(self.part_stem, 0.0, 1.0, math.nan),
             "alloc_frac_root": check_and_clip_value(self.part_root, 0.0, 1.0, math.nan),
             "alloc_frac_shoot": check_and_clip_value(self.part_shoot, 0.0, 1.0, math.nan),
+            "reserve_pool_g_m2": check_and_clip_value(self.reserve_ch2o_g, 0.0, 1e6, 0.0),
+            "buffer_pool_g_m2": check_and_clip_value(self.buffer_pool_g, 0.0, 1e6, 0.0),
+            "fruit_abort_fraction": check_and_clip_value(self.fruit_abort_fraction, 0.0, 1.0, 0.0),
+            "fruit_set_feedback_events": check_and_clip_value(self.fruit_set_feedback_events, 0.0, 1e6, 0.0),
+            "maintenance_respiration_share": check_and_clip_value(
+                self.maintenance_respiration_share,
+                0.0,
+                1.0,
+                0.0,
+            ),
+            "mean_stage_residence_time_d": check_and_clip_value(
+                self.mean_stage_residence_time_d,
+                0.0,
+                1e4,
+                0.0,
+            ),
         }
 
     def get_error_outputs(self, current_time: datetime) -> dict[str, object]:
@@ -465,7 +526,51 @@ class TomatoModel:
             "alloc_frac_stem": np.nan,
             "alloc_frac_root": np.nan,
             "alloc_frac_shoot": np.nan,
+            "reserve_pool_g_m2": np.nan,
+            "buffer_pool_g_m2": np.nan,
+            "fruit_abort_fraction": np.nan,
+            "fruit_set_feedback_events": np.nan,
+            "maintenance_respiration_share": np.nan,
+            "mean_stage_residence_time_d": np.nan,
         }
+
+    def _current_research_architecture(self) -> TomicsResearchArchitecture | None:
+        policy_name = str(getattr(getattr(self, "partition_policy", None), "name", "")).strip().lower()
+        if policy_name not in {"tomics_alloc_research", "tomics_architecture_research"}:
+            return None
+        return coerce_tomics_research_architecture(self.partition_policy_params)
+
+    def _maintenance_efficiency_factor(
+        self,
+        *,
+        architecture: TomicsResearchArchitecture | None,
+        reserve_pool_g: float,
+        buffer_pool_g: float,
+    ) -> float:
+        if architecture is None or architecture.maintenance_mode == "rgr_adjusted":
+            rgr_used = getattr(self, "last_RGR", 0.03)
+            return 1.0 - math.exp(-self.f_Rm_RGR * max(0.0, rgr_used))
+        if architecture.maintenance_mode == "fixed":
+            return 1.0
+        if architecture.maintenance_mode == "buffer_linked":
+            pool = max(float(reserve_pool_g), float(buffer_pool_g))
+            capacity = max(
+                architecture.buffer_capacity_g_ch2o_m2,
+                architecture.storage_capacity_g_ch2o_m2,
+                1e-9,
+            )
+            return 0.5 + 0.5 * min(max(pool / capacity, 0.0), 1.0)
+        raise ValueError(f"Unsupported maintenance_mode {architecture.maintenance_mode!r}.")
+
+    def _estimate_mean_stage_residence_time(self) -> float:
+        active_tdvs = [
+            float(cohort.get("tdvs", 0.0))
+            for cohort in self.truss_cohorts
+            if cohort.get("active", True)
+        ]
+        if not active_tdvs:
+            return 0.0
+        return float(sum(active_tdvs) / len(active_tdvs) * 30.0)
 
     def run_timestep_calculations(self, dt_seconds: float, current_time: datetime) -> None:
         """Advance one timestep using the updated v1_2 canopy and sink logic."""
@@ -483,6 +588,7 @@ class TomatoModel:
         self.LAI = self.calculate_current_lai()
         self.f_c = self.calculate_vegetation_cover()
         self.water_supply_stress = self._resolve_water_supply_stress()
+        research_architecture = self._current_research_architecture()
 
         self.solve_coupled_energy_balance()
 
@@ -504,10 +610,19 @@ class TomatoModel:
         self.daily_transpiration_g += transp_rate_evap_g_s_m2 * dt
 
         rm_base_g_s = self.calculate_instantaneous_respiration(self.T_c)
-        rgr_used = getattr(self, "last_RGR", 0.03)
-        rm_eff_factor = 1.0 - math.exp(-self.f_Rm_RGR * max(0.0, rgr_used))
+        rm_eff_factor = self._maintenance_efficiency_factor(
+            architecture=research_architecture,
+            reserve_pool_g=self.reserve_ch2o_g,
+            buffer_pool_g=self.buffer_pool_g,
+        )
         rm_eff_g_s = rm_base_g_s * rm_eff_factor
         net_ch2o_step_g = max(0.0, gross_ch2o_prod_g - rm_eff_g_s * dt)
+        self.maintenance_respiration_share = 0.0
+        if gross_ch2o_prod_g > 1e-12:
+            self.maintenance_respiration_share = max(
+                0.0,
+                min((rm_eff_g_s * dt) / gross_ch2o_prod_g, 1.0),
+            )
 
         t_air_c = self.T_a - 273.15
         for cohort in self.truss_cohorts:
@@ -518,6 +633,21 @@ class TomatoModel:
                 cohort["active"] = False
 
         sinks, per_truss_sinks = self._compute_sink_state()
+        active_trusses = self._count_active_trusses()
+        self.fruit_abort_fraction = 0.0
+        self.fruit_set_feedback_events = 0
+        if research_architecture is not None:
+            supply_dm_equivalent_g_d = 0.0
+            if dt > 0.0:
+                supply_dm_equivalent_g_d = (net_ch2o_step_g / dt) * 86400.0
+            sinks, self.fruit_abort_fraction, self.fruit_set_feedback_events = apply_fruit_feedback_proxy(
+                mode=research_architecture.fruit_feedback_mode,
+                sinks=sinks,
+                supply_dm_equivalent_g_d=supply_dm_equivalent_g_d,
+                active_trusses=active_trusses,
+                threshold=research_architecture.fruit_feedback_threshold,
+                slope=research_architecture.fruit_feedback_slope,
+            )
         alloc = self._resolve_allocation_fractions(current_time=current_time, sinks=sinks)
 
         self.part_fruit = alloc["fruit"]
@@ -537,20 +667,27 @@ class TomatoModel:
 
         s_total_dm_d = max(0.0, float(sinks["S_fr_g_d"]) + float(sinks["S_veg_g_d"]))
         cap_dm_step = s_total_dm_d * (dt / 86400.0)
-
-        if c_f <= 1e-12:
-            dW_total_step = 0.0
-            self.reserve_ch2o_g = max(0.0, self.reserve_ch2o_g)
-        else:
-            ch2o_supply = max(0.0, net_ch2o_step_g + self.reserve_ch2o_g)
-            required_ch2o_for_cap = cap_dm_step / c_f
-            allowed_dm_by_supply = c_f * ch2o_supply
-            if allowed_dm_by_supply >= cap_dm_step:
-                dW_total_step = cap_dm_step
-                self.reserve_ch2o_g = max(0.0, ch2o_supply - required_ch2o_for_cap)
-            else:
-                dW_total_step = allowed_dm_by_supply
-                self.reserve_ch2o_g = 0.0
+        reserve_mode = "off"
+        if research_architecture is not None:
+            reserve_mode = research_architecture.reserve_buffer_mode
+        dW_total_step, self.reserve_ch2o_g, self.buffer_pool_g = resolve_realized_growth_with_buffer(
+            mode=reserve_mode,
+            net_ch2o_step_g=net_ch2o_step_g,
+            c_f=c_f,
+            cap_dm_step=cap_dm_step,
+            reserve_pool_g=self.reserve_ch2o_g,
+            buffer_pool_g=self.buffer_pool_g,
+            storage_capacity_g=(
+                self.reserve_ch2o_g + cap_dm_step + 1.0
+                if research_architecture is None
+                else research_architecture.storage_capacity_g_ch2o_m2
+            ),
+            storage_carryover_fraction=(
+                1.0 if research_architecture is None else research_architecture.storage_carryover_fraction
+            ),
+            buffer_capacity_g=(0.0 if research_architecture is None else research_architecture.buffer_capacity_g_ch2o_m2),
+            buffer_min_fraction=(0.0 if research_architecture is None else research_architecture.buffer_min_fraction),
+        )
 
         if dW_total_step > 0.0:
             self.W_lv = max(0.0, self.W_lv + dW_total_step * self.part_leaf)
@@ -586,6 +723,19 @@ class TomatoModel:
         self._harvest_matured_cohorts()
         self.vegetative_dw = self.W_lv + self.W_st + self.W_rt
         self.fruit_dw = self.W_fr
+        self.mean_stage_residence_time_d = self._estimate_mean_stage_residence_time()
+        self.common_structure_snapshot = build_common_structure_snapshot(
+            assimilate_buffer_g=max(self.reserve_ch2o_g, self.buffer_pool_g),
+            leaf_biomass_g=self.W_lv,
+            stem_root_biomass_g=self.W_st + self.W_rt,
+            fruit_biomass_g=self.W_fr,
+            photosynthesis_g=max(0.0, gross_ch2o_prod_g),
+            growth_respiration_g=max(0.0, dW_total_step / max(c_f, 1e-9) - dW_total_step),
+            growth_g=max(0.0, dW_total_step),
+            maintenance_g=max(0.0, rm_eff_g_s * dt),
+            fruit_harvest_g=self.W_fr_harvested,
+            leaf_harvest_g=0.0,
+        )
 
     def calculate_current_lai(self) -> float:
         if self.fixed_lai is not None:
@@ -827,7 +977,14 @@ class TomatoModel:
         self.daily_temp_accumulator = []
 
         doy = sim_date.timetuple().tm_yday
+        research_architecture = self._current_research_architecture()
         sla_cm2_per_g = 266.0 + 88.0 * math.sin(2.0 * math.pi * (doy + 68) / 365.0)
+        if research_architecture is not None and research_architecture.sla_mode == "tomgro_independent_driver":
+            par_mol_m2_d = self.daily_par_umol_in_sum * 1e-6
+            temp_scalar = max(0.55, min(1.35, 1.0 - 0.015 * (avg_temp_c - 23.0)))
+            co2_scalar = max(0.75, min(1.20, 1.0 - 0.00035 * (self.u_CO2 - 350.0)))
+            par_scalar = max(0.55, min(1.30, 1.15 - 0.04 * min(par_mol_m2_d, 12.0)))
+            sla_cm2_per_g = max(120.0, min(450.0, 320.0 * temp_scalar * co2_scalar * par_scalar))
         self.SLA = max(0.0001, sla_cm2_per_g / 10000.0)
         if self.fixed_lai is None:
             self.LAI = self.W_lv * self.SLA
@@ -890,8 +1047,9 @@ class TomatoModel:
         self.update_daily_boundary(sim_date)
 
     def _compute_sink_state(self) -> tuple[dict[str, float], list[float]]:
+        research_architecture = self._current_research_architecture()
         if self.use_age_structured_sink:
-            per_truss_sinks = self._compute_per_truss_sinks_gd()
+            per_truss_sinks = self._compute_per_truss_sinks_gd(research_architecture)
             s_fr_g_d = sum(per_truss_sinks)
         else:
             active_trusses = self._count_active_trusses()
@@ -900,6 +1058,12 @@ class TomatoModel:
             per_truss_sinks = []
 
         s_veg_g_d = max(1e-9, float(self.to_floor_from_shoot(self.veg_sink_g_d_per_shoot)))
+        if research_architecture is not None:
+            if research_architecture.vegetative_demand_mode == "dekoning_vegetative_unit":
+                s_veg_g_d *= 1.0 + 0.08 * min(self._count_active_trusses(), 6)
+            elif research_architecture.vegetative_demand_mode == "tomgro_dynamic_age":
+                lai_gap = max(research_architecture.lai_target_center - max(self.LAI, 0.1), 0.0)
+                s_veg_g_d *= 1.0 + min(lai_gap / max(research_architecture.lai_target_center, 1e-6), 0.25)
         return {
             "S_fr_g_d": max(0.0, float(s_fr_g_d)),
             "S_veg_g_d": s_veg_g_d,
@@ -1017,8 +1181,14 @@ class TomatoModel:
             total_g_d += mult * float(cohort.get("n_fruits", self.n_f)) * pgr_singlefruit
         return max(0.0, total_g_d)
 
-    def _compute_per_truss_sinks_gd(self) -> list[float]:
+    def _compute_per_truss_sinks_gd(
+        self,
+        research_architecture: TomicsResearchArchitecture | None = None,
+    ) -> list[float]:
         sinks: list[float] = []
+        n_classes = 3
+        if research_architecture is not None and research_architecture.fruit_structure_mode == "vanthoor_fixed_boxcar":
+            n_classes = 5
         for cohort in self.truss_cohorts:
             if not cohort.get("active", True):
                 sinks.append(0.0)
@@ -1027,7 +1197,15 @@ class TomatoModel:
             if tdvs <= float(self.pgr_params["c"]):
                 sinks.append(0.0)
                 continue
-            pgr_singlefruit = self._pgr_richards_raw(tdvs)
+            effective_tdvs = tdvs
+            if research_architecture is not None:
+                if research_architecture.fruit_structure_mode == "tomgro_age_class":
+                    class_idx = min(max(int(tdvs * n_classes), 0), n_classes - 1)
+                    effective_tdvs = (class_idx + 0.5) / n_classes
+                elif research_architecture.fruit_structure_mode == "vanthoor_fixed_boxcar":
+                    class_idx = min(max(int(tdvs * n_classes), 0), n_classes - 1)
+                    effective_tdvs = (class_idx + 0.5) / n_classes
+            pgr_singlefruit = self._pgr_richards_raw(effective_tdvs)
             if pgr_singlefruit <= 0.0:
                 sinks.append(0.0)
                 continue

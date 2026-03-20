@@ -4,6 +4,7 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.partitioning i
     SinkBasedTomatoPolicy,
     ThorpFruitVegPolicy,
     ThorpVegetativePolicy,
+    TomicsArchitectureResearchPolicy,
     TomicsPolicy,
     build_partition_policy,
 )
@@ -18,3 +19,5 @@ def test_policy_registry_preserves_existing_aliases_and_adds_tomics() -> None:
     assert isinstance(build_partition_policy("tomics"), TomicsPolicy)
     assert isinstance(build_partition_policy("tomics_alloc"), TomicsPolicy)
     assert isinstance(build_partition_policy("tomics_hybrid"), TomicsPolicy)
+    assert isinstance(build_partition_policy("tomics_alloc_research"), TomicsArchitectureResearchPolicy)
+    assert isinstance(build_partition_policy("tomics_architecture_research"), TomicsArchitectureResearchPolicy)

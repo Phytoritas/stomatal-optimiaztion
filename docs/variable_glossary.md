@@ -61,6 +61,28 @@ Use one canonical name per concept across repositories.
 | Vegetative sink strength per shoot | `veg_sink_g_d_per_shoot` | `vegetative_sink_strength_per_shoot` | g DW shoot^-1 d^-1 | Converted to per-floor sink with `shoots_per_m2` |
 | Carbohydrate reserve pool | `reserve_ch2o_g` | `carbohydrate_reserve_pool` | g CH2O m^-2 | Temporary buffer used by sink-limited tomato growth updates |
 
+## TOMICS allocation architecture study terms
+
+| Concept | Canonical short name | Optional verbose alias | Typical unit | Notes |
+|---|---|---|---|---|
+| Research architecture id | `architecture_id` | `tomics_architecture_id` | string | Stable identifier for one opt-in research architecture candidate |
+| Fruit structure mode | `fruit_structure_mode` | `tomics_fruit_structure_mode` | enum | `tomsim_truss_cohort`, `tomgro_age_class`, or `vanthoor_fixed_boxcar` |
+| Vegetative demand mode | `vegetative_demand_mode` | `tomics_vegetative_demand_mode` | enum | `tomsim_constant_wholecrop`, `dekoning_vegetative_unit`, or `tomgro_dynamic_age` |
+| Reserve / buffer mode | `reserve_buffer_mode` | `tomics_reserve_buffer_mode` | enum | `off`, `tomsim_storage_pool`, or `vanthoor_carbohydrate_buffer` |
+| Fruit feedback mode | `fruit_feedback_mode` | `tomics_fruit_feedback_mode` | enum | Research-only fruit abortion or source-demand feedback switch |
+| Maintenance mode | `maintenance_mode` | `tomics_maintenance_mode` | enum | `rgr_adjusted`, `fixed`, or `buffer_linked` in the current research seam |
+| SLA mode | `sla_mode` | `tomics_sla_mode` | enum | `derived_not_driver` is preferred for tomato-first defaults |
+| THORP root correction mode | `thorp_root_correction_mode` | `tomics_thorp_root_correction_mode` | enum | THORP remains a bounded greenhouse root correction only |
+| Temporal coupling mode | `temporal_coupling_mode` | `tomics_temporal_coupling_mode` | enum | `daily_alloc`, `hourly_source_daily_alloc`, or `buffered_daily` |
+| Research reserve pool output | `reserve_pool_g_m2` | `research_reserve_pool` | g CH2O m^-2 | Output column for storage-pool carryover in research runs |
+| Research carbohydrate buffer output | `buffer_pool_g_m2` | `research_buffer_pool` | g CH2O m^-2 | Output column for Vanthoor-like buffer accounting in research runs |
+| Fruit abort fraction | `fruit_abort_fraction` | `research_fruit_abort_fraction` | 0-1 | Output proxy, research-only, never part of shipped default `tomics` semantics |
+| Fruit-set feedback events | `fruit_set_feedback_events` | `research_fruit_feedback_events` | count | Research-only event counter |
+| Maintenance respiration share | `maintenance_respiration_share` | `maintenance_respiration_fraction` | 0-1 | Share of gross CH2O production consumed by maintenance in the current step |
+| Mean stage residence time | `mean_stage_residence_time_d` | `fruit_stage_residence_time_days` | d | Diagnostic proxy for age-class or boxcar fruit structure modes |
+| Common-structure assimilate buffer | `xA_assimilate_buffer_g_m2` | `kuijpers_assimilate_buffer_state` | g CH2O m^-2 | Kuijpers-normalized diagnostic state; scaffold only, not a standalone tomato law |
+| Canopy collapse days | `canopy_collapse_days` | `days_with_canopy_collapse` | d | In the architecture study, days with active fruiting and either LAI below the configured floor or leaf allocation below the configured floor |
+
 ## Rules
 - Use lowercase snake_case.
 - Reuse the same name for the same concept in every repository.

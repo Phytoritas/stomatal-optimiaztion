@@ -67,5 +67,6 @@ Current status:
 - Slice 098 migrated: root GOSM sensitivity and manuscript figure workflows
 - Slice 099 migrated: root THORP main-text example figure workflows plus a narrow shared Plotkit bundle helper
 - Slice 100 migrated: root TDGM supplementary offline and THORP-G example figure workflows with Plotkit-style figure bundles
-- Active bounded slice: issue `#227` / module `114` adds the TOMICS tomato-facing naming layer, a bounded `tomics` hybrid partition policy over the existing tomato legacy pipeline, and reproducible comparison/factorial workflows while keeping legacy tomato labels only inside dedicated provenance records
+- Slice 101 migrated: TOMICS-Alloc architecture-study seams, source-traceable reserve/buffer and feedback helpers, and staged architecture factorial runner
+- Active bounded slice: issue `#231` / module `115` extends TOMICS-Alloc with a primary-source architecture pipeline and research-only candidate screening while keeping the shipped `tomics` default unchanged
 - Current open architecture gap: none
