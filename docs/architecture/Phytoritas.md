@@ -5,7 +5,7 @@
 - Bound repo root: `C:\Users\yhmoo\OneDrive\Phytoritas\projects\stomatal-optimiaztion`
 - Legacy source root: `C:\Users\yhmoo\OneDrive\Phytoritas\00. Stomatal Optimization`
 - Working mode: auto-bootstrap plus manual evidence capture
-- Current phase: the recursive architecture refactoring wave is closed, including the former root `TDGM` later-horizon control gap `D-108`; the architecture spine and validation contract are green, continuous root `TDGM` parity is exact through day `784.5`, the shipped post-day-`791.5` control reopening is now recorded as a reference-payload resume artifact in `docs/architecture/review/tdgm-reference-payload-resume-provenance-note.md`, and the next bounded tomato-facing slice is issue `#227` / module `114` for the TOMICS naming layer plus hybrid tomato partition-policy comparison workflow
+- Current phase: the recursive architecture refactoring wave is closed, including the former root `TDGM` later-horizon control gap `D-108`; the architecture spine and validation contract are green, continuous root `TDGM` parity is exact through day `784.5`, the shipped post-day-`791.5` control reopening is now recorded as a reference-payload resume artifact in `docs/architecture/review/tdgm-reference-payload-resume-provenance-note.md`, the TOMICS naming and first hybrid tomato partition-policy slice is complete through issue `#227` / module `114`, and the active follow-up slice is issue `#231` / module `115` for a primary-source TOMICS-Alloc architecture pipeline with research-only candidate screening
 
 ## Scope
 
@@ -103,4 +103,4 @@ Broad implementation remains blocked until Gates A through C are satisfied.
 2. keep the validation gates green by rerunning the fast root parity tests and `scripts/render_root_rerun_parity_figures.py --fast-smoke` whenever `THORP`, `GOSM`, or `TDGM` runtime kernels change
 3. rerender the default full-series control bundles for root `THORP` and `TDGM` whenever their runtime kernels change so the canonical `python/legacy/diff` CSV evidence stays current
 4. use `docs/architecture/review/tdgm-reference-payload-resume-provenance-note.md` as the source of truth if later-horizon shipped `TDGM` control diffs are revisited
-5. run issue `#227` / module `114` as a bounded tomato-facing slice that adds TOMICS naming, a capped hybrid `tomics` partition policy, and reproducible comparison/factorial runners while preserving legacy tomato provenance only in dedicated history documents
+5. keep the shipped `tomics` path stable and use issue `#231` / module `115` to evaluate only opt-in TOMICS-Alloc research architectures against the local tomato primary-source corpus before any future default promotion

@@ -34,6 +34,15 @@ def _clamp(value: float, low: float, high: float) -> float:
     return float(min(max(value, low), high))
 
 
+def _normalized_shoot_split(*, leaf_fraction: float, stem_fraction: float) -> tuple[float, float]:
+    leaf = max(float(leaf_fraction), 0.0)
+    stem = max(float(stem_fraction), 0.0)
+    total = leaf + stem
+    if total <= 1e-12:
+        return 0.70, 0.30
+    return leaf / total, stem / total
+
+
 def _resolve_param(
     params: Mapping[str, object] | None,
     key: str,
@@ -125,9 +134,13 @@ class TomicsPolicy:
         scheme: str,
         params: Mapping[str, object] | None = None,
     ) -> AllocationFractions:
+        normalized_leaf_fraction, normalized_stem_fraction = _normalized_shoot_split(
+            leaf_fraction=self.leaf_fraction_of_shoot_base,
+            stem_fraction=self.stem_fraction_of_shoot_base,
+        )
         legacy = SinkBasedTomatoPolicy(
-            leaf_fraction_of_shoot=self.leaf_fraction_of_shoot_base,
-            stem_fraction_of_shoot=self.stem_fraction_of_shoot_base,
+            leaf_fraction_of_shoot=normalized_leaf_fraction,
+            stem_fraction_of_shoot=normalized_stem_fraction,
         ).compute(
             env=env,
             state=state,
@@ -209,7 +222,16 @@ class TomicsPolicy:
         base_leaf_fraction = _resolve_param(
             params,
             "leaf_fraction_of_shoot_base",
-            default=self.leaf_fraction_of_shoot_base,
+            default=normalized_leaf_fraction,
+        )
+        stem_base_fraction = _resolve_param(
+            params,
+            "stem_fraction_of_shoot_base",
+            default=normalized_stem_fraction,
+        )
+        base_leaf_fraction, _ = _normalized_shoot_split(
+            leaf_fraction=base_leaf_fraction,
+            stem_fraction=stem_base_fraction,
         )
         min_leaf_fraction = _resolve_param(
             params,

@@ -26,6 +26,8 @@ class PartitionPolicy(Protocol):
 
 
 _SINK_BASED_ALIASES = {"sink_based", "sink-based", "sink", "legacy", "default"}
+
+
 def build_partition_policy(name: str) -> PartitionPolicy:
     key = str(name).strip().lower()
     if key in _SINK_BASED_ALIASES:
@@ -55,6 +57,13 @@ def build_partition_policy(name: str) -> PartitionPolicy:
         )
 
         return TomicsPolicy()
+
+    if key in {"tomics_alloc_research", "tomics_architecture_research"}:
+        from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.partitioning.research_policy import (
+            TomicsArchitectureResearchPolicy,
+        )
+
+        return TomicsArchitectureResearchPolicy()
 
     raise ValueError(f"Unknown partition policy name {name!r}.")
 
