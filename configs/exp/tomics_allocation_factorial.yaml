@@ -189,3 +189,7 @@ stage3:
 paths:
   repo_root: ../..
   output_root: out/tomics_allocation_factorial
+
+plots:
+  summary_plot_spec: configs/plotkit/tomics/allocation_factorial_summary.yaml
+  main_effects_plot_spec: configs/plotkit/tomics/allocation_factorial_main_effects.yaml

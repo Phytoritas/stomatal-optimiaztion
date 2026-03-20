@@ -27,9 +27,13 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.pipelines import (  # noq
     resolve_repo_root,
     run_tomato_legacy_pipeline,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.plotting import (  # noqa: E402
+    render_factorial_summary_bundle,
+)
 
 
 DEFAULT_POLICY_ORDER: tuple[str, ...] = ("legacy", "thorp_fruit_veg", "tomics")
+DEFAULT_FACTORIAL_SUMMARY_SPEC_PATH = PROJECT_ROOT / "configs" / "plotkit" / "tomics" / "factorial_summary.yaml"
 
 
 def _as_dict(raw: object) -> dict[str, Any]:
@@ -55,6 +59,14 @@ def _resolve_output_root(config: dict[str, Any], repo_root: Path, override: str 
         raw = Path(override)
     else:
         raw = Path(str(_as_dict(config.get("paths")).get("output_root", "out/tomics_factorial")))
+    if raw.is_absolute():
+        return raw
+    return (repo_root / raw).resolve()
+
+
+def _resolve_plot_spec_path(config: dict[str, Any], repo_root: Path) -> Path:
+    plots_cfg = _as_dict(config.get("plots"))
+    raw = Path(str(plots_cfg.get("summary_plot_spec", DEFAULT_FACTORIAL_SUMMARY_SPEC_PATH)))
     if raw.is_absolute():
         return raw
     return (repo_root / raw).resolve()
@@ -168,53 +180,13 @@ def _metrics_row(
     return metrics
 
 
-def _plot_summary(metrics_df: pd.DataFrame, *, out_path: Path) -> None:
-    try:
-        import matplotlib.pyplot as plt
-    except ModuleNotFoundError as exc:  # pragma: no cover
-        raise ModuleNotFoundError("Plotting requires matplotlib.") from exc
-
-    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(13, 5), constrained_layout=True)
-    colors = {"legacy": "black", "thorp_fruit_veg": "tab:blue", "tomics": "tab:green"}
-
-    ax = axes[0]
-    for policy_name, group in metrics_df.groupby("partition_policy", sort=False):
-        ax.scatter(
-            group["final_lai"],
-            group["final_total_dry_weight_g_m2"],
-            label=policy_name,
-            color=colors.get(policy_name),
-            alpha=0.85,
-        )
-    ax.set_xlabel("final_lai")
-    ax.set_ylabel("final_total_dry_weight_g_m2")
-    ax.set_title("Factorial outcomes")
-    ax.grid(True, alpha=0.25)
-    ax.legend(loc="best", fontsize=9)
-
-    ax = axes[1]
-    summary = (
-        metrics_df.groupby(["partition_policy", "theta_substrate"], as_index=False)["mean_alloc_frac_root"]
-        .mean()
-        .sort_values(["theta_substrate", "partition_policy"])
+def _plot_summary(metrics_df: pd.DataFrame, *, out_path: Path, spec_path: Path) -> dict[str, str]:
+    artifacts = render_factorial_summary_bundle(
+        metrics_df=metrics_df,
+        out_path=out_path,
+        spec_path=spec_path,
     )
-    for policy_name, group in summary.groupby("partition_policy", sort=False):
-        ax.plot(
-            group["theta_substrate"],
-            group["mean_alloc_frac_root"],
-            marker="o",
-            linewidth=1.5,
-            label=policy_name,
-            color=colors.get(policy_name),
-        )
-    ax.set_xlabel("theta_substrate")
-    ax.set_ylabel("mean_alloc_frac_root")
-    ax.set_title("Root moderation by substrate moisture")
-    ax.grid(True, alpha=0.25)
-
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_path, dpi=170, bbox_inches="tight")
-    plt.close(fig)
+    return artifacts.to_summary()
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -239,6 +211,7 @@ def main() -> int:
     config = load_config(config_path)
     repo_root = resolve_repo_root(config, config_path=config_path)
     output_root = ensure_dir(_resolve_output_root(config, repo_root, args.output_root))
+    plot_spec_path = _resolve_plot_spec_path(config, repo_root)
 
     design_rows = _design_rows(config)
     design_df = pd.DataFrame(design_rows)
@@ -270,7 +243,7 @@ def main() -> int:
     metrics_path = output_root / "run_metrics.csv"
     metrics_df.to_csv(metrics_path, index=False)
     plot_path = output_root / "summary_plot.png"
-    _plot_summary(metrics_df, out_path=plot_path)
+    plot_summary = _plot_summary(metrics_df, out_path=plot_path, spec_path=plot_spec_path)
 
     write_json(
         output_root / "meta.json",
@@ -295,6 +268,8 @@ def main() -> int:
                 "output_root": str(output_root),
                 "run_metrics_csv": str(metrics_path),
                 "summary_plot": str(plot_path),
+                "summary_plot_pdf": plot_summary.get("pdf"),
+                "summary_plot_metadata": plot_summary.get("metadata"),
             },
             sort_keys=True,
         )

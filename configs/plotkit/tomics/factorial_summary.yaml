@@ -1,0 +1,55 @@
+version: 1
+meta:
+  id: summary_plot
+  title: TOMICS factorial summary
+  family: tomics_factorial_summary
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_scatter_and_line
+  description: Summarize TOMICS factorial outcomes with a yield scatter and a root-moderation profile.
+layout:
+  rows: 1
+  cols: 2
+  hspace: 0.24
+  wspace: 0.30
+panel_order:
+  - factorial_outcomes
+  - root_moderation
+panels:
+  factorial_outcomes:
+    title: Final LAI vs total dry weight
+    x_label: Final LAI
+    y_label: Final total dry weight [g m^-2]
+  root_moderation:
+    title: Root moderation by substrate moisture
+    x_label: theta_substrate
+    y_label: Mean root allocation (-)
+styling:
+  sources:
+    legacy:
+      label: Legacy sink-based
+      color: "#111111"
+      linestyle: "-"
+      marker: "o"
+      linewidth_pt: 1.5
+    thorp_fruit_veg:
+      label: Raw THORP
+      color: "#1D4E89"
+      linestyle: "--"
+      marker: "s"
+      linewidth_pt: 1.5
+    tomics:
+      label: TOMICS hybrid
+      color: "#2A9D8F"
+      linestyle: "-"
+      marker: "^"
+      linewidth_pt: 1.8
+figure:
+  width_mm: 180
+  height_mm: 90
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false

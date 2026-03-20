@@ -1,0 +1,30 @@
+version: 1
+meta:
+  id: summary_plot
+  title: TOMICS allocation architecture candidates
+  family: tomics_allocation_architecture_summary
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_scatter
+  description: Rank architecture candidates by score against final fruit dry weight and canopy-collapse pressure.
+layout:
+  rows: 1
+  cols: 1
+panel_order:
+  - architecture_score
+panels:
+  architecture_score:
+    title: Final fruit dry weight vs score
+    x_label: Final fruit dry weight [g m^-2]
+    y_label: Architecture score
+    colorbar_label: Canopy collapse days [d]
+    cmap: viridis
+figure:
+  width_mm: 160
+  height_mm: 95
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false

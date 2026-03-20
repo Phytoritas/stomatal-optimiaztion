@@ -1,0 +1,79 @@
+version: 1
+meta:
+  id: comparison_plot
+  title: TOMICS tomato partition policy comparison
+  family: tomics_partition_compare
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_multiline
+  description: Compare legacy sink-based, raw THORP, and TOMICS hybrid allocation traces under one forcing payload.
+layout:
+  rows: 2
+  cols: 2
+  hspace: 0.34
+  wspace: 0.28
+panel_order:
+  - alloc_frac_fruit
+  - alloc_frac_root
+  - LAI
+  - total_dry_weight_g_m2
+panels:
+  alloc_frac_fruit:
+    column: alloc_frac_fruit
+    title: Fruit allocation
+    x_label: datetime
+    y_label: Fruit allocation (-)
+    scale: linear
+    y_limits: [-0.05, 1.05]
+    y_padding_fraction: 0.06
+  alloc_frac_root:
+    column: alloc_frac_root
+    title: Root allocation
+    x_label: datetime
+    y_label: Root allocation (-)
+    scale: linear
+    y_limits: [-0.05, 1.05]
+    y_padding_fraction: 0.06
+  LAI:
+    column: LAI
+    title: Leaf area index
+    x_label: datetime
+    y_label: LAI
+    scale: linear
+    y_padding_fraction: 0.10
+  total_dry_weight_g_m2:
+    column: total_dry_weight_g_m2
+    title: Total dry weight
+    x_label: datetime
+    y_label: Total dry weight [g m^-2]
+    scale: linear
+    y_padding_fraction: 0.10
+styling:
+  sources:
+    legacy:
+      label: Legacy sink-based
+      color: "#111111"
+      linestyle: "-"
+      marker: "o"
+      linewidth_pt: 1.7
+    thorp_fruit_veg:
+      label: Raw THORP
+      color: "#1D4E89"
+      linestyle: "--"
+      marker: "s"
+      linewidth_pt: 1.5
+    tomics:
+      label: TOMICS hybrid
+      color: "#2A9D8F"
+      linestyle: "-"
+      marker: "^"
+      linewidth_pt: 1.9
+figure:
+  width_mm: 180
+  height_mm: 140
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png, pdf]
+  dpi: 300
+  transparent: false

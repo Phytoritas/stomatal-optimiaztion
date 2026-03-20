@@ -1,6 +1,6 @@
 """Canonical TOMICS tomato-facing namespace."""
 
-from stomatal_optimiaztion.domains.tomato.tomics import alloc, flux, grow
+from stomatal_optimiaztion.domains.tomato.tomics import alloc, flux, grow, plotting
 
 MODEL_NAME = "TOMICS"
 ALLOC_NAME = "TOMICS-Alloc"
@@ -15,4 +15,5 @@ __all__ = [
     "alloc",
     "flux",
     "grow",
+    "plotting",
 ]
