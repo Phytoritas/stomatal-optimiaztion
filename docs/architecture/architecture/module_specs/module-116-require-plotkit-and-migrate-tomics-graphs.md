@@ -17,7 +17,7 @@ Standardize reusable repo-local graph rendering on a Plotkit-style spec-first bu
 - `configs/plotkit/tomics/` specs
 - TOMICS Plotkit renderer helpers under `src/stomatal_optimiaztion/domains/tomato/tomics/`
 - updated graph scripts and tests
-- bundle outputs with `png`, `pdf`, spec copy, resolved spec, tokens copy, metadata, and data CSV
+- bundle outputs with `png`, spec copy, resolved spec, tokens copy, metadata, and data CSV
 
 ## Responsibilities
 

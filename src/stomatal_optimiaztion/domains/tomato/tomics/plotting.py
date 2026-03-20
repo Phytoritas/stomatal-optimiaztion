@@ -117,10 +117,13 @@ def _write_bundle_sidecars(
     metadata = {
         "figure_id": spec["meta"]["id"],
         "title": spec["meta"].get("title", spec["meta"]["id"]),
+        "kind": spec.get("kind", ""),
         "spec_path": str(spec_path.resolve()),
         "tokens_path": str(tokens_path),
         "data_csv": str(file_paths["data_csv"]),
         "frame_digest": frame_digest(serialized),
+        "layout_preset": spec.get("layout", {}).get("preset", ""),
+        "export_formats": list(spec.get("export", {}).get("formats", ["png"])),
         "rows": int(serialized.shape[0]),
     }
     if extra_metadata:
@@ -140,7 +143,6 @@ def _save_bundle_figure(
 ) -> FigureBundleArtifacts:
     export_cfg = spec.get("export", {})
     dpi = int(export_cfg.get("dpi", tokens.get("figure", {}).get("default_dpi", 300)))
-    formats = {str(fmt) for fmt in export_cfg.get("formats", ["png"])}
     transparent = bool(export_cfg.get("transparent", False))
     fig.savefig(
         file_paths["png"],
@@ -148,15 +150,7 @@ def _save_bundle_figure(
         transparent=transparent,
         facecolor=tokens["figure"]["background"],
     )
-    pdf_path: Path | None = None
-    if "pdf" in formats:
-        fig.savefig(
-            file_paths["pdf"],
-            dpi=dpi,
-            transparent=transparent,
-            facecolor=tokens["figure"]["background"],
-        )
-        pdf_path = file_paths["pdf"]
+    file_paths["png"].with_suffix(".pdf").unlink(missing_ok=True)
     plt, _ = _require_matplotlib()
     plt.close(fig)
     return FigureBundleArtifacts(
@@ -167,7 +161,6 @@ def _save_bundle_figure(
         resolved_spec_path=file_paths["resolved_spec"],
         tokens_copy_path=file_paths["tokens_copy"],
         metadata_path=file_paths["metadata"],
-        pdf_path=pdf_path,
     )
 
 
@@ -193,6 +186,75 @@ def _figure_size(spec: dict[str, Any]) -> tuple[float, float]:
         float(spec["figure"]["width_mm"]) / 25.4,
         float(spec["figure"]["height_mm"]) / 25.4,
     )
+
+
+def _layout_margins(spec: dict[str, Any], *, defaults: dict[str, float]) -> dict[str, float]:
+    margins = dict(defaults)
+    layout_cfg = spec.get("layout", {})
+    raw_margins = layout_cfg.get("margins", {})
+    if isinstance(raw_margins, dict):
+        for key in ("left", "right", "bottom", "top", "hspace", "wspace"):
+            if key in raw_margins:
+                margins[key] = float(raw_margins[key])
+    return margins
+
+
+def _apply_suptitle(fig: Any, *, spec: dict[str, Any], fonts: dict[str, Any]) -> None:
+    layout_cfg = spec.get("layout", {})
+    fig.suptitle(
+        spec["meta"]["title"],
+        x=float(layout_cfg.get("title_x", 0.5)),
+        y=float(layout_cfg.get("title_y", 0.985)),
+        fontsize=float(layout_cfg.get("title_size_pt", fonts["title_size_pt"] + 2)),
+        fontweight=layout_cfg.get("title_weight", "bold"),
+    )
+
+
+def _legend_labels(
+    spec: dict[str, Any],
+    handles: dict[str, Any],
+    *,
+    source_section: str = "styling",
+) -> list[str]:
+    legend_cfg = spec.get("legend", {})
+    raw_order = legend_cfg.get("order")
+    if isinstance(raw_order, list) and raw_order:
+        labels: list[str] = []
+        source_cfg = spec.get(source_section, {}).get("sources", {})
+        for item in raw_order:
+            if item in handles:
+                labels.append(str(item))
+                continue
+            if item in source_cfg:
+                label = str(source_cfg[item]["label"])
+                if label in handles:
+                    labels.append(label)
+        return labels
+    return list(handles)
+
+
+def _apply_figure_legend(fig: Any, *, spec: dict[str, Any], tokens: dict[str, Any], handles: dict[str, Any]) -> None:
+    legend_cfg = spec.get("legend", {})
+    if not legend_cfg.get("enabled", False):
+        return
+    labels = _legend_labels(spec, handles)
+    if not labels:
+        return
+    fig.legend(
+        [handles[label] for label in labels],
+        labels,
+        loc=legend_cfg.get("loc", "upper center"),
+        bbox_to_anchor=tuple(legend_cfg.get("bbox_to_anchor", [0.5, 0.95])),
+        ncol=int(legend_cfg.get("ncol", max(1, len(labels)))),
+        frameon=tokens["legend"]["frameon"],
+        fontsize=float(legend_cfg.get("font_size_pt", tokens["fonts"]["legend_size_pt"])),
+    )
+
+
+def _mapping_value(spec: dict[str, Any], key: str, default: str) -> str:
+    mapping = spec.get("mapping", {})
+    value = mapping.get(key, default)
+    return str(value)
 
 
 def render_partition_compare_bundle(
@@ -233,13 +295,17 @@ def render_partition_compare_bundle(
         facecolor=tokens["figure"]["background"],
         constrained_layout=False,
     )
+    margins = _layout_margins(
+        spec,
+        defaults={"left": 0.11, "right": 0.98, "bottom": 0.12, "top": 0.86, "hspace": 0.34, "wspace": 0.28},
+    )
     fig.subplots_adjust(
-        left=0.11,
-        right=0.98,
-        bottom=0.12,
-        top=0.88,
-        hspace=float(spec["layout"]["hspace"]),
-        wspace=float(spec["layout"]["wspace"]),
+        left=margins["left"],
+        right=margins["right"],
+        bottom=margins["bottom"],
+        top=margins["top"],
+        hspace=margins["hspace"],
+        wspace=margins["wspace"],
     )
     axes_vec = np.atleast_1d(axes).reshape(-1)
     handles: dict[str, Any] = {}
@@ -288,27 +354,8 @@ def render_partition_compare_bundle(
     for extra_ax in axes_vec[len(spec["panel_order"]) :]:
         extra_ax.set_visible(False)
 
-    legend_order = [
-        spec["styling"]["sources"][source_name]["label"]
-        for source_name in spec["styling"]["sources"]
-        if spec["styling"]["sources"][source_name]["label"] in handles
-    ]
-    fig.legend(
-        [handles[label] for label in legend_order],
-        legend_order,
-        loc="upper center",
-        bbox_to_anchor=(0.5, 0.955),
-        ncol=max(1, len(legend_order)),
-        frameon=tokens["legend"]["frameon"],
-        fontsize=fonts["legend_size_pt"],
-    )
-    fig.suptitle(
-        spec["meta"]["title"],
-        x=0.5,
-        y=0.985,
-        fontsize=fonts["title_size_pt"] + 2,
-        fontweight="bold",
-    )
+    _apply_figure_legend(fig, spec=spec, tokens=tokens, handles=handles)
+    _apply_suptitle(fig, spec=spec, fonts=fonts)
 
     _write_bundle_sidecars(
         spec_path=spec_path,
@@ -329,6 +376,11 @@ def render_factorial_summary_bundle(
 ) -> FigureBundleArtifacts:
     plt, _ = _require_matplotlib()
     spec, tokens, tokens_path, file_paths = _prepare_bundle(spec_path=spec_path, out_path=out_path)
+    policy_column = _mapping_value(spec, "policy_column", "partition_policy")
+    theta_column = _mapping_value(spec, "theta_column", "theta_substrate")
+    outcome_x_column = _mapping_value(spec, "outcome_x_column", "final_lai")
+    outcome_y_column = _mapping_value(spec, "outcome_y_column", "final_total_dry_weight_g_m2")
+    root_metric_column = _mapping_value(spec, "root_metric_column", "mean_alloc_frac_root")
     fig, axes = plt.subplots(
         spec["layout"]["rows"],
         spec["layout"]["cols"],
@@ -337,13 +389,17 @@ def render_factorial_summary_bundle(
         facecolor=tokens["figure"]["background"],
         constrained_layout=False,
     )
+    margins = _layout_margins(
+        spec,
+        defaults={"left": 0.10, "right": 0.98, "bottom": 0.16, "top": 0.80, "hspace": 0.24, "wspace": 0.30},
+    )
     fig.subplots_adjust(
-        left=0.10,
-        right=0.98,
-        bottom=0.16,
-        top=0.87,
-        hspace=float(spec["layout"]["hspace"]),
-        wspace=float(spec["layout"]["wspace"]),
+        left=margins["left"],
+        right=margins["right"],
+        bottom=margins["bottom"],
+        top=margins["top"],
+        hspace=margins["hspace"],
+        wspace=margins["wspace"],
     )
     axes_vec = np.atleast_1d(axes).reshape(-1)
     fonts = tokens["fonts"]
@@ -356,12 +412,12 @@ def render_factorial_summary_bundle(
     ax.set_xlabel(left_spec["x_label"], fontsize=fonts["axis_label_size_pt"])
     ax.set_ylabel(left_spec["y_label"], fontsize=fonts["axis_label_size_pt"])
     for policy_name, style in spec["styling"]["sources"].items():
-        group = metrics_df[metrics_df["partition_policy"] == policy_name]
+        group = metrics_df[metrics_df[policy_column] == policy_name]
         if group.empty:
             continue
         handle = ax.scatter(
-            pd.to_numeric(group["final_lai"], errors="coerce"),
-            pd.to_numeric(group["final_total_dry_weight_g_m2"], errors="coerce"),
+            pd.to_numeric(group[outcome_x_column], errors="coerce"),
+            pd.to_numeric(group[outcome_y_column], errors="coerce"),
             label=style["label"],
             color=style["color"],
             marker=style["marker"],
@@ -377,17 +433,17 @@ def render_factorial_summary_bundle(
     ax.set_xlabel(right_spec["x_label"], fontsize=fonts["axis_label_size_pt"])
     ax.set_ylabel(right_spec["y_label"], fontsize=fonts["axis_label_size_pt"])
     summary = (
-        metrics_df.groupby(["partition_policy", "theta_substrate"], as_index=False)["mean_alloc_frac_root"]
+        metrics_df.groupby([policy_column, theta_column], as_index=False)[root_metric_column]
         .mean()
-        .sort_values(["theta_substrate", "partition_policy"])
+        .sort_values([theta_column, policy_column])
     )
     for policy_name, style in spec["styling"]["sources"].items():
-        group = summary[summary["partition_policy"] == policy_name]
+        group = summary[summary[policy_column] == policy_name]
         if group.empty:
             continue
         handle = ax.plot(
-            group["theta_substrate"],
-            group["mean_alloc_frac_root"],
+            group[theta_column],
+            group[root_metric_column],
             marker=style["marker"],
             linewidth=float(style["linewidth_pt"]),
             linestyle=style["linestyle"],
@@ -397,23 +453,8 @@ def render_factorial_summary_bundle(
         handles.setdefault(style["label"], handle)
     _panel_label(ax, tokens=tokens, letter=_PANEL_LETTERS[1])
 
-    legend_order = [style["label"] for style in spec["styling"]["sources"].values() if style["label"] in handles]
-    fig.legend(
-        [handles[label] for label in legend_order],
-        legend_order,
-        loc="upper center",
-        bbox_to_anchor=(0.5, 0.97),
-        ncol=max(1, len(legend_order)),
-        frameon=tokens["legend"]["frameon"],
-        fontsize=fonts["legend_size_pt"],
-    )
-    fig.suptitle(
-        spec["meta"]["title"],
-        x=0.5,
-        y=0.99,
-        fontsize=fonts["title_size_pt"] + 2,
-        fontweight="bold",
-    )
+    _apply_figure_legend(fig, spec=spec, tokens=tokens, handles=handles)
+    _apply_suptitle(fig, spec=spec, fonts=fonts)
 
     _write_bundle_sidecars(
         spec_path=spec_path,
@@ -434,6 +475,9 @@ def render_architecture_summary_bundle(
 ) -> FigureBundleArtifacts:
     plt, _ = _require_matplotlib()
     spec, tokens, tokens_path, file_paths = _prepare_bundle(spec_path=spec_path, out_path=out_path)
+    fruit_weight_column = _mapping_value(spec, "fruit_weight_column", "final_fruit_dry_weight")
+    score_column = _mapping_value(spec, "score_column", "score")
+    color_column = _mapping_value(spec, "color_column", "canopy_collapse_days")
     fig, ax = plt.subplots(
         1,
         1,
@@ -442,14 +486,18 @@ def render_architecture_summary_bundle(
         facecolor=tokens["figure"]["background"],
         constrained_layout=False,
     )
-    fig.subplots_adjust(left=0.11, right=0.92, bottom=0.16, top=0.85)
+    margins = _layout_margins(
+        spec,
+        defaults={"left": 0.11, "right": 0.92, "bottom": 0.16, "top": 0.85, "hspace": 0.20, "wspace": 0.20},
+    )
+    fig.subplots_adjust(left=margins["left"], right=margins["right"], bottom=margins["bottom"], top=margins["top"])
     fonts = tokens["fonts"]
     panel_spec = spec["panels"]["architecture_score"]
     apply_axis_theme(ax, tokens=tokens, show_xlabels=True)
     scatter = ax.scatter(
-        pd.to_numeric(metrics_df["final_fruit_dry_weight"], errors="coerce"),
-        pd.to_numeric(metrics_df["score"], errors="coerce"),
-        c=pd.to_numeric(metrics_df["canopy_collapse_days"], errors="coerce"),
+        pd.to_numeric(metrics_df[fruit_weight_column], errors="coerce"),
+        pd.to_numeric(metrics_df[score_column], errors="coerce"),
+        c=pd.to_numeric(metrics_df[color_column], errors="coerce"),
         cmap=panel_spec.get("cmap", "viridis"),
         alpha=0.9,
     )
@@ -459,13 +507,7 @@ def render_architecture_summary_bundle(
     colorbar = fig.colorbar(scatter, ax=ax, fraction=0.045, pad=0.02)
     colorbar.set_label(panel_spec["colorbar_label"], fontsize=fonts["axis_label_size_pt"])
     _panel_label(ax, tokens=tokens, letter=_PANEL_LETTERS[0])
-    fig.suptitle(
-        spec["meta"]["title"],
-        x=0.5,
-        y=0.98,
-        fontsize=fonts["title_size_pt"] + 2,
-        fontweight="bold",
-    )
+    _apply_suptitle(fig, spec=spec, fonts=fonts)
     _write_bundle_sidecars(
         spec_path=spec_path,
         spec=spec,
@@ -485,9 +527,12 @@ def render_main_effects_bundle(
 ) -> FigureBundleArtifacts:
     plt, _ = _require_matplotlib()
     spec, tokens, tokens_path, file_paths = _prepare_bundle(spec_path=spec_path, out_path=out_path)
+    factor_column = _mapping_value(spec, "factor_column", "factor")
+    level_column = _mapping_value(spec, "level_column", "level")
+    metric_column = _mapping_value(spec, "metric_column", "mean_score")
     top_n = int(spec["panels"]["top_effects"].get("top_n", 12))
-    top = interactions_df.sort_values("mean_score", ascending=False).head(top_n).copy()
-    top["factor_level"] = [f"{row.factor}={row.level}" for row in top.itertuples(index=False)]
+    top = interactions_df.sort_values(metric_column, ascending=False).head(top_n).copy()
+    top["factor_level"] = [f"{getattr(row, factor_column)}={getattr(row, level_column)}" for row in top.itertuples(index=False)]
 
     fig, ax = plt.subplots(
         1,
@@ -497,23 +542,31 @@ def render_main_effects_bundle(
         facecolor=tokens["figure"]["background"],
         constrained_layout=False,
     )
-    fig.subplots_adjust(left=0.28, right=0.98, bottom=0.16, top=0.85)
+    margins = _layout_margins(
+        spec,
+        defaults={"left": 0.34, "right": 0.98, "bottom": 0.16, "top": 0.85, "hspace": 0.20, "wspace": 0.20},
+    )
     fonts = tokens["fonts"]
     panel_spec = spec["panels"]["top_effects"]
+    if top.shape[0] > 0 and bool(panel_spec.get("auto_left_margin_from_labels", False)):
+        longest = max(len(str(label)) for label in top["factor_level"])
+        margins["left"] = min(
+            float(panel_spec.get("max_left_margin", 0.50)),
+            max(
+                margins["left"],
+                float(panel_spec.get("min_left_margin", margins["left"]))
+                + longest * float(panel_spec.get("left_margin_char_factor", 0.0035)),
+            ),
+        )
+    fig.subplots_adjust(left=margins["left"], right=margins["right"], bottom=margins["bottom"], top=margins["top"])
     apply_axis_theme(ax, tokens=tokens, show_xlabels=True)
-    ax.barh(top["factor_level"], top["mean_score"], color=panel_spec.get("color", "#6D597A"))
+    ax.barh(top["factor_level"], top[metric_column], color=panel_spec.get("color", "#6D597A"))
     ax.set_title(panel_spec["title"], fontsize=fonts["title_size_pt"], loc="left", pad=6)
     ax.set_xlabel(panel_spec["x_label"], fontsize=fonts["axis_label_size_pt"])
     ax.set_ylabel(panel_spec["y_label"], fontsize=fonts["axis_label_size_pt"])
     ax.invert_yaxis()
     _panel_label(ax, tokens=tokens, letter=_PANEL_LETTERS[0])
-    fig.suptitle(
-        spec["meta"]["title"],
-        x=0.5,
-        y=0.98,
-        fontsize=fonts["title_size_pt"] + 2,
-        fontweight="bold",
-    )
+    _apply_suptitle(fig, spec=spec, fonts=fonts)
     _write_bundle_sidecars(
         spec_path=spec_path,
         spec=spec,
@@ -541,7 +594,17 @@ def render_simulation_summary_bundle(
         facecolor=tokens["figure"]["background"],
         constrained_layout=False,
     )
-    fig.subplots_adjust(left=0.10, right=0.96, bottom=0.10, top=0.92, hspace=float(spec["layout"]["hspace"]))
+    margins = _layout_margins(
+        spec,
+        defaults={"left": 0.10, "right": 0.96, "bottom": 0.10, "top": 0.92, "hspace": 0.42, "wspace": 0.20},
+    )
+    fig.subplots_adjust(
+        left=margins["left"],
+        right=margins["right"],
+        bottom=margins["bottom"],
+        top=margins["top"],
+        hspace=margins["hspace"],
+    )
     axes_vec = np.atleast_1d(axes).reshape(-1)
     fonts = tokens["fonts"]
     locator = mdates.AutoDateLocator(minticks=4, maxticks=10)
@@ -612,16 +675,18 @@ def render_simulation_summary_bundle(
                 ax2.set_ylim(_y_limits(np.concatenate(secondary_values), padding_fraction=0.08))
 
         if handles:
-            ax.legend(handles, labels, loc="upper left", fontsize=fonts["legend_size_pt"], ncol=min(5, len(labels)))
+            legend_cfg = panel_spec.get("legend", {})
+            if legend_cfg.get("enabled", True):
+                ax.legend(
+                    handles,
+                    labels,
+                    loc=legend_cfg.get("loc", "upper left"),
+                    fontsize=float(legend_cfg.get("font_size_pt", fonts["legend_size_pt"])),
+                    ncol=int(legend_cfg.get("ncol", min(5, len(labels)))),
+                )
         _panel_label(ax, tokens=tokens, letter=_PANEL_LETTERS[idx])
 
-    fig.suptitle(
-        spec["meta"]["title"],
-        x=0.5,
-        y=0.985,
-        fontsize=fonts["title_size_pt"] + 2,
-        fontweight="bold",
-    )
+    _apply_suptitle(fig, spec=spec, fonts=fonts)
     _write_bundle_sidecars(
         spec_path=spec_path,
         spec=spec,
@@ -655,12 +720,23 @@ def render_allocation_compare_bundle(
         facecolor=tokens["figure"]["background"],
         constrained_layout=False,
     )
-    fig.subplots_adjust(left=0.10, right=0.98, bottom=0.10, top=0.92, hspace=float(spec["layout"]["hspace"]))
+    margins = _layout_margins(
+        spec,
+        defaults={"left": 0.10, "right": 0.98, "bottom": 0.10, "top": 0.92, "hspace": 0.42, "wspace": 0.20},
+    )
+    fig.subplots_adjust(
+        left=margins["left"],
+        right=margins["right"],
+        bottom=margins["bottom"],
+        top=margins["top"],
+        hspace=margins["hspace"],
+    )
     axes_vec = np.atleast_1d(axes).reshape(-1)
     fonts = tokens["fonts"]
     work = merged.copy()
     work["datetime"] = pd.to_datetime(work["datetime"])
     locator = mdates.AutoDateLocator(minticks=4, maxticks=10)
+    handles: dict[str, Any] = {}
 
     for idx, panel_id in enumerate(spec["panel_order"]):
         ax = axes_vec[idx]
@@ -678,7 +754,7 @@ def render_allocation_compare_bundle(
         column = panel_spec["column"]
         for source_name, style in spec["styling"]["sources"].items():
             values = pd.to_numeric(work[f"{column}__{source_name}"], errors="coerce")
-            ax.plot(
+            handle = ax.plot(
                 work["datetime"],
                 values,
                 color=style["color"],
@@ -686,19 +762,12 @@ def render_allocation_compare_bundle(
                 marker=style.get("marker"),
                 linewidth=float(style["linewidth_pt"]),
                 label=style["label"],
-            )
-
-        if idx == 0:
-            ax.legend(loc="upper left", fontsize=fonts["legend_size_pt"])
+            )[0]
+            handles.setdefault(style["label"], handle)
         _panel_label(ax, tokens=tokens, letter=_PANEL_LETTERS[idx])
 
-    fig.suptitle(
-        spec["meta"]["title"],
-        x=0.5,
-        y=0.985,
-        fontsize=fonts["title_size_pt"] + 2,
-        fontweight="bold",
-    )
+    _apply_figure_legend(fig, spec=spec, tokens=tokens, handles=handles)
+    _apply_suptitle(fig, spec=spec, fonts=fonts)
     _write_bundle_sidecars(
         spec_path=spec_path,
         spec=spec,

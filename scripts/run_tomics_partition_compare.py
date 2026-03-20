@@ -236,7 +236,6 @@ def main() -> int:
         json.dumps(
             {
                 "comparison_plot": str(plot_path),
-                "comparison_plot_pdf": plot_summary.get("pdf"),
                 "comparison_plot_metadata": plot_summary.get("metadata"),
                 "exp_key": exp_key,
                 "output_root": str(output_root),

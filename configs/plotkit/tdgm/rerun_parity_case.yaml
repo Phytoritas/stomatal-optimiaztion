@@ -62,6 +62,6 @@ theme:
   name: Phytoritas
   tokens: ../themes/Phytoritas_tokens.yaml
 export:
-  formats: [png, pdf]
+  formats: [png]
   dpi: 300
   transparent: false

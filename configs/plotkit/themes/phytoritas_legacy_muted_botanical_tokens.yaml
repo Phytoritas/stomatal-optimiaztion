@@ -42,5 +42,4 @@ panel_labels:
 exports:
   formats:
     - png
-    - pdf
   transparent: false

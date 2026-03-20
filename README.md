@@ -14,7 +14,7 @@
 - Architecture artifacts under `docs/architecture/`
 - Domain packages under `src/stomatal_optimiaztion/`
 - Validation artifacts from `pytest` and `ruff`
-- Reproducible Plotkit figure bundles under `out/` with saved spec, resolved spec, tokens, metadata, and raster/vector exports
+- Reproducible Plotkit figure bundles under `out/` with saved spec, resolved spec, tokens, metadata, and PNG/data sidecars
 
 ## How to run
 ```bash
@@ -39,7 +39,7 @@ poetry run ruff check .
 - Issue `#222` / module `112` exonerated the direct `d_psi_rc0_d_c_r_*` branch and narrowed the remaining drift to the root-specific `dk_canopy_max_d_c_r_*` derivative branch, with the vertical-root path still more inflated than the horizontal-root path.
 - Issue `#224` / module `113` closes `D-108`: continuous root `TDGM` parity is exact through day `784.5`, and the shipped post-day-`791.5` control reopening is explained by a one-off MATLAB resume artifact after the day-`787` file save.
 - Issue `#227` / module `114` adds the TOMICS tomato-facing naming layer, a bounded `tomics` hybrid partition policy, and deterministic comparison/factorial workflows while preserving tomato-slice provenance in dedicated migration/history documents.
-- Issue `#233` / module `116` makes Plotkit spec-first rendering the repo-local default for reusable graphs and migrates the live TOMICS graph scripts onto Plotkit bundle outputs.
+- Issue `#233` / module `116` makes Plotkit spec-first rendering the repo-local default for reusable graphs, migrates the live TOMICS graph scripts onto Plotkit bundle outputs, and keeps the repo-local bundle contract PNG-only.
 - Gates A through C are satisfied for the first bounded migration slice.
 - THORP `model_card` and traceability helpers are migrated into the new package layout.
 - THORP `radiation` runtime seam is migrated as slice 002.

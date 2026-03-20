@@ -193,8 +193,9 @@ def render_case_rerun_parity_bundle(
     legacy_frame.to_csv(legacy_csv_path, index=False)
     python_frame.to_csv(python_csv_path, index=False)
     diff_frame.to_csv(diff_csv_path, index=False)
-    for extra_key in ("data_csv", "spec_copy", "resolved_spec", "tokens_copy", "metadata", "pdf"):
+    for extra_key in ("data_csv", "spec_copy", "resolved_spec", "tokens_copy", "metadata"):
         file_paths[extra_key].unlink(missing_ok=True)
+    file_paths["png"].with_suffix(".pdf").unlink(missing_ok=True)
 
     width_mm = float(spec["figure"]["width_mm"])
     height_mm = float(spec["figure"]["height_mm"])

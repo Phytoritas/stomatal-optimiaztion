@@ -268,7 +268,6 @@ def main() -> int:
                 "output_root": str(output_root),
                 "run_metrics_csv": str(metrics_path),
                 "summary_plot": str(plot_path),
-                "summary_plot_pdf": plot_summary.get("pdf"),
                 "summary_plot_metadata": plot_summary.get("metadata"),
             },
             sort_keys=True,

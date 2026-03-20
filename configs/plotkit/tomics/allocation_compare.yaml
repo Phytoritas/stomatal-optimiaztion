@@ -1,4 +1,5 @@
 version: 1
+kind: multi_panel_allocation_compare
 meta:
   id: comparison_plot
   title: Allocation fractions comparison
@@ -6,10 +7,28 @@ meta:
   support_level: thin_wrapper
   render_strategy: plotkit_style_multiline
   description: Compare baseline and candidate tomato allocation fractions over time.
+data:
+  frame_role: tomics_allocation_compare_timeseries
+mapping:
+  datetime_column: datetime
+  source_suffix_separator: "__"
 layout:
+  preset: publication_stacked_timeseries
   rows: 4
   cols: 1
-  hspace: 0.42
+  margins:
+    left: 0.10
+    right: 0.98
+    bottom: 0.10
+    top: 0.88
+    hspace: 0.42
+  title_y: 0.976
+legend:
+  enabled: true
+  order: [baseline, candidate]
+  loc: upper center
+  bbox_to_anchor: [0.5, 0.925]
+  ncol: 2
 panel_order:
   - alloc_frac_fruit
   - alloc_frac_leaf
@@ -61,6 +80,6 @@ theme:
   name: phytoritas_legacy_muted_botanical
   tokens: ../themes/phytoritas_legacy_muted_botanical_tokens.yaml
 export:
-  formats: [png, pdf]
+  formats: [png]
   dpi: 300
   transparent: false
