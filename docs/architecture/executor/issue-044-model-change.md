@@ -5,7 +5,7 @@
 
 ## Affected model
 - `TOMATO tTDGM`
-- `src/stomatal_optimiaztion/domains/tomato/ttdgm/`
+- `src/stomatal_optimiaztion/domains/tomato/tomics/grow/`
 - related TOMATO `tTDGM` contract tests and package exports
 
 ## Validation method

@@ -4,7 +4,7 @@
 - Closing this seam moves the next TOMATO architectural uncertainty to the repo-level simulation plotting script at `scripts/plot_simulation_png.py`.
 
 ## What Changed
-- add `src/stomatal_optimiaztion/domains/tomato/tthorp/models/thorp_ref/adapter.py` and package exports
+- add `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/models/thorp_ref/adapter.py` and package exports
 - bind the adapter to migrated THORP defaults and `run()` instead of external source-path probing
 - add regression coverage for forcing normalization, empty-output handling, and a smoke path against the migrated THORP runtime
 - update architecture artifacts and README so `slice 039` is recorded and `scripts/plot_simulation_png.py` becomes the next blocked seam

@@ -5,7 +5,7 @@
 
 ## Affected model
 - `TOMATO tGOSM`
-- `src/stomatal_optimiaztion/domains/tomato/tgosm/`
+- `src/stomatal_optimiaztion/domains/tomato/tomics/flux/`
 - related TOMATO `tGOSM` interface tests and package exports
 
 ## Validation method
@@ -16,4 +16,4 @@
 ## Comparison target
 - legacy `TOMATO/tGOSM/src/tgosm/interface.py`
 - legacy `TOMATO/tGOSM/tests/test_tgosm_contracts.py`
-- current migrated `src/stomatal_optimiaztion/domains/tomato/tgosm/contracts.py`
+- current migrated `src/stomatal_optimiaztion/domains/tomato/tomics/flux/contracts.py`

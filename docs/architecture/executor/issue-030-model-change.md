@@ -4,7 +4,7 @@
 
 ## Affected model
 - `TOMATO tTHORP`
-- `src/stomatal_optimiaztion/domains/tomato/tthorp/models/tomato_legacy/run.py`
+- `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/models/tomato_legacy/run.py`
 - related TOMATO `tTHORP` tests and architecture slice records
 
 ## Validation method

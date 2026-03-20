@@ -4,7 +4,7 @@
 
 ## Affected model
 - `TOMATO tTHORP`
-- `src/stomatal_optimiaztion/domains/tomato/tthorp/core/`
+- `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/core/`
 - related TOMATO scheduling and config-derived run-shape tests
 
 ## Validation method

@@ -4,7 +4,7 @@
 
 ## Affected model
 - `TOMATO tTHORP`
-- `src/stomatal_optimiaztion/domains/tomato/tthorp/pipelines/`
+- `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/pipelines/`
 - related TOMATO dayrun artifact and config-loading integration tests
 
 ## Validation method

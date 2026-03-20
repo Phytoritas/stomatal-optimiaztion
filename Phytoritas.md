@@ -11,7 +11,7 @@ Current status:
 - Architecture scaffold seeded
 - Target repo shape finalized as a staged single-package domain workspace
 - Slices 001-024 migrated: THORP bounded runtime, reporting, config, IO, and CLI seams
-- Slices 025-045 migrated: TOMATO `tTHORP` contracts, interface, forcing, adapters, `TomatoModel`, runner, partitioning-package, package-level legacy pipeline, shared IO, shared scheduler, dayrun pipeline, repo-level scripts, feature-builder script, THORP reference adapter, plotting seams, `tGOSM` contract/interface seams, and `tTDGM` contract/interface seams
+- Slices 025-045 migrated: TOMATO `TOMICS-Alloc` contracts, interface, forcing, adapters, `TomatoModel`, runner, partitioning-package, package-level legacy pipeline, shared IO, shared scheduler, dayrun pipeline, repo-level scripts, feature-builder script, THORP reference adapter, plotting seams, plus `TOMICS-Flux` and `TOMICS-Grow` contract/interface seams
 - Slice 046 migrated: `load-cell-data` config seam
 - Slice 047 migrated: `load-cell-data` IO seam
 - Slice 048 migrated: `load-cell-data` aggregation seam
@@ -67,4 +67,5 @@ Current status:
 - Slice 098 migrated: root GOSM sensitivity and manuscript figure workflows
 - Slice 099 migrated: root THORP main-text example figure workflows plus a narrow shared Plotkit bundle helper
 - Slice 100 migrated: root TDGM supplementary offline and THORP-G example figure workflows with Plotkit-style figure bundles
+- Active bounded slice: issue `#227` / module `114` adds the TOMICS tomato-facing naming layer, a bounded `tomics` hybrid partition policy over the existing tomato legacy pipeline, and reproducible comparison/factorial workflows while keeping legacy tomato labels only inside dedicated provenance records
 - Current open architecture gap: none

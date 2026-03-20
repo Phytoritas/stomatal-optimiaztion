@@ -11,12 +11,12 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Plot tomato simulation CSV outputs to a PNG summary.")
     parser.add_argument(
         "--input",
-        default="data/output/KNU_Tomato_Env__sim.csv",
+        default="out/tomics_partition_compare/example/tomics/df.csv",
         help="Input CSV path (model outputs).",
     )
     parser.add_argument(
         "--output",
-        default="data/output/KNU_Tomato_Env__sim.summary.png",
+        default="out/tomics_partition_compare/example/tomics/simulation_summary.png",
         help="Output PNG path.",
     )
     parser.add_argument(
@@ -64,7 +64,7 @@ def _plot(df: pd.DataFrame, *, out_path: Path, dpi: int) -> None:
         ax2.plot(x, t_canopy, label="T_canopy_C", color="tab:red", linewidth=1.0, alpha=0.8)
         ax2.set_ylabel("T_canopy (C)")
     ax.grid(True, alpha=0.25)
-    ax.set_title("tTHORP Tomato Legacy Simulation Summary")
+    ax.set_title("TOMICS-Alloc Tomato Legacy Simulation Summary")
 
     ax = axes[1]
     total_dw = _maybe_get(df, "total_dry_weight_g_m2")

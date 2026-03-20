@@ -5,7 +5,7 @@
 
 ## Affected model
 - `TOMATO tGOSM`
-- `src/stomatal_optimiaztion/domains/tomato/tgosm/`
+- `src/stomatal_optimiaztion/domains/tomato/tomics/flux/`
 - related TOMATO `tGOSM` contract and import tests
 
 ## Validation method

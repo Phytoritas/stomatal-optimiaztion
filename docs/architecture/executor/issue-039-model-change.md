@@ -5,7 +5,7 @@
 
 ## Affected model
 - `TOMATO tTHORP`
-- `src/stomatal_optimiaztion/domains/tomato/tthorp/models/thorp_ref/`
+- `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/models/thorp_ref/`
 - related TOMATO THORP reference-adapter tests and package exports
 
 ## Validation method
