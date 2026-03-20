@@ -53,6 +53,14 @@ Use one canonical name per concept across repositories.
 | Shoot leaf base share | `leaf_fraction_of_shoot_base` | `tomics_leaf_fraction_of_shoot_base` | fraction of shoot allocation | Default 0.70 |
 | Shoot stem base share | `stem_fraction_of_shoot_base` | `tomics_stem_fraction_of_shoot_base` | fraction of shoot allocation | Default 0.30 |
 
+## Tomato legacy model state
+
+| Concept | Canonical short name | Optional verbose alias | Typical unit | Notes |
+|---|---|---|---|---|
+| Truss development stage | `tdvs` | `truss_development_stage` | 0-1 | Cohort state advanced by FDVR in the v1.2-aligned tomato legacy model |
+| Vegetative sink strength per shoot | `veg_sink_g_d_per_shoot` | `vegetative_sink_strength_per_shoot` | g DW shoot^-1 d^-1 | Converted to per-floor sink with `shoots_per_m2` |
+| Carbohydrate reserve pool | `reserve_ch2o_g` | `carbohydrate_reserve_pool` | g CH2O m^-2 | Temporary buffer used by sink-limited tomato growth updates |
+
 ## Rules
 - Use lowercase snake_case.
 - Reuse the same name for the same concept in every repository.
