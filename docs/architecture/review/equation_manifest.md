@@ -1,0 +1,94 @@
+# Equation Manifest for TOMICS-Allocation
+
+This file maps **source equations / algorithms** to **canonical TOMICS code modules**.
+
+Scope:
+- Built from the local source PDFs currently present in the workspace.
+- Repo paths are written against the **canonical TOMICS namespace** discussed for the live repository:
+  `src/stomatal_optimiaztion/domains/tomato/tomics/...`
+- Because the local uploaded code snapshot is the older `TOMATO/tTHORP` tree, treat this document as an **implementation mapping / architecture manifest**, not as a claim that every row is already implemented in the old snapshot.
+
+Status legend:
+- `default`: safe shipped/default TOMICS-Alloc logic
+- `research`: valid candidate for opt-in architecture study
+- `rejected_default`: may be useful historically, but should not become shipped default
+- `defer`: valid concept, but lower priority than the main architecture seams
+
+| source_family | source_ref | eq_or_algorithm | normalized_form | canonical_repo_module | status | rationale |
+|---|---|---|---|---|---|---|
+| Heuvelink 1996 / TOMSIM | Ch. 5.2, pp. 165-166 (common pool discussion) | One common assimilate pool available to all sinks | Above-ground fruit and vegetative sinks compete for a shared assimilate pool; distance/transport resistance omitted for tomato under ordinary greenhouse conditions. | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/tomics_policy.py | default | Core tomato-first allocation assumption for fruit-vs-vegetative partitioning; directly supports safe greenhouse default. |
+| Heuvelink 1996 / TOMSIM | Ch. 5.7, pp. 229-233 | Relative sink-strength partitioning | F_i = S_i / ΣS, with vegetative and generative fractions governed by relative potential growth rates. | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/tomics_policy.py | default | Default tomato partition law should remain sink-based, not tree-first. |
+| Heuvelink 1996 / TOMSIM | eq. [5], p. 189 | Truss potential growth rate (Richards function derivative) | PGR_truss_g_d = f_Richards(TDVS_truss, N_fruit_truss, a, b, c, d) | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/fruit_structure.py | research | Best candidate for truss-cohort fruit demand in a fine-grained TOMICS-Alloc research mode. |
+| Heuvelink 1996 / TOMSIM | Ch. 5.5, p. 189 | Constant vegetative sink strength | S_veg_potential_g_d_per_shoot ≈ 2.8 g DM d^-1 per shoot | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/veg_demand.py | default | Good greenhouse-safe baseline; simple, validated, and stable. |
+| Heuvelink 1996 / TOMSIM | Ch. 5.7, pp. 229-233; general discussion p. 232-233 | Assimilate storage-pool requirement | When supply > active sink demand, excess assimilates should accumulate in an explicit storage/reserve pool instead of disappearing or being forced into SLA artifacts. | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/reserve_buffer.py | research | Strong candidate seam for TOMICS research architecture; not required to change shipped default immediately. |
+| Jones et al. 1991 / TOMGRO | eq. (4), pp. 664-665 | Node initiation rate | GENR = GENRAT * F_n(T) * F(C) | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/scheduler_modes.py | research | Useful only if TOMGRO-like organ initiation / phenology research mode is enabled. |
+| Jones et al. 1991 / TOMGRO | eq. (5), pp. 664-665 | CO2 scalar on development | F(C) = 1 + S_CO2 * (CO2 - 350) | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/research_modes.py | rejected_default | Heuvelink later criticized CO2 effects on flowering and fruit sink strength in original TOMGRO; keep only as explicitly flagged research mode if at all. |
+| Jones et al. 1991 / TOMGRO | eqs. (6)-(7), pp. 664-665 | Age-class state transport | Age-class counts and organ states advance through temperature-scaled development classes. | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/fruit_structure.py | research | Candidate alternative to truss-cohort or fixed-boxcar representations. |
+| Jones et al. 1991 / TOMGRO | eq. (8), p. 665 | Leaf demand from potential area expansion and SLA | L_dem = Σ[(1+FRPET) * dALp_i/dt / SLA(T,C,PAR)] | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/veg_demand.py | research | Valid TOMGRO component, but not suitable as shipped default without explicit caution about SLA-as-driver. |
+| Jones et al. 1991 / TOMGRO | eqs. (9)-(12), p. 665 | SLA(T, C, PAR) | SLA = S_p / (S_T * S_C) with empirical light/temperature/CO2 modifiers | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/sla_modes.py | research | Heuvelink critiqued independent SLA as a driver; keep as research-only toggle or reject in default. |
+| Jones et al. 1991 / TOMGRO | eq. (13), p. 665 | Stem demand proportional to leaf demand | S_dem = Σ[L_dem(i) * FRSTM * N_stem(i)/N_leaf(i)] | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/veg_demand.py | research | Useful when reproducing TOMGRO-like dynamic vegetative demand. |
+| Jones et al. 1991 / TOMGRO | eq. (14), p. 665 | Fruit demand by age class | F_dem = Σ[N_fruit(i) * POF(i) * F_f(T) * F(C)] | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/fruit_structure.py | research | Strong candidate for TOMGRO-style age-class fruit sink experiments. |
+| Jones et al. 1991 / TOMGRO | eq. (15), p. 665 | Total above-ground demand | DEMAND = L_dem + S_dem + F_dem | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/common_structure.py | research | Useful in Kuijpers-style common-structure experiments. |
+| Jones et al. 1991 / TOMGRO | eqs. (18)-(19), p. 665 | Maintenance respiration and supply | M_resp = f_Q10(T)*(R_L*(W_L+W_S)+R_F*W_F); SUPPLY = E*(P_g - M_resp)*(1-P_root) | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/common_structure.py | research | Important for carbon-accounting seam; consider moving to TOMICS-Grow once architecture stabilizes. |
+| Jones et al. 1991 / TOMGRO | eqs. (20)-(23), pp. 665-666 | Actual growth scales demand by Rc | g_i = demand_i * R_c when supply is limiting | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/common_structure.py | research | Candidate limiter for architecture screening; not required for shipped default TOMICS-Alloc. |
+| Jones et al. 1991 / TOMGRO | discussion and model structure, pp. 663-666 | No dynamic carbon pool | No explicit carry-over reserve/storage pool across days. | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/reserve_buffer.py | rejected_default | Heuvelink identified the absence of a storage pool as a structural weakness. |
+| De Koning 1994 | General introduction / conceptual model, p. 10 | Vegetative unit as functional sink | One vegetative unit = stem segment + three leaves between successive trusses. | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/veg_demand.py | research | Best tomato-specific alternative to coarse whole-crop vegetative sink; should be screened factorially. |
+| De Koning 1994 | General introduction / conceptual model, p. 9-10 | Partition proportional to potential growth rates | Dry matter available for growth is partitioned in proportion to organ potential growth rates. | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/tomics_policy.py | default | Supports tomato-first sink competition at the organ level. |
+| De Koning 1994 | eq. 4.4.5, pp. 103-104 | Daily potential fruit growth rate by Gompertz derivative | PFGR_t = C * exp(-exp(-B*(t-M))) * B * exp(-B*(t-M)) | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/fruit_structure.py | research | Preferred exact candidate for De Koning-style potential fruit growth. |
+| De Koning 1994 | eqs. 4.4.9-4.4.10, pp. 104-105 | Fruit growth in development-stage space | PFGR'_t(FDS) and PFGR_t = PFGR'_t * FDR(T) | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/fruit_structure.py | research | Useful if TOMICS-Alloc moves from time-based to FDS-based fruit sink tracking. |
+| De Koning 1994 | eqs. 4.4.11, 4.4.21, 4.4.22, p. 113 | Round-tomato Gompertz parameterization | C = 1.082*PFW; M' = 0.397*(1+0.401*exp(-0.202*TRUSS)); B' = 4.38 | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/fruit_structure.py | research | Good cultivar/architecture baseline for round-tomato fruit-growth experiments. |
+| De Koning 1994 | eq. 8.2.4, p. 193 | Long-term potential crop growth identity | pot_crop_growth_rate = sink_formation_rate * average_potential_sink_weight | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/common_structure.py | research | High-value architecture equation linking formation rate and sink size; ideal for high-level screening and crop-control reasoning. |
+| De Koning 1994 | General discussion, p. 195 | Optimum LAI for fruit production | For Dutch glasshouse conditions, maximum fruit production predicted near LAI ≈ 2.5, not maximal light interception. | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/tomics_policy.py | default | Direct justification for LAI governor and canopy protection in shipped TOMICS-Alloc. |
+| Vanthoor appendix / article | eq. (1), appendix p. 4 | Temperature sum state | dTS_can/dt = T_can / 86400 | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/scheduler_modes.py | research | Useful when screening developmental gating or buffered scheduling. |
+| Vanthoor appendix / article | eq. (2), appendix p. 4 | Carbohydrate buffer state CBuf | dCBuf/dt = MC_AirBuf - MC_BufFruit - MC_BufLeaf - MC_BufStem - MC_BufAir | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/reserve_buffer.py | research | Best exact greenhouse buffer equation in the source set; key research seam. |
+| Vanthoor appendix / article | eqs. (10)-(11), appendix p. 6 | Photosynthesis inflow to buffer and max-buffer saturation gate | MC_AirBuf = M_CH2O * h_CBufAirBuf * (P - R); h_CBufAirBuf = 0/1 gate at CBuf_max (differentiable form in App. B) | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/reserve_buffer.py | research | Needed only if implementing Vanthoor-style buffer saturation and carry-over. |
+| Vanthoor appendix / article | eq. (24), appendix p. 10 | Buffer-to-fruit flow | MC_BufFruit = h_CBufBufOrg * h_Tcan * h_Tcan24 * h_TcanSum * g_Tcan24 * rg_Fruit | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/fruit_structure.py | research | Strong exact greenhouse formulation for fruit demand through a common buffer. |
+| Vanthoor appendix / article | eq. (25), appendix p. 10 | Buffer-to-leaf/stem flow | MC_BufOrg(i) = h_CBufBufOrg * h_Tcan24 * g_Tcan24 * rg_Org(i), i∈{leaf, stem} | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/veg_demand.py | research | Useful if screening Vanthoor-style organ flows; note stem+root are lumped in this family. |
+| Vanthoor appendix / article | eq. (26), appendix p. 10 | Lower-buffer gate | h_CBufBufOrg = 0/1 gate at CBuf_min (differentiable form in App. B) | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/reserve_buffer.py | research | Prevents organ growth from draining the buffer below its minimum. |
+| Vanthoor appendix / article | eq. (27), appendix p. 11-12 | Developmental gate from vegetative to generative stage | h_TcanSum ramps fruit growth from 0 to 1 between TS_start and TS_end | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/scheduler_modes.py | research | Useful for screening developmentally gated fruit allocation. |
+| Vanthoor appendix / article | eq. (28), appendix p. 12 | Temperature-dependent growth scalar | g_Tcan24 = 0.047*T_can24 + 0.060 | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/scheduler_modes.py | research | Direct greenhouse temperature-growth proxy derived from De Koning flowering relation; validated mainly in 17-23°C range. |
+| Vanthoor appendix / article | eq. (29), appendix p. 12-13 | Fruit set as function of fruit carbohydrate flow | MN_BufFruit{1} = capped linear function of MC_BufFruit relative to threshold r_BufFruit^Max,FrtSet | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/fruit_feedback.py | research | Good explicit fruit-set feedback candidate; do not silently promote to shipped default. |
+| Vanthoor appendix / article | eqs. (31)-(35), appendix pp. 14-15 | Fruit-number and carbohydrate stage flows | Fruit numbers and carbohydrates move through fixed boxcar train stages via r_dev * n_dev; first stage inflow depends on fruit set and potential stage weight. | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/fruit_structure.py | research | Strong exact candidate for a Vanthoor-style fruit-structure research mode. |
+| Vanthoor appendix / article | eqs. (38)-(42), appendix pp. 15-16 | Per-fruit Gompertz growth and fruit-growth-period parameterization | GR_j from Gompertz derivative; FGP=1/(r_dev*86400); M and B as functions of FGP; t_FGP,j = ((j-1)+0.5)/n_dev * FGP | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/fruit_structure.py | research | Exact bridge between De Koning fruit growth and Vanthoor stage train. |
+| Vanthoor appendix / article | eqs. (43)-(45), appendix pp. 15-16 | Growth and maintenance respiration | MC_BufAir = Σ growth_resp_i; maintenance_resp_i = c_m,i * Q10^(0.1*(T_can24-25)) * C_i * (1-exp(-c_RGR*RGR)) | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/common_structure.py | research | Useful for carbon-accounting seam; may eventually belong in TOMICS-Grow rather than Alloc. |
+| Vanthoor appendix / article | eqs. (46)-(47), appendix p. 17 | Pruning at maximum LAI | CLeaf_max = LAI_max / SLA; if CLeaf >= CLeaf_max, excess is pruned. | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/tomics_policy.py | research | Useful as a hard management-side canopy cap; shipped default may keep a softer LAI governor. |
+| Kuijpers et al. 2019 | eq. (1), p. 249 | Climate-to-production relation | [y_b, y_y]^T = f_c(T, R, C) | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/common_structure.py | research | Top-level abstraction for model-set selection and architecture comparison. |
+| Kuijpers et al. 2019 | eq. (3), p. 252 | Common structure with assimilate and biomass buffers | dx_A/dt = p(.) - gr(.) - g(.); dx_S/dt = g(.) - m(.) | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/common_structure.py | research | Best architectural scaffold for factorial mixing of tomato model components. |
+| Kuijpers et al. 2019 | eq. (4), p. 252 | Coarse-grained biomass-only representation | dx_S/dt = p(.) - gr(.) - m(.) | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/common_structure.py | defer | Useful mainly for benchmarking or very coarse control models; not ideal for TOMICS-Alloc. |
+| Kuijpers et al. 2019 | eq. (5), p. 252 | Medium-grained state vector | State = [x_A, x_leaf, x_stem_root, x_fruit]^T with organ-specific g_i, m_i, h_i | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/common_structure.py | research | Useful scaffold for Vanthoor-like medium-grained hybrids. |
+| Kuijpers et al. 2019 | Section 5.2, p. 257 | Non-identifiability / limited modularity warning | Do not assume calibrated components remain valid after naive swapping; validate at component level. | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/research_modes.py | default | Methodological guardrail for architecture factorial design and code review. |
+| Potkay et al. 2021 / THORP | Eq. 1(a), p. 2230-2231 | Allocation fraction proportional to marginal gain / marginal cost | u_k ∝ marginal_gain_k / marginal_cost_k | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/root_modes.py | research | Use only as bounded hydraulic/root correction, never as the tomato master allocation law. |
+| Potkay et al. 2021 / THORP | Eq. 1(b), p. 2231 | Marginal gain derivative | marginal_gain_k = ∂(a_L(A_n + R_d) - R_m) / ∂C_k | src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/root_modes.py | research | Needed only if exposing marginal-gain terms explicitly in a bounded greenhouse-root correction seam. |
+
+## Recommended module split
+
+- `tomics_policy.py`
+  - legacy fruit anchoring
+  - greenhouse-safe vegetative/root split
+  - LAI governor and canopy protection
+- `fruit_structure.py`
+  - truss-cohort / age-class / fixed-boxcar fruit demand variants
+- `veg_demand.py`
+  - constant whole-crop vegetative sink
+  - De Koning vegetative-unit sink
+  - TOMGRO dynamic vegetative demand
+- `reserve_buffer.py`
+  - TOMSIM storage pool
+  - Vanthoor carbohydrate buffer
+- `fruit_feedback.py`
+  - TOMGRO abortion proxy
+  - De Koning / Vanthoor fruit-set feedback proxies
+- `common_structure.py`
+  - Kuijpers xA/xS block scaffold
+  - supply-demand balance / respiration accounting
+- `root_modes.py`
+  - bounded THORP-style greenhouse root correction only
+- `scheduler_modes.py`
+  - daily vs buffered-daily vs development-gated coupling
+
+## Strong default-rule summary
+
+1. Tomato fruit-vs-vegetative allocation should stay sink-based and tomato-first.
+2. THORP should remain a **bounded hydraulic/root correction**, not the whole-plant master allocator.
+3. LAI/canopy protection belongs in shipped default logic.
+4. Reserve/buffer, fruit-feedback, and richer organ-structure should be **opt-in research modes** unless re-validated in the current pipeline.

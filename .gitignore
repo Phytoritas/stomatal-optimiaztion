@@ -13,5 +13,7 @@ results/
 runs*/
 logs/
 
+docs/references/source_papers/
+
 .env
 config.yaml
