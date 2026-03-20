@@ -4,7 +4,7 @@
 
 ## Affected model
 - `TOMATO tTHORP`
-- `src/stomatal_optimiaztion/domains/tomato/tthorp/components/partitioning/`
+- `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/`
 - related TOMATO `TomatoModel` and partition-policy integration tests
 
 ## Validation method

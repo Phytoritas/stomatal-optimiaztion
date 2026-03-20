@@ -13,13 +13,13 @@ SRC_DIR = PROJECT_ROOT / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from stomatal_optimiaztion.domains.tomato.tthorp.core import (  # noqa: E402
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.core import (  # noqa: E402
     build_exp_key,
     ensure_dir,
     load_config,
     w_m2_to_par_umol,
 )
-from stomatal_optimiaztion.domains.tomato.tthorp.pipelines import (  # noqa: E402
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.pipelines import (  # noqa: E402
     config_payload_for_exp_key,
     resolve_forcing_path,
     resolve_repo_root,
@@ -33,10 +33,10 @@ def _as_dict(raw: object) -> dict[str, Any]:
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Build deterministic forcing features from YAML config.")
+    parser = argparse.ArgumentParser(description="Build deterministic TOMICS-Alloc forcing features from YAML config.")
     parser.add_argument(
         "--config",
-        default="configs/exp/tomato_dayrun.yaml",
+        default="configs/exp/tomics_partition_compare.yaml",
         help="Path to experiment YAML config.",
     )
     parser.add_argument(
@@ -56,7 +56,7 @@ def _find_sw_column(df: pd.DataFrame) -> str | None:
 
 def _resolve_default_output(config: dict[str, Any], repo_root: Path, exp_key: str) -> Path:
     paths_cfg = _as_dict(config.get("paths"))
-    features_dir_raw = Path(str(paths_cfg.get("features_dir", "TOMATO/tTHORP/artifacts/features")))
+    features_dir_raw = Path(str(paths_cfg.get("features_dir", "artifacts/tomics_alloc_features")))
     features_dir = (
         features_dir_raw if features_dir_raw.is_absolute() else (repo_root / features_dir_raw).resolve()
     )

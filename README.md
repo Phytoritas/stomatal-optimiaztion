@@ -21,6 +21,8 @@ poetry install
 poetry run python -m stomatal_optimiaztion.domains.thorp --max-steps 60
 poetry run python scripts/render_root_rerun_parity_figures.py --output-dir out/rerun_parity
 poetry run python scripts/render_root_rerun_parity_figures.py --output-dir out/rerun_parity --fast-smoke
+poetry run python scripts/run_tomics_partition_compare.py --config configs/exp/tomics_partition_compare.yaml
+poetry run python scripts/run_tomics_factorial.py --config configs/exp/tomics_factorial.yaml
 poetry run pytest
 poetry run ruff check .
 ```
@@ -35,6 +37,7 @@ poetry run ruff check .
 - Issue `#220` / module `111` rejected the stale stem-curve candidate and narrowed the remaining drift to the root-specific zero-point derivative branch, with the vertical-root sensitivity path most inflated.
 - Issue `#222` / module `112` exonerated the direct `d_psi_rc0_d_c_r_*` branch and narrowed the remaining drift to the root-specific `dk_canopy_max_d_c_r_*` derivative branch, with the vertical-root path still more inflated than the horizontal-root path.
 - Issue `#224` / module `113` closes `D-108`: continuous root `TDGM` parity is exact through day `784.5`, and the shipped post-day-`791.5` control reopening is explained by a one-off MATLAB resume artifact after the day-`787` file save.
+- Issue `#227` / module `114` adds the TOMICS tomato-facing naming layer, a bounded `tomics` hybrid partition policy, and deterministic comparison/factorial workflows while preserving tomato-slice provenance in dedicated migration/history documents.
 - Gates A through C are satisfied for the first bounded migration slice.
 - THORP `model_card` and traceability helpers are migrated into the new package layout.
 - THORP `radiation` runtime seam is migrated as slice 002.
@@ -60,27 +63,27 @@ poetry run ruff check .
 - THORP `run` seam is migrated as slice 022.
 - THORP `matlab_io` seam is migrated as slice 023.
 - THORP CLI entrypoint seam is migrated as slice 024.
-- TOMATO `tTHORP` contracts seam is migrated as slice 025.
-- TOMATO `tTHORP` interface seam is migrated as slice 026.
-- TOMATO `tTHORP` forcing CSV seam is migrated as slice 027.
-- TOMATO `tTHORP` adapter seam is migrated as slice 028.
-- TOMATO `tTHORP` `TomatoModel` surface seam is migrated as slice 029.
-- TOMATO `tTHORP` runner seam is migrated as slice 030.
-- TOMATO `tTHORP` partitioning core seam is migrated as slice 031.
-- TOMATO `tTHORP` THORP-derived partition-policy seam is migrated as slice 032.
-- TOMATO `tTHORP` package-level legacy pipeline seam is migrated as slice 033.
-- TOMATO `tTHORP` shared IO seam is migrated as slice 034.
-- TOMATO `tTHORP` shared scheduler seam is migrated as slice 035.
-- TOMATO `tTHORP` dayrun pipeline seam is migrated as slice 036.
-- TOMATO `tTHORP` repo-level pipeline script seam is migrated as slice 037.
-- TOMATO `tTHORP` feature-builder script seam is migrated as slice 038.
-- TOMATO `tTHORP` THORP reference adapter seam is migrated as slice 039.
-- TOMATO `tTHORP` simulation plotting script seam is migrated as slice 040.
-- TOMATO `tTHORP` allocation-comparison plotting script seam is migrated as slice 041.
-- TOMATO `tGOSM` contracts seam is migrated as slice 042.
-- TOMATO `tGOSM` interface seam is migrated as slice 043.
-- TOMATO `tTDGM` contracts seam is migrated as slice 044.
-- TOMATO `tTDGM` interface seam is migrated as slice 045.
+- TOMATO `TOMICS-Alloc` contracts seam is migrated as slice 025.
+- TOMATO `TOMICS-Alloc` interface seam is migrated as slice 026.
+- TOMATO `TOMICS-Alloc` forcing CSV seam is migrated as slice 027.
+- TOMATO `TOMICS-Alloc` adapter seam is migrated as slice 028.
+- TOMATO `TOMICS-Alloc` `TomatoModel` surface seam is migrated as slice 029.
+- TOMATO `TOMICS-Alloc` runner seam is migrated as slice 030.
+- TOMATO `TOMICS-Alloc` partitioning core seam is migrated as slice 031.
+- TOMATO `TOMICS-Alloc` THORP-derived partition-policy seam is migrated as slice 032.
+- TOMATO `TOMICS-Alloc` package-level legacy pipeline seam is migrated as slice 033.
+- TOMATO `TOMICS-Alloc` shared IO seam is migrated as slice 034.
+- TOMATO `TOMICS-Alloc` shared scheduler seam is migrated as slice 035.
+- TOMATO `TOMICS-Alloc` dayrun pipeline seam is migrated as slice 036.
+- TOMATO `TOMICS-Alloc` repo-level pipeline script seam is migrated as slice 037.
+- TOMATO `TOMICS-Alloc` feature-builder script seam is migrated as slice 038.
+- TOMATO `TOMICS-Alloc` THORP reference adapter seam is migrated as slice 039.
+- TOMATO `TOMICS-Alloc` simulation plotting script seam is migrated as slice 040.
+- TOMATO `TOMICS-Alloc` allocation-comparison plotting script seam is migrated as slice 041.
+- TOMATO `TOMICS-Flux` contracts seam is migrated as slice 042.
+- TOMATO `TOMICS-Flux` interface seam is migrated as slice 043.
+- TOMATO `TOMICS-Grow` contracts seam is migrated as slice 044.
+- TOMATO `TOMICS-Grow` interface seam is migrated as slice 045.
 - `load-cell-data` config seam is migrated as slice 046.
 - `load-cell-data` IO seam is migrated as slice 047.
 - `load-cell-data` aggregation seam is migrated as slice 048.

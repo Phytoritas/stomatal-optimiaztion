@@ -4,7 +4,7 @@
 
 ## Affected model
 - `TOMATO tTHORP`
-- `src/stomatal_optimiaztion/domains/tomato/tthorp/pipelines/`
+- `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/pipelines/`
 - related TOMATO pipeline integration tests and architecture slice records
 
 ## Validation method

@@ -6,7 +6,7 @@
 ## Affected model
 - `TOMATO tTHORP`
 - `scripts/make_features.py`
-- `src/stomatal_optimiaztion/domains/tomato/tthorp/core/`
+- `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/core/`
 - related TOMATO feature-building tests
 
 ## Validation method

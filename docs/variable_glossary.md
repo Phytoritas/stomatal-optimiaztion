@@ -32,6 +32,27 @@ Use one canonical name per concept across repositories.
 | Leaf hydraulic conductance | `k_leaf` | `leaf_hydraulic_conductance` | model-specific | |
 | Xylem PLC | `plc_xylem` | `xylem_percent_loss_conductance` | % | |
 
+## TOMICS tomato-facing naming
+
+| Concept | Canonical name | Historical name | Notes |
+|---|---|---|---|
+| Tomato integrated framework | `TOMICS` | none | Umbrella tomato-facing framework label |
+| Tomato flux surface | `TOMICS-Flux` | `tGOSM` | Canonical public/runtime name; retired runtime imports keep `tGOSM` only in provenance docs |
+| Tomato allocation surface | `TOMICS-Alloc` | `tTHORP` | Canonical public/runtime name; retired runtime imports keep `tTHORP` only in provenance docs |
+| Tomato growth surface | `TOMICS-Grow` | `tTDGM` | Canonical public/runtime name; retired runtime imports keep `tTDGM` only in provenance docs |
+
+## TOMICS policy controls
+
+| Concept | Canonical short name | Optional verbose alias | Typical unit | Notes |
+|---|---|---|---|---|
+| Substrate water content | `theta_substrate` | `substrate_water_content` | m3 m^-3 | Greenhouse/rootzone moisture proxy for tomato surfaces |
+| Water-supply stress | `water_supply_stress` | `tomato_water_supply_stress` | 0-1 | Bounded stress scalar used by TOMICS-Alloc |
+| Wet-condition root cap | `wet_root_cap` | `tomics_wet_root_cap` | fraction of total allocation | Default near 0.10 |
+| Dry-condition root cap | `dry_root_cap` | `tomics_dry_root_cap` | fraction of total allocation | Default near 0.18 |
+| LAI target center | `lai_target_center` | `tomics_lai_target_center` | LAI | Default near 2.75 |
+| Shoot leaf base share | `leaf_fraction_of_shoot_base` | `tomics_leaf_fraction_of_shoot_base` | fraction of shoot allocation | Default 0.70 |
+| Shoot stem base share | `stem_fraction_of_shoot_base` | `tomics_stem_fraction_of_shoot_base` | fraction of shoot allocation | Default 0.30 |
+
 ## Rules
 - Use lowercase snake_case.
 - Reuse the same name for the same concept in every repository.

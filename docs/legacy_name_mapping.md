@@ -18,6 +18,20 @@ Use this file when migrating from older codebases that used inconsistent naming.
 | `T_air` | `t_air` | Use lowercase snake_case |
 | `T_leaf` | `t_leaf` | Use lowercase snake_case |
 
+## TOMICS tomato-facing mapping
+
+| Legacy name | Canonical tomato-facing name | Why |
+|---|---|---|
+| `tGOSM` | `TOMICS-Flux` | Canonical tomato flux surface now sits under the TOMICS umbrella |
+| `tTHORP` | `TOMICS-Alloc` | Canonical tomato allocation surface now sits under the TOMICS umbrella |
+| `tTDGM` | `TOMICS-Grow` | Canonical tomato growth surface now sits under the TOMICS umbrella |
+
+Compatibility notes:
+- Prefer canonical implementation folders `domains/tomato/tomics/flux`, `domains/tomato/tomics/alloc`, and `domains/tomato/tomics/grow` for new tomato-facing code.
+- The old physical package folders and runtime import aliases were removed; use only `domains.tomato.tomics.*` imports in live code.
+- Keep `THORP`, `GOSM`, and `TDGM` unchanged when they refer to root-domain packages, equations, or historical provenance.
+- Keep `tGOSM`, `tTHORP`, and `tTDGM` only in migration/provenance documents where the historical label matters.
+
 ## Migration rule
 When porting an old model:
 1. map the legacy name to the canonical concept

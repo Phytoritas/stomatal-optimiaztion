@@ -5,7 +5,7 @@
 
 ## Affected model
 - `TOMATO tTDGM`
-- `src/stomatal_optimiaztion/domains/tomato/ttdgm/`
+- `src/stomatal_optimiaztion/domains/tomato/tomics/grow/`
 - related TOMATO `tTDGM` interface tests and package exports
 
 ## Validation method
@@ -16,4 +16,4 @@
 ## Comparison target
 - legacy `TOMATO/tTDGM/src/ttdgm/interface.py`
 - legacy `TOMATO/tTDGM/tests/test_ttdgm_contracts.py`
-- current migrated `src/stomatal_optimiaztion/domains/tomato/ttdgm/contracts.py`
+- current migrated `src/stomatal_optimiaztion/domains/tomato/tomics/grow/contracts.py`

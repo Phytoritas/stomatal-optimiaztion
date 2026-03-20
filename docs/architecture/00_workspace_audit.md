@@ -23,7 +23,7 @@ Legacy source profile:
 - `THORP`: Python package repo with `src`, `tests`, `docs`, `scripts`, `data`, `example`, and `model_card`
 - `GOSM`: Python package repo with `src`, `tests`, `docs`, `scripts`, `data`, `example`, and `model_card`
 - `TDGM`: Python package repo with `src`, `tests`, `docs`, `scripts`, `example`, and `model_card`
-- `TOMATO`: umbrella tree containing `tTHORP`, `tGOSM`, `tTDGM`, plus integration docs and output artifacts
+- `TOMATO`: umbrella tree containing `tTHORP`, `tGOSM`, `tTDGM`, plus integration docs and output artifacts; the current tomato-facing migration layer maps these to `TOMICS-Alloc`, `TOMICS-Flux`, and `TOMICS-Grow`
 - `load-cell-data`: separate pipeline-oriented Python project with preprocessing and visualization outputs
 - `.venv`, `.pytest_cache`, `.codex-home`, and generated outputs exist inside the legacy workspace and should not be treated as migration sources
 
@@ -196,127 +196,127 @@ Slice 024:
 
 Slice 025:
 - source: `TOMATO/tTHORP/src/tthorp/contracts.py`
-- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/`
+- target: `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/`
 - scope: bounded TOMATO forcing-step contracts, context protocol, and output coercion helpers
 - excluded: pandas-backed interface surfaces, adapters, pipelines, and CLI entrypoints
 
 Slice 026:
 - source: `TOMATO/tTHORP/src/tthorp/interface.py`
-- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/interface.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/interface.py`
 - scope: bounded TOMATO pipeline interface, tabular simulation loop, and placeholder flux-step helper
 - excluded: tomato legacy models, CSV forcing loaders, pipelines, and CLI entrypoints
 
 Slice 027:
 - source: `TOMATO/tTHORP/src/tthorp/models/tomato_legacy/forcing_csv.py`
-- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/models/tomato_legacy/forcing_csv.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/models/tomato_legacy/forcing_csv.py`
 - scope: bounded TOMATO CSV forcing ingestion, alias normalization, and canonical `EnvStep` reconstruction
 - excluded: tomato legacy adapters, the full `TomatoModel`, pipelines, and CLI entrypoints
 
 Slice 028:
 - source: `TOMATO/tTHORP/src/tthorp/models/tomato_legacy/adapter.py`
-- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/models/tomato_legacy/adapter.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/models/tomato_legacy/adapter.py`
 - scope: bounded TOMATO step-adapter bridge and pipeline module wiring over injected legacy-model protocols
 - excluded: the full `TomatoModel`, partition-policy packages, pipelines, and CLI entrypoints
 
 Slice 029:
 - source: `TOMATO/tTHORP/src/tthorp/models/tomato_legacy/tomato_model.py`
-- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/models/tomato_legacy/tomato_model.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/models/tomato_legacy/tomato_model.py`
 - scope: bounded TOMATO legacy-model surface covering reset-state defaults, forcing-row ingestion, output payload shape, density helpers, sample forcing generation, and default adapter execution
 - excluded: the full age-structured growth kernels, partition-policy package migration, and legacy runner or CLI entrypoints
 
 Slice 030:
 - source: `TOMATO/tTHORP/src/tthorp/models/tomato_legacy/run.py`
-- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/models/tomato_legacy/run.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/models/tomato_legacy/run.py`
 - scope: bounded TOMATO package-local runner over migrated forcing CSV, adapter, and tabular simulation seams
 - excluded: TOMATO partition-policy package migration, broader package entrypoints, and other legacy subprojects
 
 Slice 031:
 - source: `TOMATO/tTHORP/src/tthorp/components/partitioning/{organ.py,fractions.py,policy.py,sink_based.py}`
-- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/components/partitioning/`
+- target: `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/`
 - scope: bounded TOMATO partitioning core covering organ enums, allocation-fraction validation, policy coercion, and default sink-based allocation
 - excluded: `thorp_opt.py`, `thorp_policies.py`, and broader cross-domain policy sharing
 
 Slice 032:
 - source: `TOMATO/tTHORP/src/tthorp/components/partitioning/{thorp_opt.py,thorp_policies.py}`
-- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/components/partitioning/`
+- target: `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/`
 - scope: bounded TOMATO THORP-derived partitioning surface covering allocation wrappers, policy aliases, and `TomatoModel` THORP-policy execution
 - excluded: `pipelines/tomato_legacy.py`, `core/`, and `models/thorp_ref/`
 
 Slice 033:
 - source: `TOMATO/tTHORP/src/tthorp/pipelines/tomato_legacy.py`
-- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/pipelines/` and `tests/test_tomato_tthorp_pipeline.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/pipelines/` and `tests/test_tomics_alloc_pipeline.py`
 - scope: bounded TOMATO package-level legacy pipeline surface covering repo-root resolution, forcing-path resolution, filtered config payloads, default model construction, pipeline execution, and metrics summaries
 - excluded: `core/io.py`, `core/scheduler.py`, `pipelines/tomato_dayrun.py`, and broader repo-level CLI entrypoints
 
 Slice 034:
 - source: `TOMATO/tTHORP/src/tthorp/core/io.py`
-- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/core/`, `tests/test_tomato_tthorp_core_io.py`, `pyproject.toml`, and `poetry.lock`
+- target: `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/core/`, `tests/test_tomics_alloc_core_io.py`, `pyproject.toml`, and `poetry.lock`
 - scope: bounded TOMATO shared IO surface covering directory creation, JSON metadata writing, YAML config parsing, recursive config merge, and `extends`-chain loading
 - excluded: `core/scheduler.py`, `pipelines/tomato_dayrun.py`, and repo-level script entrypoints
 
 Slice 035:
 - source: `TOMATO/tTHORP/src/tthorp/core/scheduler.py`
-- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/core/` and `tests/test_tomato_tthorp_core_scheduler.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/core/` and `tests/test_tomics_alloc_core_scheduler.py`
 - scope: bounded TOMATO shared scheduler surface covering deterministic experiment-key hashing, schedule dataclass construction, and forcing-derived run normalization
 - excluded: `pipelines/tomato_dayrun.py` and repo-level script entrypoints
 
 Slice 036:
 - source: `TOMATO/tTHORP/src/tthorp/pipelines/tomato_dayrun.py`
-- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/pipelines/` and `tests/test_tomato_tthorp_dayrun.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/pipelines/` and `tests/test_tomics_alloc_dayrun.py`
 - scope: bounded TOMATO dayrun orchestration surface covering config-driven execution, deterministic output artifact paths, metadata emission, and package-level from-config entrypoints
 - excluded: repo-level `scripts/run_pipeline.py` and `scripts/make_features.py`
 
 Slice 037:
 - source: `TOMATO/tTHORP/scripts/run_pipeline.py`
-- target: `scripts/run_pipeline.py` and `tests/test_tomato_tthorp_run_pipeline_script.py`
+- target: `scripts/run_pipeline.py` and `tests/test_tomics_alloc_run_pipeline_script.py`
 - scope: bounded TOMATO repo-level pipeline script surface covering CLI argument parsing, config loading, output-dir resolution, deterministic result artifact naming, and printed JSON summaries
 - excluded: `scripts/make_features.py` and broader non-TOMATO entrypoints
 
 Slice 038:
 - source: `TOMATO/tTHORP/scripts/make_features.py` and `TOMATO/tTHORP/src/tthorp/core/util_units.py`
-- target: `scripts/make_features.py`, `src/stomatal_optimiaztion/domains/tomato/tthorp/core/util_units.py`, and feature/unit-conversion tests
+- target: `scripts/make_features.py`, `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/core/util_units.py`, and feature/unit-conversion tests
 - scope: bounded TOMATO feature-building surface covering deterministic feature CSV output, SW-to-PAR derivation, forcing defaults, and shared PAR conversion helpers
 - excluded: `models/thorp_ref/adapter.py`, plotting scripts, and broader non-TOMATO entrypoints
 
 Slice 039:
 - source: `TOMATO/tTHORP/src/tthorp/models/thorp_ref/{adapter.py,__init__.py}`
-- target: `src/stomatal_optimiaztion/domains/tomato/tthorp/models/thorp_ref/`, package exports, and `tests/test_tomato_tthorp_thorp_ref_adapter.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/models/thorp_ref/`, package exports, and `tests/test_tomics_alloc_thorp_ref_adapter.py`
 - scope: bounded TOMATO THORP-reference bridge covering forcing-column normalization, migrated THORP runtime binding, and legacy-shaped DataFrame outputs
 - excluded: repo-level plotting scripts, PNG summary generation, and broader non-TOMATO entrypoints
 
 Slice 040:
 - source: `TOMATO/tTHORP/scripts/plot_simulation_png.py`
-- target: `scripts/plot_simulation_png.py` and `tests/test_tomato_tthorp_plot_simulation_png_script.py`
+- target: `scripts/plot_simulation_png.py` and `tests/test_tomics_alloc_plot_simulation_png_script.py`
 - scope: bounded TOMATO repo-level plotting surface covering CLI parsing, CSV subsampling, four-panel simulation-summary plotting, and optional matplotlib dependency behavior
 - excluded: `scripts/plot_allocation_compare_png.py`, shared plotting packages, and broader non-TOMATO reporting entrypoints
 
 Slice 041:
 - source: `TOMATO/tTHORP/scripts/plot_allocation_compare_png.py`
-- target: `scripts/plot_allocation_compare_png.py` and `tests/test_tomato_tthorp_plot_allocation_compare_png_script.py`
+- target: `scripts/plot_allocation_compare_png.py` and `tests/test_tomics_alloc_plot_allocation_compare_png_script.py`
 - scope: bounded TOMATO repo-level allocation-comparison plotting surface covering CSV alignment, allocation-column reshaping, overlap filtering, subsampling, and optional matplotlib dependency behavior
 - excluded: `tGOSM`, `tTDGM`, shared plotting packages, and broader non-TOMATO reporting entrypoints
 
 Slice 042:
 - source: `TOMATO/tGOSM/src/tgosm/contracts.py` and `TOMATO/tGOSM/tests/{test_tgosm_contracts.py,test_tgosm_import.py}`
-- target: `src/stomatal_optimiaztion/domains/tomato/tgosm/`, root TOMATO exports, and `tests/test_tomato_tgosm_contracts.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tomics/flux/`, root TOMATO exports, and `tests/test_tomics_flux_contracts.py`
 - scope: bounded TOMATO `tGOSM` contract surface covering optimization request/result dataclasses, nonnegative clamping, and package import identity
 - excluded: `src/tgosm/interface.py`, optimizer implementation details, `tTDGM`, and broader non-TOMATO entrypoints
 
 Slice 043:
 - source: `TOMATO/tGOSM/src/tgosm/interface.py`
-- target: `src/stomatal_optimiaztion/domains/tomato/tgosm/interface.py`, package exports, and `tests/test_tomato_tgosm_interface.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tomics/flux/interface.py`, package exports, and `tests/test_tomics_flux_interface.py`
 - scope: bounded TOMATO `tGOSM` interface surface covering placeholder optimizer behavior, conductance target clamping, and explicit WUE/objective placeholders
 - excluded: `tTDGM`, non-placeholder optimizer dependencies, and broader non-TOMATO entrypoints
 
 Slice 044:
 - source: `TOMATO/tTDGM/src/ttdgm/contracts.py` and `TOMATO/tTDGM/tests/{test_ttdgm_contracts.py,test_ttdgm_import.py}`
-- target: `src/stomatal_optimiaztion/domains/tomato/ttdgm/`, root TOMATO exports, and `tests/test_tomato_ttdgm_contracts.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tomics/grow/`, root TOMATO exports, and `tests/test_tomics_grow_contracts.py`
 - scope: bounded TOMATO `tTDGM` contract surface covering growth-step dataclasses, allocation validation, and package import identity
 - excluded: `src/ttdgm/interface.py`, placeholder growth-step behavior, `load-cell-data`, and broader non-TOMATO entrypoints
 
 Slice 045:
 - source: `TOMATO/tTDGM/src/ttdgm/interface.py`
-- target: `src/stomatal_optimiaztion/domains/tomato/ttdgm/interface.py`, package exports, and `tests/test_tomato_ttdgm_interface.py`
+- target: `src/stomatal_optimiaztion/domains/tomato/tomics/grow/interface.py`, package exports, and `tests/test_tomics_grow_interface.py`
 - scope: bounded TOMATO `tTDGM` interface surface covering placeholder growth-step behavior, allocation validation, and explicit four-organ growth outputs
 - excluded: `load-cell-data`, non-placeholder growth dynamics, and broader cross-domain abstractions
 

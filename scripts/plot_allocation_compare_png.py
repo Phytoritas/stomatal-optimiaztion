@@ -19,12 +19,12 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Compare allocation fractions between two simulation CSV outputs.")
     parser.add_argument(
         "--baseline",
-        default="data/output/KNU_Tomato_Env__sim.csv",
+        default="out/tomics_partition_compare/example/legacy/df.csv",
         help="Baseline (legacy) simulation CSV.",
     )
     parser.add_argument(
         "--candidate",
-        default="data/output/KNU_Tomato_Env__thorp_fruit_veg_4pool.csv",
+        default="out/tomics_partition_compare/example/tomics/df.csv",
         help="Candidate simulation CSV to compare against baseline.",
     )
     parser.add_argument(
@@ -34,12 +34,12 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--candidate-label",
-        default="THORP (thorp_fruit_veg, 4pool)",
+        default="TOMICS hybrid (tomics, 4pool)",
         help="Legend label for candidate.",
     )
     parser.add_argument(
         "--output",
-        default="data/output/KNU_Tomato_Env__alloc_frac_compare.png",
+        default="out/tomics_partition_compare/example/comparison_plot.png",
         help="Output PNG path.",
     )
     parser.add_argument(

@@ -1,3 +1,3 @@
-from stomatal_optimiaztion.domains.tomato import tgosm, ttdgm, tthorp
+from stomatal_optimiaztion.domains.tomato import tomics
 
-__all__ = ["tgosm", "ttdgm", "tthorp"]
+__all__ = ["tomics"]

@@ -40,7 +40,7 @@ Shared helpers can be introduced later under `src/stomatal_optimiaztion/shared/`
 - should remain a root migrated domain instead of being conflated with TOMATO `tTDGM`
 
 ### TOMATO
-- nested package workspace with `tTHORP`, `tGOSM`, and `tTDGM`
+- nested package workspace with `tTHORP`, `tGOSM`, and `tTDGM`; the current tomato-facing naming layer maps these to `TOMICS-Alloc`, `TOMICS-Flux`, and `TOMICS-Grow`
 - includes integration tests, configs, and output artifacts
 - likely requires explicit interface and package boundary decisions
 

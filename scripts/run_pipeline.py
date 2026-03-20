@@ -12,13 +12,13 @@ SRC_DIR = PROJECT_ROOT / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from stomatal_optimiaztion.domains.tomato.tthorp.core import (  # noqa: E402
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.core import (  # noqa: E402
     build_exp_key,
     ensure_dir,
     load_config,
     write_json,
 )
-from stomatal_optimiaztion.domains.tomato.tthorp.pipelines import (  # noqa: E402
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.pipelines import (  # noqa: E402
     config_payload_for_exp_key,
     resolve_repo_root,
     run_tomato_legacy_pipeline,
@@ -33,10 +33,10 @@ def _as_dict(raw: object) -> dict[str, Any]:
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run YAML-configured tTHORP pipeline.")
+    parser = argparse.ArgumentParser(description="Run YAML-configured TOMICS-Alloc pipeline.")
     parser.add_argument(
         "--config",
-        default="configs/exp/tomato_dayrun.yaml",
+        default="configs/exp/tomics_partition_compare.yaml",
         help="Path to experiment YAML config.",
     )
     parser.add_argument(
@@ -56,7 +56,7 @@ def _resolve_output_dir(config: dict[str, Any], repo_root: Path, override: str |
     if override:
         raw = Path(override)
     else:
-        raw = Path(str(_as_dict(config.get("paths")).get("output_dir", "TOMATO/tTHORP/artifacts/runs")))
+        raw = Path(str(_as_dict(config.get("paths")).get("output_dir", "artifacts/tomics_alloc_runs")))
 
     if raw.is_absolute():
         return raw
