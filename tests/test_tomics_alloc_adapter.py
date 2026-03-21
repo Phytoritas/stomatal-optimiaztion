@@ -21,6 +21,7 @@ class _FakeTomatoModel:
     partition_policy: object | None = None
     allocation_scheme: str = "4pool"
     start_date: datetime = field(default_factory=lambda: datetime(2000, 1, 1, 0, 0, 0))
+    initial_state_overrides: dict[str, object] = field(default_factory=dict)
     current_date: object = None
     last_calc_time: datetime | None = None
     reset_calls: int = 0
@@ -100,6 +101,22 @@ def test_tomato_legacy_adapter_rejects_non_positive_timestep() -> None:
 
     with pytest.raises(ValueError, match="env.dt_s must be > 0"):
         adapter.step(_make_env(t=datetime(2026, 1, 1, 0, 0, 0), dt_s=0.0))
+
+
+def test_tomato_legacy_adapter_preserves_overridden_start_date() -> None:
+    overridden_start = datetime(2024, 6, 1, 0, 0, 0)
+    model = _FakeTomatoModel(
+        start_date=overridden_start,
+        initial_state_overrides={"start_date": overridden_start.isoformat()},
+    )
+    adapter = TomatoLegacyAdapter(model=model)
+    env = _make_env(t=datetime(2026, 1, 1, 12, 0, 0), dt_s=3600.0)
+
+    adapter.step(env)
+
+    assert model.start_date == overridden_start
+    assert model.current_date == env.t.date()
+    assert model.last_calc_time == env.t
 
 
 def test_tomato_legacy_module_writes_outputs_and_reuses_cached_model() -> None:

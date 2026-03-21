@@ -149,8 +149,27 @@ def _first_sheet_rows_from_xlsx(path: Path) -> list[dict[int, Any]]:
     return rows
 
 
+def _read_knu_yield_csv(path: Path) -> tuple[pd.DataFrame, str, str, str]:
+    df = pd.read_csv(path)
+    if df.shape[1] < 3:
+        raise ValueError(f"KNU yield CSV has too few columns: {list(df.columns)!r}")
+    date_col = str(df.columns[0])
+    measured_col = str(df.columns[1])
+    estimated_col = str(df.columns[2])
+    out = df.copy()
+    out[date_col] = pd.to_datetime(out[date_col], errors="coerce").dt.normalize()
+    out = out.dropna(subset=[date_col]).reset_index(drop=True)
+    out[measured_col] = _finite_float_series(out[measured_col])
+    out[estimated_col] = _finite_float_series(out[estimated_col])
+    unit_label = measured_col[measured_col.find("(") + 1 : measured_col.rfind(")")] if "(" in measured_col and ")" in measured_col else measured_col
+    return out, unit_label, measured_col, estimated_col
+
+
 def read_knu_yield_workbook(path: str | Path) -> tuple[pd.DataFrame, str, str, str]:
     workbook_path = Path(path)
+    if workbook_path.suffix.lower() == ".csv":
+        return _read_knu_yield_csv(workbook_path)
+
     rows = _first_sheet_rows_from_xlsx(workbook_path)
     if not rows:
         raise ValueError("KNU yield workbook is empty.")

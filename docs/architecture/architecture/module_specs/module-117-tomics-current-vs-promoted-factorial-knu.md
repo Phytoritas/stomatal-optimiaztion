@@ -11,7 +11,7 @@ The next step must validate both:
 - the current merged research family
 - the promoted constrained-marginal allocator family
 
-against actual KNU greenhouse forcing and measured cumulative fruit dry weight.
+against actual KNU greenhouse forcing and measured cumulative harvested fruit dry weight.
 
 ## Inputs
 

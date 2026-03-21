@@ -40,6 +40,8 @@ poetry run ruff check .
 - Issue `#224` / module `113` closes `D-108`: continuous root `TDGM` parity is exact through day `784.5`, and the shipped post-day-`791.5` control reopening is explained by a one-off MATLAB resume artifact after the day-`787` file save.
 - Issue `#227` / module `114` adds the TOMICS tomato-facing naming layer, a bounded `tomics` hybrid partition policy, and deterministic comparison/factorial workflows while preserving tomato-slice provenance in dedicated migration/history documents.
 - Issue `#233` / module `116` makes Plotkit spec-first rendering the repo-local default for reusable graphs, migrates the live TOMICS graph scripts onto Plotkit bundle outputs, and keeps the repo-local bundle contract PNG-only.
+- Issue `#236` / module `117` adds KNU actual-data current-vs-promoted TOMICS allocation replay on floor-area basis and fixes the public validation target to cumulative harvested fruit dry weight rather than latent on-plant fruit mass.
+- Issue `#239` / module `118` adds the KNU fair-validation pipeline: private-data contract support, harvest observation operator, hidden-state reconstruction, root-zone inversion, equal-budget calibration, and the promotion gate that keeps shipped TOMICS incumbent.
 - Gates A through C are satisfied for the first bounded migration slice.
 - THORP `model_card` and traceability helpers are migrated into the new package layout.
 - THORP `radiation` runtime seam is migrated as slice 002.
@@ -156,4 +158,12 @@ poetry run ruff check .
 - Run the opt-in slow `GOSM` `imag` conductance-loss parity branch when root `gosm` hydraulics or stomatal logic changes.
 - Re-render `scripts/render_root_rerun_parity_figures.py` whenever root `THORP`, `GOSM`, or `TDGM` rerun kernels change.
 - Keep TOMICS compare/factorial plotting tests green and update the saved Plotkit specs under `configs/plotkit/tomics/` whenever tomato figure structure changes.
+- Re-run the KNU fairness pipeline when tomato allocation validation logic changes:
+  - `scripts/run_tomics_current_vs_promoted_factorial.py --config configs/exp/tomics_current_vs_promoted_factorial_knu.yaml --mode both`
+  - `scripts/run_tomics_knu_observation_eval.py --config configs/exp/tomics_knu_observation_eval.yaml`
+  - `scripts/run_tomics_knu_state_reconstruction.py --config configs/exp/tomics_knu_state_reconstruction.yaml`
+  - `scripts/run_tomics_knu_rootzone_reconstruction.py --config configs/exp/tomics_knu_rootzone_reconstruction.yaml`
+  - `scripts/run_tomics_knu_calibration.py --config configs/exp/tomics_knu_calibration.yaml`
+  - `scripts/run_tomics_knu_identifiability.py --config configs/exp/tomics_knu_identifiability.yaml`
+  - `scripts/run_tomics_knu_promotion_gate.py --config configs/exp/tomics_knu_promotion_gate.yaml`
 - Use `docs/architecture/review/tdgm-reference-payload-resume-provenance-note.md` if later-horizon root `TDGM` control payload diffs need to be interpreted again.

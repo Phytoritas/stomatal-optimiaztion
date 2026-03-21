@@ -8,8 +8,10 @@ import yaml
 
 def write_sampled_knu_forcing(tmp_path: Path, *, sample_every_rows: int = 360) -> Path:
     repo_root = Path(__file__).resolve().parents[1]
-    source = repo_root / "data" / "forcing" / "KNU_Tomato_Env.CSV"
-    df = pd.read_csv(source).iloc[::sample_every_rows].copy()
+    fixture = repo_root / "tests" / "fixtures" / "knu_sanitized" / "KNU_Tomato_Env_fixture.csv"
+    df = pd.read_csv(fixture).copy()
+    stride = 1 if df.shape[0] <= sample_every_rows else max(sample_every_rows, 1)
+    df = df.iloc[::stride].copy()
     out_path = tmp_path / "KNU_Tomato_Env_sampled.csv"
     df.to_csv(out_path, index=False)
     return out_path
@@ -98,7 +100,7 @@ def write_minimal_current_base_config(tmp_path: Path, *, repo_root: Path) -> Pat
 def write_minimal_knu_config(tmp_path: Path, *, repo_root: Path, mode: str = "both") -> Path:
     forcing_path = write_sampled_knu_forcing(tmp_path, sample_every_rows=360)
     current_base = write_minimal_current_base_config(tmp_path, repo_root=repo_root)
-    yield_path = repo_root / "data" / "forcing" / "tomato_validation_data_yield_260222.xlsx"
+    yield_path = repo_root / "tests" / "fixtures" / "knu_sanitized" / "tomato_validation_data_yield_fixture.csv"
     config = {
         "exp": {"name": f"tomics_knu_{mode}_test"},
         "validation": {
@@ -146,5 +148,147 @@ def write_minimal_knu_config(tmp_path: Path, *, repo_root: Path, mode: str = "bo
         },
     }
     out_path = tmp_path / f"knu_{mode}_config.yaml"
+    out_path.write_text(yaml.safe_dump(config, sort_keys=False, allow_unicode=False), encoding="utf-8")
+    return out_path
+
+
+def write_minimal_knu_fairness_config(tmp_path: Path, *, repo_root: Path) -> Path:
+    forcing_path = write_sampled_knu_forcing(tmp_path, sample_every_rows=360)
+    current_base = write_minimal_current_base_config(tmp_path, repo_root=repo_root)
+    yield_path = repo_root / "tests" / "fixtures" / "knu_sanitized" / "tomato_validation_data_yield_fixture.csv"
+    contract_path = tmp_path / "knu_private_data_contract.yaml"
+    contract_path.write_text(
+        yaml.safe_dump(
+            {
+                "private_data_root_env": "PHYTORITAS_PRIVATE_DATA_ROOT",
+                "private_data_root": "",
+                "forcing_relative_path": "unused/KNU_Tomato_Env.CSV",
+                "yield_relative_path": "unused/tomato_validation_data_yield_260222.xlsx",
+                "reporting_basis": "floor_area_g_m2",
+                "plants_per_m2": 1.836091,
+                "parser_assumptions": {
+                    "observation_semantics": "cumulative_harvested_fruit_dry_weight_floor_area",
+                },
+            },
+            sort_keys=False,
+            allow_unicode=False,
+        ),
+        encoding="utf-8",
+    )
+    config = {
+        "exp": {"name": "tomics_knu_fairness_test"},
+        "validation": {
+            "forcing_csv_path": str(forcing_path),
+            "yield_xlsx_path": str(yield_path),
+            "private_data_contract_path": str(contract_path),
+            "prepared_output_root": str(tmp_path / "out" / "knu_longrun"),
+            "resample_rule": "6h",
+            "theta_proxy_mode": "bucket_irrigated",
+            "theta_proxy_scenarios": ["dry", "moderate", "wet"],
+            "calibration_end": "2024-08-10",
+        },
+        "selection": {
+            "current_output_root": str(tmp_path / "out" / "current"),
+            "promoted_output_root": str(tmp_path / "out" / "promoted"),
+        },
+        "calibration": {
+            "base_config": str(current_base),
+            "output_root": str(tmp_path / "out" / "calibration"),
+            "wet_theta_threshold": 0.75,
+            "canopy_lai_floor": 2.0,
+            "leaf_fraction_floor": 0.18,
+            "rolling_window_days": 2,
+            "shared_parameter_grid": {
+                "fruit_load_multiplier": [0.9, 1.0],
+                "lai_target_center": [2.5, 2.75],
+            },
+            "holdout_overlay_spec": "configs/plotkit/tomics/knu_yield_fit_overlay.yaml",
+            "daily_increment_overlay_spec": "configs/plotkit/tomics/knu_daily_increment_overlay.yaml",
+        },
+        "observation_eval": {
+            "output_root": str(tmp_path / "out" / "observation_eval"),
+            "cumulative_overlay_spec": "configs/plotkit/tomics/knu_cumulative_overlay.yaml",
+            "daily_overlay_spec": "configs/plotkit/tomics/knu_daily_increment_overlay.yaml",
+        },
+        "state_reconstruction": {
+            "output_root": str(tmp_path / "out" / "state_reconstruction"),
+            "modes": ["minimal_scalar_init", "cohort_aware_init", "buffer_aware_init"],
+            "overlay_spec": "configs/plotkit/tomics/knu_cumulative_overlay.yaml",
+        },
+        "rootzone_reconstruction": {
+            "output_root": str(tmp_path / "out" / "rootzone"),
+            "theta_proxy_mode": "bucket_irrigated",
+            "scenario_ids": ["dry", "moderate", "wet"],
+            "theta_min_hard": 0.40,
+            "theta_max_hard": 0.85,
+            "overlay_spec": "configs/plotkit/tomics/knu_theta_proxy_diagnostics.yaml",
+        },
+        "identifiability": {
+            "fruit_load_multiplier_delta": 0.05,
+            "lai_target_center_delta": 0.25,
+        },
+        "promotion_gate": {
+            "output_root": str(tmp_path / "out" / "promotion_gate"),
+            "material_rmse_margin": 0.5,
+            "material_rmse_fraction": 0.02,
+            "wet_root_penalty_max": 0.05,
+            "parameter_instability_score_max": 0.50,
+            "promotion_overlay_spec": "configs/plotkit/tomics/knu_yield_fit_overlay.yaml",
+        },
+    }
+    out_path = tmp_path / "knu_fairness_config.yaml"
+    out_path.write_text(yaml.safe_dump(config, sort_keys=False, allow_unicode=False), encoding="utf-8")
+    return out_path
+
+
+def write_minimal_fairness_config(
+    tmp_path: Path,
+    *,
+    repo_root: Path,
+    filename: str,
+    section_name: str,
+    section_payload: dict[str, object] | None = None,
+) -> Path:
+    current_vs_promoted_config = write_minimal_knu_config(tmp_path, repo_root=repo_root, mode="both")
+    forcing_path = write_sampled_knu_forcing(tmp_path, sample_every_rows=360)
+    yield_path = repo_root / "tests" / "fixtures" / "knu_sanitized" / "tomato_validation_data_yield_fixture.csv"
+    config = {
+        "exp": {"name": Path(filename).stem},
+        "paths": {
+            "repo_root": str(repo_root),
+        },
+        "validation": {
+            "forcing_csv_path": str(forcing_path),
+            "yield_xlsx_path": str(yield_path),
+            "prepared_output_root": str(tmp_path / "out" / "knu_longrun"),
+            "resample_rule": "6h",
+            "theta_proxy_mode": "bucket_irrigated",
+            "theta_proxy_scenarios": ["dry", "moderate", "wet"],
+            "calibration_end": "2024-08-19",
+        },
+        "reference": {
+            "current_vs_promoted_config": str(current_vs_promoted_config),
+            "current_output_root": str(tmp_path / "out" / "current"),
+            "promoted_output_root": str(tmp_path / "out" / "promoted"),
+        },
+        section_name: {
+            "output_root": str(tmp_path / "out" / section_name),
+            **(section_payload or {}),
+        },
+        "calibration": {
+            "output_root": str(tmp_path / "out" / "calibration"),
+            "wet_theta_threshold": 0.75,
+            "canopy_lai_floor": 2.0,
+            "leaf_fraction_floor": 0.18,
+        },
+        "promotion_gate": {
+            "output_root": str(tmp_path / "out" / "promotion_gate"),
+        },
+        "plots": {
+            "yield_fit_overlay_spec": "configs/plotkit/tomics/knu_yield_fit_overlay.yaml",
+            "theta_proxy_diagnostics_spec": "configs/plotkit/tomics/knu_theta_proxy_diagnostics.yaml",
+        },
+    }
+    out_path = tmp_path / filename
     out_path.write_text(yaml.safe_dump(config, sort_keys=False, allow_unicode=False), encoding="utf-8")
     return out_path

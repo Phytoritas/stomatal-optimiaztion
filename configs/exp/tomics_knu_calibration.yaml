@@ -1,0 +1,29 @@
+exp:
+  name: tomics_knu_calibration
+
+validation:
+  forcing_csv_path: data/forcing/KNU_Tomato_Env.CSV
+  yield_xlsx_path: data/forcing/tomato_validation_data_yield_260222.xlsx
+  private_data_contract_path: configs/data/knu_private_data_contract.template.yaml
+  prepared_output_root: out/knu_longrun
+  resample_rule: 1h
+  theta_proxy_mode: bucket_irrigated
+  theta_proxy_scenarios: [dry, moderate, wet]
+  calibration_end: 2024-08-19
+
+selection:
+  current_output_root: out/tomics_current_factorial_knu
+  promoted_output_root: out/tomics_promoted_factorial_knu
+
+calibration:
+  base_config: configs/exp/tomics_allocation_factorial.yaml
+  output_root: out/tomics_knu_calibration
+  wet_theta_threshold: 0.75
+  canopy_lai_floor: 2.0
+  leaf_fraction_floor: 0.18
+  rolling_window_days: 4
+  shared_parameter_grid:
+    fruit_load_multiplier: [0.9, 1.0, 1.1]
+    lai_target_center: [2.5, 2.75, 3.0]
+  holdout_overlay_spec: configs/plotkit/tomics/knu_yield_fit_overlay.yaml
+  daily_increment_overlay_spec: configs/plotkit/tomics/knu_daily_increment_overlay.yaml

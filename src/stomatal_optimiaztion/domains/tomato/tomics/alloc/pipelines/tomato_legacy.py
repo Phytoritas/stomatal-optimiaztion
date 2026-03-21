@@ -138,6 +138,7 @@ def run_tomato_legacy_pipeline(
     partition_policy = None if partition_policy_raw is None else str(partition_policy_raw)
     allocation_scheme = str(pipeline_cfg.get("allocation_scheme", "4pool"))
     partition_policy_params = _policy_params_from_pipeline(pipeline_cfg)
+    initial_state_overrides = _as_dict(pipeline_cfg.get("initial_state_overrides"))
 
     forcing = iter_forcing_csv(
         forcing_path,
@@ -152,6 +153,7 @@ def run_tomato_legacy_pipeline(
         partition_policy=partition_policy,
         allocation_scheme=allocation_scheme,
         partition_policy_params=partition_policy_params,
+        initial_state_overrides=initial_state_overrides,
     )
     return simulate(model=model, forcing=forcing, max_steps=max_steps)
 
