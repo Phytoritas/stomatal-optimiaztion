@@ -45,3 +45,13 @@ def test_harvest_docs_reference_current_selected_family_when_artifacts_exist() -
     assert selected["selected_fruit_harvest_family"] in docs_text
     assert selected["selected_leaf_harvest_family"] in docs_text
     assert "Keep shipped TOMICS + incumbent TOMSIM harvest as the incumbent baseline." in docs_text
+
+
+def test_readme_mentions_harvest_rerun_entrypoints_and_outputs() -> None:
+    repo_root = _repo_root()
+    readme_text = (repo_root / "README.md").read_text(encoding="utf-8")
+
+    assert "out/tomics_knu_harvest_family_factorial/" in readme_text
+    assert "out/tomics_knu_harvest_promotion_gate/" in readme_text
+    assert "scripts/run_tomics_knu_harvest_family_factorial.py" in readme_text
+    assert "scripts/run_tomics_knu_harvest_promotion_gate.py" in readme_text

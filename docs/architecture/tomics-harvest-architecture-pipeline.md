@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Issue `#243` / module `119` promotes harvest from a validation-side aggregation helper into a first-class TOMICS architecture block.
+Issue `#243` / module `119` promotes harvest from a validation-side aggregation helper into a first-class TOMICS architecture block. Issues `#247`, `#249`, and `#251` then close the zero-yield replay seam, clean harvested-vs-total observation semantics, and rerun the KNU harvest-aware factorial plus promotion gate on the repaired path.
 
 The harvest layer is now separated into four contracts:
 
@@ -38,15 +38,16 @@ Harvest families map into `h1` and `h2`; Kuijpers itself is not treated as a sta
 
 - `tomgro_ageclass`
   - research comparator
-  - age-class maturity harvest is implemented, but the exact published harvest outflow remains partly proxy-labelled
+  - age-class maturity harvest is implemented, but the committed harvest outflow remains a source-grounded proxy adapter rather than a native TOMGRO runtime
 - `dekoning_fds`
   - high-priority research family
   - fruit harvest uses fruit development stage (`FDS`) readiness
   - leaf harvest uses vegetative-unit / corresponding truss colour logic
+  - current runtime remains a source-grounded proxy adapter around the traced De Koning readiness and FDMC subrules
 - `vanthoor_boxcar`
   - high-priority research family
-  - fixed boxcar fruit train with explicit last-stage outflow semantics
-  - explicit `MCLeafHar`-style pruning path via max-LAI pruning flow
+  - appendix-traced last-stage outflow and `MCLeafHar` semantics are mapped through a source-grounded proxy adapter
+  - native fixed-boxcar runtime remains deferred
 
 ## Pipeline stages
 
@@ -87,6 +88,15 @@ Current output roots:
 - `out/tomics_knu_harvest_family_factorial/`
 - `out/tomics_knu_harvest_promotion_gate/`
 
+Current runner and validation entrypoints:
+
+- `scripts/run_tomics_knu_harvest_family_factorial.py`
+- `scripts/run_tomics_knu_harvest_promotion_gate.py`
+- `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/validation/harvest_family_eval.py`
+- `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/validation/harvest_family_summary.py`
+- `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/validation/harvest_mass_balance_eval.py`
+- `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/validation/harvest_calibration_bridge.py`
+
 Current research-family shortlist:
 
 - `vanthoor_boxcar + max_lai_pruning_flow + constant_observed_mean`
@@ -100,3 +110,4 @@ Promotion-gate result:
 
 - shipped TOMICS plus incumbent TOMSIM harvest remains the incumbent baseline
 - no harvest-aware research candidate clears promotion guardrails yet
+- the zero-yield replay seam is closed, `any_all_zero_harvest_series = false`, and `post_writeback_dropped_nonharvested_mass_g_m2 = 0` for the promoted-gate comparison bundle
