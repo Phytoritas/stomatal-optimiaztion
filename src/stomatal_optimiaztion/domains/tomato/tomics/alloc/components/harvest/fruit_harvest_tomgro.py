@@ -27,8 +27,16 @@ class TomgroAgeclassHarvestPolicy:
             return build_harvest_update(state, extra_diagnostics={"fruit_harvest_family": self.family})
         frame["age_class"] = pd.to_numeric(frame.get("age_class"), errors="coerce").fillna(0.0)
         frame["fruit_dm_g_m2"] = pd.to_numeric(frame.get("fruit_dm_g_m2"), errors="coerce").fillna(0.0)
+        if "harvested_flag" not in frame.columns:
+            frame["harvested_flag"] = False
+        if "onplant_flag" not in frame.columns:
+            frame["onplant_flag"] = True
         total_proxy_outflow = max(float(env.get("mature_pool_delta_g_m2", 0.0)), 0.0)
         mature_frame = frame.loc[frame["age_class"].apply(lambda value: ready_tomgro_ageclass(value, self.config.mature_class_index))]
+        mature_frame = mature_frame.loc[
+            (~mature_frame["harvested_flag"].fillna(False).astype(bool))
+            & mature_frame["onplant_flag"].fillna(True).astype(bool)
+        ]
         mature_total = float(mature_frame["fruit_dm_g_m2"].sum())
         events: list[FruitHarvestEvent] = []
         for row in mature_frame.itertuples(index=False):

@@ -71,6 +71,46 @@ def _daily_env_summary(day_rows: list[dict[str, object]], *, ec: float = 0.3) ->
     return summary
 
 
+def _sum_positive(frame: pd.DataFrame, column: str) -> float:
+    if frame.empty or column not in frame.columns:
+        return 0.0
+    return float(pd.to_numeric(frame[column], errors="coerce").fillna(0.0).clip(lower=0.0).sum())
+
+
+def _post_writeback_audit(*, state, adapter: TomatoLegacyAdapter, harvested_flux_g_m2_d: float, mature_streak_days: float) -> dict[str, float | bool]:
+    model = adapter.model
+    if model is None:
+        raise RuntimeError("TomatoLegacyAdapter model is not initialized.")
+    fruit_frame = state.fruit_entities.copy()
+    if "onplant_flag" not in fruit_frame.columns:
+        fruit_frame["onplant_flag"] = True
+    if "harvested_flag" not in fruit_frame.columns:
+        fruit_frame["harvested_flag"] = False
+    if "mature_flag" not in fruit_frame.columns:
+        fruit_frame["mature_flag"] = False
+    if "harvest_ready_flag" not in fruit_frame.columns:
+        fruit_frame["harvest_ready_flag"] = fruit_frame["mature_flag"]
+    onplant_mask = fruit_frame["onplant_flag"].fillna(True).astype(bool)
+    harvested_mask = fruit_frame["harvested_flag"].fillna(False).astype(bool)
+    mature_mask = fruit_frame["mature_flag"].fillna(False).astype(bool)
+    ready_mask = fruit_frame["harvest_ready_flag"].fillna(False).astype(bool)
+    pre_onplant = _sum_positive(fruit_frame.loc[onplant_mask & ~harvested_mask], "fruit_dm_g_m2")
+    pre_total = pre_onplant + float(state.harvested_fruit_cumulative_g_m2)
+    post_onplant = max(float(getattr(model, "W_fr", 0.0)), 0.0)
+    post_harvested = max(float(getattr(model, "W_fr_harvested", 0.0)), 0.0)
+    post_total = post_onplant + post_harvested
+    return {
+        "pre_writeback_total_system_fruit_g_m2": pre_total,
+        "post_writeback_total_system_fruit_g_m2": post_total,
+        "post_writeback_dropped_nonharvested_mass_g_m2": max(pre_onplant - post_onplant, 0.0),
+        "eligible_harvest_mass_g_m2": _sum_positive(fruit_frame.loc[onplant_mask & ready_mask & ~harvested_mask], "fruit_dm_g_m2"),
+        "mature_onplant_mass_g_m2": _sum_positive(fruit_frame.loc[onplant_mask & mature_mask & ~harvested_mask], "fruit_dm_g_m2"),
+        "harvested_flux_g_m2_d": float(harvested_flux_g_m2_d),
+        "unharvested_mature_streak_days": float(mature_streak_days),
+        "all_zero_harvest_series": bool(post_harvested <= 1e-9 and abs(float(harvested_flux_g_m2_d)) <= 1e-9),
+    }
+
+
 def _fruit_entities_to_model_cohorts(state: pd.DataFrame, *, shoots_per_m2: float) -> list[dict[str, object]]:
     if state.empty:
         return []
@@ -78,11 +118,25 @@ def _fruit_entities_to_model_cohorts(state: pd.DataFrame, *, shoots_per_m2: floa
     frame["fruit_dm_g_m2"] = pd.to_numeric(frame["fruit_dm_g_m2"], errors="coerce").fillna(0.0)
     frame["fruit_count"] = pd.to_numeric(frame["fruit_count"], errors="coerce").fillna(0.0)
     frame["tdvs"] = pd.to_numeric(frame["tdvs"], errors="coerce").fillna(0.0)
+    if "sink_active_flag" not in frame.columns:
+        frame["sink_active_flag"] = True
+    if "mature_flag" not in frame.columns:
+        frame["mature_flag"] = frame["tdvs"] >= 1.0
+    if "harvest_ready_flag" not in frame.columns:
+        frame["harvest_ready_flag"] = frame["mature_flag"]
+    if "removal_reason" not in frame.columns:
+        frame["removal_reason"] = ""
+    if "maturity_basis" not in frame.columns:
+        frame["maturity_basis"] = "tdvs"
     if "mult" in frame.columns:
         frame["mult"] = pd.to_numeric(frame["mult"], errors="coerce").fillna(float(shoots_per_m2))
     else:
         frame["mult"] = float(shoots_per_m2)
     frame["onplant_flag"] = frame["onplant_flag"].fillna(True).astype(bool)
+    frame["harvested_flag"] = frame["harvested_flag"].fillna(False).astype(bool)
+    frame["sink_active_flag"] = frame["sink_active_flag"].fillna(True).astype(bool)
+    frame["mature_flag"] = frame["mature_flag"].fillna(False).astype(bool)
+    frame["harvest_ready_flag"] = frame["harvest_ready_flag"].fillna(False).astype(bool)
     frame = frame.loc[frame["fruit_dm_g_m2"] > 1e-12].copy()
     cohorts: list[dict[str, object]] = []
     for row in frame.itertuples(index=False):
@@ -94,7 +148,13 @@ def _fruit_entities_to_model_cohorts(state: pd.DataFrame, *, shoots_per_m2: floa
                 "tdvs": float(getattr(row, "tdvs", 0.0)),
                 "n_fruits": int(max(round(float(getattr(row, "fruit_count", 0.0))), 0)),
                 "w_fr_cohort": float(getattr(row, "fruit_dm_g_m2", 0.0)),
-                "active": True,
+                "active": bool(getattr(row, "sink_active_flag", True)),
+                "onplant": bool(getattr(row, "onplant_flag", True)),
+                "harvested": bool(getattr(row, "harvested_flag", False)),
+                "mature": bool(getattr(row, "mature_flag", False)),
+                "harvest_ready": bool(getattr(row, "harvest_ready_flag", False)),
+                "removal_reason": str(getattr(row, "removal_reason", "") or ""),
+                "maturity_basis": str(getattr(row, "maturity_basis", "tdvs") or "tdvs"),
                 "mult": float(getattr(row, "mult", shoots_per_m2)),
             }
         )
@@ -187,9 +247,10 @@ def run_harvest_family_simulation(
     current_day: date | None = None
     day_rows: list[dict[str, object]] = []
     previous_daily_row: dict[str, object] | None = None
+    mature_streak_days = 0.0
 
     def finalize_day() -> None:
-        nonlocal day_rows, previous_daily_row, fruit_events, leaf_events
+        nonlocal day_rows, previous_daily_row, fruit_events, leaf_events, mature_streak_days
         if not day_rows:
             return
         current_row = day_rows[-1]
@@ -207,7 +268,32 @@ def run_harvest_family_simulation(
             env=env,
             dt_days=float(state.dt_days),
         )
+        fruit_frame = result.final_update.updated_state.fruit_entities.copy()
+        if "onplant_flag" not in fruit_frame.columns:
+            fruit_frame["onplant_flag"] = True
+        if "mature_flag" not in fruit_frame.columns:
+            fruit_frame["mature_flag"] = False
+        if "harvested_flag" not in fruit_frame.columns:
+            fruit_frame["harvested_flag"] = False
+        matured_onplant_mass = _sum_positive(
+            fruit_frame.loc[
+                fruit_frame["onplant_flag"].fillna(True).astype(bool)
+                & fruit_frame["mature_flag"].fillna(False).astype(bool)
+                & ~fruit_frame["harvested_flag"].fillna(False).astype(bool)
+            ],
+            "fruit_dm_g_m2",
+        )
+        if matured_onplant_mass > 1e-9 and float(result.final_update.fruit_harvest_flux_g_m2_d) <= 1e-9:
+            mature_streak_days += float(state.dt_days)
+        else:
+            mature_streak_days = 0.0
         _apply_harvest_update_to_model(adapter=adapter, update=result.final_update)
+        writeback_audit = _post_writeback_audit(
+            state=result.final_update.updated_state,
+            adapter=adapter,
+            harvested_flux_g_m2_d=float(result.final_update.fruit_harvest_flux_g_m2_d),
+            mature_streak_days=mature_streak_days,
+        )
         rebuilt = _rebuild_daily_row(adapter, pd.Timestamp(current_row["datetime"]), current_row)
         rebuilt["fruit_harvest_family"] = fruit_harvest_family
         rebuilt["leaf_harvest_family"] = leaf_harvest_family
@@ -224,6 +310,7 @@ def run_harvest_family_simulation(
                 ),
                 "fruit_harvest_flux_g_m2_d": float(result.final_update.fruit_harvest_flux_g_m2_d),
                 "leaf_harvest_flux_g_m2_d": float(result.final_update.leaf_harvest_flux_g_m2_d),
+                **writeback_audit,
             }
         )
         if getattr(result.fruit_update, "diagnostics", None):
@@ -295,6 +382,31 @@ def run_harvest_family_simulation(
         )
         if not model_daily_df.empty
         else math.nan,
+        "post_writeback_dropped_nonharvested_mass_g_m2": float(
+            pd.to_numeric(
+                harvest_mass_balance_df.get("post_writeback_dropped_nonharvested_mass_g_m2"),
+                errors="coerce",
+            )
+            .fillna(0.0)
+            .max()
+        )
+        if not harvest_mass_balance_df.empty
+        else 0.0,
+        "all_zero_harvest_series": bool(
+            pd.to_numeric(model_daily_df.get("model_cumulative_harvested_fruit_dry_weight_floor_area"), errors="coerce")
+            .fillna(0.0)
+            .le(1e-9)
+            .all()
+        )
+        if not model_daily_df.empty
+        else True,
+        "unharvested_mature_streak_days": float(
+            pd.to_numeric(harvest_mass_balance_df.get("unharvested_mature_streak_days"), errors="coerce")
+            .fillna(0.0)
+            .max()
+        )
+        if not harvest_mass_balance_df.empty
+        else 0.0,
     }
     return HarvestFamilyRunResult(
         run_df=run_df,

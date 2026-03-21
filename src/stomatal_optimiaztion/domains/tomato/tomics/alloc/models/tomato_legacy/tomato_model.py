@@ -399,6 +399,17 @@ class TomatoModel:
                         "n_fruits": int(max(0, round(_finite_float(raw.get("n_fruits"), default=float(self.n_f))))),
                         "w_fr_cohort": max(0.0, _finite_float(raw.get("w_fr_cohort"), default=0.0)),
                         "active": bool(raw.get("active", True)),
+                        "onplant": bool(
+                            raw.get(
+                                "onplant",
+                                raw.get("onplant_flag", not bool(raw.get("harvested", raw.get("harvested_flag", False)))),
+                            )
+                        ),
+                        "harvested": bool(raw.get("harvested", raw.get("harvested_flag", False))),
+                        "mature": bool(raw.get("mature", raw.get("mature_flag", False))),
+                        "harvest_ready": bool(raw.get("harvest_ready", raw.get("harvest_ready_flag", False))),
+                        "removal_reason": str(raw.get("removal_reason", "")),
+                        "maturity_basis": str(raw.get("maturity_basis", "tdvs")),
                         "mult": max(0.0, _finite_float(raw.get("mult"), default=float(self.shoots_per_m2))),
                     }
                 )
@@ -427,6 +438,26 @@ class TomatoModel:
             fruit_harvest_g=self.W_fr_harvested,
             leaf_harvest_g=0.0,
         )
+
+    @staticmethod
+    def _cohort_bool(cohort: Mapping[str, object], key: str, default: bool) -> bool:
+        value = cohort.get(key, default)
+        if isinstance(value, bool):
+            return value
+        if value is None:
+            return default
+        if isinstance(value, str):
+            return value.strip().lower() in {"1", "true", "yes", "y"}
+        return bool(value)
+
+    def _mark_cohort_mature_onplant(self, cohort: dict[str, object]) -> None:
+        cohort["active"] = False
+        cohort["mature"] = True
+        cohort["harvest_ready"] = True
+        cohort["onplant"] = True
+        cohort["harvested"] = False
+        cohort["removal_reason"] = ""
+        cohort["maturity_basis"] = str(cohort.get("maturity_basis", "tdvs"))
 
     def to_floor_from_plant(self, x_per_plant: float) -> float:
         return float(x_per_plant) * float(self.plants_per_m2)
@@ -589,8 +620,21 @@ class TomatoModel:
                 "fruit_dm_g_m2": float(max(0.0, float(cohort.get("w_fr_cohort", 0.0)))),
                 "fruit_count": float(max(0.0, float(cohort.get("n_fruits", self.n_f)))),
                 "mult": float(max(0.0, float(cohort.get("mult", self.shoots_per_m2)))),
-                "onplant_flag": bool(cohort.get("active", True)),
-                "harvested_flag": False,
+                "sink_active_flag": self._cohort_bool(cohort, "active", True),
+                "mature_flag": self._cohort_bool(cohort, "mature", float(cohort.get("tdvs", 0.0)) >= self.tdvs_max),
+                "harvest_ready_flag": self._cohort_bool(
+                    cohort,
+                    "harvest_ready",
+                    float(cohort.get("tdvs", 0.0)) >= self.tdvs_max,
+                ),
+                "onplant_flag": self._cohort_bool(
+                    cohort,
+                    "onplant",
+                    not self._cohort_bool(cohort, "harvested", False),
+                ),
+                "harvested_flag": self._cohort_bool(cohort, "harvested", False),
+                "removal_reason": str(cohort.get("removal_reason", "")),
+                "maturity_basis": str(cohort.get("maturity_basis", "tdvs")),
                 "potential_weight_proxy_g_m2": float(max(0.0, float(cohort.get("w_fr_cohort", 0.0)))),
             }
             for index, cohort in enumerate(self.truss_cohorts)
@@ -847,7 +891,7 @@ class TomatoModel:
                 continue
             cohort["tdvs"] = self._advance_tdvs_with_fdvr(float(cohort.get("tdvs", 0.0)), t_air_c, dt)
             if float(cohort["tdvs"]) >= self.tdvs_max:
-                cohort["active"] = False
+                self._mark_cohort_mature_onplant(cohort)
 
         sinks, per_truss_sinks = self._compute_sink_state()
         active_trusses = self._count_active_trusses()
@@ -1242,6 +1286,12 @@ class TomatoModel:
                     "n_fruits": nfr,
                     "w_fr_cohort": 0.0,
                     "active": True,
+                    "onplant": True,
+                    "harvested": False,
+                    "mature": False,
+                    "harvest_ready": False,
+                    "removal_reason": "",
+                    "maturity_basis": "tdvs",
                     "mult": self.shoots_per_m2,
                 }
             )
@@ -1510,9 +1560,14 @@ class TomatoModel:
             is_active = bool(cohort.get("active", True))
             truss_dm = max(0.0, float(cohort.get("w_fr_cohort", 0.0)))
             if truss_dm >= self.harvest_truss_dm_g:
-                cohort["active"] = False
+                self._mark_cohort_mature_onplant(cohort)
                 is_active = False
             if (not is_active) or tdvs >= self.tdvs_max:
+                cohort["onplant"] = False
+                cohort["harvested"] = True
+                cohort["mature"] = True
+                cohort["harvest_ready"] = False
+                cohort["removal_reason"] = "internal_harvest"
                 harvested_now += truss_dm
                 matured_indices.append(idx)
 

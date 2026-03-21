@@ -35,6 +35,10 @@ class LinkedTrussStageLeafHarvestPolicy:
         frame["leaf_dm_g_m2"] = pd.to_numeric(frame.get("leaf_dm_g_m2"), errors="coerce").fillna(0.0)
         events: list[LeafHarvestEvent] = []
         for row in frame.itertuples(index=False):
+            if bool(getattr(row, "harvested_flag", False)):
+                continue
+            if not bool(getattr(row, "onplant_flag", True)):
+                continue
             truss_id = float(getattr(row, "linked_truss_id", 0.0) or 0.0)
             if linked_stage.get(truss_id, float(getattr(row, "vds", 0.0))) < self.config.linked_leaf_stage:
                 continue
@@ -74,6 +78,10 @@ class VegetativeUnitLeafHarvestPolicy:
         threshold = self.config.colour_threshold + 0.03 * self.config.pruning_lag_days
         events: list[LeafHarvestEvent] = []
         for row in frame.itertuples(index=False):
+            if bool(getattr(row, "harvested_flag", False)):
+                continue
+            if not bool(getattr(row, "onplant_flag", True)):
+                continue
             truss_id = float(getattr(row, "linked_truss_id", 0.0) or 0.0)
             if linked_stage.get(truss_id, 0.0) < threshold:
                 continue
@@ -116,6 +124,10 @@ class MaxLaiPruningFlowPolicy:
         excess_lai = current_lai - self.config.max_lai
         events: list[LeafHarvestEvent] = []
         for row in frame.itertuples(index=False):
+            if bool(getattr(row, "harvested_flag", False)):
+                continue
+            if not bool(getattr(row, "onplant_flag", True)):
+                continue
             if excess_lai <= 1e-9:
                 break
             leaf_area = max(float(getattr(row, "leaf_area_m2_m2", 0.0)), 0.0)
