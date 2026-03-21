@@ -55,3 +55,7 @@ Reason:
 ## Interpretation
 
 The current best research harvest family helps organize the architecture cleanly and is useful for further research-only screening, but it does not yet provide a promotion-grade validation win on KNU actual data.
+
+Important traceability note:
+
+- the selected `vanthoor_boxcar` family is currently a source-grounded proxy adapter on legacy-normalized harvest state, not a full native Vanthoor fixed-boxcar runtime with appendix-native `nDev`, `MCFruitHar`, and `MCLeafHar` state flow

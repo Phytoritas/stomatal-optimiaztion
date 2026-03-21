@@ -42,11 +42,11 @@ Harvest families map into `h1` and `h2`; Kuijpers itself is not treated as a sta
 - `dekoning_fds`
   - high-priority research family
   - fruit harvest uses fruit development stage (`FDS`) readiness
-  - leaf harvest uses vegetative-unit / corresponding truss colour logic
+  - FDMC helpers are exact-source, but leaf pruning thresholds and fresh-weight reporting still use source-grounded proxy adapters
 - `vanthoor_boxcar`
   - high-priority research family
-  - fixed boxcar fruit train with explicit last-stage outflow semantics
-  - explicit `MCLeafHar`-style pruning path via max-LAI pruning flow
+  - appendix equations are fully traced, but the current public runtime still uses a source-grounded proxy adapter on legacy-normalized state rather than a native fixed boxcar train
+  - explicit `MCLeafHar`-style pruning path is currently represented through a proxy max-LAI pruning flow
 
 ## Pipeline stages
 
