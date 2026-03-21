@@ -8,7 +8,7 @@ Issue `#239` / module `118` adds a reproducible private-data contract so KNU fai
 
 The loader resolves KNU files from either:
 
-1. repo-local paths such as `data/forcing/KNU_Tomato_Env.CSV` and `data/forcing/tomato_validation_data_yield_260222.xlsx`
+1. repo-local paths such as `data/forcing/KNU_Tomato_Env.CSV` and `data/forcing/tomato_validation_data_yield_260321.xlsx`
 2. a private root declared by `PHYTORITAS_PRIVATE_DATA_ROOT`
 3. a contract template under `configs/data/knu_private_data_contract.template.yaml`
 

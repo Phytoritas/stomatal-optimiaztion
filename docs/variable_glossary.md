@@ -99,6 +99,23 @@ Use one canonical name per concept across repositories.
 | Promoted softmax sharpness | `beta` | `promoted_softmax_beta` | dimensionless | Prior-weighted softmax sharpness parameter |
 | Allocation-memory timescale | `tau_alloc_days` | `allocation_lowpass_tau_days` | d | Low-pass memory constant for promoted allocation research runs |
 
+## TOMICS harvest architecture terms
+
+| Concept | Canonical short name | Optional verbose alias | Typical unit | Notes |
+|---|---|---|---|---|
+| Fruit harvest family | `fruit_harvest_family` | `tomics_fruit_harvest_family` | enum | `tomsim_truss`, `tomgro_ageclass`, `dekoning_fds`, or `vanthoor_boxcar` |
+| Leaf harvest family | `leaf_harvest_family` | `tomics_leaf_harvest_family` | enum | `linked_truss_stage`, `vegetative_unit_pruning`, or `max_lai_pruning_flow` |
+| Harvest readiness threshold | `harvest_readiness_threshold` | `fruit_harvest_ready_threshold` | family-specific | `TDVS`, `FDS`, mature class, or boxcar last-stage threshold |
+| Harvest delay | `harvest_delay_days` | `fruit_harvest_delay_days` | d | Management-side lag after readiness, kept explicit in research runs |
+| Fruit dry matter content | `fdmc` | `fruit_dry_matter_content_percent` | % | Used by De Koning harvest-family modes and harvest-event reporting |
+| FDMC mode | `fdmc_mode` | `fruit_dry_matter_content_mode` | enum | `constant_observed_mean`, `dekoning_fds`, or `dekoning_harvest_temp_ec` |
+| Carbohydrate buffer state | `cbuf_g_m2` | `carbohydrate_buffer_g_m2` | g CH2O m^-2 | Harvest-facing buffer state normalized from Vanthoor-like paths |
+| Fruit harvest event count | `fruit_harvest_event_count` | `daily_fruit_harvest_event_count` | count | Number of fruit/truss/stage harvest events emitted on one step |
+| Leaf harvest event count | `leaf_harvest_event_count` | `daily_leaf_harvest_event_count` | count | Number of pruning / defoliation events emitted on one step |
+| Harvest mass-balance error | `harvest_mass_balance_error` | `fruit_harvest_mass_balance_error` | g m^-2 | Family-level latent-plus-harvested consistency residual |
+| Latent fruit residual at end | `latent_fruit_residual_end` | `remaining_onplant_fruit_residual_end` | g m^-2 | Residual fruit mass after applying family-specific harvest logic |
+| Leaf harvest mass-balance error | `leaf_harvest_mass_balance_error` | `leaf_pruning_mass_balance_error` | g m^-2 | Leaf-state consistency residual after pruning |
+
 ## Rules
 - Use lowercase snake_case.
 - Reuse the same name for the same concept in every repository.

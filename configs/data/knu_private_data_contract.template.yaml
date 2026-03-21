@@ -1,7 +1,7 @@
 private_data_root_env: PHYTORITAS_PRIVATE_DATA_ROOT
 private_data_root:
 forcing_relative_path: data/forcing/KNU_Tomato_Env.CSV
-yield_relative_path: data/forcing/tomato_validation_data_yield_260222.xlsx
+yield_relative_path: data/forcing/tomato_validation_data_yield_260321.xlsx
 reporting_basis: floor_area_g_m2
 plants_per_m2: 1.836091
 parser_assumptions:

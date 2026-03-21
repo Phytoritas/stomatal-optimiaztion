@@ -154,6 +154,7 @@ def run_tomato_legacy_pipeline(
         allocation_scheme=allocation_scheme,
         partition_policy_params=partition_policy_params,
         initial_state_overrides=initial_state_overrides,
+        internal_harvest_enabled=bool(pipeline_cfg.get("internal_harvest_enabled", True)),
     )
     return simulate(model=model, forcing=forcing, max_steps=max_steps)
 

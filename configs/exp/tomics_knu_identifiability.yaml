@@ -3,7 +3,7 @@ exp:
 
 validation:
   forcing_csv_path: data/forcing/KNU_Tomato_Env.CSV
-  yield_xlsx_path: data/forcing/tomato_validation_data_yield_260222.xlsx
+  yield_xlsx_path: data/forcing/tomato_validation_data_yield_260321.xlsx
   private_data_contract_path: configs/data/knu_private_data_contract.template.yaml
   prepared_output_root: out/tomics/validation/knu/longrun
   resample_rule: 1h

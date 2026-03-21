@@ -43,6 +43,7 @@ def _default_model_factory(
     allocation_scheme: str,
     partition_policy_params: Mapping[str, object] | None = None,
     initial_state_overrides: Mapping[str, object] | None = None,
+    internal_harvest_enabled: bool = True,
 ) -> TomatoLegacyModelProtocol:
     try:
         from stomatal_optimiaztion.domains.tomato.tomics.alloc.models.tomato_legacy.tomato_model import TomatoModel
@@ -57,6 +58,7 @@ def _default_model_factory(
         allocation_scheme=allocation_scheme,
         partition_policy_params=partition_policy_params,
         initial_state_overrides=initial_state_overrides,
+        internal_harvest_enabled=internal_harvest_enabled,
     )
 
 
@@ -126,6 +128,7 @@ def _build_model(
     allocation_scheme: str,
     partition_policy_params: Mapping[str, object] | None = None,
     initial_state_overrides: Mapping[str, object] | None = None,
+    internal_harvest_enabled: bool = True,
 ) -> TomatoLegacyModelProtocol:
     factory = model_factory or _default_model_factory
     return factory(
@@ -134,6 +137,7 @@ def _build_model(
         allocation_scheme=allocation_scheme,
         partition_policy_params=partition_policy_params,
         initial_state_overrides=initial_state_overrides,
+        internal_harvest_enabled=internal_harvest_enabled,
     )
 
 
@@ -156,6 +160,7 @@ class TomatoLegacyAdapter:
     allocation_scheme: str = "4pool"
     partition_policy_params: Mapping[str, object] | None = None
     initial_state_overrides: Mapping[str, object] | None = None
+    internal_harvest_enabled: bool = True
     model_factory: ModelFactory | None = None
     _initialized: bool = field(init=False, default=False)
 
@@ -168,6 +173,7 @@ class TomatoLegacyAdapter:
                 allocation_scheme=self.allocation_scheme,
                 partition_policy_params=self.partition_policy_params,
                 initial_state_overrides=self.initial_state_overrides,
+                internal_harvest_enabled=self.internal_harvest_enabled,
             )
         elif self.fixed_lai is not None:
             self.model.fixed_lai = float(self.fixed_lai)
@@ -192,6 +198,7 @@ class TomatoLegacyAdapter:
                 allocation_scheme=self.allocation_scheme,
                 partition_policy_params=self.partition_policy_params,
                 initial_state_overrides=self.initial_state_overrides,
+                internal_harvest_enabled=self.internal_harvest_enabled,
             )
         self.model.reset_state()
         self._initialized = False
@@ -281,6 +288,7 @@ class TomatoLegacyModule:
         initial_state_overrides = ctx.params.get("initial_state_overrides")
         if initial_state_overrides is not None and not isinstance(initial_state_overrides, Mapping):
             raise TypeError("initial_state_overrides must be a mapping when provided in pipeline params.")
+        internal_harvest_enabled = bool(ctx.params.get("internal_harvest_enabled", True))
         model = _build_model(
             model_factory=model_factory,
             fixed_lai=fixed_lai,
@@ -288,6 +296,7 @@ class TomatoLegacyModule:
             allocation_scheme=allocation_scheme,
             partition_policy_params=partition_policy_params,
             initial_state_overrides=initial_state_overrides,
+            internal_harvest_enabled=internal_harvest_enabled,
         )
         _prime_model_clock(model, ctx.env)
         ctx.state[self.model_state_key] = model
@@ -330,6 +339,7 @@ def make_tomato_legacy_model(
     allocation_scheme: str = "4pool",
     partition_policy_params: Mapping[str, object] | None = None,
     initial_state_overrides: Mapping[str, object] | None = None,
+    internal_harvest_enabled: bool = True,
     moisture_response_fn: Callable[[float], float] | None = None,
     model_factory: ModelFactory | None = None,
 ) -> PipelineModel:
@@ -349,6 +359,7 @@ def make_tomato_legacy_model(
         params["initial_state_overrides"] = {
             str(key): value for key, value in initial_state_overrides.items()
         }
+    params["internal_harvest_enabled"] = bool(internal_harvest_enabled)
     if moisture_response_fn is not None:
         params["moisture_response_fn"] = moisture_response_fn
     if model_factory is not None:

@@ -1,0 +1,95 @@
+version: 1
+kind: multi_panel_timeseries
+meta:
+  id: knu_harvest_mass_balance_overlay
+  title: KNU harvest-family mass-balance diagnostics
+  family: tomics_knu_harvest_mass_balance_overlay
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_multiline
+  description: Compare harvest mass-balance error, latent fruit residual, and leaf-harvest mass-balance error across shortlisted families.
+data:
+  frame_role: tomics_knu_harvest_mass_balance_overlay
+mapping:
+  source_column: source
+  datetime_column: datetime
+  value_column: value
+layout:
+  preset: publication_3x1_timeseries
+  rows: 3
+  cols: 1
+  margins:
+    left: 0.12
+    right: 0.98
+    bottom: 0.08
+    top: 0.84
+    hspace: 0.34
+  title_y: 0.976
+legend:
+  enabled: true
+  order: [baseline, research_1, research_2, research_3]
+  loc: upper center
+  bbox_to_anchor: [0.5, 0.93]
+  ncol: 2
+  font_size_pt: 7.6
+panel_order:
+  - cumulative_total_fruit_floor_area
+  - offset_adjusted_cumulative_total_fruit_floor_area
+  - daily_increment_floor_area
+panels:
+  cumulative_total_fruit_floor_area:
+    column: cumulative_total_fruit_floor_area
+    title: Harvest mass-balance error
+    x_label: datetime
+    y_label: Mass-balance error [g m^-2 floor]
+    scale: linear
+    y_padding_fraction: 0.10
+  offset_adjusted_cumulative_total_fruit_floor_area:
+    column: offset_adjusted_cumulative_total_fruit_floor_area
+    title: Latent fruit residual end
+    x_label: datetime
+    y_label: Latent fruit residual [g m^-2 floor]
+    scale: linear
+    y_padding_fraction: 0.10
+  daily_increment_floor_area:
+    column: daily_increment_floor_area
+    title: Leaf-harvest mass-balance error
+    x_label: datetime
+    y_label: Leaf mass-balance error [g m^-2 floor]
+    scale: linear
+    y_padding_fraction: 0.12
+styling:
+  sources:
+    baseline:
+      label: Incumbent harvest baseline
+      color: "#2A9D8F"
+      linestyle: "-"
+      marker: "^"
+      linewidth_pt: 1.8
+    research_1:
+      label: Research shortlist 1
+      color: "#1D4E89"
+      linestyle: "-."
+      marker: "D"
+      linewidth_pt: 1.6
+    research_2:
+      label: Research shortlist 2
+      color: "#A23B72"
+      linestyle: "-"
+      marker: "P"
+      linewidth_pt: 1.8
+    research_3:
+      label: Research shortlist 3
+      color: "#9C6644"
+      linestyle: "--"
+      marker: "X"
+      linewidth_pt: 1.6
+figure:
+  width_mm: 180
+  height_mm: 190
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png]
+  dpi: 300
+  transparent: false

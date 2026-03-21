@@ -16,7 +16,7 @@ against actual KNU greenhouse forcing and measured cumulative harvested fruit dr
 ## Inputs
 
 - `data/forcing/KNU_Tomato_Env.CSV`
-- `data/forcing/tomato_validation_data_yield_260222.xlsx`
+- `data/forcing/tomato_validation_data_yield_260321.xlsx`
 - current research architecture config from `configs/exp/tomics_allocation_factorial.yaml`
 - current shipped `tomics` and legacy / raw THORP-like policy paths
 

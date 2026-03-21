@@ -11,7 +11,7 @@ The measured validation target is **cumulative harvested fruit dry weight**, not
 ## Actual data inputs
 
 - forcing CSV: `data/forcing/KNU_Tomato_Env.CSV`
-- yield workbook: `data/forcing/tomato_validation_data_yield_260222.xlsx`
+- yield workbook: `data/forcing/tomato_validation_data_yield_260321.xlsx`
 - plants per square meter: `1.836091`
 
 Parsed coverage:
@@ -19,7 +19,7 @@ Parsed coverage:
 - forcing start: `2024-06-13 00:00`
 - forcing end: `2024-08-31 23:59`
 - forcing nominal resolution: `1 min`
-- observed harvest start: `2024-08-08`
+- observed harvest start: `2024-08-05`
 - observed harvest end: `2024-08-31`
 - workbook unit declaration: `g/m^2`
 
@@ -34,8 +34,8 @@ All public validation outputs remain on floor-area basis.
 ## Time alignment
 
 - warmup period: `2024-06-13` through `2024-08-07`
-- validation period: `2024-08-08` through `2024-08-31`
-- baseline calibration slice: `2024-08-08` through `2024-08-19`
+- validation period: `2024-08-05` through `2024-08-31`
+- baseline calibration slice: `2024-08-05` through `2024-08-19`
 - baseline holdout slice: `2024-08-20` through `2024-08-31`
 
 Offset-adjusted cumulative metrics remain the preferred baseline because the measured cumulative harvested series starts above zero.
@@ -111,5 +111,15 @@ Comparison root:
 Current-vs-promoted baseline recommendation:
 
 - `research-only`
+
+## Harvest-aware follow-on
+
+Issue `#243` / module `119` does not replace this current-vs-promoted allocator comparison.
+
+Instead, it adds a second architecture layer on top of the same KNU fair-validation baseline:
+
+- allocator family remains one axis
+- harvest family becomes a separate first-class axis
+- the harvest-aware promotion gate still keeps shipped TOMICS plus incumbent TOMSIM harvest as the incumbent baseline
 
 This baseline is now subordinate to the fair-validation promotion gate in issue `#239` / module `118`. The fair gate keeps shipped TOMICS incumbent even though the research candidates can beat it on RMSE alone, because the research candidates still violate tomato-first guardrails.

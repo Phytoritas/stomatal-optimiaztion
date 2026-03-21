@@ -6,13 +6,57 @@ import pandas as pd
 import yaml
 
 
-def write_sampled_knu_forcing(tmp_path: Path, *, sample_every_rows: int = 360) -> Path:
+def write_sampled_knu_forcing(
+    tmp_path: Path,
+    *,
+    sample_every_rows: int = 360,
+    min_days: int | None = None,
+) -> Path:
     repo_root = Path(__file__).resolve().parents[1]
     fixture = repo_root / "tests" / "fixtures" / "knu_sanitized" / "KNU_Tomato_Env_fixture.csv"
     df = pd.read_csv(fixture).copy()
+    df["datetime"] = pd.to_datetime(df["datetime"], errors="raise")
     stride = 1 if df.shape[0] <= sample_every_rows else max(sample_every_rows, 1)
     df = df.iloc[::stride].copy()
+    if min_days is not None:
+        while df["datetime"].dt.normalize().nunique() < max(int(min_days), 1):
+            last_day = df["datetime"].dt.normalize().max()
+            template = df.loc[df["datetime"].dt.normalize().eq(last_day)].copy()
+            template["datetime"] = template["datetime"] + pd.Timedelta(days=1)
+            df = pd.concat([df, template], ignore_index=True)
     out_path = tmp_path / "KNU_Tomato_Env_sampled.csv"
+    df["datetime"] = df["datetime"].dt.strftime("%Y-%m-%d %H:%M:%S")
+    df.to_csv(out_path, index=False)
+    return out_path
+
+
+def write_sampled_knu_yield_fixture(tmp_path: Path, *, min_days: int = 4) -> Path:
+    repo_root = Path(__file__).resolve().parents[1]
+    fixture = repo_root / "tests" / "fixtures" / "knu_sanitized" / "tomato_validation_data_yield_fixture.csv"
+    df = pd.read_csv(fixture).copy()
+    df["Date"] = pd.to_datetime(df["Date"], errors="raise").dt.normalize()
+    while df.shape[0] < max(min_days, 1):
+        measured_increment = float(
+            (df["Measured_Cumulative_Total_Fruit_DW (g/m^2)"].diff().dropna().iloc[-1])
+            if df.shape[0] > 1
+            else df["Measured_Cumulative_Total_Fruit_DW (g/m^2)"].iloc[-1]
+        )
+        estimated_increment = float(
+            (df["Estimated_Cumulative_Total_Fruit_DW (g/m^2)"].diff().dropna().iloc[-1])
+            if df.shape[0] > 1
+            else df["Estimated_Cumulative_Total_Fruit_DW (g/m^2)"].iloc[-1]
+        )
+        last = df.iloc[-1]
+        df.loc[df.shape[0]] = {
+            "Date": pd.Timestamp(last["Date"]) + pd.Timedelta(days=1),
+            "Measured_Cumulative_Total_Fruit_DW (g/m^2)": float(last["Measured_Cumulative_Total_Fruit_DW (g/m^2)"])
+            + measured_increment,
+            "Estimated_Cumulative_Total_Fruit_DW (g/m^2)": float(
+                last["Estimated_Cumulative_Total_Fruit_DW (g/m^2)"]
+            )
+            + estimated_increment,
+        }
+    out_path = tmp_path / "tomato_validation_data_yield_sampled.csv"
     df.to_csv(out_path, index=False)
     return out_path
 
@@ -290,5 +334,105 @@ def write_minimal_fairness_config(
         },
     }
     out_path = tmp_path / filename
+    out_path.write_text(yaml.safe_dump(config, sort_keys=False, allow_unicode=False), encoding="utf-8")
+    return out_path
+
+
+def write_minimal_knu_harvest_factorial_config(
+    tmp_path: Path,
+    *,
+    repo_root: Path,
+    current_vs_promoted_config: Path,
+    forcing_path: Path | None = None,
+    yield_path: Path | None = None,
+) -> Path:
+    resolved_forcing_path = forcing_path or write_sampled_knu_forcing(tmp_path, sample_every_rows=360)
+    resolved_yield_path = yield_path or (
+        repo_root / "tests" / "fixtures" / "knu_sanitized" / "tomato_validation_data_yield_fixture.csv"
+    )
+    output_root = tmp_path / "out" / "tomics" / "validation" / "knu" / "harvest" / "factorial"
+    current_output_root = tmp_path / "out" / "tomics" / "validation" / "knu" / "architecture" / "current-factorial"
+    promoted_output_root = tmp_path / "out" / "tomics" / "validation" / "knu" / "architecture" / "promoted-factorial"
+    config = {
+        "exp": {"name": "tomics_knu_harvest_family_factorial_test"},
+        "paths": {
+            "repo_root": str(repo_root),
+        },
+        "validation": {
+            "forcing_csv_path": str(resolved_forcing_path),
+            "yield_xlsx_path": str(resolved_yield_path),
+            "prepared_output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "longrun"),
+            "resample_rule": "6h",
+            "theta_proxy_mode": "bucket_irrigated",
+            "theta_proxy_scenarios": ["moderate", "wet"],
+            "calibration_end": "2024-08-19",
+        },
+        "reference": {
+            "current_vs_promoted_config": str(current_vs_promoted_config),
+            "current_output_root": str(current_output_root),
+            "promoted_output_root": str(promoted_output_root),
+        },
+        "harvest_factorial": {
+            "output_root": str(output_root),
+            "theta_proxy_scenario": "moderate",
+            "cumulative_overlay_spec": "configs/plotkit/tomics/knu_harvest_yield_fit_overlay.yaml",
+            "daily_overlay_spec": "configs/plotkit/tomics/knu_harvest_daily_increment_overlay.yaml",
+            "mass_balance_overlay_spec": "configs/plotkit/tomics/knu_harvest_mass_balance_overlay.yaml",
+        },
+    }
+    out_path = tmp_path / "knu_harvest_factorial.yaml"
+    out_path.write_text(yaml.safe_dump(config, sort_keys=False, allow_unicode=False), encoding="utf-8")
+    return out_path
+
+
+def write_minimal_knu_harvest_promotion_gate_config(
+    tmp_path: Path,
+    *,
+    repo_root: Path,
+    current_vs_promoted_config: Path,
+    harvest_factorial_root: Path,
+    forcing_path: Path | None = None,
+    yield_path: Path | None = None,
+) -> Path:
+    resolved_forcing_path = forcing_path or write_sampled_knu_forcing(tmp_path, sample_every_rows=360)
+    resolved_yield_path = yield_path or (
+        repo_root / "tests" / "fixtures" / "knu_sanitized" / "tomato_validation_data_yield_fixture.csv"
+    )
+    output_root = tmp_path / "out" / "tomics" / "validation" / "knu" / "harvest" / "promotion-gate"
+    current_output_root = tmp_path / "out" / "tomics" / "validation" / "knu" / "architecture" / "current-factorial"
+    promoted_output_root = tmp_path / "out" / "tomics" / "validation" / "knu" / "architecture" / "promoted-factorial"
+    config = {
+        "exp": {"name": "tomics_knu_harvest_promotion_gate_test"},
+        "paths": {
+            "repo_root": str(repo_root),
+        },
+        "validation": {
+            "forcing_csv_path": str(resolved_forcing_path),
+            "yield_xlsx_path": str(resolved_yield_path),
+            "prepared_output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "longrun"),
+            "resample_rule": "6h",
+            "theta_proxy_mode": "bucket_irrigated",
+            "theta_proxy_scenarios": ["moderate", "wet"],
+            "calibration_end": "2024-08-19",
+        },
+        "reference": {
+            "current_vs_promoted_config": str(current_vs_promoted_config),
+            "current_output_root": str(current_output_root),
+            "promoted_output_root": str(promoted_output_root),
+        },
+        "harvest_promotion_gate": {
+            "output_root": str(output_root),
+            "harvest_factorial_root": str(harvest_factorial_root),
+            "theta_proxy_scenario": "moderate",
+            "wet_theta_proxy_scenario": "wet",
+            "promotion_overlay_spec": "configs/plotkit/tomics/knu_yield_fit_overlay.yaml",
+            "harvest_mass_balance_error_max": 0.0001,
+            "wet_root_penalty_max": 0.02,
+            "winner_stability_score_min": 0.5,
+            "material_cumulative_rmse_margin": 0.5,
+            "material_daily_rmse_margin": 0.25,
+        },
+    }
+    out_path = tmp_path / "knu_harvest_promotion_gate.yaml"
     out_path.write_text(yaml.safe_dump(config, sort_keys=False, allow_unicode=False), encoding="utf-8")
     return out_path

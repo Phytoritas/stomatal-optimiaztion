@@ -1,0 +1,107 @@
+version: 1
+kind: multi_panel_timeseries
+meta:
+  id: knu_harvest_yield_fit_overlay
+  title: KNU harvest-family cumulative and daily harvested-yield overlays
+  family: tomics_knu_harvest_yield_fit_overlay
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_multiline
+  description: Compare measured and shortlisted harvest-family candidates on floor-area harvested yield.
+data:
+  frame_role: tomics_knu_harvest_overlay
+mapping:
+  source_column: source
+  datetime_column: datetime
+  value_column: value
+layout:
+  preset: publication_3x1_timeseries
+  rows: 3
+  cols: 1
+  margins:
+    left: 0.12
+    right: 0.98
+    bottom: 0.08
+    top: 0.84
+    hspace: 0.34
+  title_y: 0.976
+legend:
+  enabled: true
+  order: [measured, workbook_estimated, baseline, research_1, research_2, research_3]
+  loc: upper center
+  bbox_to_anchor: [0.5, 0.93]
+  ncol: 3
+  font_size_pt: 7.6
+panel_order:
+  - cumulative_total_fruit_floor_area
+  - offset_adjusted_cumulative_total_fruit_floor_area
+  - daily_increment_floor_area
+panels:
+  cumulative_total_fruit_floor_area:
+    column: cumulative_total_fruit_floor_area
+    title: Raw cumulative harvested fruit dry weight
+    x_label: datetime
+    y_label: Cumulative harvested DW [g m^-2 floor]
+    scale: linear
+    y_padding_fraction: 0.10
+  offset_adjusted_cumulative_total_fruit_floor_area:
+    column: offset_adjusted_cumulative_total_fruit_floor_area
+    title: Offset-adjusted cumulative harvested fruit dry weight
+    x_label: datetime
+    y_label: Offset-adjusted cumulative [g m^-2 floor]
+    scale: linear
+    y_padding_fraction: 0.10
+  daily_increment_floor_area:
+    column: daily_increment_floor_area
+    title: Daily harvested fruit dry-weight increment
+    x_label: datetime
+    y_label: Daily increment [g m^-2 floor d^-1]
+    scale: linear
+    y_padding_fraction: 0.12
+styling:
+  sources:
+    measured:
+      label: Measured
+      color: "#111111"
+      linestyle: "-"
+      marker: "o"
+      linewidth_pt: 1.9
+    workbook_estimated:
+      label: Workbook estimated
+      color: "#6C757D"
+      linestyle: "--"
+      marker: "s"
+      linewidth_pt: 1.4
+    baseline:
+      label: Incumbent harvest baseline
+      color: "#2A9D8F"
+      linestyle: "-"
+      marker: "^"
+      linewidth_pt: 1.8
+    research_1:
+      label: Research shortlist 1
+      color: "#1D4E89"
+      linestyle: "-."
+      marker: "D"
+      linewidth_pt: 1.6
+    research_2:
+      label: Research shortlist 2
+      color: "#A23B72"
+      linestyle: "-"
+      marker: "P"
+      linewidth_pt: 1.8
+    research_3:
+      label: Research shortlist 3
+      color: "#9C6644"
+      linestyle: "--"
+      marker: "X"
+      linewidth_pt: 1.6
+figure:
+  width_mm: 180
+  height_mm: 190
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png]
+  dpi: 300
+  transparent: false
