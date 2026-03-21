@@ -150,7 +150,7 @@ TRACEABILITY_ROWS: tuple[ResearchTraceRow, ...] = (
     ),
     ResearchTraceRow(
         source_family="Vanthoor",
-        source_file="Vanthoor - 1 Electronic appendix of the manuscript entitled A 2 methodology for model-based greenhouse design.pdf",
+        source_file="Vanthoor 2011 electronic appendix (Zotero item SIZ3ZU3W / attachment CKLNUS4Q; repo-local ...yiel 1.pdf resolves to appendix text)",
         page_or_equation="appendix p. 4 Eq. (2)",
         exact_reference="Cdot_Buf = MC_AirBuf - MC_BufFruit - MC_BufLeaf - MC_BufStem - MC_BufAir.",
         original_symbols="CBuf, MCAirBuf, MCBufFruit, MCBufLeaf, MCBufStem, MCBufAir",
