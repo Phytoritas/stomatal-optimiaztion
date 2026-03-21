@@ -1,0 +1,44 @@
+version: 1
+kind: architecture_scatter_summary
+meta:
+  id: current_vs_promoted_plot
+  title: KNU current vs promoted TOMICS architecture scorecard
+  family: tomics_knu_current_vs_promoted_scorecard
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_scatter
+  description: Compare current and promoted validation candidates by offset-adjusted yield RMSE and promotion score on actual KNU data.
+data:
+  frame_role: tomics_knu_current_vs_promoted_scorecard
+mapping:
+  fruit_weight_column: mean_yield_rmse_offset_adjusted
+  score_column: score
+  color_column: max_canopy_collapse_days
+layout:
+  preset: publication_single_panel_scatter
+  rows: 1
+  cols: 1
+  margins:
+    left: 0.11
+    right: 0.92
+    bottom: 0.16
+    top: 0.84
+  title_y: 0.972
+panel_order:
+  - architecture_score
+panels:
+  architecture_score:
+    title: Offset-adjusted yield RMSE vs promotion score
+    x_label: Offset-adjusted yield RMSE [g m^-2 floor]
+    y_label: Promotion score
+    colorbar_label: Max canopy collapse days [d]
+    cmap: viridis
+figure:
+  width_mm: 160
+  height_mm: 95
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png]
+  dpi: 300
+  transparent: false

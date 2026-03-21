@@ -100,6 +100,22 @@ def _env_to_legacy_row(env: EnvStep) -> dict[str, float]:
     return row
 
 
+def _apply_env_validation_signals(model: TomatoLegacyModelProtocol, env: EnvStep) -> None:
+    if env.theta_substrate is not None:
+        try:
+            model.theta_substrate = float(env.theta_substrate)  # type: ignore[attr-defined]
+        except Exception:
+            pass
+    try:
+        model.rootzone_multistress = float(env.rootzone_multistress or 0.0)  # type: ignore[attr-defined]
+    except Exception:
+        pass
+    try:
+        model.rootzone_saturation = float(env.rootzone_saturation or 0.0)  # type: ignore[attr-defined]
+    except Exception:
+        pass
+
+
 def _build_model(
     *,
     model_factory: ModelFactory | None,
@@ -189,6 +205,7 @@ class TomatoLegacyAdapter:
             _prime_model_clock(model, env)
             self._initialized = True
 
+        _apply_env_validation_signals(model, env)
         model.update_inputs_from_row(_env_to_legacy_row(env))
         model.run_timestep_calculations(float(env.dt_s), env.t)
         model.last_calc_time = env.t
@@ -205,6 +222,7 @@ class TomatoLegacyModule:
     def __call__(self, ctx: Context) -> None:
         model = self._get_or_create_model(ctx)
         row = _env_to_legacy_row(ctx.env)
+        _apply_env_validation_signals(model, ctx.env)
 
         model.update_inputs_from_row(row)
         model.run_timestep_calculations(float(ctx.env.dt_s), ctx.env.t)
@@ -261,7 +279,11 @@ class TomatoLegacyModule:
         return model
 
     def _resolve_theta_substrate(self, ctx: Context) -> float:
-        raw = ctx.params.get("theta_substrate", ctx.state.get("theta_substrate", 0.33))
+        raw = (
+            ctx.env.theta_substrate
+            if ctx.env.theta_substrate is not None
+            else ctx.params.get("theta_substrate", ctx.state.get("theta_substrate", 0.33))
+        )
         theta = _finite_float(raw, default=0.33)
         theta = min(max(theta, 0.0), 1.0)
         ctx.state["theta_substrate"] = theta

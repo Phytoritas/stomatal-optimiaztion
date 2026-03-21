@@ -83,6 +83,22 @@ Use one canonical name per concept across repositories.
 | Common-structure assimilate buffer | `xA_assimilate_buffer_g_m2` | `kuijpers_assimilate_buffer_state` | g CH2O m^-2 | Kuijpers-normalized diagnostic state; scaffold only, not a standalone tomato law |
 | Canopy collapse days | `canopy_collapse_days` | `days_with_canopy_collapse` | d | In the architecture study, days with active fruiting and either LAI below the configured floor or leaf allocation below the configured floor |
 
+## KNU actual-data validation terms
+
+| Concept | Canonical short name | Optional verbose alias | Typical unit | Notes |
+|---|---|---|---|---|
+| Theta proxy mode | `theta_proxy_mode` | `substrate_moisture_proxy_mode` | enum | `flat_constant`, `bucket_irrigated`, or `bucket_irrigated_hysteretic` |
+| Theta proxy scenario | `theta_proxy_scenario` | `substrate_proxy_scenario` | enum | `dry`, `moderate`, or `wet` for actual KNU runs |
+| Root-zone multistress proxy | `rootzone_multistress` | `greenhouse_rootzone_multistress_proxy` | 0-1 | Bounded greenhouse proxy derived from demand and root-zone assumptions |
+| Root-zone saturation proxy | `rootzone_saturation` | `greenhouse_rootzone_saturation_proxy` | 0-1 | Saturation penalty proxy for greenhouse substrate runs |
+| Offset-adjusted yield RMSE | `yield_rmse_offset_adjusted` | `offset_adjusted_yield_rmse` | declared observation unit | Preferred cumulative-yield fit metric when the observed series starts with a non-zero offset |
+| Offset-adjusted yield R2 | `yield_r2_offset_adjusted` | `offset_adjusted_yield_r2` | 0-1 | Reported alongside full-window and split-window KNU validation |
+| Final total dry weight on floor area | `final_total_dry_weight_floor_area` | `final_total_dry_weight_g_m2_floor_area` | g m^-2 floor | Canonical actual-data reporting boundary |
+| Final fruit dry weight on floor area | `final_fruit_dry_weight_floor_area` | `final_cumulative_fruit_dry_weight_floor_area` | g m^-2 floor | In KNU validation, reported on the same floor-area basis as the observation workbook |
+| Promoted optimizer mode | `optimizer_mode` | `promoted_allocator_optimizer_mode` | enum | `bounded_static_current`, `prior_weighted_softmax`, or `prior_weighted_softmax_plus_lowpass` |
+| Promoted softmax sharpness | `beta` | `promoted_softmax_beta` | dimensionless | Prior-weighted softmax sharpness parameter |
+| Allocation-memory timescale | `tau_alloc_days` | `allocation_lowpass_tau_days` | d | Low-pass memory constant for promoted allocation research runs |
+
 ## Rules
 - Use lowercase snake_case.
 - Reuse the same name for the same concept in every repository.

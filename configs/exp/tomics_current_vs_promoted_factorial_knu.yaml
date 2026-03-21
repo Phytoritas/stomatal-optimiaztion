@@ -1,0 +1,52 @@
+exp:
+  name: tomics_current_vs_promoted_factorial_knu
+
+validation:
+  forcing_csv_path: data/forcing/KNU_Tomato_Env.CSV
+  yield_xlsx_path: data/forcing/tomato_validation_data_yield_260222.xlsx
+  prepared_output_root: out/knu_longrun
+  resample_rule: 1h
+  theta_proxy_mode: bucket_irrigated
+  theta_proxy_scenarios: [dry, moderate, wet]
+  calibration_end: 2024-08-19
+
+current:
+  base_config: configs/exp/tomics_allocation_factorial.yaml
+  theta_proxy_scenarios: [dry, moderate, wet]
+  shortlist_count: 2
+  wet_theta_threshold: 0.75
+  canopy_lai_floor: 2.0
+  leaf_fraction_floor: 0.18
+  fixed_lai:
+  prior_selected_architecture_json: out/tomics_allocation_factorial/selected_architecture.json
+  fruit_load_regimes:
+    observed_baseline: 1.0
+    high_fruit_load: 1.25
+
+promoted:
+  base_config: configs/exp/tomics_allocation_factorial.yaml
+  theta_proxy_scenarios: [dry, moderate, wet]
+  shortlist_count: 3
+  wet_theta_threshold: 0.75
+  canopy_lai_floor: 2.0
+  leaf_fraction_floor: 0.18
+  fixed_lai:
+  fruit_load_regimes:
+    observed_baseline: 1.0
+    high_fruit_load: 1.25
+
+paths:
+  repo_root: ../..
+  current_output_root: out/tomics_current_factorial_knu
+  promoted_output_root: out/tomics_promoted_factorial_knu
+  comparison_output_root: out/tomics_current_vs_promoted_knu
+
+plots:
+  current_summary_plot_spec: configs/plotkit/tomics/allocation_factorial_summary.yaml
+  current_main_effects_plot_spec: configs/plotkit/tomics/allocation_factorial_main_effects.yaml
+  promoted_summary_plot_spec: configs/plotkit/tomics/allocation_factorial_summary.yaml
+  promoted_main_effects_plot_spec: configs/plotkit/tomics/allocation_factorial_main_effects.yaml
+  comparison_summary_plot_spec: configs/plotkit/tomics/knu_current_vs_promoted_summary.yaml
+  yield_fit_overlay_spec: configs/plotkit/tomics/knu_yield_fit_overlay.yaml
+  allocation_behavior_overlay_spec: configs/plotkit/tomics/knu_allocation_behavior_overlay.yaml
+  theta_proxy_diagnostics_spec: configs/plotkit/tomics/knu_theta_proxy_diagnostics.yaml

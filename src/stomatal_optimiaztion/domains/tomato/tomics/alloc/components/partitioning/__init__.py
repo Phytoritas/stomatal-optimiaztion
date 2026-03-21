@@ -14,6 +14,13 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.partitioning.r
     equation_traceability_rows,
     traceability_rows,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.partitioning.promoted_modes import (
+    PromotedAllocatorConfig,
+    promoted_traceability_rows,
+)
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.partitioning.promoted_policy import (
+    TomicsPromotedResearchPolicy,
+)
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.partitioning.research_policy import (
     TomicsArchitectureResearchPolicy,
 )
@@ -40,10 +47,12 @@ __all__ = [
     "AllocationFractions",
     "Organ",
     "PartitionPolicy",
+    "PromotedAllocatorConfig",
     "ResearchArchitectureConfig",
     "SinkBasedTomatoPolicy",
     "ThorpAllocationFractions",
     "TomicsArchitectureResearchPolicy",
+    "TomicsPromotedResearchPolicy",
     "ThorpFruitVegPolicy",
     "ThorpObjectiveParams",
     "ThorpVegetativePolicy",
@@ -52,6 +61,7 @@ __all__ = [
     "build_partition_policy",
     "coerce_partition_policy",
     "equation_traceability_rows",
+    "promoted_traceability_rows",
     "traceability_rows",
     "objective_params_from_thorp",
     "thorp_allocation_fractions",

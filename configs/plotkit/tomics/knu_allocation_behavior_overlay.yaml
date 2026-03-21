@@ -1,0 +1,98 @@
+version: 1
+kind: multi_panel_timeseries
+meta:
+  id: allocation_behavior_overlay
+  title: KNU allocation behavior overlay under moderate greenhouse substrate proxy
+  family: tomics_knu_allocation_behavior_overlay
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_multiline
+  description: Compare shipped TOMICS, the current selected kuijpers candidate, and the promoted allocator winner on allocation and canopy behavior.
+data:
+  frame_role: tomics_knu_allocation_overlay
+mapping:
+  source_column: source
+  datetime_column: datetime
+  value_column: value
+layout:
+  preset: publication_2x2_timeseries
+  rows: 2
+  cols: 2
+  margins:
+    left: 0.10
+    right: 0.98
+    bottom: 0.10
+    top: 0.84
+    hspace: 0.34
+    wspace: 0.26
+  title_y: 0.976
+legend:
+  enabled: true
+  order: [shipped_tomics, current_selected, promoted_selected]
+  loc: upper center
+  bbox_to_anchor: [0.5, 0.92]
+  ncol: 3
+  font_size_pt: 8.0
+panel_order:
+  - alloc_frac_fruit
+  - alloc_frac_leaf
+  - alloc_frac_root
+  - LAI
+panels:
+  alloc_frac_fruit:
+    column: alloc_frac_fruit
+    title: Fruit allocation
+    x_label: datetime
+    y_label: Fruit allocation (-)
+    scale: linear
+    y_limits: [-0.05, 1.05]
+  alloc_frac_leaf:
+    column: alloc_frac_leaf
+    title: Leaf allocation
+    x_label: datetime
+    y_label: Leaf allocation (-)
+    scale: linear
+    y_limits: [-0.05, 1.05]
+  alloc_frac_root:
+    column: alloc_frac_root
+    title: Root allocation
+    x_label: datetime
+    y_label: Root allocation (-)
+    scale: linear
+    y_limits: [-0.05, 1.05]
+  LAI:
+    column: LAI
+    title: Leaf area index
+    x_label: datetime
+    y_label: LAI
+    scale: linear
+    y_padding_fraction: 0.10
+styling:
+  sources:
+    shipped_tomics:
+      label: Shipped TOMICS
+      color: "#2A9D8F"
+      linestyle: "-"
+      marker: "^"
+      linewidth_pt: 1.8
+    current_selected:
+      label: Current kuijpers
+      color: "#1D4E89"
+      linestyle: "-."
+      marker: "D"
+      linewidth_pt: 1.6
+    promoted_selected:
+      label: Promoted winner
+      color: "#A23B72"
+      linestyle: "-"
+      marker: "P"
+      linewidth_pt: 1.8
+figure:
+  width_mm: 180
+  height_mm: 145
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png]
+  dpi: 300
+  transparent: false

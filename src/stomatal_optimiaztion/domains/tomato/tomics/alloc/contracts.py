@@ -88,6 +88,9 @@ class EnvStep:
     SW_in_Wm2: float | None = None
     T_rad_C: float | None = None
     n_fruits_per_truss: int | None = None
+    theta_substrate: float | None = None
+    rootzone_multistress: float | None = None
+    rootzone_saturation: float | None = None
 
     @classmethod
     def from_row(
@@ -123,6 +126,9 @@ class EnvStep:
             SW_in_Wm2=_read_optional_float(row, "SW_in_Wm2"),
             T_rad_C=_read_optional_float(row, "T_rad_C"),
             n_fruits_per_truss=_read_optional_int(row, "n_fruits_per_truss"),
+            theta_substrate=_read_optional_float(row, "theta_substrate"),
+            rootzone_multistress=_read_optional_float(row, "rootzone_multistress"),
+            rootzone_saturation=_read_optional_float(row, "rootzone_saturation"),
         )
 
 
