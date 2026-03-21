@@ -40,6 +40,9 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.artifact_sync 
     CanonicalWinnerIds,
     write_canonical_winner_manifest,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.harvest_operator import (
+    MODEL_HARVESTED_CUMULATIVE_COLUMN,
+)
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.metrics import (
     REPORTING_BASIS_FLOOR_AREA,
     canopy_collapse_days,
@@ -521,13 +524,13 @@ def _compute_run_metrics(
     ].reset_index(drop=True)
     bundle = compute_validation_bundle(
         prepared_bundle.observed_df.copy(),
-        candidate_series=validation_df["model_cumulative_total_fruit_dry_weight_floor_area"],
+        candidate_series=validation_df[MODEL_HARVESTED_CUMULATIVE_COLUMN],
         candidate_label=candidate_label,
         unit_declared_in_observation_file=prepared_bundle.data.observation_unit_label,
     )
     calibration_metrics = _window_metrics(
         prepared_bundle.observed_df,
-        candidate_series=validation_df["model_cumulative_total_fruit_dry_weight_floor_area"],
+        candidate_series=validation_df[MODEL_HARVESTED_CUMULATIVE_COLUMN],
         candidate_label=candidate_label,
         unit_label=prepared_bundle.data.observation_unit_label,
         start=prepared_bundle.validation_start,
@@ -535,7 +538,7 @@ def _compute_run_metrics(
     )
     holdout_metrics = _window_metrics(
         prepared_bundle.observed_df,
-        candidate_series=validation_df["model_cumulative_total_fruit_dry_weight_floor_area"],
+        candidate_series=validation_df[MODEL_HARVESTED_CUMULATIVE_COLUMN],
         candidate_label=candidate_label,
         unit_label=prepared_bundle.data.observation_unit_label,
         start=prepared_bundle.holdout_start,
@@ -565,7 +568,7 @@ def _compute_run_metrics(
         "final_total_dry_weight_floor_area": _nanlast(run_df, "total_dry_weight_g_m2"),
         "final_fruit_dry_weight_floor_area": _nanlast(
             validation_df,
-            "model_cumulative_total_fruit_dry_weight_floor_area",
+            MODEL_HARVESTED_CUMULATIVE_COLUMN,
         ),
         "fruit_anchor_error_vs_legacy": fruit_anchor_error,
         "canopy_collapse_days": canopy_collapse_days(

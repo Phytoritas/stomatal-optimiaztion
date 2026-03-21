@@ -6,6 +6,11 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.harvest_operator import (
+    MODEL_DAILY_HARVEST_INCREMENT_COLUMN,
+    MODEL_HARVESTED_CUMULATIVE_COLUMN,
+)
+
 
 REPORTING_BASIS_FLOOR_AREA = "floor_area_g_m2"
 
@@ -101,21 +106,41 @@ def merge_validation_series(
     observed_df: pd.DataFrame,
     model_daily_df: pd.DataFrame,
     *,
-    model_value_column: str = "model_cumulative_total_fruit_dry_weight_floor_area",
+    model_value_column: str = MODEL_HARVESTED_CUMULATIVE_COLUMN,
     source_label: str,
 ) -> pd.DataFrame:
     merged = observed_df.merge(
-        model_daily_df[["date", model_value_column, "model_daily_increment_floor_area"]],
+        model_daily_df[["date", model_value_column, MODEL_DAILY_HARVEST_INCREMENT_COLUMN]],
         on="date",
         how="left",
     )
     merged = merged.rename(
         columns={
-            model_value_column: f"{source_label}_cumulative_total_fruit_dry_weight_floor_area",
-            "model_daily_increment_floor_area": f"{source_label}_daily_increment_floor_area",
+            model_value_column: f"{source_label}_cumulative_harvested_fruit_dry_weight_floor_area",
+            MODEL_DAILY_HARVEST_INCREMENT_COLUMN: f"{source_label}_daily_harvest_increment_floor_area",
         }
     )
+    merged[f"{source_label}_cumulative_total_fruit_dry_weight_floor_area"] = merged[
+        f"{source_label}_cumulative_harvested_fruit_dry_weight_floor_area"
+    ]
+    merged[f"{source_label}_daily_increment_floor_area"] = merged[f"{source_label}_daily_harvest_increment_floor_area"]
     return merged
+
+
+def _resolve_measured_columns(observed_df: pd.DataFrame) -> tuple[str, str]:
+    cumulative_candidates = (
+        "measured_cumulative_harvested_fruit_dry_weight_floor_area",
+        "measured_cumulative_total_fruit_dry_weight_floor_area",
+    )
+    increment_candidates = (
+        "measured_daily_harvest_increment_floor_area",
+        "measured_daily_increment_floor_area",
+    )
+    cumulative_column = next((column for column in cumulative_candidates if column in observed_df.columns), None)
+    increment_column = next((column for column in increment_candidates if column in observed_df.columns), None)
+    if cumulative_column is None or increment_column is None:
+        raise KeyError(f"Missing measured validation columns in {list(observed_df.columns)!r}.")
+    return cumulative_column, increment_column
 
 
 def compute_validation_bundle(
@@ -127,35 +152,36 @@ def compute_validation_bundle(
     unit_declared_in_observation_file: str,
 ) -> ValidationSeriesBundle:
     merged = observed_df.copy()
-    cumulative_column = f"{candidate_label}_cumulative_total_fruit_dry_weight_floor_area"
-    merged[cumulative_column] = pd.to_numeric(candidate_series, errors="coerce")
-    merged["measured_offset_adjusted"] = _offset_adjusted(
-        merged["measured_cumulative_total_fruit_dry_weight_floor_area"]
-    )
-    merged[f"{candidate_label}_offset_adjusted"] = _offset_adjusted(merged[cumulative_column])
+    measured_cumulative_column, measured_increment_column = _resolve_measured_columns(merged)
+    harvested_column = f"{candidate_label}_cumulative_harvested_fruit_dry_weight_floor_area"
+    total_alias_column = f"{candidate_label}_cumulative_total_fruit_dry_weight_floor_area"
+    increment_column = f"{candidate_label}_daily_harvest_increment_floor_area"
+    merged[harvested_column] = pd.to_numeric(candidate_series, errors="coerce")
+    merged[total_alias_column] = merged[harvested_column]
+    merged["measured_offset_adjusted"] = _offset_adjusted(merged[measured_cumulative_column])
+    merged[f"{candidate_label}_offset_adjusted"] = _offset_adjusted(merged[harvested_column])
     if candidate_daily_increment_series is None:
-        merged[f"{candidate_label}_daily_increment_floor_area"] = pd.to_numeric(merged[cumulative_column], errors="coerce").diff()
+        merged[increment_column] = pd.to_numeric(merged[harvested_column], errors="coerce").diff()
     else:
-        merged[f"{candidate_label}_daily_increment_floor_area"] = pd.to_numeric(
+        merged[increment_column] = pd.to_numeric(
             candidate_daily_increment_series,
             errors="coerce",
         )
+    merged[f"{candidate_label}_daily_increment_floor_area"] = merged[increment_column]
 
     raw_metrics = _series_metrics(
-        merged["measured_cumulative_total_fruit_dry_weight_floor_area"],
-        merged[cumulative_column],
+        merged[measured_cumulative_column],
+        merged[harvested_column],
     )
     offset_metrics = _series_metrics(
         merged["measured_offset_adjusted"],
         merged[f"{candidate_label}_offset_adjusted"],
     )
     increment_metrics = _series_metrics(
-        merged["measured_daily_increment_floor_area"],
-        merged[f"{candidate_label}_daily_increment_floor_area"],
+        merged[measured_increment_column],
+        merged[increment_column],
     )
-    increment_error = (
-        merged[f"{candidate_label}_daily_increment_floor_area"] - merged["measured_daily_increment_floor_area"]
-    ).abs()
+    increment_error = (merged[increment_column] - merged[measured_increment_column]).abs()
     increment_error = pd.to_numeric(increment_error, errors="coerce")
     if merged.empty:
         final_bias = math.nan
@@ -165,18 +191,16 @@ def compute_validation_bundle(
         offset_adjustment_applied = False
     else:
         final_bias = float(
-            pd.to_numeric(merged[cumulative_column], errors="coerce").iloc[-1]
-            - pd.to_numeric(merged["measured_cumulative_total_fruit_dry_weight_floor_area"], errors="coerce").iloc[-1]
+            pd.to_numeric(merged[harvested_column], errors="coerce").iloc[-1]
+            - pd.to_numeric(merged[measured_cumulative_column], errors="coerce").iloc[-1]
         )
-        observed_final = float(
-            pd.to_numeric(merged["measured_cumulative_total_fruit_dry_weight_floor_area"], errors="coerce").iloc[-1]
-        )
+        observed_final = float(pd.to_numeric(merged[measured_cumulative_column], errors="coerce").iloc[-1])
         final_bias_pct = final_bias / observed_final * 100.0 if abs(observed_final) > 1e-9 else math.nan
         final_window_error = float(
             merged[f"{candidate_label}_offset_adjusted"].iloc[-1] - merged["measured_offset_adjusted"].iloc[-1]
         )
         offset_adjustment_applied = bool(
-            abs(float(pd.to_numeric(merged["measured_cumulative_total_fruit_dry_weight_floor_area"], errors="coerce").iloc[0])) > 1e-9
+            abs(float(pd.to_numeric(merged[measured_cumulative_column], errors="coerce").iloc[0])) > 1e-9
         )
 
     metrics = {
@@ -225,15 +249,23 @@ def resolve_validation_series_columns(
         prefixes.append("model")
 
     for prefix in prefixes:
-        cumulative_column = f"{prefix}_cumulative_total_fruit_dry_weight_floor_area"
+        cumulative_candidates = [
+            f"{prefix}_cumulative_harvested_fruit_dry_weight_floor_area",
+            f"{prefix}_cumulative_total_fruit_dry_weight_floor_area",
+        ]
         offset_column = f"{prefix}_offset_adjusted"
-        increment_column = f"{prefix}_daily_increment_floor_area"
-        if {
-            cumulative_column,
-            offset_column,
-            increment_column,
-        }.issubset(validation_df.columns):
-            return cumulative_column, offset_column, increment_column
+        increment_candidates = [
+            f"{prefix}_daily_harvest_increment_floor_area",
+            f"{prefix}_daily_increment_floor_area",
+        ]
+        for cumulative_column in cumulative_candidates:
+            for increment_column in increment_candidates:
+                if {
+                    cumulative_column,
+                    offset_column,
+                    increment_column,
+                }.issubset(validation_df.columns):
+                    return cumulative_column, offset_column, increment_column
     raise KeyError(
         "Could not resolve validation series columns "
         f"for source_label={source_label!r} in columns={list(validation_df.columns)!r}."

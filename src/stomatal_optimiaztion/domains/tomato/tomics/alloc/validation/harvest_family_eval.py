@@ -27,6 +27,8 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.pipelines.tomato_legacy i
     resolve_forcing_path,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.harvest_operator import (
+    MODEL_DAILY_HARVEST_INCREMENT_COLUMN,
+    MODEL_HARVESTED_CUMULATIVE_COLUMN,
     model_floor_area_cumulative_total_fruit,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.metrics import (
@@ -339,8 +341,8 @@ def run_harvest_family_simulation(
     harvest_mass_balance_df = pd.DataFrame(mass_balance_rows)
     model_daily_df = model_floor_area_cumulative_total_fruit(run_df)
     indexed = model_daily_df.set_index("date")
-    candidate_series = observed_df["date"].map(indexed["model_cumulative_total_fruit_dry_weight_floor_area"])
-    candidate_daily_increment = observed_df["date"].map(indexed["model_daily_increment_floor_area"])
+    candidate_series = observed_df["date"].map(indexed[MODEL_HARVESTED_CUMULATIVE_COLUMN])
+    candidate_daily_increment = observed_df["date"].map(indexed[MODEL_DAILY_HARVEST_INCREMENT_COLUMN])
     bundle = compute_validation_bundle(
         observed_df.copy(),
         candidate_series=candidate_series,
@@ -424,7 +426,7 @@ def build_harvest_overlay_frame(validation_df: pd.DataFrame, *, source_label: st
         {
             "datetime": pd.to_datetime(validation_df["date"], errors="coerce"),
             "cumulative_total_fruit_floor_area": pd.to_numeric(
-                validation_df[f"{source_label}_cumulative_total_fruit_dry_weight_floor_area"],
+                validation_df[f"{source_label}_cumulative_harvested_fruit_dry_weight_floor_area"],
                 errors="coerce",
             ),
             "offset_adjusted_cumulative_total_fruit_floor_area": pd.to_numeric(
@@ -432,7 +434,7 @@ def build_harvest_overlay_frame(validation_df: pd.DataFrame, *, source_label: st
                 errors="coerce",
             ),
             "daily_increment_floor_area": pd.to_numeric(
-                validation_df[f"{source_label}_daily_increment_floor_area"],
+                validation_df[f"{source_label}_daily_harvest_increment_floor_area"],
                 errors="coerce",
             ),
         }

@@ -174,5 +174,10 @@ def assert_harvest_promotion_gate_runner_writes_scorecard_outputs_from_sanitized
     guardrails = json.loads((output_root / "promotion_guardrails.json").read_text(encoding="utf-8"))
 
     assert {"shipped_tomics", "current_selected", "promoted_selected"}.issubset(set(scorecard_df["candidate_label"]))
+    assert {
+        "max_post_writeback_dropped_nonharvested_mass_g_m2",
+        "any_all_zero_harvest_series",
+    }.issubset(scorecard_df.columns)
     assert "Recommendation:" in decision
     assert set(guardrails).issuperset({"guardrails", "current_selected", "promoted_selected", "recommendation"})
+    assert "post_writeback_dropped_nonharvested_mass_g_m2_max" in guardrails["guardrails"]

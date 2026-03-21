@@ -19,6 +19,7 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.current_vs_pro
     prepare_knu_bundle,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.harvest_operator import (
+    MODEL_HARVESTED_CUMULATIVE_COLUMN,
     model_floor_area_cumulative_total_fruit,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.metrics import (
@@ -291,7 +292,7 @@ def _parameter_grid(config: dict[str, Any]) -> list[dict[str, float]]:
 def _candidate_series(observed_df: pd.DataFrame, run_df: pd.DataFrame) -> pd.Series:
     model_daily_df = model_floor_area_cumulative_total_fruit(run_df)
     indexed = model_daily_df.set_index("date")
-    return observed_df["date"].map(indexed["model_cumulative_total_fruit_dry_weight_floor_area"])
+    return observed_df["date"].map(indexed[MODEL_HARVESTED_CUMULATIVE_COLUMN])
 
 
 def _window_bundle(

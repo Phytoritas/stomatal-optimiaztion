@@ -13,6 +13,7 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.core import ensure_dir, l
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.pipelines import run_tomato_legacy_pipeline
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.pipelines import resolve_repo_root
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.harvest_operator import (
+    MODEL_HARVESTED_CUMULATIVE_COLUMN,
     model_floor_area_cumulative_total_fruit,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.init_search import (
@@ -44,7 +45,7 @@ class ReconstructionResult:
 
 def _aligned_candidate_series(observed_df: pd.DataFrame, model_daily_df: pd.DataFrame) -> pd.Series:
     indexed = model_daily_df.set_index("date")
-    return observed_df["date"].map(indexed["model_cumulative_total_fruit_dry_weight_floor_area"])
+    return observed_df["date"].map(indexed[MODEL_HARVESTED_CUMULATIVE_COLUMN])
 
 
 def _initial_fruit_mass(initial_state_overrides: dict[str, object]) -> float:
