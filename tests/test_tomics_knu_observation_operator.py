@@ -20,11 +20,13 @@ def test_harvest_observation_operator_uses_harvested_mass_not_latent_total() -> 
         }
     )
     observed = model_floor_area_cumulative_total_fruit(run_df)
-    assert observed["model_cumulative_total_fruit_dry_weight_floor_area"].tolist() == [0.0, 5.0, 9.0]
-    assert observed["model_total_latent_fruit_dry_weight_floor_area"].tolist() == [4.0, 11.0, 16.0]
-    assert pd.isna(observed["model_daily_increment_floor_area"].iloc[0])
-    assert float(observed["model_daily_increment_floor_area"].iloc[1]) == 5.0
-    assert float(observed["model_daily_increment_floor_area"].iloc[2]) == 4.0
+    assert observed["model_cumulative_harvested_fruit_dry_weight_floor_area"].tolist() == [0.0, 5.0, 9.0]
+    assert observed["model_observed_target_proxy_floor_area"].tolist() == [0.0, 5.0, 9.0]
+    assert observed["model_total_system_fruit_dry_weight_floor_area"].tolist() == [4.0, 11.0, 16.0]
+    assert observed["model_cumulative_total_fruit_dry_weight_floor_area"].tolist() == [4.0, 11.0, 16.0]
+    assert pd.isna(observed["model_daily_harvest_increment_floor_area"].iloc[0])
+    assert float(observed["model_daily_harvest_increment_floor_area"].iloc[1]) == 5.0
+    assert float(observed["model_daily_harvest_increment_floor_area"].iloc[2]) == 4.0
 
 
 def test_validation_bundle_preserves_split_boundary_daily_increment_when_series_is_precomputed() -> None:
@@ -44,8 +46,8 @@ def test_validation_bundle_preserves_split_boundary_daily_increment_when_series_
         candidate_label="model",
         unit_declared_in_observation_file="g/m^2",
     )
-    assert float(bundle.merged_df["model_daily_increment_floor_area"].iloc[0]) == 4.0
-    assert float(bundle.merged_df["model_daily_increment_floor_area"].iloc[1]) == 2.0
+    assert float(bundle.merged_df["model_daily_harvest_increment_floor_area"].iloc[0]) == 4.0
+    assert float(bundle.merged_df["model_daily_harvest_increment_floor_area"].iloc[1]) == 2.0
 
 
 def test_validation_overlay_frame_uses_candidate_specific_columns() -> None:
@@ -56,11 +58,15 @@ def test_validation_overlay_frame_uses_candidate_specific_columns() -> None:
             "measured_offset_adjusted": [0.0, 1.0],
             "measured_daily_increment_floor_area": [pd.NA, 1.0],
             "estimated_cumulative_total_fruit_dry_weight_floor_area": [3.0, 4.0],
+            "estimated_cumulative_harvested_fruit_dry_weight_floor_area": [3.0, 4.0],
             "estimated_offset_adjusted": [0.0, 1.0],
             "estimated_daily_increment_floor_area": [pd.NA, 1.0],
-            "model_cumulative_total_fruit_dry_weight_floor_area": [5.0, 7.0],
+            "estimated_daily_harvest_increment_floor_area": [pd.NA, 1.0],
+            "model_cumulative_total_fruit_dry_weight_floor_area": [50.0, 70.0],
+            "model_cumulative_harvested_fruit_dry_weight_floor_area": [5.0, 7.0],
             "model_offset_adjusted": [0.0, 2.0],
             "model_daily_increment_floor_area": [pd.NA, 2.0],
+            "model_daily_harvest_increment_floor_area": [pd.NA, 2.0],
         }
     )
     model_frame = validation_overlay_frame(validation_df, source_label="shipped_tomics")

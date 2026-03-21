@@ -13,6 +13,7 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.current_vs_pro
     prepare_knu_bundle,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.harvest_operator import (
+    MODEL_HARVESTED_CUMULATIVE_COLUMN,
     model_floor_area_cumulative_total_fruit,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.observation_model import (
@@ -151,7 +152,7 @@ def run_knu_observation_eval(*, config_path: str | Path) -> dict[str, object]:
         run_df = run_tomato_legacy_pipeline(run_cfg, repo_root=repo_root)
         model_daily_df = model_floor_area_cumulative_total_fruit(run_df)
         candidate_series = prepared_bundle.observed_df["date"].map(
-            model_daily_df.set_index("date")["model_cumulative_total_fruit_dry_weight_floor_area"]
+            model_daily_df.set_index("date")[MODEL_HARVESTED_CUMULATIVE_COLUMN]
         )
         bundle = compute_validation_bundle(
             prepared_bundle.observed_df.copy(),
