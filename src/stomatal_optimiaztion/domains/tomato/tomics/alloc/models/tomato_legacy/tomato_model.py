@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import logging
 import math
 from collections.abc import Mapping
@@ -126,6 +127,7 @@ class TomatoModel:
         allocation_scheme: str = "4pool",
         partition_policy_params: Mapping[str, object] | None = None,
         initial_state_overrides: Mapping[str, object] | None = None,
+        internal_harvest_enabled: bool = True,
     ) -> None:
         self.fixed_lai = fixed_lai
         self.partition_policy = coerce_partition_policy(partition_policy)
@@ -140,6 +142,7 @@ class TomatoModel:
             if isinstance(initial_state_overrides, Mapping)
             else {}
         )
+        self.internal_harvest_enabled = bool(internal_harvest_enabled)
 
         self.photosyn_mode = "fvcb_canopy"
         self.use_age_structured_sink = True
@@ -274,6 +277,7 @@ class TomatoModel:
         self.truss_count = 0
         self._truss_fraction_acc = 0.0
         self.truss_cohorts: list[dict[str, object]] = []
+        self._next_truss_entity_id = 1
         self.pending_n_fruits: list[int] = []
 
         self.n_f = 2
@@ -293,6 +297,8 @@ class TomatoModel:
         self.fruit_dw = self.W_fr
 
         self.buffer_pool_g = 0.0
+        self.last_fruit_harvest_g = 0.0
+        self.last_leaf_harvest_g = 0.0
         self.fruit_abort_fraction = 0.0
         self.fruit_set_feedback_events = 0
         self.maintenance_respiration_share = 0.0
@@ -388,6 +394,7 @@ class TomatoModel:
                     continue
                 normalized.append(
                     {
+                        "entity_id": str(raw.get("entity_id", f"truss_{len(normalized) + 1:04d}")),
                         "tdvs": max(0.0, _finite_float(raw.get("tdvs"), default=0.0)),
                         "n_fruits": int(max(0, round(_finite_float(raw.get("n_fruits"), default=float(self.n_f))))),
                         "w_fr_cohort": max(0.0, _finite_float(raw.get("w_fr_cohort"), default=0.0)),
@@ -396,6 +403,7 @@ class TomatoModel:
                     }
                 )
             self.truss_cohorts = normalized
+            self._next_truss_entity_id = len(normalized) + 1
             if "truss_count" not in overrides:
                 self.truss_count = len(normalized)
             self.W_fr = sum(max(0.0, float(cohort.get("w_fr_cohort", 0.0))) for cohort in self.truss_cohorts)
@@ -569,6 +577,29 @@ class TomatoModel:
         transpiration_amount_g_m2 = transp_rate_evap_g_s_m2 * self.dt_seconds
         cond_rate_g_s_m2 = (self.LE_cond / self.lambda_v * 1000.0) if self.lambda_v > 0 else 0.0
         cond_amount_g_m2 = cond_rate_g_s_m2 * self.dt_seconds
+        truss_payload = [
+            {
+                "entity_id": str(cohort.get("entity_id", f"truss_{index + 1:04d}")),
+                "truss_id": index + 1,
+                "fruit_position": float(max(1, int(round(float(cohort.get('n_fruits', self.n_f or 1)))) // 2)),
+                "age_class": float(min(20, max(1, math.ceil(max(0.0, float(cohort.get("tdvs", 0.0))) * 20.0)))),
+                "stage_index": float(min(5, max(1, math.ceil(max(0.0, float(cohort.get("tdvs", 0.0))) * 5.0)))),
+                "tdvs": float(max(0.0, float(cohort.get("tdvs", 0.0)))),
+                "fds": float(max(0.0, float(cohort.get("tdvs", 0.0)))),
+                "fruit_dm_g_m2": float(max(0.0, float(cohort.get("w_fr_cohort", 0.0)))),
+                "fruit_count": float(max(0.0, float(cohort.get("n_fruits", self.n_f)))),
+                "mult": float(max(0.0, float(cohort.get("mult", self.shoots_per_m2)))),
+                "onplant_flag": bool(cohort.get("active", True)),
+                "harvested_flag": False,
+                "potential_weight_proxy_g_m2": float(max(0.0, float(cohort.get("w_fr_cohort", 0.0)))),
+            }
+            for index, cohort in enumerate(self.truss_cohorts)
+        ]
+        mean_truss_tdvs = (
+            float(np.mean([float(cohort.get("tdvs", 0.0)) for cohort in self.truss_cohorts]))
+            if self.truss_cohorts
+            else 0.0
+        )
 
         return {
             "datetime": current_time,
@@ -595,9 +626,15 @@ class TomatoModel:
             "daily_transpiration_mm": check_and_clip_value(self.last_daily_transpiration_g / 1000.0, 0.0, 1e6, 0.0),
             "current_transpiration_mm": check_and_clip_value(self.daily_transpiration_g / 1000.0, 0.0, 1e6, 0.0),
             "harvested_fruit_g_m2": check_and_clip_value(self.W_fr_harvested, 0.0, 1e7, 0.0),
+            "fruit_harvest_g_m2_step": check_and_clip_value(self.last_fruit_harvest_g, 0.0, 1e7, 0.0),
+            "leaf_harvest_g_m2_step": check_and_clip_value(self.last_leaf_harvest_g, 0.0, 1e7, 0.0),
             "fractional_cover": check_and_clip_value(self.f_c, 0.0, 1.0, 0.1),
             "SLA_m2_g": self.SLA,
             "active_trusses": float(self._count_active_trusses()),
+            "mean_truss_tdvs": check_and_clip_value(mean_truss_tdvs, 0.0, 5.0, 0.0),
+            "truss_cohorts_json": json.dumps(truss_payload, sort_keys=True),
+            "harvest_family_semantics": "tomsim_truss",
+            "leaf_harvest_family_semantics": "linked_truss_stage",
             "alloc_frac_fruit": check_and_clip_value(self.part_fruit, 0.0, 1.0, math.nan),
             "alloc_frac_leaf": check_and_clip_value(self.part_leaf, 0.0, 1.0, math.nan),
             "alloc_frac_stem": check_and_clip_value(self.part_stem, 0.0, 1.0, math.nan),
@@ -680,9 +717,15 @@ class TomatoModel:
             "daily_transpiration_mm": np.nan,
             "current_transpiration_mm": np.nan,
             "harvested_fruit_g_m2": np.nan,
+            "fruit_harvest_g_m2_step": np.nan,
+            "leaf_harvest_g_m2_step": np.nan,
             "fractional_cover": np.nan,
             "SLA_m2_g": np.nan,
             "active_trusses": np.nan,
+            "mean_truss_tdvs": np.nan,
+            "truss_cohorts_json": "",
+            "harvest_family_semantics": "",
+            "leaf_harvest_family_semantics": "",
             "alloc_frac_fruit": np.nan,
             "alloc_frac_leaf": np.nan,
             "alloc_frac_stem": np.nan,
@@ -750,6 +793,8 @@ class TomatoModel:
         dt = float(dt_seconds)
         if dt <= 0:
             raise ValueError(f"dt_seconds must be > 0, got {dt_seconds!r}.")
+        self.last_fruit_harvest_g = 0.0
+        self.last_leaf_harvest_g = 0.0
 
         sim_date = current_time.date()
         if sim_date > self.current_date:
@@ -1192,6 +1237,7 @@ class TomatoModel:
                 nfr = int(self.n_f)
             self.truss_cohorts.append(
                 {
+                    "entity_id": f"truss_{self._next_truss_entity_id:04d}",
                     "tdvs": 0.0,
                     "n_fruits": nfr,
                     "w_fr_cohort": 0.0,
@@ -1199,6 +1245,7 @@ class TomatoModel:
                     "mult": self.shoots_per_m2,
                 }
             )
+            self._next_truss_entity_id += 1
 
         self._harvest_matured_cohorts()
 
@@ -1453,6 +1500,9 @@ class TomatoModel:
         return 1.0
 
     def _harvest_matured_cohorts(self) -> None:
+        if not self.internal_harvest_enabled:
+            self.last_fruit_harvest_g = 0.0
+            return
         matured_indices: list[int] = []
         harvested_now = 0.0
         for idx, cohort in enumerate(self.truss_cohorts):
@@ -1471,6 +1521,7 @@ class TomatoModel:
                 del self.truss_cohorts[idx]
             self.W_fr_harvested += harvested_now
             self.W_fr = sum(max(0.0, float(cohort.get("w_fr_cohort", 0.0))) for cohort in self.truss_cohorts)
+        self.last_fruit_harvest_g = max(0.0, harvested_now)
 
 
 def create_sample_input_csv(filename: str | Path = "sample_tomato_input.csv", days: int = 90) -> str:

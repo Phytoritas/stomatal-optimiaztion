@@ -72,4 +72,5 @@ Current status:
 - Slice 116 migrated: repo-local Plotkit graph policy plus TOMICS compare/factorial/simulation bundle renderers and specs, with a PNG-only graph bundle contract
 - Slice 117 migrated: actual KNU greenhouse current-vs-promoted TOMICS allocation validation, greenhouse substrate proxying, floor-area scorecards, and promotion bundle outputs
 - Slice 118 migrated: KNU fair-validation pipeline with private-data contract support, harvested-yield observation mapping, hidden-state reconstruction, irrigation-aware root-zone inversion, equal-budget calibration, and a promotion gate that keeps shipped TOMICS incumbent
+- Slice 119 migrated: TOMICS harvest architecture pipeline with literature-aware TOMSIM / TOMGRO / De Koning / Vanthoor harvest families, harvest-specific mass-balance checks, and a harvest-aware promotion gate that keeps shipped TOMICS plus incumbent TOMSIM harvest baseline
 - Current open architecture gap: none; current research TOMICS candidates remain below promotion guardrails under fair KNU validation

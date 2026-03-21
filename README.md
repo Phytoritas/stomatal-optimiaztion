@@ -43,6 +43,7 @@ poetry run ruff check .
 - Issue `#233` / module `116` makes Plotkit spec-first rendering the repo-local default for reusable graphs, migrates the live TOMICS graph scripts onto Plotkit bundle outputs, and keeps the repo-local bundle contract PNG-only.
 - Issue `#236` / module `117` adds KNU actual-data current-vs-promoted TOMICS allocation replay on floor-area basis and fixes the public validation target to cumulative harvested fruit dry weight rather than latent on-plant fruit mass.
 - Issue `#239` / module `118` adds the KNU fair-validation pipeline: private-data contract support, harvest observation operator, hidden-state reconstruction, root-zone inversion, equal-budget calibration, and the promotion gate that keeps shipped TOMICS incumbent.
+- Issue `#243` / module `119` adds the first-class TOMICS harvest architecture layer, literature-aware harvest family factorial screening, and a harvest-aware promotion gate that still keeps shipped TOMICS plus incumbent TOMSIM harvest as the incumbent baseline.
 - Gates A through C are satisfied for the first bounded migration slice.
 - THORP `model_card` and traceability helpers are migrated into the new package layout.
 - THORP `radiation` runtime seam is migrated as slice 002.

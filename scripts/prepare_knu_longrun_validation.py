@@ -25,7 +25,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--forcing-path", default=str(PROJECT_ROOT / "data" / "forcing" / "KNU_Tomato_Env.CSV"))
     parser.add_argument(
         "--yield-path",
-        default=str(PROJECT_ROOT / "data" / "forcing" / "tomato_validation_data_yield_260222.xlsx"),
+        default=str(PROJECT_ROOT / "data" / "forcing" / "tomato_validation_data_yield_260321.xlsx"),
     )
     parser.add_argument("--output-root", default=str(PROJECT_ROOT / "out" / "knu_longrun"))
     parser.add_argument("--resample-rule", default="1h")

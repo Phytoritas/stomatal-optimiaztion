@@ -22,9 +22,9 @@ Architecture-specific knobs remain frozen during parity calibration.
 
 Current fair-validation splits:
 
-- `blocked_holdout`: calibration `2024-08-08..2024-08-19`, holdout `2024-08-20..2024-08-31`
-- `alternate_holdout`: calibration `2024-08-08..2024-08-15`, holdout `2024-08-16..2024-08-31`
-- `rolling_origin_1`: calibration `2024-08-08..2024-08-18`, holdout `2024-08-19..2024-08-22`
+- `blocked_holdout`: calibration `2024-08-05..2024-08-19`, holdout `2024-08-20..2024-08-31`
+- `alternate_holdout`: calibration `2024-08-05..2024-08-15`, holdout `2024-08-16..2024-08-31`
+- `rolling_origin_1`: calibration `2024-08-05..2024-08-18`, holdout `2024-08-19..2024-08-22`
 
 ## Holdout scorecard
 

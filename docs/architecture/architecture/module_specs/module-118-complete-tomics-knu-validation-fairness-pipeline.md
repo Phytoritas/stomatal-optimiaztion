@@ -7,7 +7,7 @@ The KNU actual-data baseline from module `117` still needed a fair observation o
 ## Inputs
 
 - `data/forcing/KNU_Tomato_Env.CSV`
-- `data/forcing/tomato_validation_data_yield_260222.xlsx`
+- `data/forcing/tomato_validation_data_yield_260321.xlsx`
 - current selected baseline artifact under `out/tomics/validation/knu/architecture/current-factorial/`
 - promoted selected baseline artifact under `out/tomics/validation/knu/architecture/promoted-factorial/`
 

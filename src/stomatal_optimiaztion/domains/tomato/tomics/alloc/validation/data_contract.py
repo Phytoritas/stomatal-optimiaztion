@@ -39,14 +39,16 @@ def _resolve_existing_path(path: str | Path, *, repo_root: Path, config_path: Pa
         return candidate
 
     probes: list[Path] = []
+    repo_probe: Path | None = None
     if config_path is not None:
         probes.append((config_path.parent / candidate).resolve())
-    probes.append((repo_root / candidate).resolve())
+    repo_probe = (repo_root / candidate).resolve()
+    probes.append(repo_probe)
     probes.append((Path.cwd() / candidate).resolve())
     for probe in probes:
         if probe.exists():
             return probe
-    return probes[0]
+    return repo_probe if repo_probe is not None else probes[0]
 
 
 def _load_contract_template(path: Path | None) -> dict[str, Any]:
@@ -75,15 +77,24 @@ def _resolve_source_path(
 ) -> tuple[Path, str]:
     if repo_candidate.exists():
         return repo_candidate, "repo_local"
+    underscored_repo_candidate = repo_candidate.with_name(f"{repo_candidate.stem}_{repo_candidate.suffix}")
+    if underscored_repo_candidate.exists():
+        return underscored_repo_candidate, "repo_local_alias"
 
     if private_root:
         root = Path(private_root).expanduser().resolve()
         relative_candidate = root / configured_relative_path if configured_relative_path else root / repo_candidate.name
         if relative_candidate.exists():
             return relative_candidate, "private_root"
+        underscored_relative = relative_candidate.with_name(f"{relative_candidate.stem}_{relative_candidate.suffix}")
+        if underscored_relative.exists():
+            return underscored_relative, "private_root_alias"
         basename_candidate = root / repo_candidate.name
         if basename_candidate.exists():
             return basename_candidate, "private_root"
+        underscored_basename = root / f"{repo_candidate.stem}_{repo_candidate.suffix}"
+        if underscored_basename.exists():
+            return underscored_basename, "private_root_alias"
 
     return repo_candidate, "missing"
 
@@ -104,7 +115,7 @@ def resolve_knu_data_contract(
     private_root, env_name = _resolve_private_root(contract)
 
     forcing_raw = validation_cfg.get("forcing_csv_path", "data/forcing/KNU_Tomato_Env.CSV")
-    yield_raw = validation_cfg.get("yield_xlsx_path", "data/forcing/tomato_validation_data_yield_260222.xlsx")
+    yield_raw = validation_cfg.get("yield_xlsx_path", "data/forcing/tomato_validation_data_yield_260321.xlsx")
     forcing_repo_candidate = _resolve_existing_path(str(forcing_raw), repo_root=repo_root, config_path=config_path)
     yield_repo_candidate = _resolve_existing_path(str(yield_raw), repo_root=repo_root, config_path=config_path)
 

@@ -5,7 +5,7 @@
 Exact local files used:
 
 - `data/forcing/KNU_Tomato_Env.CSV`
-- `data/forcing/tomato_validation_data_yield_260222.xlsx`
+- `data/forcing/tomato_validation_data_yield_260321.xlsx`
 
 The loader verifies file structure programmatically before the factorial or fairness runners proceed.
 
@@ -26,7 +26,7 @@ The loader verifies file structure programmatically before the factorial or fair
 ## Parsed observation summary
 
 - parsed daily row count: `24`
-- parsed start date: `2024-08-08`
+- parsed start date: `2024-08-05`
 - parsed end date: `2024-08-31`
 - measured column: `Measured_Cumulative_Total_Fruit_DW (g/m^2)`
 - estimated column: `Estimated_Cumulative_Total_Fruit_DW (g/m^2)`
@@ -34,11 +34,20 @@ The loader verifies file structure programmatically before the factorial or fair
 
 The measured series is treated as **cumulative harvested fruit dry weight on floor area basis**.
 
+## Harvest-aware extension
+
+Issue `#243` / module `119` keeps the same measured target and floor-area boundary, but routes model outputs through a first-class harvest family layer before the promotion gate is rerun.
+
+Current harvest-aware output roots:
+
+- `out/tomics_knu_harvest_family_factorial/`
+- `out/tomics_knu_harvest_promotion_gate/`
+
 ## Alignment and basis
 
 - warmup: `2024-06-13` through `2024-08-07`
-- validation: `2024-08-08` through `2024-08-31`
-- baseline calibration slice: `2024-08-08` through `2024-08-19`
+- validation: `2024-08-05` through `2024-08-31`
+- baseline calibration slice: `2024-08-05` through `2024-08-19`
 - baseline holdout slice: `2024-08-20` through `2024-08-31`
 - reporting basis: `floor_area_g_m2`
 - plant density: `1.836091 plants m^-2`
