@@ -73,4 +73,7 @@ Current status:
 - Slice 117 migrated: actual KNU greenhouse current-vs-promoted TOMICS allocation validation, greenhouse substrate proxying, floor-area scorecards, and promotion bundle outputs
 - Slice 118 migrated: KNU fair-validation pipeline with private-data contract support, harvested-yield observation mapping, hidden-state reconstruction, irrigation-aware root-zone inversion, equal-budget calibration, and a promotion gate that keeps shipped TOMICS incumbent
 - Slice 119 migrated: TOMICS harvest architecture pipeline with literature-aware TOMSIM / TOMGRO / De Koning / Vanthoor harvest families, harvest-specific mass-balance checks, and a harvest-aware promotion gate that keeps shipped TOMICS plus incumbent TOMSIM harvest baseline
-- Current open architecture gap: none; current research TOMICS candidates remain below promotion guardrails under fair KNU validation
+- Issue `#247` fixes the external-harvest zero-yield replay seam by decoupling mature, on-plant, and harvested fruit lifecycle state in the legacy tomato replay path
+- Issue `#249` cleans harvested-vs-total observation semantics and adds post-writeback dropped-mass guardrails to the harvest-aware promotion path
+- Issue `#251` reruns the KNU harvest-family factorial and harvest-aware promotion gate after the zero-yield repair; `vanthoor_boxcar + max_lai_pruning_flow + constant_observed_mean` remains the best research harvest family, but shipped TOMICS plus incumbent TOMSIM harvest still stays incumbent
+- Current open architecture gap: no promotion-grade harvest-aware research candidate yet; native Vanthoor and TOMGRO harvest runtimes remain deferred behind the current proxy-adapter layer
