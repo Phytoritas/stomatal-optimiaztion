@@ -12,8 +12,8 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation import (
 
 def _forcing_head() -> pd.DataFrame:
     repo_root = Path(__file__).resolve().parents[1]
-    forcing = read_knu_forcing_csv(repo_root / "data" / "forcing" / "KNU_Tomato_Env.CSV")
-    return forcing.iloc[: 24 * 60].copy()
+    forcing = read_knu_forcing_csv(repo_root / "tests" / "fixtures" / "knu_sanitized" / "KNU_Tomato_Env_fixture.csv")
+    return forcing.copy()
 
 
 def test_theta_proxy_modes_stay_within_greenhouse_bounds() -> None:

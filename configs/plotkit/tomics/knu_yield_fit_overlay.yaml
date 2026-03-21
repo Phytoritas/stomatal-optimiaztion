@@ -2,11 +2,11 @@ version: 1
 kind: multi_panel_timeseries
 meta:
   id: yield_fit_overlay
-  title: KNU measured vs workbook vs TOMICS architecture yield fit
+  title: KNU harvested-yield fit across workbook, shipped, current, and promoted TOMICS candidates
   family: tomics_knu_yield_fit_overlay
   support_level: thin_wrapper
   render_strategy: plotkit_style_multiline
-  description: Floor-area cumulative and increment-space validation overlay across measured, workbook, shipped, current, and promoted candidates.
+  description: Floor-area cumulative harvested yield and daily harvested increment overlays across measured, workbook, shipped, current, and promoted candidates.
 data:
   frame_role: tomics_knu_validation_overlay
 mapping:
@@ -38,21 +38,21 @@ panel_order:
 panels:
   cumulative_total_fruit_floor_area:
     column: cumulative_total_fruit_floor_area
-    title: Raw cumulative fruit dry weight
+    title: Raw cumulative harvested fruit dry weight
     x_label: datetime
-    y_label: Cumulative fruit dry weight [g m^-2 floor]
+    y_label: Cumulative harvested fruit dry weight [g m^-2 floor]
     scale: linear
     y_padding_fraction: 0.10
   offset_adjusted_cumulative_total_fruit_floor_area:
     column: offset_adjusted_cumulative_total_fruit_floor_area
-    title: Offset-adjusted cumulative fruit dry weight
+    title: Offset-adjusted cumulative harvested fruit dry weight
     x_label: datetime
     y_label: Offset-adjusted cumulative [g m^-2 floor]
     scale: linear
     y_padding_fraction: 0.10
   daily_increment_floor_area:
     column: daily_increment_floor_area
-    title: Daily fruit dry-weight increment
+    title: Daily harvested fruit dry-weight increment
     x_label: datetime
     y_label: Daily increment [g m^-2 floor d^-1]
     scale: linear

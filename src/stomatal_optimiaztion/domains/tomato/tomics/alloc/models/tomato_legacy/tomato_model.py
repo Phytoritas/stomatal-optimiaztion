@@ -125,6 +125,7 @@ class TomatoModel:
         partition_policy: PartitionPolicy | str | None = None,
         allocation_scheme: str = "4pool",
         partition_policy_params: Mapping[str, object] | None = None,
+        initial_state_overrides: Mapping[str, object] | None = None,
     ) -> None:
         self.fixed_lai = fixed_lai
         self.partition_policy = coerce_partition_policy(partition_policy)
@@ -132,6 +133,11 @@ class TomatoModel:
         self.partition_policy_params = (
             {str(key): value for key, value in partition_policy_params.items()}
             if isinstance(partition_policy_params, Mapping)
+            else {}
+        )
+        self.initial_state_overrides = (
+            {str(key): value for key, value in initial_state_overrides.items()}
+            if isinstance(initial_state_overrides, Mapping)
             else {}
         )
 
@@ -308,6 +314,7 @@ class TomatoModel:
             fruit_harvest_g=self.W_fr_harvested,
             leaf_harvest_g=0.0,
         )
+        self._apply_initial_state_overrides()
         self._tomics_research_prev_root_fraction = None
         self._tomics_research_prev_root_target = None
 
@@ -316,6 +323,102 @@ class TomatoModel:
         self.eps_eff_last = 0.0
         self.T_env_last_K = self.T_a
         self.r_lw_net_last = 0.0
+
+    def _apply_initial_state_overrides(self) -> None:
+        overrides = getattr(self, "initial_state_overrides", {}) or {}
+        if not isinstance(overrides, Mapping) or not overrides:
+            return
+
+        start_date_raw = overrides.get("start_date")
+        if start_date_raw is not None:
+            try:
+                self.start_date = pd.Timestamp(start_date_raw).to_pydatetime()
+                self.current_date = self.start_date.date()
+            except Exception:
+                LOGGER.exception("Invalid initial start_date override ignored.")
+
+        density_kwargs: dict[str, float] = {}
+        for key in ("plants_per_m2", "shoots_per_plant", "shoots_per_m2"):
+            raw = overrides.get(key)
+            if raw is None:
+                continue
+            try:
+                density_kwargs[key] = float(raw)
+            except (TypeError, ValueError):
+                LOGGER.exception("Invalid %s override ignored.", key)
+        if density_kwargs:
+            self.set_plant_density(**density_kwargs)
+
+        scalar_keys = (
+            "W_lv",
+            "W_st",
+            "W_rt",
+            "W_fr",
+            "W_fr_harvested",
+            "reserve_ch2o_g",
+            "buffer_pool_g",
+            "LAI",
+            "theta_substrate",
+            "truss_count",
+            "_truss_fraction_acc",
+            "n_f",
+        )
+        for key in scalar_keys:
+            raw = overrides.get(key)
+            if raw is None:
+                continue
+            try:
+                value = float(raw)
+            except (TypeError, ValueError):
+                LOGGER.exception("Invalid initial-state override for %s ignored.", key)
+                continue
+            if key in {"truss_count", "n_f"}:
+                value = int(max(0, round(value)))
+            setattr(self, key, value)
+
+        pending_n_fruits = overrides.get("pending_n_fruits")
+        if isinstance(pending_n_fruits, list):
+            self.pending_n_fruits = [int(max(0, _finite_float(value, default=0.0))) for value in pending_n_fruits]
+
+        raw_cohorts = overrides.get("truss_cohorts")
+        if isinstance(raw_cohorts, list):
+            normalized: list[dict[str, object]] = []
+            for raw in raw_cohorts:
+                if not isinstance(raw, Mapping):
+                    continue
+                normalized.append(
+                    {
+                        "tdvs": max(0.0, _finite_float(raw.get("tdvs"), default=0.0)),
+                        "n_fruits": int(max(0, round(_finite_float(raw.get("n_fruits"), default=float(self.n_f))))),
+                        "w_fr_cohort": max(0.0, _finite_float(raw.get("w_fr_cohort"), default=0.0)),
+                        "active": bool(raw.get("active", True)),
+                        "mult": max(0.0, _finite_float(raw.get("mult"), default=float(self.shoots_per_m2))),
+                    }
+                )
+            self.truss_cohorts = normalized
+            if "truss_count" not in overrides:
+                self.truss_count = len(normalized)
+            self.W_fr = sum(max(0.0, float(cohort.get("w_fr_cohort", 0.0))) for cohort in self.truss_cohorts)
+
+        self.vegetative_dw = self.W_lv + self.W_st + self.W_rt
+        self.fruit_dw = self.W_fr
+        if "LAI" not in overrides and self.fixed_lai is None:
+            self.LAI = self.W_lv * self.SLA
+        if self.fixed_lai is not None:
+            self.LAI = float(self.fixed_lai)
+        self.water_supply_stress = self._resolve_water_supply_stress()
+        self.common_structure_snapshot = build_common_structure_snapshot(
+            assimilate_buffer_g=self.reserve_ch2o_g,
+            leaf_biomass_g=self.W_lv,
+            stem_root_biomass_g=self.W_st + self.W_rt,
+            fruit_biomass_g=self.W_fr,
+            photosynthesis_g=0.0,
+            growth_respiration_g=0.0,
+            growth_g=0.0,
+            maintenance_g=0.0,
+            fruit_harvest_g=self.W_fr_harvested,
+            leaf_harvest_g=0.0,
+        )
 
     def to_floor_from_plant(self, x_per_plant: float) -> float:
         return float(x_per_plant) * float(self.plants_per_m2)

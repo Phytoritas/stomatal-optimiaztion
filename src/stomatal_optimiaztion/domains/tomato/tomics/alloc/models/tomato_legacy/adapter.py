@@ -42,6 +42,7 @@ def _default_model_factory(
     partition_policy: PartitionPolicyLike,
     allocation_scheme: str,
     partition_policy_params: Mapping[str, object] | None = None,
+    initial_state_overrides: Mapping[str, object] | None = None,
 ) -> TomatoLegacyModelProtocol:
     try:
         from stomatal_optimiaztion.domains.tomato.tomics.alloc.models.tomato_legacy.tomato_model import TomatoModel
@@ -55,6 +56,7 @@ def _default_model_factory(
         partition_policy=partition_policy,
         allocation_scheme=allocation_scheme,
         partition_policy_params=partition_policy_params,
+        initial_state_overrides=initial_state_overrides,
     )
 
 
@@ -123,6 +125,7 @@ def _build_model(
     partition_policy: PartitionPolicyLike,
     allocation_scheme: str,
     partition_policy_params: Mapping[str, object] | None = None,
+    initial_state_overrides: Mapping[str, object] | None = None,
 ) -> TomatoLegacyModelProtocol:
     factory = model_factory or _default_model_factory
     return factory(
@@ -130,6 +133,7 @@ def _build_model(
         partition_policy=partition_policy,
         allocation_scheme=allocation_scheme,
         partition_policy_params=partition_policy_params,
+        initial_state_overrides=initial_state_overrides,
     )
 
 
@@ -148,6 +152,7 @@ class TomatoLegacyAdapter:
     partition_policy: PartitionPolicyLike = None
     allocation_scheme: str = "4pool"
     partition_policy_params: Mapping[str, object] | None = None
+    initial_state_overrides: Mapping[str, object] | None = None
     model_factory: ModelFactory | None = None
     _initialized: bool = field(init=False, default=False)
 
@@ -159,6 +164,7 @@ class TomatoLegacyAdapter:
                 partition_policy=self.partition_policy,
                 allocation_scheme=self.allocation_scheme,
                 partition_policy_params=self.partition_policy_params,
+                initial_state_overrides=self.initial_state_overrides,
             )
         elif self.fixed_lai is not None:
             self.model.fixed_lai = float(self.fixed_lai)
@@ -182,6 +188,7 @@ class TomatoLegacyAdapter:
                 partition_policy=self.partition_policy,
                 allocation_scheme=self.allocation_scheme,
                 partition_policy_params=self.partition_policy_params,
+                initial_state_overrides=self.initial_state_overrides,
             )
         self.model.reset_state()
         self._initialized = False
@@ -198,6 +205,7 @@ class TomatoLegacyAdapter:
                 partition_policy=self.partition_policy,
                 allocation_scheme=self.allocation_scheme,
                 partition_policy_params=self.partition_policy_params,
+                initial_state_overrides=self.initial_state_overrides,
             )
             self.model = model
 
@@ -267,12 +275,16 @@ class TomatoLegacyModule:
         partition_policy_params = ctx.params.get("partition_policy_params")
         if partition_policy_params is not None and not isinstance(partition_policy_params, Mapping):
             raise TypeError("partition_policy_params must be a mapping when provided in pipeline params.")
+        initial_state_overrides = ctx.params.get("initial_state_overrides")
+        if initial_state_overrides is not None and not isinstance(initial_state_overrides, Mapping):
+            raise TypeError("initial_state_overrides must be a mapping when provided in pipeline params.")
         model = _build_model(
             model_factory=model_factory,
             fixed_lai=fixed_lai,
             partition_policy=ctx.params.get("partition_policy"),
             allocation_scheme=allocation_scheme,
             partition_policy_params=partition_policy_params,
+            initial_state_overrides=initial_state_overrides,
         )
         _prime_model_clock(model, ctx.env)
         ctx.state[self.model_state_key] = model
@@ -314,6 +326,7 @@ def make_tomato_legacy_model(
     partition_policy: PartitionPolicyLike = None,
     allocation_scheme: str = "4pool",
     partition_policy_params: Mapping[str, object] | None = None,
+    initial_state_overrides: Mapping[str, object] | None = None,
     moisture_response_fn: Callable[[float], float] | None = None,
     model_factory: ModelFactory | None = None,
 ) -> PipelineModel:
@@ -328,6 +341,10 @@ def make_tomato_legacy_model(
     if isinstance(partition_policy_params, Mapping):
         params["partition_policy_params"] = {
             str(key): value for key, value in partition_policy_params.items()
+        }
+    if isinstance(initial_state_overrides, Mapping):
+        params["initial_state_overrides"] = {
+            str(key): value for key, value in initial_state_overrides.items()
         }
     if moisture_response_fn is not None:
         params["moisture_response_fn"] = moisture_response_fn

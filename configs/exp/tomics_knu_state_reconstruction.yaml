@@ -1,0 +1,24 @@
+exp:
+  name: tomics_knu_state_reconstruction
+
+validation:
+  forcing_csv_path: data/forcing/KNU_Tomato_Env.CSV
+  yield_xlsx_path: data/forcing/tomato_validation_data_yield_260222.xlsx
+  private_data_contract_path: configs/data/knu_private_data_contract.template.yaml
+  prepared_output_root: out/knu_longrun
+  resample_rule: 1h
+  theta_proxy_mode: bucket_irrigated
+  theta_proxy_scenarios: [dry, moderate, wet]
+  calibration_end: 2024-08-19
+
+selection:
+  current_output_root: out/tomics_current_factorial_knu
+  promoted_output_root: out/tomics_promoted_factorial_knu
+
+calibration:
+  base_config: configs/exp/tomics_allocation_factorial.yaml
+
+state_reconstruction:
+  output_root: out/tomics_knu_state_reconstruction
+  modes: [minimal_scalar_init, cohort_aware_init, buffer_aware_init]
+  overlay_spec: configs/plotkit/tomics/knu_cumulative_overlay.yaml

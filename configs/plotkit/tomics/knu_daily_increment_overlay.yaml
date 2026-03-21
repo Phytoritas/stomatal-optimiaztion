@@ -1,0 +1,83 @@
+version: 1
+kind: multi_panel_timeseries
+meta:
+  id: knu_daily_increment_overlay
+  title: KNU daily harvested fruit dry-weight increment comparison
+  family: tomics_knu_daily_increment_overlay
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_multiline
+  description: Floor-area daily harvested fruit dry-weight increment overlays for fair KNU validation.
+data:
+  frame_role: tomics_knu_daily_increment_overlay
+mapping:
+  source_column: source
+  datetime_column: datetime
+  value_column: value
+layout:
+  preset: publication_single_timeseries
+  rows: 1
+  cols: 1
+  margins:
+    left: 0.12
+    right: 0.98
+    bottom: 0.10
+    top: 0.82
+  title_y: 0.97
+legend:
+  enabled: true
+  loc: upper center
+  bbox_to_anchor: [0.5, 0.91]
+  ncol: 3
+  font_size_pt: 7.6
+panel_order:
+  - daily_increment_floor_area
+panels:
+  daily_increment_floor_area:
+    column: daily_increment_floor_area
+    title: Daily harvested fruit dry-weight increment
+    x_label: datetime
+    y_label: Daily increment [g m^-2 floor d^-1]
+    scale: linear
+    y_padding_fraction: 0.12
+styling:
+  sources:
+    measured:
+      label: Measured
+      color: "#111111"
+      linestyle: "-"
+      marker: "o"
+      linewidth_pt: 1.9
+    workbook_estimated:
+      label: Workbook estimated
+      color: "#6C757D"
+      linestyle: "--"
+      marker: "s"
+      linewidth_pt: 1.4
+    shipped_tomics:
+      label: Shipped TOMICS
+      color: "#2A9D8F"
+      linestyle: "-"
+      marker: "^"
+      linewidth_pt: 1.8
+    current_selected:
+      label: Current kuijpers
+      color: "#1D4E89"
+      linestyle: "-."
+      marker: "D"
+      linewidth_pt: 1.6
+    promoted_selected:
+      label: Promoted winner
+      color: "#A23B72"
+      linestyle: "-"
+      marker: "P"
+      linewidth_pt: 1.8
+figure:
+  width_mm: 180
+  height_mm: 92
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png]
+  dpi: 300
+  transparent: false

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import json
 import pandas as pd
 
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation import (
@@ -25,6 +26,7 @@ def test_current_vs_promoted_summary_bundle_is_written(tmp_path: Path) -> None:
         "yield_fit_overlay.png",
         "allocation_behavior_overlay.png",
         "theta_proxy_diagnostics.png",
+        "canonical_winners.json",
         "promotion_recommendation.md",
     }
     assert all((output_root / name).exists() for name in required)
@@ -34,3 +36,6 @@ def test_current_vs_promoted_summary_bundle_is_written(tmp_path: Path) -> None:
     assert {"shipped_tomics", "current_selected", "promoted_selected"}.issubset(
         set(scorecard["candidate_label"])
     )
+    winners = json.loads((output_root / "canonical_winners.json").read_text(encoding="utf-8"))
+    assert winners["current_selected_architecture_id"] == summary["current"]["selected_architecture_id"]
+    assert winners["promoted_selected_architecture_id"] == summary["promoted"]["selected_architecture_id"]

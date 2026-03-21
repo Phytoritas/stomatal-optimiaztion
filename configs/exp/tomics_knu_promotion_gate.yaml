@@ -1,0 +1,13 @@
+exp:
+  name: tomics_knu_promotion_gate
+
+calibration:
+  output_root: out/tomics_knu_calibration
+
+promotion_gate:
+  output_root: out/tomics_knu_promotion_gate
+  material_rmse_margin: 1.0
+  material_rmse_fraction: 0.05
+  wet_root_penalty_max: 0.02
+  parameter_instability_score_max: 0.20
+  promotion_overlay_spec: configs/plotkit/tomics/knu_yield_fit_overlay.yaml

@@ -19,7 +19,7 @@ Conceptual form:
 - `u*_veg = prior_weighted_softmax(p0_veg, beta, DeltaM)`
 - optional low-pass memory: `du_veg/dt = (u*_veg - u_veg) / tau_alloc`
 
-The implementation keeps three hard constraints:
+Hard constraints:
 
 1. fruit remains anchored to the legacy sink gate
 2. THORP remains bounded to subordinate root correction
@@ -45,7 +45,7 @@ The promoted study elevates these factors:
 
 ### Leaf
 
-Leaf marginal is canopy-first.
+Leaf marginal remains canopy-first.
 
 Primary signals:
 
@@ -55,7 +55,7 @@ Primary signals:
 
 ### Stem
 
-Stem marginal is tomato support/transport/canopy-positioning.
+Stem marginal remains tomato support, transport, and canopy-positioning.
 
 Primary signals:
 
@@ -65,7 +65,7 @@ Primary signals:
 
 ### Root
 
-Root marginal is greenhouse-rootzone stress gated.
+Root marginal remains greenhouse-rootzone stress gated.
 
 Primary signals:
 
@@ -75,37 +75,29 @@ Primary signals:
 
 This is not a tree root-foraging allocator.
 
-## Prior weighting
+## Optional research seams
 
-Vegetative allocation is not a free softmax.
-
-The prior remains dominant when marginal signals are weak:
-
-- `current_tomics_prior`
-- `legacy_empirical_prior`
-- `fit_from_warmup_prior`
-
-This keeps the promoted family tomato-first rather than sink-chasing or tree-like.
-
-## Research seams
-
-The promoted family can optionally activate:
+The promoted family can activate:
 
 - TOMSIM-like storage pool
 - Vanthoor-like carbohydrate buffer seam
-- TOMGRO / De Koning fruit-feedback proxies
+- TOMGRO or De Koning fruit-feedback proxies
 - bounded hysteretic THORP root correction
 
 These seams remain research-only and are never silently activated by shipped TOMICS.
 
-## Current actual-data outcome
+## Current baseline winner
 
-On the current KNU validation slice, the promoted winner was:
+The current promoted-study winner is:
 
-- `constrained_full_plus_feedback__lai_target_center_3p0`
+- `constrained_full_plus_feedback__buffer_capacity_g_m2_12p0`
 
-This candidate remains research-only because:
+## Fair-validation conclusion
 
-- it does not beat shipped TOMICS on measured-yield fit
-- it loses the fruit anchor too strongly
-- it still produces canopy-collapse pressure in confirmation runs
+The fair KNU promotion gate keeps the promoted allocator research-only because:
+
+- it does not pass the fruit-anchor guardrail
+- it still shows non-zero canopy-collapse pressure
+- shipped TOMICS remains the incumbent under the full promotion gate
+
+The promoted allocator therefore remains a research candidate rather than a shipped-default candidate.

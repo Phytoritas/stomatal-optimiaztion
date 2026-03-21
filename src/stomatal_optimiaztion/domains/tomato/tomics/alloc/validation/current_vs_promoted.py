@@ -31,6 +31,15 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.knu_data impor
     resample_forcing,
     write_knu_manifest,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.data_contract import (
+    KnuDataContractPaths,
+    resolve_knu_data_contract,
+    write_data_contract_manifest,
+)
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.artifact_sync import (
+    CanonicalWinnerIds,
+    write_canonical_winner_manifest,
+)
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.metrics import (
     REPORTING_BASIS_FLOOR_AREA,
     canopy_collapse_days,
@@ -93,6 +102,7 @@ class PreparedThetaScenario:
 @dataclass(frozen=True, slots=True)
 class PreparedKnuBundle:
     data: KnuValidationData
+    data_contract: KnuDataContractPaths
     observed_df: pd.DataFrame
     validation_start: pd.Timestamp
     validation_end: pd.Timestamp
@@ -214,16 +224,8 @@ def prepare_knu_bundle(
     config_path: Path,
 ) -> PreparedKnuBundle:
     validation_cfg = _as_dict(config.get("validation"))
-    forcing_path = _resolve_config_path(
-        validation_cfg.get("forcing_csv_path", repo_root / "data" / "forcing" / "KNU_Tomato_Env.CSV"),
-        repo_root=repo_root,
-        config_path=config_path,
-    )
-    yield_path = _resolve_config_path(
-        validation_cfg.get(
-            "yield_xlsx_path",
-            repo_root / "data" / "forcing" / "tomato_validation_data_yield_260222.xlsx",
-        ),
+    data_contract = resolve_knu_data_contract(
+        validation_cfg=validation_cfg,
         repo_root=repo_root,
         config_path=config_path,
     )
@@ -237,7 +239,10 @@ def prepare_knu_bundle(
     theta_mode = str(validation_cfg.get("theta_proxy_mode", "bucket_irrigated"))
     scenario_ids = [str(value) for value in _as_list(validation_cfg.get("theta_proxy_scenarios"))] or list(DEFAULT_SCENARIOS)
 
-    data = load_knu_validation_data(forcing_path=forcing_path, yield_path=yield_path)
+    data = load_knu_validation_data(
+        forcing_path=data_contract.forcing_path,
+        yield_path=data_contract.yield_path,
+    )
     manifest_summary = write_knu_manifest(
         output_root=prepared_root,
         forcing_df=data.forcing_df,
@@ -245,9 +250,14 @@ def prepare_knu_bundle(
         measured_column=data.measured_column,
         estimated_column=data.estimated_column,
         observation_unit_label=data.observation_unit_label,
-        forcing_source_path=forcing_path,
-        yield_source_path=yield_path,
+        forcing_source_path=data_contract.forcing_path,
+        yield_source_path=data_contract.yield_path,
         resample_rule=resample_rule,
+    )
+    data_contract_manifest = write_data_contract_manifest(
+        output_root=prepared_root,
+        contract=data_contract,
+        data=data,
     )
     observed_df = observed_floor_area_yield(
         data.yield_df,
@@ -269,6 +279,7 @@ def prepare_knu_bundle(
         candidate_label="estimated",
         unit_declared_in_observation_file=data.observation_unit_label,
     )
+    observed_df = workbook_bundle.merged_df.copy()
 
     prepared_dir = ensure_dir(prepared_root / "prepared_forcing")
     scenarios: dict[str, PreparedThetaScenario] = {}
@@ -287,6 +298,7 @@ def prepare_knu_bundle(
 
     return PreparedKnuBundle(
         data=data,
+        data_contract=data_contract,
         observed_df=observed_df,
         validation_start=validation_start,
         validation_end=validation_end,
@@ -296,7 +308,7 @@ def prepare_knu_bundle(
         scenarios=scenarios,
         workbook_validation_df=workbook_bundle.merged_df,
         workbook_metrics=workbook_bundle.metrics,
-        manifest_summary=manifest_summary,
+        manifest_summary={**manifest_summary, "data_contract_manifest_json": str(data_contract_manifest)},
     )
 
 
@@ -344,12 +356,13 @@ def _promoted_params_from_row(row: dict[str, object]) -> dict[str, object]:
     return params
 
 
-def _configure_run(
+def configure_candidate_run(
     base_config: dict[str, Any],
     *,
     forcing_csv_path: Path,
     theta_center: float,
     row: dict[str, object],
+    initial_state_overrides: dict[str, object] | None = None,
 ) -> dict[str, Any]:
     config = copy.deepcopy(base_config)
     pipeline_cfg = config.setdefault("pipeline", {})
@@ -366,6 +379,8 @@ def _configure_run(
     pipeline_cfg["partition_policy"] = str(row["partition_policy"])
     pipeline_cfg["allocation_scheme"] = str(row.get("allocation_scheme", "4pool"))
     pipeline_cfg["fixed_lai"] = row.get("fixed_lai")
+    if initial_state_overrides:
+        pipeline_cfg["initial_state_overrides"] = copy.deepcopy(initial_state_overrides)
 
     base_params = _base_tomics_params(config)
     if str(row["partition_policy"]) in PROMOTED_RESEARCH_POLICIES:
@@ -975,7 +990,7 @@ def _execute_rows(
                 candidate_label="estimated",
             )
         else:
-            run_config = _configure_run(
+            run_config = configure_candidate_run(
                 base_config,
                 forcing_csv_path=scenario.forcing_csv_path,
                 theta_center=theta_center,
@@ -989,7 +1004,7 @@ def _execute_rows(
                 legacy_cache[cache_key] = run_df.copy()
             legacy_df = legacy_cache.get(cache_key)
             if legacy_df is None:
-                legacy_config = _configure_run(
+                legacy_config = configure_candidate_run(
                     base_config,
                     forcing_csv_path=scenario.forcing_csv_path,
                     theta_center=theta_center,
@@ -1475,10 +1490,10 @@ def run_promoted_factorial_knu(
         equation_traceability_rows() + promoted_traceability_rows()
     ).drop_duplicates().to_csv(output_root / "equation_traceability.csv", index=False)
     rationale_lines = [
-        "P0 ran workbook, legacy, raw THORP-like, shipped TOMICS, and the current kuijpers control on actual KNU forcing.",
+        "P0 ran workbook, legacy, raw THORP-like, shipped TOMICS, and the current selected control on actual KNU forcing.",
         "P1 screened ten curated structural families across dry, moderate, and wet substrate proxy scenarios.",
         "P2 used thirteen-run reduced perturbation ladders around each shortlisted promoted architecture.",
-        "P3 confirmed legacy, shipped TOMICS, current kuijpers, and the promoted winner across substrate and fruit-load regimes.",
+        "P3 confirmed legacy, shipped TOMICS, the current selected candidate, and the promoted selected candidate across substrate and fruit-load regimes.",
     ]
     payload = _study_bundle_payload(
         selected_architecture_id=str(promoted_selected["architecture_id"]),
@@ -1667,6 +1682,20 @@ def write_side_by_side_bundle(
     )
     current_selected_id = str(_as_dict(current_result["selected_payload"])["selected_architecture_id"])
     promoted_selected_id = str(_as_dict(promoted_result["selected_payload"])["selected_architecture_id"])
+    canonical_manifest = write_canonical_winner_manifest(
+        output_root=output_root,
+        winners=CanonicalWinnerIds(
+            current_selected_architecture_id=current_selected_id,
+            promoted_selected_architecture_id=promoted_selected_id,
+        ),
+    )
+    canonical_winner_path = write_canonical_winner_manifest(
+        output_root=output_root,
+        winners=CanonicalWinnerIds(
+            current_selected_architecture_id=current_selected_id,
+            promoted_selected_architecture_id=promoted_selected_id,
+        ),
+    )
 
     scorecard_df = _comparison_scorecard(
         current_metrics_df=current_result["metrics_df"],
@@ -1742,7 +1771,7 @@ def write_side_by_side_bundle(
         scenario_id = str(scenario_row.iloc[0]["theta_proxy_scenario"])
         forcing_path = prepared_bundle.scenarios[scenario_id].forcing_csv_path
         base_cfg = load_config(_resolve_config_path("configs/exp/tomics_allocation_factorial.yaml", repo_root=repo_root, config_path=config_path))
-        run_cfg = _configure_run(
+        run_cfg = configure_candidate_run(
             base_cfg,
             forcing_csv_path=forcing_path,
             theta_center=float(prepared_bundle.scenarios[scenario_id].summary.get("theta_mean", 0.65)),
@@ -1793,16 +1822,18 @@ def write_side_by_side_bundle(
             "# TOMICS Promotion Recommendation",
             "",
             f"Recommendation: `{recommendation}`",
+            f"- Current selected architecture ID: `{current_selected_id}`",
+            f"- Promoted selected architecture ID: `{promoted_selected_id}`",
             "",
             "Decision basis:",
             f"- shipped TOMICS mean offset-adjusted RMSE: {shipped_rmse:.4f}",
-            f"- current kuijpers candidate mean offset-adjusted RMSE: {current_rmse:.4f}",
-            f"- promoted winner mean offset-adjusted RMSE: {promoted_rmse:.4f}",
-            f"- promoted winner mean fruit anchor error vs legacy: {promoted_anchor:.4f}",
-            f"- promoted winner max canopy collapse days: {promoted_collapse:.4f}",
-            f"- promoted winner max wet-condition root excess penalty: {promoted_root:.4f}",
+            f"- current selected candidate mean offset-adjusted harvested-yield RMSE: {current_rmse:.4f}",
+            f"- promoted selected candidate mean offset-adjusted harvested-yield RMSE: {promoted_rmse:.4f}",
+            f"- promoted selected candidate mean fruit anchor error vs legacy: {promoted_anchor:.4f}",
+            f"- promoted selected candidate max canopy collapse days: {promoted_collapse:.4f}",
+            f"- promoted selected candidate max wet-condition root excess penalty: {promoted_root:.4f}",
             "",
-            "The promoted allocator stays research-only unless it beats both shipped TOMICS and the current kuijpers candidate without violating tomato-first guardrails.",
+            "The promoted allocator stays research-only unless it beats both shipped TOMICS and the current selected candidate on harvested-yield fit without violating tomato-first guardrails.",
         ]
     )
     (output_root / "promotion_recommendation.md").write_text(recommendation_md, encoding="utf-8")
@@ -1810,10 +1841,12 @@ def write_side_by_side_bundle(
         "output_root": output_root,
         "scorecard_df": scorecard_df,
         "recommendation": recommendation,
+        "canonical_winner_path": str(canonical_winner_path),
         "summary_plot": summary_plot,
         "yield_fit_overlay": yield_plot,
         "allocation_behavior_overlay": allocation_plot,
         "theta_proxy_diagnostics": theta_plot,
+        "canonical_winner_manifest": str(canonical_manifest),
     }
 
 
@@ -1834,6 +1867,12 @@ def run_current_vs_promoted_factorial(
         "prepared_bundle": {
             "prepared_root": str(prepared_bundle.prepared_root),
             "manifest_summary": prepared_bundle.manifest_summary,
+            "data_contract": {
+                "forcing_path": str(prepared_bundle.data_contract.forcing_path),
+                "yield_path": str(prepared_bundle.data_contract.yield_path),
+                "forcing_source_kind": prepared_bundle.data_contract.forcing_source_kind,
+                "yield_source_kind": prepared_bundle.data_contract.yield_source_kind,
+            },
             "validation_start": str(prepared_bundle.validation_start.date()),
             "validation_end": str(prepared_bundle.validation_end.date()),
             "calibration_end": str(prepared_bundle.calibration_end.date()),
@@ -1896,6 +1935,7 @@ def run_current_vs_promoted_factorial(
 __all__ = [
     "PreparedKnuBundle",
     "PreparedThetaScenario",
+    "configure_candidate_run",
     "prepare_knu_bundle",
     "run_current_factorial_knu",
     "run_current_vs_promoted_factorial",

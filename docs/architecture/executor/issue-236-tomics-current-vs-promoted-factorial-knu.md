@@ -35,3 +35,7 @@
 The promoted allocator remains research-only in this issue.
 
 The shipped `partition_policy: tomics` path stays unchanged.
+
+Follow-up note:
+
+- issue `#239` / module `118` replaces the old implicit fruit-mass interpretation with an explicit harvested-yield observation operator and a fair promotion gate.
