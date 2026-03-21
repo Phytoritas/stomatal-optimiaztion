@@ -70,4 +70,5 @@ Current status:
 - Slice 101 migrated: TOMICS-Alloc architecture-study seams, source-traceable reserve/buffer and feedback helpers, and staged architecture factorial runner
 - Active bounded slice: issue `#231` / module `115` extends TOMICS-Alloc with a primary-source architecture pipeline and research-only candidate screening while keeping the shipped `tomics` default unchanged
 - Slice 116 migrated: repo-local Plotkit graph policy plus TOMICS compare/factorial/simulation bundle renderers and specs, with a PNG-only graph bundle contract
+- Slice 117 migrated: actual KNU greenhouse current-vs-promoted TOMICS allocation validation, greenhouse substrate proxying, floor-area scorecards, and promotion bundle outputs
 - Current open architecture gap: none
