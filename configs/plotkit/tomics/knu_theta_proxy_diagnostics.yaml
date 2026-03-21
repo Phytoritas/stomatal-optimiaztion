@@ -1,0 +1,98 @@
+version: 1
+kind: multi_panel_timeseries
+meta:
+  id: theta_proxy_diagnostics
+  title: KNU greenhouse substrate-moisture proxy diagnostics
+  family: tomics_knu_theta_proxy_diagnostics
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_multiline
+  description: Compare dry, moderate, and wet greenhouse substrate proxy scenarios derived from the KNU forcing record.
+data:
+  frame_role: tomics_knu_theta_proxy_diagnostics
+mapping:
+  source_column: source
+  datetime_column: datetime
+  value_column: value
+layout:
+  preset: publication_2x2_timeseries
+  rows: 2
+  cols: 2
+  margins:
+    left: 0.10
+    right: 0.98
+    bottom: 0.10
+    top: 0.84
+    hspace: 0.34
+    wspace: 0.26
+  title_y: 0.976
+legend:
+  enabled: true
+  order: [dry, moderate, wet]
+  loc: upper center
+  bbox_to_anchor: [0.5, 0.92]
+  ncol: 3
+  font_size_pt: 8.0
+panel_order:
+  - theta_substrate
+  - demand_index
+  - rootzone_multistress
+  - rootzone_saturation
+panels:
+  theta_substrate:
+    column: theta_substrate
+    title: Theta substrate proxy
+    x_label: datetime
+    y_label: Theta substrate (-)
+    scale: linear
+    y_limits: [0.38, 0.87]
+  demand_index:
+    column: demand_index
+    title: Irrigation demand proxy
+    x_label: datetime
+    y_label: Demand index (-)
+    scale: linear
+    y_limits: [-0.05, 1.05]
+  rootzone_multistress:
+    column: rootzone_multistress
+    title: Root-zone multistress gate
+    x_label: datetime
+    y_label: Multistress gate (-)
+    scale: linear
+    y_limits: [-0.05, 1.05]
+  rootzone_saturation:
+    column: rootzone_saturation
+    title: Root-zone saturation penalty
+    x_label: datetime
+    y_label: Saturation penalty (-)
+    scale: linear
+    y_limits: [-0.05, 1.05]
+styling:
+  sources:
+    dry:
+      label: Dry proxy
+      color: "#9C6644"
+      linestyle: "--"
+      marker: "s"
+      linewidth_pt: 1.5
+    moderate:
+      label: Moderate proxy
+      color: "#2A9D8F"
+      linestyle: "-"
+      marker: "^"
+      linewidth_pt: 1.8
+    wet:
+      label: Wet proxy
+      color: "#1D4E89"
+      linestyle: "-"
+      marker: "o"
+      linewidth_pt: 1.7
+figure:
+  width_mm: 180
+  height_mm: 145
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png]
+  dpi: 300
+  transparent: false

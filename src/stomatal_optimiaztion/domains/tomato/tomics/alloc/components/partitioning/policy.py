@@ -65,6 +65,13 @@ def build_partition_policy(name: str) -> PartitionPolicy:
 
         return TomicsArchitectureResearchPolicy()
 
+    if key in {"tomics_promoted_research", "tomics_alloc_promoted_research"}:
+        from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.partitioning.promoted_policy import (
+            TomicsPromotedResearchPolicy,
+        )
+
+        return TomicsPromotedResearchPolicy()
+
     raise ValueError(f"Unknown partition policy name {name!r}.")
 
 

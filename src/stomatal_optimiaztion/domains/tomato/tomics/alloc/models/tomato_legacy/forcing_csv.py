@@ -28,6 +28,9 @@ _COLUMN_ALIASES: dict[str, tuple[str, ...]] = {
     "SW_in_Wm2": ("r_incom_w_m2", "r_incom"),
     "T_rad_C": ("t_rad_c",),
     "n_fruits_per_truss": (),
+    "theta_substrate": ("theta_substrate_proxy", "theta_proxy"),
+    "rootzone_multistress": ("rootzone_multistress_proxy",),
+    "rootzone_saturation": ("rootzone_saturation_proxy",),
 }
 
 
@@ -208,4 +211,7 @@ def iter_forcing_csv(
             SW_in_Wm2=sw_in,
             T_rad_C=t_rad_c,
             n_fruits_per_truss=n_fruits,
+            theta_substrate=_read_optional_float(row, ("theta_substrate",)),
+            rootzone_multistress=_read_optional_float(row, ("rootzone_multistress",)),
+            rootzone_saturation=_read_optional_float(row, ("rootzone_saturation",)),
         )

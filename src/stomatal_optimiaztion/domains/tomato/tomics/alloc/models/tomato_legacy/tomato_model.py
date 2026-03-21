@@ -24,6 +24,9 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.partitioning.r
     TomicsResearchArchitecture,
     coerce_tomics_research_architecture,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.partitioning.promoted_modes import (
+    PromotedAllocatorConfig,
+)
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.partitioning.reserve_buffer import (
     resolve_realized_growth_with_buffer,
 )
@@ -244,6 +247,9 @@ class TomatoModel:
         self.co2_flux_g_m2_s = 0.0
         self.dt_seconds = 0.0
         self.water_supply_stress = self._resolve_water_supply_stress()
+        self.rootzone_multistress = 0.0
+        self.rootzone_saturation = 0.0
+        self.VPD = 0.0
 
         self.daily_temp_accumulator: list[tuple[float, float]] = []
         self.daily_gross_ch2o_g = 0.0
@@ -285,6 +291,11 @@ class TomatoModel:
         self.fruit_set_feedback_events = 0
         self.maintenance_respiration_share = 0.0
         self.mean_stage_residence_time_d = 0.0
+        self.promoted_leaf_canopy_return_proxy = 0.0
+        self.promoted_stem_support_signal = 0.0
+        self.promoted_root_gate_activation = 0.0
+        self.promoted_supply_demand_ratio = 1.0
+        self.promoted_low_sink_penalty = 0.0
         self.common_structure_snapshot = build_common_structure_snapshot(
             assimilate_buffer_g=self.reserve_ch2o_g,
             leaf_biomass_g=self.W_lv,
@@ -404,6 +415,18 @@ class TomatoModel:
         self.u_CO2 = check_and_clip_value(row["CO2_ppm"], 300.0, 2000.0, 400.0)
         self.RH = check_and_clip_value(row["RH_percent"], 0.0, 100.0, 70.0) / 100.0
         self.u = check_and_clip_value(row["wind_speed_ms"], 0.01, 10.0, 0.1)
+        if "theta_substrate" in self._last_row_cols:
+            self.theta_substrate = _finite_float(row.get("theta_substrate", self.theta_substrate), default=self.theta_substrate)
+        if "rootzone_multistress" in self._last_row_cols:
+            self.rootzone_multistress = _finite_float(
+                row.get("rootzone_multistress", self.rootzone_multistress),
+                default=self.rootzone_multistress,
+            )
+        if "rootzone_saturation" in self._last_row_cols:
+            self.rootzone_saturation = _finite_float(
+                row.get("rootzone_saturation", self.rootzone_saturation),
+                default=self.rootzone_saturation,
+            )
         fruit_load_multiplier = _finite_float(
             getattr(self, "partition_policy_params", {}).get("fruit_load_multiplier", 1.0),
             default=1.0,
@@ -418,6 +441,7 @@ class TomatoModel:
         base_n_f = check_and_clip_value(row["n_fruits_per_truss"], 1.0, 12.0, 4.0)
         self.n_f = int(round(check_and_clip_value(base_n_f * fruit_load_multiplier, 1.0, 12.0, 4.0)))
         self.Ci = self.u_CO2 * 0.7
+        self.VPD = max(esat_Pa_from_T_C(self.T_a - 273.15) * (1.0 - self.RH) / 1000.0, 0.0)
 
         sw_in_candidate = row.get("SW_in_Wm2", math.nan)
         sw_in_value = _finite_float(sw_in_candidate, default=math.nan)
@@ -490,6 +514,39 @@ class TomatoModel:
                 1e4,
                 0.0,
             ),
+            "rootzone_multistress": check_and_clip_value(self.rootzone_multistress, 0.0, 1.0, 0.0),
+            "rootzone_saturation": check_and_clip_value(self.rootzone_saturation, 0.0, 1.0, 0.0),
+            "VPD_kPa": check_and_clip_value(self.VPD, 0.0, 10.0, 0.0),
+            "promoted_leaf_canopy_return_proxy": check_and_clip_value(
+                self.promoted_leaf_canopy_return_proxy,
+                -2.0,
+                2.0,
+                0.0,
+            ),
+            "promoted_stem_support_signal": check_and_clip_value(
+                self.promoted_stem_support_signal,
+                0.0,
+                5.0,
+                0.0,
+            ),
+            "promoted_root_gate_activation": check_and_clip_value(
+                self.promoted_root_gate_activation,
+                0.0,
+                5.0,
+                0.0,
+            ),
+            "promoted_supply_demand_ratio": check_and_clip_value(
+                self.promoted_supply_demand_ratio,
+                0.0,
+                5.0,
+                1.0,
+            ),
+            "promoted_low_sink_penalty": check_and_clip_value(
+                self.promoted_low_sink_penalty,
+                0.0,
+                5.0,
+                0.0,
+            ),
         }
 
     def get_error_outputs(self, current_time: datetime) -> dict[str, object]:
@@ -532,13 +589,23 @@ class TomatoModel:
             "fruit_set_feedback_events": np.nan,
             "maintenance_respiration_share": np.nan,
             "mean_stage_residence_time_d": np.nan,
+            "rootzone_multistress": np.nan,
+            "rootzone_saturation": np.nan,
+            "VPD_kPa": np.nan,
+            "promoted_leaf_canopy_return_proxy": np.nan,
+            "promoted_stem_support_signal": np.nan,
+            "promoted_root_gate_activation": np.nan,
+            "promoted_supply_demand_ratio": np.nan,
+            "promoted_low_sink_penalty": np.nan,
         }
 
-    def _current_research_architecture(self) -> TomicsResearchArchitecture | None:
+    def _current_research_architecture(self) -> TomicsResearchArchitecture | PromotedAllocatorConfig | None:
         policy_name = str(getattr(getattr(self, "partition_policy", None), "name", "")).strip().lower()
-        if policy_name not in {"tomics_alloc_research", "tomics_architecture_research"}:
-            return None
-        return coerce_tomics_research_architecture(self.partition_policy_params)
+        if policy_name in {"tomics_alloc_research", "tomics_architecture_research"}:
+            return coerce_tomics_research_architecture(self.partition_policy_params)
+        if policy_name in {"tomics_promoted_research", "tomics_alloc_promoted_research"}:
+            return PromotedAllocatorConfig.from_params(self.partition_policy_params)
+        return None
 
     def _maintenance_efficiency_factor(
         self,

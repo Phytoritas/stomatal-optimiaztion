@@ -1,0 +1,101 @@
+version: 1
+kind: multi_panel_timeseries
+meta:
+  id: yield_fit_overlay
+  title: KNU measured vs workbook vs TOMICS architecture yield fit
+  family: tomics_knu_yield_fit_overlay
+  support_level: thin_wrapper
+  render_strategy: plotkit_style_multiline
+  description: Floor-area cumulative and increment-space validation overlay across measured, workbook, shipped, current, and promoted candidates.
+data:
+  frame_role: tomics_knu_validation_overlay
+mapping:
+  source_column: source
+  datetime_column: datetime
+  value_column: value
+layout:
+  preset: publication_3x1_timeseries
+  rows: 3
+  cols: 1
+  margins:
+    left: 0.12
+    right: 0.98
+    bottom: 0.08
+    top: 0.84
+    hspace: 0.34
+  title_y: 0.976
+legend:
+  enabled: true
+  order: [measured, workbook_estimated, shipped_tomics, current_selected, promoted_selected]
+  loc: upper center
+  bbox_to_anchor: [0.5, 0.93]
+  ncol: 3
+  font_size_pt: 7.6
+panel_order:
+  - cumulative_total_fruit_floor_area
+  - offset_adjusted_cumulative_total_fruit_floor_area
+  - daily_increment_floor_area
+panels:
+  cumulative_total_fruit_floor_area:
+    column: cumulative_total_fruit_floor_area
+    title: Raw cumulative fruit dry weight
+    x_label: datetime
+    y_label: Cumulative fruit dry weight [g m^-2 floor]
+    scale: linear
+    y_padding_fraction: 0.10
+  offset_adjusted_cumulative_total_fruit_floor_area:
+    column: offset_adjusted_cumulative_total_fruit_floor_area
+    title: Offset-adjusted cumulative fruit dry weight
+    x_label: datetime
+    y_label: Offset-adjusted cumulative [g m^-2 floor]
+    scale: linear
+    y_padding_fraction: 0.10
+  daily_increment_floor_area:
+    column: daily_increment_floor_area
+    title: Daily fruit dry-weight increment
+    x_label: datetime
+    y_label: Daily increment [g m^-2 floor d^-1]
+    scale: linear
+    y_padding_fraction: 0.12
+styling:
+  sources:
+    measured:
+      label: Measured
+      color: "#111111"
+      linestyle: "-"
+      marker: "o"
+      linewidth_pt: 1.9
+    workbook_estimated:
+      label: Workbook estimated
+      color: "#6C757D"
+      linestyle: "--"
+      marker: "s"
+      linewidth_pt: 1.4
+    shipped_tomics:
+      label: Shipped TOMICS
+      color: "#2A9D8F"
+      linestyle: "-"
+      marker: "^"
+      linewidth_pt: 1.8
+    current_selected:
+      label: Current kuijpers
+      color: "#1D4E89"
+      linestyle: "-."
+      marker: "D"
+      linewidth_pt: 1.6
+    promoted_selected:
+      label: Promoted winner
+      color: "#A23B72"
+      linestyle: "-"
+      marker: "P"
+      linewidth_pt: 1.8
+figure:
+  width_mm: 180
+  height_mm: 190
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png]
+  dpi: 300
+  transparent: false
