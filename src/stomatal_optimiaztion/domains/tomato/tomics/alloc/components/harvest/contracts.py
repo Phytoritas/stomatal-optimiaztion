@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from enum import StrEnum
 from typing import Protocol
 
 import pandas as pd
@@ -17,8 +18,13 @@ HARVEST_FRUIT_COLUMNS = [
     "fds",
     "fruit_dm_g_m2",
     "fruit_count",
+    "sink_active_flag",
+    "mature_flag",
+    "harvest_ready_flag",
     "onplant_flag",
     "harvested_flag",
+    "removal_reason",
+    "maturity_basis",
     "potential_weight_proxy_g_m2",
 ]
 
@@ -50,6 +56,14 @@ LEAF_ENTITY_COLUMNS = HARVEST_LEAF_COLUMNS
 
 def ensure_entity_frame(frame: pd.DataFrame | None, columns: list[str]) -> pd.DataFrame:
     return _ensure_frame(frame, columns)
+
+
+class FruitLifecyclePhase(StrEnum):
+    GROWING = "growing"
+    MATURE_ON_PLANT = "mature_on_plant"
+    HARVEST_READY = "harvest_ready"
+    HARVESTED = "harvested"
+    REMOVED_NONHARVEST = "removed_nonharvest"
 
 
 @dataclass(frozen=True, slots=True)
@@ -152,6 +166,7 @@ class LeafHarvestPolicy(Protocol):
 __all__ = [
     "ensure_entity_frame",
     "FRUIT_ENTITY_COLUMNS",
+    "FruitLifecyclePhase",
     "HARVEST_FRUIT_COLUMNS",
     "HARVEST_LEAF_COLUMNS",
     "LEAF_ENTITY_COLUMNS",

@@ -38,6 +38,8 @@ class DeKoningFdsHarvestPolicy:
         dayno = float(pd.Timestamp(state.datetime).dayofyear)
         tf = float(env.get("T_air_C", env.get("TF", 23.0)))
         for row in frame.itertuples(index=False):
+            if bool(getattr(row, "harvested_flag", False)):
+                continue
             if not bool(getattr(row, "onplant_flag", True)):
                 continue
             fds_value = float(getattr(row, "fds", 0.0))

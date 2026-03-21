@@ -28,11 +28,19 @@ class VanthoorBoxcarHarvestPolicy:
             return build_harvest_update(state, extra_diagnostics={"fruit_harvest_family": self.family})
         frame["stage_index"] = pd.to_numeric(frame.get("stage_index"), errors="coerce").fillna(0.0)
         frame["fruit_dm_g_m2"] = pd.to_numeric(frame.get("fruit_dm_g_m2"), errors="coerce").fillna(0.0)
+        if "harvested_flag" not in frame.columns:
+            frame["harvested_flag"] = False
+        if "onplant_flag" not in frame.columns:
+            frame["onplant_flag"] = True
         final_stage = frame.loc[
             frame["stage_index"].apply(
                 lambda value: ready_vanthoor_stage(value, self.config.n_dev, env.get("MCFruitHar_g_m2_d"))
             )
         ].copy()
+        final_stage = final_stage.loc[
+            (~final_stage["harvested_flag"].fillna(False).astype(bool))
+            & final_stage["onplant_flag"].fillna(True).astype(bool)
+        ]
         total_final_mass = float(final_stage["fruit_dm_g_m2"].sum())
         explicit_outflow = max(float(env.get("MCFruitHar_g_m2_d", env.get("DMHar_g_m2_d", 0.0))), 0.0)
         events: list[FruitHarvestEvent] = []

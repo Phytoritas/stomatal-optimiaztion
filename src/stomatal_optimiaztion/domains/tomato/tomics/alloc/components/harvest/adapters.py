@@ -42,9 +42,17 @@ def _apply_fruit_events(
             continue
         available = float(updated.loc[mask, "fruit_dm_g_m2"].iloc[0])
         harvested = min(max(float(event.dry_weight_g_m2), 0.0), max(available, 0.0))
-        updated.loc[mask, "fruit_dm_g_m2"] = max(available - harvested, 0.0)
-        updated.loc[mask, "onplant_flag"] = False
-        updated.loc[mask, "harvested_flag"] = True
+        remaining = max(available - harvested, 0.0)
+        fully_harvested = remaining <= 1e-12
+        updated.loc[mask, "fruit_dm_g_m2"] = remaining
+        updated.loc[mask, "sink_active_flag"] = False
+        updated.loc[mask, "mature_flag"] = True
+        updated.loc[mask, "harvest_ready_flag"] = not fully_harvested
+        updated.loc[mask, "onplant_flag"] = not fully_harvested
+        updated.loc[mask, "harvested_flag"] = fully_harvested
+        updated.loc[mask, "removal_reason"] = "harvest_event" if fully_harvested else ""
+        if "maturity_basis" in updated.columns:
+            updated.loc[mask, "maturity_basis"] = updated.loc[mask, "maturity_basis"].fillna("tdvs")
     return updated
 
 

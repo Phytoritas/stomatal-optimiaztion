@@ -32,6 +32,8 @@ class TomsimTrussHarvestPolicy:
         frame["fruit_count"] = pd.to_numeric(frame.get("fruit_count"), errors="coerce").fillna(0.0)
         events: list[FruitHarvestEvent] = []
         for row in frame.itertuples(index=False):
+            if bool(getattr(row, "harvested_flag", False)):
+                continue
             if not bool(getattr(row, "onplant_flag", True)):
                 continue
             if not ready_tomsim_truss(getattr(row, "tdvs", 0.0), threshold=threshold):
