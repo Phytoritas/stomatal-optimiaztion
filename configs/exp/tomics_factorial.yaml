@@ -40,7 +40,7 @@ screen:
 
 paths:
   repo_root: ../..
-  output_root: out/tomics_factorial
+  output_root: out/tomics/analysis/factorial
 
 plots:
   summary_plot_spec: configs/plotkit/tomics/factorial_summary.yaml

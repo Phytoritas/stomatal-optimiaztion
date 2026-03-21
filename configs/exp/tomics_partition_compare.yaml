@@ -20,7 +20,7 @@ forcing:
 
 paths:
   repo_root: ../..
-  output_root: out/tomics_partition_compare
+  output_root: out/tomics/analysis/partition-compare
   features_dir: artifacts/tomics_alloc_features
 
 plots:

@@ -69,7 +69,7 @@ These remain explicit proxy assumptions until measured root-zone variables are s
 
 Output root:
 
-- `out/tomics_current_factorial_knu/`
+- `out/tomics/validation/knu/architecture/current-factorial/`
 
 Design counts:
 
@@ -86,7 +86,7 @@ Canonical selected current architecture:
 
 Output root:
 
-- `out/tomics_promoted_factorial_knu/`
+- `out/tomics/validation/knu/architecture/promoted-factorial/`
 
 Design counts:
 
@@ -106,7 +106,7 @@ The promoted family remains research-only and preserves the legacy fruit gate as
 
 Comparison root:
 
-- `out/tomics_current_vs_promoted_knu/`
+- `out/tomics/validation/knu/architecture/comparison/`
 
 Current-vs-promoted baseline recommendation:
 

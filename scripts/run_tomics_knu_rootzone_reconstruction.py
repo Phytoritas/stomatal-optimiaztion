@@ -49,7 +49,7 @@ def main() -> int:
     rootzone_cfg = config.get("rootzone_reconstruction", {})
     output_root = ensure_dir(
         _resolve_config_path(
-            rootzone_cfg.get("output_root", "out/tomics_knu_rootzone_reconstruction"),
+            rootzone_cfg.get("output_root", "out/tomics/validation/knu/fairness/rootzone-reconstruction"),
             repo_root=repo_root,
             config_path=config_path,
         )

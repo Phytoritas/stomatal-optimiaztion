@@ -163,7 +163,7 @@ def _candidate_runs(config: dict, *, repo_root: Path, config_path: Path) -> dict
     summary_rows.insert(0, workbook_row)
     output_root = ensure_dir(
         _resolve_config_path(
-            load_config(config_path).get("observation_eval", {}).get("output_root", "out/tomics_knu_observation_eval"),
+            load_config(config_path).get("observation_eval", {}).get("output_root", "out/tomics/validation/knu/fairness/observation-eval"),
             repo_root=repo_root,
             config_path=config_path,
         )

@@ -166,12 +166,12 @@ def load_fairness_candidates(
     current_vs_promoted_cfg = load_config(current_vs_promoted_path)
     output_paths = _as_dict(current_vs_promoted_cfg.get("paths"))
     current_output_root = _resolve_config_path(
-        reference_cfg.get("current_output_root", output_paths.get("current_output_root", "out/tomics_current_factorial_knu")),
+        reference_cfg.get("current_output_root", output_paths.get("current_output_root", "out/tomics/validation/knu/architecture/current-factorial")),
         repo_root=repo_root,
         config_path=current_vs_promoted_path,
     )
     promoted_output_root = _resolve_config_path(
-        reference_cfg.get("promoted_output_root", output_paths.get("promoted_output_root", "out/tomics_promoted_factorial_knu")),
+        reference_cfg.get("promoted_output_root", output_paths.get("promoted_output_root", "out/tomics/validation/knu/architecture/promoted-factorial")),
         repo_root=repo_root,
         config_path=current_vs_promoted_path,
     )

@@ -62,13 +62,13 @@ def run_promotion_gate(
     gate_cfg = _as_dict(config.get("promotion_gate"))
     calibration_cfg = _as_dict(config.get("calibration"))
     calibration_root = _resolve_config_path(
-        calibration_cfg.get("output_root", "out/tomics_knu_calibration"),
+        calibration_cfg.get("output_root", "out/tomics/validation/knu/fairness/calibration"),
         repo_root=repo_root,
         config_path=config_path,
     )
     output_root = ensure_dir(
         _resolve_config_path(
-            gate_cfg.get("output_root", "out/tomics_knu_promotion_gate"),
+            gate_cfg.get("output_root", "out/tomics/validation/knu/fairness/promotion-gate"),
             repo_root=repo_root,
             config_path=config_path,
         )

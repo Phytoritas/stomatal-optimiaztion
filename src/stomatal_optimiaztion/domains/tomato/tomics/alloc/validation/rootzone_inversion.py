@@ -153,7 +153,7 @@ def run_knu_rootzone_reconstruction(*, config_path: str | Path) -> dict[str, obj
     rootzone_cfg = _as_dict(config.get("rootzone_reconstruction"))
     output_root = ensure_dir(
         _resolve_config_path(
-            rootzone_cfg.get("output_root", "out/tomics_knu_rootzone_reconstruction"),
+            rootzone_cfg.get("output_root", "out/tomics/validation/knu/fairness/rootzone-reconstruction"),
             repo_root=repo_root,
             config_path=resolved_config_path,
         )

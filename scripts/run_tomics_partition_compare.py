@@ -51,7 +51,7 @@ def _resolve_output_root(config: dict[str, Any], repo_root: Path, override: str 
     if override:
         raw = Path(override)
     else:
-        raw = Path(str(_as_dict(config.get("paths")).get("output_root", "out/tomics_partition_compare")))
+        raw = Path(str(_as_dict(config.get("paths")).get("output_root", "out/tomics/analysis/partition-compare")))
     if raw.is_absolute():
         return raw
     return (repo_root / raw).resolve()
@@ -155,7 +155,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--output-root",
         default=None,
-        help="Override output root (default from config or out/tomics_partition_compare).",
+        help="Override output root (default from config or out/tomics/analysis/partition-compare).",
     )
     parser.add_argument(
         "--exp-key",

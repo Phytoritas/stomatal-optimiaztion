@@ -188,7 +188,7 @@ stage3:
 
 paths:
   repo_root: ../..
-  output_root: out/tomics_allocation_factorial
+  output_root: out/tomics/analysis/allocation-factorial
 
 plots:
   summary_plot_spec: configs/plotkit/tomics/allocation_factorial_summary.yaml

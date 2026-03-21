@@ -15,12 +15,12 @@
 
 ## Output roots
 
-- `out/knu_longrun/`
-- `out/tomics_knu_observation_eval/`
-- `out/tomics_knu_state_reconstruction/`
-- `out/tomics_knu_rootzone_reconstruction/`
-- `out/tomics_knu_calibration/`
-- `out/tomics_knu_promotion_gate/`
+- `out/tomics/validation/knu/longrun/`
+- `out/tomics/validation/knu/fairness/observation-eval/`
+- `out/tomics/validation/knu/fairness/state-reconstruction/`
+- `out/tomics/validation/knu/fairness/rootzone-reconstruction/`
+- `out/tomics/validation/knu/fairness/calibration/`
+- `out/tomics/validation/knu/fairness/promotion-gate/`
 
 ## Decision
 

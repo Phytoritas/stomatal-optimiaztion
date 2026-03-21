@@ -29,7 +29,7 @@ Recovered common initial state:
 
 ## Output root
 
-- `out/tomics_knu_state_reconstruction/`
+- `out/tomics/validation/knu/fairness/state-reconstruction/`
 
 ## Current conclusion
 

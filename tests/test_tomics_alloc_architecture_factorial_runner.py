@@ -84,7 +84,7 @@ def test_architecture_factorial_runner_writes_required_bundle(tmp_path: Path) ->
                 "    baseline: 1.0",
                 "paths:",
                 f"  repo_root: {repo_root.as_posix()}",
-                "  output_root: out/tomics_allocation_factorial",
+                "  output_root: out/tomics/analysis/allocation-factorial",
             ]
         ),
         encoding="utf-8",

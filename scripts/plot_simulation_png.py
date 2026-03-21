@@ -22,12 +22,12 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Plot tomato simulation CSV outputs to a PNG summary.")
     parser.add_argument(
         "--input",
-        default="out/tomics_partition_compare/example/tomics/df.csv",
+        default="out/tomics/analysis/partition-compare/example/tomics/df.csv",
         help="Input CSV path (model outputs).",
     )
     parser.add_argument(
         "--output",
-        default="out/tomics_partition_compare/example/tomics/simulation_summary.png",
+        default="out/tomics/analysis/partition-compare/example/tomics/simulation_summary.png",
         help="Output PNG path.",
     )
     parser.add_argument(

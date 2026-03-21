@@ -25,7 +25,7 @@ Hard bounds:
 
 Output root:
 
-- `out/tomics_knu_rootzone_reconstruction/`
+- `out/tomics/validation/knu/fairness/rootzone-reconstruction/`
 
 Current scenario summaries:
 

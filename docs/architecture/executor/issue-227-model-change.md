@@ -14,7 +14,7 @@
 - targeted TOMICS policy, naming migration, comparison runner, and factorial runner tests
 - `poetry run pytest`
 - `poetry run ruff check .`
-- deterministic artifacts under `out/tomics_partition_compare/`, `out/tomics_factorial/`, and `out/tomics_naming_audit/`
+- deterministic artifacts under `out/tomics/analysis/partition-compare/`, `out/tomics/analysis/factorial/`, and `out/tomics/analysis/naming-audit/`
 
 ## Comparison target
 - legacy sink-based tomato partitioning

@@ -33,4 +33,4 @@
 
 - architecture inventory and module-spec history still mention `tTHORP`, `tGOSM`, and `tTDGM` where those names identify the original migration slices
 - public/runtime tomato-facing surfaces use only `TOMICS-*` names
-- `out/tomics_naming_audit/rename_manifest.csv` records which surfaces were renamed, retired from runtime, or preserved as provenance
+- `out/tomics/analysis/naming-audit/rename_manifest.csv` records which surfaces were renamed, retired from runtime, or preserved as provenance

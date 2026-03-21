@@ -30,8 +30,8 @@ Current fair-validation splits:
 
 Output roots:
 
-- `out/tomics_knu_calibration/`
-- `out/tomics_knu_promotion_gate/`
+- `out/tomics/validation/knu/fairness/calibration/`
+- `out/tomics/validation/knu/fairness/promotion-gate/`
 
 Mean holdout RMSE, offset-adjusted harvested yield:
 

@@ -230,7 +230,7 @@ def prepare_knu_bundle(
         config_path=config_path,
     )
     prepared_root = _resolve_config_path(
-        validation_cfg.get("prepared_output_root", "out/knu_longrun"),
+        validation_cfg.get("prepared_output_root", "out/tomics/validation/knu/longrun"),
         repo_root=repo_root,
         config_path=config_path,
     )
@@ -716,7 +716,7 @@ def _load_previous_selected_current(
     current_cfg: dict[str, Any],
 ) -> dict[str, object]:
     current_section = _as_dict(config.get("current"))
-    raw = current_section.get("prior_selected_architecture_json", "out/tomics_allocation_factorial/selected_architecture.json")
+    raw = current_section.get("prior_selected_architecture_json", "out/tomics/analysis/allocation-factorial/selected_architecture.json")
     path = _resolve_config_path(raw, repo_root=repo_root, config_path=config_path)
     if path.exists():
         payload = json.loads(path.read_text(encoding="utf-8"))
@@ -1147,7 +1147,7 @@ def run_current_factorial_knu(
 
     output_root = ensure_dir(
         _resolve_config_path(
-            _as_dict(config.get("paths")).get("current_output_root", "out/tomics_current_factorial_knu"),
+            _as_dict(config.get("paths")).get("current_output_root", "out/tomics/validation/knu/architecture/current-factorial"),
             repo_root=repo_root,
             config_path=config_path,
         )
@@ -1325,7 +1325,7 @@ def run_promoted_factorial_knu(
     base_config["pipeline"]["fixed_lai"] = promoted_section.get("fixed_lai")
     output_root = ensure_dir(
         _resolve_config_path(
-            _as_dict(config.get("paths")).get("promoted_output_root", "out/tomics_promoted_factorial_knu"),
+            _as_dict(config.get("paths")).get("promoted_output_root", "out/tomics/validation/knu/architecture/promoted-factorial"),
             repo_root=repo_root,
             config_path=config_path,
         )
@@ -1651,7 +1651,7 @@ def write_side_by_side_bundle(
 ) -> dict[str, object]:
     output_root = ensure_dir(
         _resolve_config_path(
-            _as_dict(config.get("paths")).get("comparison_output_root", "out/tomics_current_vs_promoted_knu"),
+            _as_dict(config.get("paths")).get("comparison_output_root", "out/tomics/validation/knu/architecture/comparison"),
             repo_root=repo_root,
             config_path=config_path,
         )

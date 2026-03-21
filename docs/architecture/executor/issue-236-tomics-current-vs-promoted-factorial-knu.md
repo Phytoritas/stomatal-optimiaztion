@@ -15,10 +15,10 @@
 
 ## Output roots
 
-- `out/knu_longrun/`
-- `out/tomics_current_factorial_knu/`
-- `out/tomics_promoted_factorial_knu/`
-- `out/tomics_current_vs_promoted_knu/`
+- `out/tomics/validation/knu/longrun/`
+- `out/tomics/validation/knu/architecture/current-factorial/`
+- `out/tomics/validation/knu/architecture/promoted-factorial/`
+- `out/tomics/validation/knu/architecture/comparison/`
 
 ## Validation commands
 

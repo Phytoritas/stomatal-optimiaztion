@@ -32,7 +32,7 @@ Workbook estimated yield remains a comparator only. It is never treated as groun
 
 Output root:
 
-- `out/tomics_knu_observation_eval/`
+- `out/tomics/validation/knu/fairness/observation-eval/`
 
 Measured-harvest fit on the current actual-data baseline:
 

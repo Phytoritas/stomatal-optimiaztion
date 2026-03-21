@@ -18,7 +18,7 @@ The raw files remain untracked and unmodified.
 
 Every actual-data run writes:
 
-- `out/knu_longrun/data_contract_manifest.json`
+- `out/tomics/validation/knu/longrun/data_contract_manifest.json`
 
 This manifest records:
 

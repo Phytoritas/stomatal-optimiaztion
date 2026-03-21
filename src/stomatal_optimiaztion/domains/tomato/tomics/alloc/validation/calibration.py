@@ -176,12 +176,12 @@ def load_candidate_specs(
     )
     base_config = load_config(base_config_path)
     current_output_root = _resolve_config_path(
-        selection_cfg.get("current_output_root", "out/tomics_current_factorial_knu"),
+        selection_cfg.get("current_output_root", "out/tomics/validation/knu/architecture/current-factorial"),
         repo_root=repo_root,
         config_path=config_path,
     )
     promoted_output_root = _resolve_config_path(
-        selection_cfg.get("promoted_output_root", "out/tomics_promoted_factorial_knu"),
+        selection_cfg.get("promoted_output_root", "out/tomics/validation/knu/architecture/promoted-factorial"),
         repo_root=repo_root,
         config_path=config_path,
     )
@@ -623,7 +623,7 @@ def run_calibration_suite(
     calibration_cfg = _as_dict(config.get("calibration"))
     output_root = ensure_dir(
         _resolve_config_path(
-            calibration_cfg.get("output_root", "out/tomics_knu_calibration"),
+            calibration_cfg.get("output_root", "out/tomics/validation/knu/fairness/calibration"),
             repo_root=repo_root,
             config_path=config_path,
         )
