@@ -26,6 +26,9 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.metrics import
     canopy_collapse_days,
     compute_validation_bundle,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.observation_model import (
+    validation_overlay_frame,
+)
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.parameter_budget import (
     CalibrationBudget,
     build_calibration_budget,
@@ -301,9 +304,11 @@ def _window_bundle(
     end: pd.Timestamp,
 ) -> tuple[pd.DataFrame, dict[str, float | bool | str]]:
     mask = (observed_df["date"] >= start) & (observed_df["date"] <= end)
+    candidate_daily_increment_series = pd.to_numeric(candidate_series, errors="coerce").diff()
     bundle = compute_validation_bundle(
         observed_df.loc[mask].copy(),
         candidate_series=candidate_series.loc[mask],
+        candidate_daily_increment_series=candidate_daily_increment_series.loc[mask],
         candidate_label=candidate_label,
         unit_declared_in_observation_file=unit_label,
     )
@@ -589,17 +594,9 @@ def _write_holdout_overlay(
     runs: dict[str, pd.DataFrame] = {}
     for _, row in blocked.iterrows():
         frame = pd.read_csv(row["validation_series_csv"])
-        date_column = "date" if "date" in frame.columns else frame.columns[0]
-        cumulative_column = [column for column in frame.columns if column.endswith("_cumulative_total_fruit_dry_weight_floor_area")][0]
-        offset_column = [column for column in frame.columns if column.endswith("_offset_adjusted")][0]
-        increment_column = [column for column in frame.columns if column.endswith("_daily_increment_floor_area")][0]
-        runs[str(row["candidate_label"])] = pd.DataFrame(
-            {
-                "datetime": pd.to_datetime(frame[date_column]),
-                "cumulative_total_fruit_floor_area": pd.to_numeric(frame[cumulative_column], errors="coerce"),
-                "offset_adjusted_cumulative_total_fruit_floor_area": pd.to_numeric(frame[offset_column], errors="coerce"),
-                "daily_increment_floor_area": pd.to_numeric(frame[increment_column], errors="coerce"),
-            }
+        runs[str(row["candidate_label"])] = validation_overlay_frame(
+            frame,
+            source_label=str(row["candidate_label"]),
         )
     if not runs:
         return

@@ -44,6 +44,12 @@ def _stress_activation_days(frame: pd.DataFrame, *, threshold: float = 0.20) -> 
     return int(flags.groupby(work["date"]).any().sum())
 
 
+def _recharge_event_count(frame: pd.DataFrame) -> int:
+    flags = pd.to_numeric(frame.get("irrigation_proxy_flag"), errors="coerce").fillna(0.0) > 0.0
+    starts = flags & ~flags.shift(fill_value=False)
+    return int(starts.sum())
+
+
 def reconstruct_rootzone(
     forcing_df: pd.DataFrame,
     *,
@@ -83,7 +89,7 @@ def reconstruct_rootzone(
                 "theta_proxy_scenario": scenario_id,
                 "mean_theta": float(theta.mean()),
                 "theta_range": float(theta.max() - theta.min()),
-                "recharge_event_count": int(pd.to_numeric(frame.get("irrigation_proxy_flag"), errors="coerce").fillna(0.0).sum()),
+                "recharge_event_count": _recharge_event_count(frame),
                 "oversaturation_days": _oversaturation_days(frame),
                 "proxy_uncertainty_width": mean_uncertainty,
                 "rootzone_stress_activation_days": _stress_activation_days(frame),

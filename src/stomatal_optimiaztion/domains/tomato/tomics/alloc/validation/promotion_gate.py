@@ -10,6 +10,9 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.calibration im
     _as_dict,
     _resolve_config_path,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.observation_model import (
+    validation_overlay_frame,
+)
 
 
 def _aggregate_candidate(frame: pd.DataFrame) -> dict[str, object]:
@@ -38,17 +41,9 @@ def _render_promotion_overlay(*, output_root: Path, scorecard_df: pd.DataFrame, 
     runs: dict[str, pd.DataFrame] = {}
     for _, row in blocked.iterrows():
         frame = pd.read_csv(row["validation_series_csv"])
-        date_column = "date" if "date" in frame.columns else frame.columns[0]
-        cumulative_column = [column for column in frame.columns if column.endswith("_cumulative_total_fruit_dry_weight_floor_area")][0]
-        offset_column = [column for column in frame.columns if column.endswith("_offset_adjusted")][0]
-        increment_column = [column for column in frame.columns if column.endswith("_daily_increment_floor_area")][0]
-        runs[str(row["candidate_label"])] = pd.DataFrame(
-            {
-                "datetime": pd.to_datetime(frame[date_column]),
-                "cumulative_total_fruit_floor_area": pd.to_numeric(frame[cumulative_column], errors="coerce"),
-                "offset_adjusted_cumulative_total_fruit_floor_area": pd.to_numeric(frame[offset_column], errors="coerce"),
-                "daily_increment_floor_area": pd.to_numeric(frame[increment_column], errors="coerce"),
-            }
+        runs[str(row["candidate_label"])] = validation_overlay_frame(
+            frame,
+            source_label=str(row["candidate_label"]),
         )
     if runs:
         render_partition_compare_bundle(
@@ -111,10 +106,15 @@ def run_promotion_gate(
         "material_rmse_margin": rmse_margin,
         "material_rmse_fraction": rmse_fraction,
     }
-    material_improvement = (
-        float(shipped["mean_holdout_rmse_cumulative_offset"]) - float(promoted["mean_holdout_rmse_cumulative_offset"]) >= rmse_margin
-        and float(promoted["mean_holdout_rmse_cumulative_offset"]) <= float(shipped["mean_holdout_rmse_cumulative_offset"]) * (1.0 - rmse_fraction)
-    )
+    def _material_improvement(candidate_row: pd.Series) -> bool:
+        shipped_rmse = float(shipped["mean_holdout_rmse_cumulative_offset"])
+        candidate_rmse = float(candidate_row["mean_holdout_rmse_cumulative_offset"])
+        return (
+            shipped_rmse - candidate_rmse >= rmse_margin
+            and candidate_rmse <= shipped_rmse * (1.0 - rmse_fraction)
+        )
+
+    material_improvement = _material_improvement(promoted)
     promoted_passes = (
         material_improvement
         and float(promoted["max_fruit_anchor_error_vs_legacy"]) <= guardrails["fruit_anchor_error_vs_legacy_max"]
@@ -124,7 +124,7 @@ def run_promotion_gate(
         and float(promoted["win_fraction"]) >= 0.5
     )
     current_passes = (
-        float(shipped["mean_holdout_rmse_cumulative_offset"]) - float(current["mean_holdout_rmse_cumulative_offset"]) >= rmse_margin
+        _material_improvement(current)
         and float(current["max_fruit_anchor_error_vs_legacy"]) <= guardrails["fruit_anchor_error_vs_legacy_max"]
         and float(current["max_canopy_collapse_days"]) <= guardrails["canopy_collapse_days_max"]
         and float(current["max_wet_condition_root_excess_penalty"]) <= guardrails["wet_condition_root_excess_penalty_max"]

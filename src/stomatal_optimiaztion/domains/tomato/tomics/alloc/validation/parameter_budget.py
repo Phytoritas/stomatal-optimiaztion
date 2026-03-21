@@ -276,6 +276,8 @@ def build_calibration_budget_manifest(
                     "partition_policy",
                     "policy_family",
                     "allocation_scheme",
+                    "fruit_load_multiplier",
+                    "lai_target_center",
                 }
             }
             for candidate in candidates
@@ -316,6 +318,7 @@ def build_calibration_budget(
             "policy_family",
             "allocation_scheme",
             "fruit_load_multiplier",
+            "lai_target_center",
         }
     )
     free_parameter_count = 0 if candidate_label == "workbook_estimated" else 2

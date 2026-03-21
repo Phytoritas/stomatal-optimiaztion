@@ -122,6 +122,7 @@ def compute_validation_bundle(
     observed_df: pd.DataFrame,
     *,
     candidate_series: pd.Series,
+    candidate_daily_increment_series: pd.Series | None = None,
     candidate_label: str,
     unit_declared_in_observation_file: str,
 ) -> ValidationSeriesBundle:
@@ -132,7 +133,13 @@ def compute_validation_bundle(
         merged["measured_cumulative_total_fruit_dry_weight_floor_area"]
     )
     merged[f"{candidate_label}_offset_adjusted"] = _offset_adjusted(merged[cumulative_column])
-    merged[f"{candidate_label}_daily_increment_floor_area"] = pd.to_numeric(merged[cumulative_column], errors="coerce").diff()
+    if candidate_daily_increment_series is None:
+        merged[f"{candidate_label}_daily_increment_floor_area"] = pd.to_numeric(merged[cumulative_column], errors="coerce").diff()
+    else:
+        merged[f"{candidate_label}_daily_increment_floor_area"] = pd.to_numeric(
+            candidate_daily_increment_series,
+            errors="coerce",
+        )
 
     raw_metrics = _series_metrics(
         merged["measured_cumulative_total_fruit_dry_weight_floor_area"],
@@ -206,10 +213,62 @@ def compute_validation_bundle(
     return ValidationSeriesBundle(merged_df=merged, metrics=metrics)
 
 
+def resolve_validation_series_columns(
+    validation_df: pd.DataFrame,
+    *,
+    source_label: str,
+) -> tuple[str, str, str]:
+    prefixes = [source_label]
+    if source_label == "workbook_estimated":
+        prefixes.append("estimated")
+    elif source_label not in {"measured", "estimated", "model"}:
+        prefixes.append("model")
+
+    for prefix in prefixes:
+        cumulative_column = f"{prefix}_cumulative_total_fruit_dry_weight_floor_area"
+        offset_column = f"{prefix}_offset_adjusted"
+        increment_column = f"{prefix}_daily_increment_floor_area"
+        if {
+            cumulative_column,
+            offset_column,
+            increment_column,
+        }.issubset(validation_df.columns):
+            return cumulative_column, offset_column, increment_column
+    raise KeyError(
+        "Could not resolve validation series columns "
+        f"for source_label={source_label!r} in columns={list(validation_df.columns)!r}."
+    )
+
+
+def validation_overlay_frame(
+    validation_df: pd.DataFrame,
+    *,
+    source_label: str,
+) -> pd.DataFrame:
+    cumulative_column, offset_column, increment_column = resolve_validation_series_columns(
+        validation_df,
+        source_label=source_label,
+    )
+    date_column = "date" if "date" in validation_df.columns else validation_df.columns[0]
+    return pd.DataFrame(
+        {
+            "datetime": pd.to_datetime(validation_df[date_column]),
+            "cumulative_total_fruit_floor_area": pd.to_numeric(validation_df[cumulative_column], errors="coerce"),
+            "offset_adjusted_cumulative_total_fruit_floor_area": pd.to_numeric(
+                validation_df[offset_column],
+                errors="coerce",
+            ),
+            "daily_increment_floor_area": pd.to_numeric(validation_df[increment_column], errors="coerce"),
+        }
+    )
+
+
 __all__ = [
     "REPORTING_BASIS_FLOOR_AREA",
     "ValidationSeriesBundle",
     "compute_validation_bundle",
     "harvest_timing_mae_days",
     "merge_validation_series",
+    "resolve_validation_series_columns",
+    "validation_overlay_frame",
 ]

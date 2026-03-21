@@ -138,7 +138,10 @@ def _build_model(
 
 
 def _prime_model_clock(model: TomatoLegacyModelProtocol, env: EnvStep) -> None:
-    model.start_date = env.t
+    overrides = getattr(model, "initial_state_overrides", {}) or {}
+    preserve_start_date = isinstance(overrides, Mapping) and overrides.get("start_date") is not None
+    if not preserve_start_date:
+        model.start_date = env.t
     model.current_date = env.t.date()
     model.last_calc_time = env.t
 

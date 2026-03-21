@@ -473,9 +473,11 @@ class TomatoModel:
 
         results: list[dict[str, object]] = []
         if not forcing.empty:
-            self.start_date = pd.Timestamp(forcing.iloc[0]["datetime"]).to_pydatetime()
-            self.current_date = self.start_date.date()
-            self.last_calc_time = self.start_date
+            forcing_start = pd.Timestamp(forcing.iloc[0]["datetime"]).to_pydatetime()
+            if self.initial_state_overrides.get("start_date") is None:
+                self.start_date = forcing_start
+            self.current_date = forcing_start.date()
+            self.last_calc_time = forcing_start
 
         for index, row in forcing.iterrows():
             current_time = pd.Timestamp(row["datetime"]).to_pydatetime()
