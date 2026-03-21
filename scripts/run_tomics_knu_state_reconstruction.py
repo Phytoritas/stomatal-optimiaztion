@@ -53,7 +53,7 @@ def main() -> int:
     specs, _, _ = load_candidate_specs(config=config, repo_root=repo_root, config_path=config_path)
     output_root = ensure_dir(
         _resolve_config_path(
-            config.get("state_reconstruction", {}).get("output_root", "out/tomics_knu_state_reconstruction"),
+            config.get("state_reconstruction", {}).get("output_root", "out/tomics/validation/knu/fairness/state-reconstruction"),
             repo_root=repo_root,
             config_path=config_path,
         )

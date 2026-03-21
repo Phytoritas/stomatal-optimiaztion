@@ -5,7 +5,7 @@ validation:
   forcing_csv_path: data/forcing/KNU_Tomato_Env.CSV
   yield_xlsx_path: data/forcing/tomato_validation_data_yield_260222.xlsx
   private_data_contract_path: configs/data/knu_private_data_contract.template.yaml
-  prepared_output_root: out/knu_longrun
+  prepared_output_root: out/tomics/validation/knu/longrun
   resample_rule: 1h
   theta_proxy_mode: bucket_irrigated
   theta_proxy_scenarios: [dry, moderate, wet]
@@ -19,7 +19,7 @@ current:
   canopy_lai_floor: 2.0
   leaf_fraction_floor: 0.18
   fixed_lai:
-  prior_selected_architecture_json: out/tomics_allocation_factorial/selected_architecture.json
+  prior_selected_architecture_json: out/tomics/analysis/allocation-factorial/selected_architecture.json
   fruit_load_regimes:
     observed_baseline: 1.0
     high_fruit_load: 1.25
@@ -38,9 +38,9 @@ promoted:
 
 paths:
   repo_root: ../..
-  current_output_root: out/tomics_current_factorial_knu
-  promoted_output_root: out/tomics_promoted_factorial_knu
-  comparison_output_root: out/tomics_current_vs_promoted_knu
+  current_output_root: out/tomics/validation/knu/architecture/current-factorial
+  promoted_output_root: out/tomics/validation/knu/architecture/promoted-factorial
+  comparison_output_root: out/tomics/validation/knu/architecture/comparison
 
 plots:
   current_summary_plot_spec: configs/plotkit/tomics/allocation_factorial_summary.yaml

@@ -33,7 +33,7 @@ def run_identifiability_analysis(
     ident_cfg = _as_dict(config.get("identifiability"))
     calibration_cfg = _as_dict(config.get("calibration"))
     calibration_root = _resolve_config_path(
-        calibration_cfg.get("output_root", "out/tomics_knu_calibration"),
+        calibration_cfg.get("output_root", "out/tomics/validation/knu/fairness/calibration"),
         repo_root=repo_root,
         config_path=config_path,
     )

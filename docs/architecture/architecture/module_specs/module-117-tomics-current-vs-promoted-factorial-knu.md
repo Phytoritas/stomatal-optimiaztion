@@ -47,15 +47,15 @@ against actual KNU greenhouse forcing and measured cumulative harvested fruit dr
 
 Current study root:
 
-- `out/tomics_current_factorial_knu/`
+- `out/tomics/validation/knu/architecture/current-factorial/`
 
 Promoted study root:
 
-- `out/tomics_promoted_factorial_knu/`
+- `out/tomics/validation/knu/architecture/promoted-factorial/`
 
 Comparison root:
 
-- `out/tomics_current_vs_promoted_knu/`
+- `out/tomics/validation/knu/architecture/comparison/`
 
 ## Guardrails
 

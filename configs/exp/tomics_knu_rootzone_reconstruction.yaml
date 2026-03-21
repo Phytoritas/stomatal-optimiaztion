@@ -5,14 +5,14 @@ validation:
   forcing_csv_path: data/forcing/KNU_Tomato_Env.CSV
   yield_xlsx_path: data/forcing/tomato_validation_data_yield_260222.xlsx
   private_data_contract_path: configs/data/knu_private_data_contract.template.yaml
-  prepared_output_root: out/knu_longrun
+  prepared_output_root: out/tomics/validation/knu/longrun
   resample_rule: 1h
   theta_proxy_mode: bucket_irrigated
   theta_proxy_scenarios: [dry, moderate, wet]
   calibration_end: 2024-08-19
 
 rootzone_reconstruction:
-  output_root: out/tomics_knu_rootzone_reconstruction
+  output_root: out/tomics/validation/knu/fairness/rootzone-reconstruction
   theta_proxy_mode: bucket_irrigated
   scenario_ids: [dry, moderate, wet]
   theta_min_hard: 0.40

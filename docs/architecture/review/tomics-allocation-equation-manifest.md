@@ -5,7 +5,7 @@ This manifest records the exact equation or algorithm checkpoints used by the cu
 It complements:
 - `docs/architecture/review/equation_manifest.md`
 - `docs/architecture/review/source_traceability.md`
-- `out/tomics_allocation_factorial/equation_traceability.csv`
+- `out/tomics/analysis/allocation-factorial/equation_traceability.csv`
 
 The rows below record exact equation references without reproducing long copyrighted expressions verbatim.
 

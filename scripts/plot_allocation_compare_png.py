@@ -30,12 +30,12 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Compare allocation fractions between two simulation CSV outputs.")
     parser.add_argument(
         "--baseline",
-        default="out/tomics_partition_compare/example/legacy/df.csv",
+        default="out/tomics/analysis/partition-compare/example/legacy/df.csv",
         help="Baseline (legacy) simulation CSV.",
     )
     parser.add_argument(
         "--candidate",
-        default="out/tomics_partition_compare/example/tomics/df.csv",
+        default="out/tomics/analysis/partition-compare/example/tomics/df.csv",
         help="Candidate simulation CSV to compare against baseline.",
     )
     parser.add_argument(
@@ -50,7 +50,7 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--output",
-        default="out/tomics_partition_compare/example/comparison_plot.png",
+        default="out/tomics/analysis/partition-compare/example/comparison_plot.png",
         help="Output PNG path.",
     )
     parser.add_argument(

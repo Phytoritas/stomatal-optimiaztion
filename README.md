@@ -15,6 +15,7 @@
 - Domain packages under `src/stomatal_optimiaztion/`
 - Validation artifacts from `pytest` and `ruff`
 - Reproducible Plotkit figure bundles under `out/` with saved spec, resolved spec, tokens, metadata, and PNG/data sidecars
+- TOMICS output roots grouped under `out/tomics/analysis/` and `out/tomics/validation/knu/` so synthetic studies, actual-data architecture studies, and fairness-gate reruns stay distinguishable
 
 ## How to run
 ```bash

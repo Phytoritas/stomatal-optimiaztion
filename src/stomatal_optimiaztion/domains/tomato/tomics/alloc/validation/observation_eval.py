@@ -109,7 +109,7 @@ def run_knu_observation_eval(*, config_path: str | Path) -> dict[str, object]:
     evaluation_cfg = _as_dict(config.get("observation_eval"))
     output_root = ensure_dir(
         _resolve_config_path(
-            evaluation_cfg.get("output_root", "out/tomics_knu_observation_eval"),
+            evaluation_cfg.get("output_root", "out/tomics/validation/knu/fairness/observation-eval"),
             repo_root=repo_root,
             config_path=resolved_config_path,
         )

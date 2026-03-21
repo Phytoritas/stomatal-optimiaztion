@@ -106,7 +106,7 @@ def write_minimal_knu_config(tmp_path: Path, *, repo_root: Path, mode: str = "bo
         "validation": {
             "forcing_csv_path": str(forcing_path),
             "yield_xlsx_path": str(yield_path),
-            "prepared_output_root": str(tmp_path / "out" / "knu_longrun"),
+            "prepared_output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "longrun"),
             "resample_rule": "6h",
             "theta_proxy_mode": "bucket_irrigated",
             "theta_proxy_scenarios": ["moderate"],
@@ -132,9 +132,9 @@ def write_minimal_knu_config(tmp_path: Path, *, repo_root: Path, mode: str = "bo
         },
         "paths": {
             "repo_root": str(repo_root),
-            "current_output_root": str(tmp_path / "out" / "current"),
-            "promoted_output_root": str(tmp_path / "out" / "promoted"),
-            "comparison_output_root": str(tmp_path / "out" / "comparison"),
+            "current_output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "architecture" / "current-factorial"),
+            "promoted_output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "architecture" / "promoted-factorial"),
+            "comparison_output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "architecture" / "comparison"),
         },
         "plots": {
             "current_summary_plot_spec": "configs/plotkit/tomics/allocation_factorial_summary.yaml",
@@ -181,19 +181,19 @@ def write_minimal_knu_fairness_config(tmp_path: Path, *, repo_root: Path) -> Pat
             "forcing_csv_path": str(forcing_path),
             "yield_xlsx_path": str(yield_path),
             "private_data_contract_path": str(contract_path),
-            "prepared_output_root": str(tmp_path / "out" / "knu_longrun"),
+            "prepared_output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "longrun"),
             "resample_rule": "6h",
             "theta_proxy_mode": "bucket_irrigated",
             "theta_proxy_scenarios": ["dry", "moderate", "wet"],
             "calibration_end": "2024-08-10",
         },
         "selection": {
-            "current_output_root": str(tmp_path / "out" / "current"),
-            "promoted_output_root": str(tmp_path / "out" / "promoted"),
+            "current_output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "architecture" / "current-factorial"),
+            "promoted_output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "architecture" / "promoted-factorial"),
         },
         "calibration": {
             "base_config": str(current_base),
-            "output_root": str(tmp_path / "out" / "calibration"),
+            "output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "fairness" / "calibration"),
             "wet_theta_threshold": 0.75,
             "canopy_lai_floor": 2.0,
             "leaf_fraction_floor": 0.18,
@@ -206,17 +206,17 @@ def write_minimal_knu_fairness_config(tmp_path: Path, *, repo_root: Path) -> Pat
             "daily_increment_overlay_spec": "configs/plotkit/tomics/knu_daily_increment_overlay.yaml",
         },
         "observation_eval": {
-            "output_root": str(tmp_path / "out" / "observation_eval"),
+            "output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "fairness" / "observation-eval"),
             "cumulative_overlay_spec": "configs/plotkit/tomics/knu_cumulative_overlay.yaml",
             "daily_overlay_spec": "configs/plotkit/tomics/knu_daily_increment_overlay.yaml",
         },
         "state_reconstruction": {
-            "output_root": str(tmp_path / "out" / "state_reconstruction"),
+            "output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "fairness" / "state-reconstruction"),
             "modes": ["minimal_scalar_init", "cohort_aware_init", "buffer_aware_init"],
             "overlay_spec": "configs/plotkit/tomics/knu_cumulative_overlay.yaml",
         },
         "rootzone_reconstruction": {
-            "output_root": str(tmp_path / "out" / "rootzone"),
+            "output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "fairness" / "rootzone-reconstruction"),
             "theta_proxy_mode": "bucket_irrigated",
             "scenario_ids": ["dry", "moderate", "wet"],
             "theta_min_hard": 0.40,
@@ -228,7 +228,7 @@ def write_minimal_knu_fairness_config(tmp_path: Path, *, repo_root: Path) -> Pat
             "lai_target_center_delta": 0.25,
         },
         "promotion_gate": {
-            "output_root": str(tmp_path / "out" / "promotion_gate"),
+            "output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "fairness" / "promotion-gate"),
             "material_rmse_margin": 0.5,
             "material_rmse_fraction": 0.02,
             "wet_root_penalty_max": 0.05,
@@ -260,7 +260,7 @@ def write_minimal_fairness_config(
         "validation": {
             "forcing_csv_path": str(forcing_path),
             "yield_xlsx_path": str(yield_path),
-            "prepared_output_root": str(tmp_path / "out" / "knu_longrun"),
+            "prepared_output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "longrun"),
             "resample_rule": "6h",
             "theta_proxy_mode": "bucket_irrigated",
             "theta_proxy_scenarios": ["dry", "moderate", "wet"],
@@ -268,21 +268,21 @@ def write_minimal_fairness_config(
         },
         "reference": {
             "current_vs_promoted_config": str(current_vs_promoted_config),
-            "current_output_root": str(tmp_path / "out" / "current"),
-            "promoted_output_root": str(tmp_path / "out" / "promoted"),
+            "current_output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "architecture" / "current-factorial"),
+            "promoted_output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "architecture" / "promoted-factorial"),
         },
         section_name: {
-            "output_root": str(tmp_path / "out" / section_name),
+            "output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "fairness" / section_name.replace("_", "-")),
             **(section_payload or {}),
         },
         "calibration": {
-            "output_root": str(tmp_path / "out" / "calibration"),
+            "output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "fairness" / "calibration"),
             "wet_theta_threshold": 0.75,
             "canopy_lai_floor": 2.0,
             "leaf_fraction_floor": 0.18,
         },
         "promotion_gate": {
-            "output_root": str(tmp_path / "out" / "promotion_gate"),
+            "output_root": str(tmp_path / "out" / "tomics" / "validation" / "knu" / "fairness" / "promotion-gate"),
         },
         "plots": {
             "yield_fit_overlay_spec": "configs/plotkit/tomics/knu_yield_fit_overlay.yaml",

@@ -17,7 +17,7 @@ Land the next bounded TOMICS-Alloc slice by adding source-traceable research sea
 - research-only allocation helper modules under `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/`
 - `scripts/run_tomics_allocation_factorial.py`
 - `configs/exp/tomics_allocation_factorial.yaml`
-- architecture review docs and study outputs under `docs/architecture/` and `out/tomics_allocation_factorial/`
+- architecture review docs and study outputs under `docs/architecture/` and `out/tomics/analysis/allocation-factorial/`
 
 ## Responsibilities
 

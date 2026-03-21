@@ -49,9 +49,9 @@ Offset-adjusted evaluation remains required because the observed cumulative harv
 
 Output roots:
 
-- `out/tomics_current_factorial_knu/`
-- `out/tomics_promoted_factorial_knu/`
-- `out/tomics_current_vs_promoted_knu/`
+- `out/tomics/validation/knu/architecture/current-factorial/`
+- `out/tomics/validation/knu/architecture/promoted-factorial/`
+- `out/tomics/validation/knu/architecture/comparison/`
 
 Canonical selected current candidate:
 
@@ -71,11 +71,11 @@ This baseline is now superseded by the fair-validation evidence in issue `#239` 
 
 The fair-validation bundle is now the promotion source of truth:
 
-- `out/tomics_knu_observation_eval/`
-- `out/tomics_knu_state_reconstruction/`
-- `out/tomics_knu_rootzone_reconstruction/`
-- `out/tomics_knu_calibration/`
-- `out/tomics_knu_promotion_gate/`
+- `out/tomics/validation/knu/fairness/observation-eval/`
+- `out/tomics/validation/knu/fairness/state-reconstruction/`
+- `out/tomics/validation/knu/fairness/rootzone-reconstruction/`
+- `out/tomics/validation/knu/fairness/calibration/`
+- `out/tomics/validation/knu/fairness/promotion-gate/`
 
 Under that fair-validation pipeline:
 

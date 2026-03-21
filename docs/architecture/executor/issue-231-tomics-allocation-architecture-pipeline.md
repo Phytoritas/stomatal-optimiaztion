@@ -7,7 +7,7 @@
 - `TOMICS-Alloc`
 - tomato allocation research seams under `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/components/partitioning/`
 - `tomato_legacy` pipeline integration points
-- staged architecture-study outputs under `out/tomics_allocation_factorial/`
+- staged architecture-study outputs under `out/tomics/analysis/allocation-factorial/`
 
 ## Validation method
 - targeted architecture-study tests

@@ -68,7 +68,7 @@ def _as_list(raw: object) -> list[Any]:
 
 
 def _resolve_output_root(config: dict[str, Any], repo_root: Path, override: str | None = None) -> Path:
-    raw = Path(override) if override else Path(str(_as_dict(config.get("paths")).get("output_root", "out/tomics_allocation_factorial")))
+    raw = Path(override) if override else Path(str(_as_dict(config.get("paths")).get("output_root", "out/tomics/analysis/allocation-factorial")))
     return raw if raw.is_absolute() else (repo_root / raw).resolve()
 
 

@@ -249,7 +249,7 @@ def run_knu_state_reconstruction(*, config_path: str | Path) -> dict[str, object
     reconstruction_cfg = _as_dict(config.get("state_reconstruction"))
     output_root = ensure_dir(
         _resolve_config_path(
-            reconstruction_cfg.get("output_root", "out/tomics_knu_state_reconstruction"),
+            reconstruction_cfg.get("output_root", "out/tomics/validation/knu/fairness/state-reconstruction"),
             repo_root=repo_root,
             config_path=resolved_config_path,
         )

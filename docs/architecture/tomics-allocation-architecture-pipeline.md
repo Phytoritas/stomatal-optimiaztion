@@ -118,7 +118,7 @@ Recommended next architecture target:
 Current selected research family from the bundled study:
 - `kuijpers_hybrid_candidate`
 - the exact stage-2 parameterization is recorded in
-  `out/tomics_allocation_factorial/selected_architecture.json`
+  `out/tomics/analysis/allocation-factorial/selected_architecture.json`
 
 Recommendation status:
 - research-only
@@ -156,7 +156,7 @@ Study config:
 - `configs/exp/tomics_allocation_factorial.yaml`
 
 Study outputs:
-- `out/tomics_allocation_factorial/`
+- `out/tomics/analysis/allocation-factorial/`
 
 ## Output bundle
 
