@@ -62,7 +62,7 @@ def _leaf_lookup(frame: pd.DataFrame, entity_id: str) -> pd.Series:
     return row.iloc[0]
 
 
-def assert_tomsim_harvest_waits_for_ready_truss_and_removes_whole_truss_mass() -> None:
+def test_tomsim_harvest_waits_for_ready_truss_and_removes_whole_truss_mass() -> None:
     state = _make_state(
         fruit_rows=[
             {
@@ -98,7 +98,7 @@ def assert_tomsim_harvest_waits_for_ready_truss_and_removes_whole_truss_mass() -
     assert math.isclose(float(waiting_row["fruit_dm_g_m2"]), 2.0)
 
 
-def assert_tomgro_harvest_uses_only_mature_age_classes_and_scales_to_mature_pool_delta() -> None:
+def test_tomgro_harvest_uses_only_mature_age_classes_and_scales_to_mature_pool_delta() -> None:
     state = _make_state(
         fruit_rows=[
             {
@@ -141,7 +141,7 @@ def assert_tomgro_harvest_uses_only_mature_age_classes_and_scales_to_mature_pool
     assert math.isclose(float(mature_b["fruit_dm_g_m2"]), 2.0)
 
 
-def assert_dekoning_harvest_requires_fds_threshold_and_records_fdmc_outputs() -> None:
+def test_dekoning_harvest_requires_fds_threshold_and_records_fdmc_outputs() -> None:
     state = _make_state(
         fruit_rows=[
             {
@@ -177,7 +177,7 @@ def assert_dekoning_harvest_requires_fds_threshold_and_records_fdmc_outputs() ->
     assert math.isclose(float(green["fruit_dm_g_m2"]), 2.4)
 
 
-def assert_vanthoor_harvest_uses_last_stage_when_no_explicit_outflow_is_supplied() -> None:
+def test_vanthoor_harvest_uses_last_stage_when_no_explicit_outflow_is_supplied() -> None:
     state = _make_state(
         fruit_rows=[
             {
@@ -219,7 +219,7 @@ def assert_vanthoor_harvest_uses_last_stage_when_no_explicit_outflow_is_supplied
     assert math.isclose(float(stage_5_b["fruit_dm_g_m2"]), 1.0)
 
 
-def assert_linked_truss_stage_leaf_harvest_follows_linked_tdvs_threshold() -> None:
+def test_linked_truss_stage_leaf_harvest_follows_linked_tdvs_threshold() -> None:
     state = _make_state(
         fruit_rows=[
             {"entity_id": "fruit_1", "truss_id": 1, "tdvs": 0.95, "fruit_dm_g_m2": 1.0, "onplant_flag": True},
@@ -260,7 +260,7 @@ def assert_linked_truss_stage_leaf_harvest_follows_linked_tdvs_threshold() -> No
     assert math.isclose(float(update.updated_state.lai), 1.9)
 
 
-def assert_vegetative_unit_leaf_harvest_uses_corresponding_truss_colour_proxy() -> None:
+def test_vegetative_unit_leaf_harvest_uses_corresponding_truss_colour_proxy() -> None:
     state = _make_state(
         fruit_rows=[
             {"entity_id": "fruit_a", "truss_id": 1, "fds": 0.92, "fruit_dm_g_m2": 1.0, "onplant_flag": True},
@@ -299,7 +299,7 @@ def assert_vegetative_unit_leaf_harvest_uses_corresponding_truss_colour_proxy() 
     assert math.isclose(float(retained_leaf["leaf_dm_g_m2"]), 1.1)
 
 
-def assert_max_lai_pruning_flow_can_partially_remove_leaf_mass_to_hit_target_lai() -> None:
+def test_max_lai_pruning_flow_can_partially_remove_leaf_mass_to_hit_target_lai() -> None:
     state = _make_state(
         fruit_rows=[{"entity_id": "fruit", "truss_id": 1, "tdvs": 0.5, "fruit_dm_g_m2": 1.0, "onplant_flag": True}],
         leaf_rows=[
@@ -336,3 +336,27 @@ def assert_max_lai_pruning_flow_can_partially_remove_leaf_mass_to_hit_target_lai
     assert math.isclose(float(top_leaf["leaf_dm_g_m2"]), 0.8)
     assert math.isclose(float(lower_leaf["leaf_dm_g_m2"]), 1.0)
     assert math.isclose(float(update.updated_state.lai), 3.0)
+
+
+# Backward-compatible aliases for thin wrapper test modules.
+assert_tomsim_harvest_waits_for_ready_truss_and_removes_whole_truss_mass = (
+    test_tomsim_harvest_waits_for_ready_truss_and_removes_whole_truss_mass
+)
+assert_tomgro_harvest_uses_only_mature_age_classes_and_scales_to_mature_pool_delta = (
+    test_tomgro_harvest_uses_only_mature_age_classes_and_scales_to_mature_pool_delta
+)
+assert_dekoning_harvest_requires_fds_threshold_and_records_fdmc_outputs = (
+    test_dekoning_harvest_requires_fds_threshold_and_records_fdmc_outputs
+)
+assert_vanthoor_harvest_uses_last_stage_when_no_explicit_outflow_is_supplied = (
+    test_vanthoor_harvest_uses_last_stage_when_no_explicit_outflow_is_supplied
+)
+assert_linked_truss_stage_leaf_harvest_follows_linked_tdvs_threshold = (
+    test_linked_truss_stage_leaf_harvest_follows_linked_tdvs_threshold
+)
+assert_vegetative_unit_leaf_harvest_uses_corresponding_truss_colour_proxy = (
+    test_vegetative_unit_leaf_harvest_uses_corresponding_truss_colour_proxy
+)
+assert_max_lai_pruning_flow_can_partially_remove_leaf_mass_to_hit_target_lai = (
+    test_max_lai_pruning_flow_can_partially_remove_leaf_mass_to_hit_target_lai
+)

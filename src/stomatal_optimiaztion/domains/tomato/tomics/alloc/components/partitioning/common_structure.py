@@ -36,6 +36,7 @@ def build_common_structure_snapshot(
     fruit_harvest_g: float,
     leaf_harvest_g: float,
 ) -> dict[str, float]:
+    """Build a Kuijpers-style snapshot where h1/h2 are step harvest fluxes, not cumulative pools."""
     total_structural = max(float(structural_biomass_g or 0.0), 0.0)
     fruit_mass = max(float(fruit_biomass_g or 0.0), 0.0)
     leaf_mass = max(float(leaf_biomass_g or 0.0), 0.0)

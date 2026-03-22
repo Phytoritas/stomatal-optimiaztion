@@ -64,7 +64,7 @@ def _window_metrics(validation_df: pd.DataFrame, *, start: pd.Timestamp, end: pd
                 "measured_daily_increment_floor_area",
             ]
         ].copy(),
-        candidate_series=window["model_cumulative_total_fruit_dry_weight_floor_area"],
+        candidate_series=window["model_cumulative_harvested_fruit_dry_weight_floor_area"],
         candidate_daily_increment_series=window["model_daily_increment_floor_area"],
         candidate_label="model",
         unit_declared_in_observation_file="g/m^2",
@@ -334,6 +334,20 @@ def run_harvest_promotion_gate(
                         "harvest_mass_balance_error": result.metrics["harvest_mass_balance_error"],
                         "latent_fruit_residual_end": result.metrics["latent_fruit_residual_end"],
                         "leaf_harvest_mass_balance_error": result.metrics["leaf_harvest_mass_balance_error"],
+                        "post_writeback_dropped_nonharvested_mass_g_m2": result.metrics.get(
+                            "post_writeback_dropped_nonharvested_mass_g_m2",
+                            0.0,
+                        ),
+                        "offplant_with_positive_mass_flag": bool(
+                            result.metrics.get("offplant_with_positive_mass_flag", False)
+                        ),
+                        "all_zero_harvest_series": bool(
+                            pd.to_numeric(
+                                result.model_daily_df["model_cumulative_harvested_fruit_dry_weight_floor_area"],
+                                errors="coerce",
+                            ).fillna(0.0).max()
+                            <= 1e-12
+                        ),
                         "wet_condition_root_excess_penalty": wet_penalty,
                         "score": score,
                         "selected_params_json": json.dumps(params, sort_keys=True),
@@ -355,6 +369,9 @@ def run_harvest_promotion_gate(
             max_canopy_collapse_days=("canopy_collapse_days", "max"),
             max_harvest_mass_balance_error=("harvest_mass_balance_error", "max"),
             max_leaf_harvest_mass_balance_error=("leaf_harvest_mass_balance_error", "max"),
+            max_post_writeback_dropped_nonharvested_mass_g_m2=("post_writeback_dropped_nonharvested_mass_g_m2", "max"),
+            any_offplant_with_positive_mass_flag=("offplant_with_positive_mass_flag", "max"),
+            any_all_zero_harvest_series=("all_zero_harvest_series", "max"),
             max_wet_condition_root_excess_penalty=("wet_condition_root_excess_penalty", "max"),
         )
         .reset_index(drop=True)
@@ -376,6 +393,7 @@ def run_harvest_promotion_gate(
         "winner_stability_score_min": float(gate_cfg.get("winner_stability_score_min", 0.5)),
         "material_cumulative_rmse_margin": float(gate_cfg.get("material_cumulative_rmse_margin", 0.5)),
         "material_daily_rmse_margin": float(gate_cfg.get("material_daily_rmse_margin", 0.25)),
+        "post_writeback_dropped_nonharvested_mass_g_m2_max": 0.0,
     }
 
     def _passes(candidate: pd.Series) -> bool:
@@ -385,6 +403,10 @@ def run_harvest_promotion_gate(
             and float(candidate["max_fruit_anchor_error_vs_legacy"]) <= guardrails["fruit_anchor_error_vs_legacy_max"]
             and float(candidate["max_canopy_collapse_days"]) <= guardrails["canopy_collapse_days_max"]
             and float(candidate["max_harvest_mass_balance_error"]) <= guardrails["harvest_mass_balance_error_max"]
+            and float(candidate["max_post_writeback_dropped_nonharvested_mass_g_m2"])
+            <= guardrails["post_writeback_dropped_nonharvested_mass_g_m2_max"]
+            and (not bool(candidate["any_offplant_with_positive_mass_flag"]))
+            and (not bool(candidate["any_all_zero_harvest_series"]))
             and float(candidate["max_wet_condition_root_excess_penalty"]) <= guardrails["wet_condition_root_excess_penalty_max"]
             and float(candidate["winner_stability_score"]) >= guardrails["winner_stability_score_min"]
         )

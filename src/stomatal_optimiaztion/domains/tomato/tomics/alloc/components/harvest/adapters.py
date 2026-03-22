@@ -42,9 +42,16 @@ def _apply_fruit_events(
             continue
         available = float(updated.loc[mask, "fruit_dm_g_m2"].iloc[0])
         harvested = min(max(float(event.dry_weight_g_m2), 0.0), max(available, 0.0))
-        updated.loc[mask, "fruit_dm_g_m2"] = max(available - harvested, 0.0)
-        updated.loc[mask, "onplant_flag"] = False
-        updated.loc[mask, "harvested_flag"] = True
+        remaining = max(available - harvested, 0.0)
+        is_onplant = remaining > 1e-12
+        updated.loc[mask, "fruit_dm_g_m2"] = remaining
+        updated.loc[mask, "onplant_flag"] = is_onplant
+        updated.loc[mask, "harvested_flag"] = not is_onplant
+        updated.loc[mask, "harvest_ready_flag"] = is_onplant
+        if is_onplant:
+            updated.loc[mask, "mature_flag"] = True
+            if "final_stage_flag" in updated.columns:
+                updated.loc[mask, "final_stage_flag"] = updated.loc[mask, "final_stage_flag"].fillna(False)
     return updated
 
 
@@ -111,8 +118,22 @@ def build_harvest_update(
         ),
         **dict(extra_diagnostics or {}),
     }
+    partial_events = [event for event in fruit_events if bool(getattr(event, "partial_outflow_flag", False))]
+    remaining_final_stage_mass = 0.0
+    if "final_stage_flag" in updated_state.fruit_entities.columns and not updated_state.fruit_entities.empty:
+        final_stage_mask = updated_state.fruit_entities["final_stage_flag"].fillna(False).astype(bool)
+        remaining_final_stage_mass = float(
+            pd.to_numeric(
+                updated_state.fruit_entities.loc[final_stage_mask, "fruit_dm_g_m2"],
+                errors="coerce",
+            ).fillna(0.0).sum()
+        )
     diagnostics["fruit_events"] = fruit_events
     diagnostics["leaf_events"] = leaf_events
+    diagnostics["partial_fruit_outflow_flag"] = bool(partial_events)
+    diagnostics["partial_event_count"] = len(partial_events)
+    diagnostics["remaining_final_stage_mass_g_m2"] = remaining_final_stage_mass
+    diagnostics["offplant_with_positive_mass_flag"] = bool(diagnostics.get("offplant_with_positive_mass_flag", False))
     return HarvestUpdate(
         updated_state=updated_state,
         fruit_harvest_flux_g_m2_d=float(sum(max(float(event.dry_weight_g_m2), 0.0) for event in fruit_events)),
@@ -142,6 +163,41 @@ def run_harvest_step(
         },
     }
     leaf_update = leaf_policy.step(fruit_update.updated_state, leaf_env, dt_days)
+    final_diagnostics = dict(leaf_update.diagnostics)
+    for key in (
+        "fruit_events",
+        "fruit_harvest_event_count",
+        "fruit_harvest_flux_g_m2_d",
+        "partial_fruit_outflow_flag",
+        "partial_event_count",
+        "remaining_final_stage_mass_g_m2",
+        "offplant_with_positive_mass_flag",
+        "pre_onplant_fruit_g_m2",
+        "post_onplant_fruit_g_m2",
+        "harvested_fruit_flux_g_m2",
+        "partial_outflow_mass_residual_g_m2",
+        "dropped_nonharvested_mass_g_m2",
+        "latent_fruit_residual_end",
+        "duplicate_harvest_flag",
+        "negative_mass_flag",
+        "fruit_harvest_family",
+        "delay_mode",
+        "readiness_basis",
+        "proxy_mode_used",
+        "explicit_outflow_used",
+        "residence_outflow_used",
+        "final_stage_mass_g_m2",
+        "mature_pool_mass_g_m2",
+        "mature_pool_residence_days",
+        "fds_proxy_used",
+    ):
+        if key in fruit_update.diagnostics:
+            final_diagnostics[key] = fruit_update.diagnostics[key]
+    final_diagnostics["leaf_events"] = leaf_update.diagnostics.get("leaf_events", [])
+    final_diagnostics["harvest_mass_balance_error"] = max(
+        float(fruit_update.mass_balance_error),
+        float(leaf_update.mass_balance_error),
+    )
     final_update = HarvestUpdate(
         updated_state=leaf_update.updated_state,
         fruit_harvest_flux_g_m2_d=fruit_update.fruit_harvest_flux_g_m2_d,
@@ -149,7 +205,7 @@ def run_harvest_step(
         fruit_harvest_event_count=fruit_update.fruit_harvest_event_count,
         leaf_harvest_event_count=leaf_update.leaf_harvest_event_count,
         mass_balance_error=max(float(fruit_update.mass_balance_error), float(leaf_update.mass_balance_error)),
-        diagnostics={**fruit_update.diagnostics, **leaf_update.diagnostics},
+        diagnostics=final_diagnostics,
     )
     return CombinedHarvestResult(
         fruit_update=fruit_update,

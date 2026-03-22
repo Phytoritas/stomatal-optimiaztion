@@ -48,6 +48,17 @@ Harvest families map into `h1` and `h2`; Kuijpers itself is not treated as a sta
   - fixed boxcar fruit train with explicit last-stage outflow semantics
   - explicit `MCLeafHar`-style pruning path via max-LAI pruning flow
 
+## Runtime completion rules
+
+Issue `#253` adds the missing runtime state needed to stop the four harvest families from collapsing onto the same proxy post-maturity surface.
+
+- fruit entities now carry post-maturity lifecycle axes such as `matured_at`, `days_since_maturity`, `mature_pool_residence_days`, and `final_stage_residence_days`
+- `harvest_delay_days` is treated as a post-maturity residence gate, not as threshold inflation
+- mature or sink-inactive fruit can remain on-plant until a harvest event occurs
+- partial fruit outflow leaves residual on-plant fruit mass in place until residual mass is effectively zero
+- common-structure `h1` / `h2` are wired to step harvest fluxes, not cumulative harvested pools
+- validation scoring reads explicit harvested cumulative output and keeps legacy total-fruit aliases only for compatibility
+
 ## Pipeline stages
 
 ### HF0
