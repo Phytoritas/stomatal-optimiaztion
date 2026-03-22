@@ -92,14 +92,145 @@ def _merge_prior_runtime_fields(frame: pd.DataFrame, prior_frame: pd.DataFrame) 
     return out
 
 
+def _clip_series(series: pd.Series, *, lower: float = 0.0, upper: float | None = None) -> pd.Series:
+    out = pd.to_numeric(series, errors="coerce").fillna(lower)
+    out = out.clip(lower=lower)
+    if upper is not None:
+        out = out.clip(upper=upper)
+    return out
+
+
+def _distribution_json(series: pd.Series) -> str:
+    if series is None or series.empty:
+        return json.dumps({}, sort_keys=True)
+    cleaned = series.dropna().astype(str)
+    if cleaned.empty:
+        return json.dumps({}, sort_keys=True)
+    counts = cleaned.value_counts(normalize=True).sort_index()
+    return json.dumps({str(key): float(value) for key, value in counts.items()}, sort_keys=True)
+
+
+def _timestamp_or_none(value: object) -> str | None:
+    if isinstance(value, str) and value.strip():
+        return value
+    ts = pd.to_datetime(value, errors="coerce")
+    if pd.isna(ts):
+        return None
+    return ts.isoformat()
+
+
+def _timestamp_from_days(current_time: pd.Timestamp, days: float) -> str | None:
+    days = max(float(days), 0.0)
+    if pd.isna(current_time) or days <= 0.0:
+        return None
+    return (current_time - pd.to_timedelta(days, unit="D")).isoformat()
+
+
+def _prepare_runtime_clock_fields(frame: pd.DataFrame, *, current_time: pd.Timestamp) -> pd.DataFrame:
+    out = frame.copy()
+    out["days_since_anthesis"] = _clip_series(out.get("days_since_anthesis"), lower=0.0)
+    out["days_since_maturity"] = _clip_series(out.get("days_since_maturity"), lower=0.0)
+    out["anthesis_at"] = out.get("anthesis_at").map(_timestamp_or_none)
+    out["matured_at"] = out.get("matured_at").map(_timestamp_or_none)
+    missing_anthesis = out["anthesis_at"].isna() & out["days_since_anthesis"].gt(0.0)
+    out.loc[missing_anthesis, "anthesis_at"] = out.loc[missing_anthesis, "days_since_anthesis"].map(
+        lambda value: _timestamp_from_days(current_time, float(value))
+    )
+    missing_matured = out["matured_at"].isna() & out["days_since_maturity"].gt(0.0)
+    out.loc[missing_matured, "matured_at"] = out.loc[missing_matured, "days_since_maturity"].map(
+        lambda value: _timestamp_from_days(current_time, float(value))
+    )
+    return out
+
+
+def _apply_family_runtime_reconstruction(
+    frame: pd.DataFrame,
+    *,
+    series: pd.Series,
+    fruit_harvest_family: str,
+    diagnostics: dict[str, float | int | str | bool],
+) -> tuple[pd.DataFrame, dict[str, float | int | str | bool]]:
+    if frame.empty or fruit_harvest_family == "tomsim_truss":
+        return frame, diagnostics
+
+    out = _prepare_runtime_clock_fields(frame, current_time=pd.Timestamp(series.get("datetime")))
+    if not bool(out["proxy_state_flag"].fillna(False).astype(bool).any()) and not bool(
+        diagnostics.get("synthetic_fruit_state_flag", False)
+    ):
+        diagnostics["proxy_mode_used"] = False
+        diagnostics["family_state_mode_distribution"] = _distribution_json(
+            pd.Series([str(diagnostics.get("family_state_mode", "native_payload"))])
+        )
+        return out, diagnostics
+    runtime_signal = (
+        out["days_since_anthesis"].gt(0.0)
+        | out["days_since_maturity"].gt(0.0)
+        | out["anthesis_at"].notna()
+        | out["matured_at"].notna()
+    )
+    if not bool(runtime_signal.any()):
+        diagnostics["proxy_mode_used"] = True
+        diagnostics["family_state_mode_distribution"] = _distribution_json(pd.Series([diagnostics.get("family_state_mode", "")]))
+        return out, diagnostics
+
+    if fruit_harvest_family == "dekoning_fds":
+        anthesis_progress = (out["days_since_anthesis"] / 18.0).clip(lower=0.0, upper=1.0)
+        maturity_progress = (out["days_since_maturity"] / 6.0).clip(lower=0.0, upper=1.0)
+        out["fds"] = (0.65 * out["tdvs"] + 0.35 * anthesis_progress + 0.20 * maturity_progress).clip(lower=0.0, upper=1.05)
+        out.loc[runtime_signal, "proxy_state_flag"] = False
+        diagnostics["family_state_mode"] = "dekoning_runtime_reconstruction"
+        diagnostics["fds_proxy_used"] = bool((~runtime_signal).any())
+    elif fruit_harvest_family == "tomgro_ageclass":
+        age_progress = (out["days_since_anthesis"] / 1.6).clip(lower=1.0, upper=20.0).round()
+        out["age_class"] = age_progress.where(runtime_signal, out["age_class"])
+        out["mature_pool_flag"] = out["mature_pool_flag"] | out["days_since_maturity"].gt(0.0) | out["age_class"].ge(16.0)
+        out["mature_pool_residence_days"] = out["days_since_maturity"].where(out["mature_pool_flag"], 0.0).clip(lower=0.0)
+        out.loc[runtime_signal, "proxy_state_flag"] = False
+        diagnostics["family_state_mode"] = "tomgro_mature_pool_reconstruction"
+    elif fruit_harvest_family == "vanthoor_boxcar":
+        stage_progress = (out["days_since_anthesis"] / 4.5).clip(lower=1.0, upper=5.0).round()
+        out["stage_index"] = stage_progress.where(runtime_signal, out["stage_index"])
+        out["final_stage_flag"] = out["final_stage_flag"] | out["days_since_maturity"].gt(0.0) | out["stage_index"].ge(5.0)
+        out["final_stage_residence_days"] = out["days_since_maturity"].where(out["final_stage_flag"], 0.0).clip(lower=0.0)
+        explicit_capacity = max(
+            _float_from(series, "MCFruitHar_g_m2_d", 0.0),
+            _float_from(series, "DMHar_g_m2_d", 0.0),
+            _float_from(series, "fruit_harvest_g_m2_step", 0.0),
+        )
+        out["explicit_outflow_capacity_g_m2_d"] = _clip_series(
+            out.get("explicit_outflow_capacity_g_m2_d"),
+            lower=0.0,
+        ).where(out.get("explicit_outflow_capacity_g_m2_d").notna(), explicit_capacity)
+        if explicit_capacity > 0.0:
+            out["explicit_outflow_capacity_g_m2_d"] = out["explicit_outflow_capacity_g_m2_d"].clip(lower=explicit_capacity)
+        out.loc[runtime_signal, "proxy_state_flag"] = False
+        diagnostics["family_state_mode"] = "vanthoor_final_stage_reconstruction"
+
+    if fruit_harvest_family in {"dekoning_fds", "tomgro_ageclass", "vanthoor_boxcar"}:
+        diagnostics["native_family_state_available"] = True
+        diagnostics["synthetic_fruit_state_flag"] = bool(out["proxy_state_flag"].any())
+        diagnostics["proxy_mode_used"] = bool(out["proxy_state_flag"].any())
+        diagnostics["family_state_mode_distribution"] = _distribution_json(
+            pd.Series(
+                [
+                    diagnostics["family_state_mode"] if not bool(flag) else "shared_tdvs_proxy"
+                    for flag in out["proxy_state_flag"].fillna(False).astype(bool).tolist()
+                ]
+            )
+        )
+    return out, diagnostics
+
+
 def _parse_truss_payload(
     series: pd.Series,
     *,
     prior_fruit_entities: pd.DataFrame,
     allow_bulk_proxy: bool,
+    fruit_harvest_family: str | None = None,
 ) -> tuple[pd.DataFrame, dict[str, float | int | str | bool]]:
     payload = series.get("truss_cohorts_json", "")
     records: list[dict[str, object]] = []
+    target_family = str(fruit_harvest_family or series.get("harvest_family_semantics", "unknown"))
     diagnostics: dict[str, float | int | str | bool] = {
         "family_state_mode": "native_payload",
         "native_family_state_available": True,
@@ -127,7 +258,7 @@ def _parse_truss_payload(
                 "tdvs_proxy_used": True,
             }
         )
-        semantics = str(series.get("harvest_family_semantics", "bulk_fruit"))
+        semantics = target_family if target_family and target_family != "unknown" else str(series.get("harvest_family_semantics", "bulk_fruit"))
         if (not allow_bulk_proxy) and semantics not in {"tomsim_truss", "bulk_fruit"}:
             diagnostics["proxy_mode_used"] = True
         records = [
@@ -161,7 +292,7 @@ def _parse_truss_payload(
 
     frame = pd.DataFrame(records)
     if "family_semantics" not in frame.columns:
-        frame["family_semantics"] = str(series.get("harvest_family_semantics", "unknown"))
+        frame["family_semantics"] = target_family
     frame = ensure_entity_frame(frame, FRUIT_ENTITY_COLUMNS)
     frame = _merge_prior_runtime_fields(frame, prior_fruit_entities)
 
@@ -215,6 +346,18 @@ def _parse_truss_payload(
     if diagnostics["synthetic_fruit_state_flag"]:
         diagnostics["family_state_mode"] = "shared_tdvs_proxy"
     diagnostics["native_family_state_available"] = not bool(diagnostics["synthetic_fruit_state_flag"])
+    frame, diagnostics = _apply_family_runtime_reconstruction(
+        frame,
+        series=series,
+        fruit_harvest_family=target_family,
+        diagnostics=diagnostics,
+    )
+    frame["family_semantics"] = target_family
+    diagnostics.setdefault("proxy_mode_used", bool(frame["proxy_state_flag"].fillna(False).astype(bool).any()))
+    diagnostics.setdefault(
+        "family_state_mode_distribution",
+        _distribution_json(pd.Series([str(diagnostics.get("family_state_mode", ""))])),
+    )
     return frame, diagnostics
 
 
@@ -262,6 +405,7 @@ def normalize_harvest_state(
     plants_per_m2: float = 1.836091,
     floor_area_basis: bool = True,
     allow_bulk_proxy: bool = True,
+    fruit_harvest_family: str | None = None,
 ) -> HarvestState:
     current = _as_series(current_row)
     prior = _as_series(prior_row)
@@ -275,6 +419,7 @@ def normalize_harvest_state(
         current,
         prior_fruit_entities=prior_fruit_entities,
         allow_bulk_proxy=allow_bulk_proxy,
+        fruit_harvest_family=fruit_harvest_family,
     )
     leaf_entities = _synthesize_leaf_entities(current, fruit_entities)
     stem_root_state = {
@@ -313,6 +458,7 @@ def snapshot_to_harvest_state(
     plants_per_m2: float = 1.836091,
     floor_area_basis: bool = True,
     allow_bulk_proxy: bool = True,
+    fruit_harvest_family: str | None = None,
 ) -> HarvestState:
     return normalize_harvest_state(
         current_row,
@@ -320,6 +466,7 @@ def snapshot_to_harvest_state(
         plants_per_m2=plants_per_m2,
         floor_area_basis=floor_area_basis,
         allow_bulk_proxy=allow_bulk_proxy,
+        fruit_harvest_family=fruit_harvest_family,
     )
 
 

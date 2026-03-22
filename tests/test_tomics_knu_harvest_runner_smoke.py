@@ -95,6 +95,11 @@ def assert_harvest_family_factorial_runner_writes_required_outputs_from_sanitize
         "selected_fruit_harvest_family",
         "selected_leaf_harvest_family",
         "selected_fdmc_mode",
+        "winner_native_state_fraction",
+        "winner_proxy_state_fraction",
+        "winner_shared_tdvs_proxy_fraction",
+        "family_state_mode_distribution",
+        "proxy_mode_used_distribution",
         "selected_metric_row",
     }.issubset(selected)
     assert {
@@ -103,7 +108,19 @@ def assert_harvest_family_factorial_runner_writes_required_outputs_from_sanitize
         "rmse_cumulative_offset",
         "rmse_daily_increment",
         "harvest_mass_balance_error",
+        "native_family_state_fraction",
+        "proxy_family_state_fraction",
+        "shared_tdvs_proxy_fraction",
+        "family_state_mode_distribution",
+        "proxy_mode_used_distribution",
     }.issubset(metrics_df.columns)
+    assert {
+        "mean_native_family_state_fraction",
+        "mean_proxy_family_state_fraction",
+        "mean_shared_tdvs_proxy_fraction",
+        "family_state_mode_distribution",
+        "proxy_mode_used_distribution",
+    }.issubset(ranking_df.columns)
     assert not ranking_df.empty
 
 
@@ -176,3 +193,16 @@ def assert_harvest_promotion_gate_runner_writes_scorecard_outputs_from_sanitized
     assert {"shipped_tomics", "current_selected", "promoted_selected"}.issubset(set(scorecard_df["candidate_label"]))
     assert "Recommendation:" in decision
     assert set(guardrails).issuperset({"guardrails", "current_selected", "promoted_selected", "recommendation"})
+    assert {
+        "winner_native_state_coverage",
+        "winner_proxy_state_fraction",
+        "winner_shared_tdvs_proxy_fraction",
+        "winner_proxy_heavy_flag",
+        "winner_not_promotion_grade_due_to_proxy_dependence",
+    }.issubset(scorecard_df.columns)
+    assert {
+        "winner_proxy_heavy_flag",
+        "winner_native_state_coverage",
+        "winner_shared_tdvs_proxy_fraction",
+        "winner_not_promotion_grade_due_to_proxy_dependence",
+    }.issubset(guardrails["current_selected"])

@@ -349,6 +349,15 @@ class TomatoModel:
         return TomatoModel._cohort_timestamp_iso(value)
 
     @staticmethod
+    def _timestamp_from_days(current_time: datetime | None, days: float) -> str | None:
+        if current_time is None:
+            return None
+        days = max(float(days), 0.0)
+        if days <= 0.0:
+            return None
+        return TomatoModel._cohort_timestamp_iso(current_time - timedelta(days=days))
+
+    @staticmethod
     def _cohort_bool(value: object, default: bool) -> bool:
         if value is None or value is pd.NA:
             return bool(default)
@@ -386,10 +395,16 @@ class TomatoModel:
             cohort.get("mature_flag"),
             tdvs >= self.tdvs_max or ((not sink_active_flag) and onplant_flag),
         )
+        days_since_anthesis = max(_finite_float(cohort.get("days_since_anthesis"), default=0.0), 0.0)
+        days_since_maturity = max(_finite_float(cohort.get("days_since_maturity"), default=0.0), 0.0)
         anthesis_at = self._cohort_timestamp_or_none(cohort.get("anthesis_at"))
         matured_at = self._cohort_timestamp_or_none(cohort.get("matured_at"))
-        if anthesis_at is None and current_time is not None and tdvs > 0.0:
-            anthesis_at = self._cohort_timestamp_iso(current_time)
+        if anthesis_at is None and current_time is not None:
+            anthesis_at = self._timestamp_from_days(current_time, days_since_anthesis)
+            if anthesis_at is None and tdvs > 0.0:
+                anthesis_at = self._cohort_timestamp_iso(current_time)
+        if matured_at is None and current_time is not None:
+            matured_at = self._timestamp_from_days(current_time, days_since_maturity)
         age_class_native = int(
             max(
                 1,
@@ -412,7 +427,6 @@ class TomatoModel:
                 ),
             )
         )
-        days_since_maturity = max(_finite_float(cohort.get("days_since_maturity"), default=0.0), 0.0)
         mature_pool_flag = self._cohort_bool(
             cohort.get("mature_pool_flag"),
             mature_flag or age_class_native >= self._derived_age_class(self.tdvs_max),
@@ -431,7 +445,7 @@ class TomatoModel:
                 "harvested_flag": harvested_flag,
                 "anthesis_at": anthesis_at,
                 "matured_at": matured_at,
-                "days_since_anthesis": max(_finite_float(cohort.get("days_since_anthesis"), default=0.0), 0.0),
+                "days_since_anthesis": days_since_anthesis,
                 "days_since_maturity": days_since_maturity,
                 "fds": max(0.0, _finite_float(cohort.get("fds"), default=tdvs)),
                 "age_class_native": age_class_native,
