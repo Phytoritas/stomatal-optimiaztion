@@ -25,6 +25,17 @@
 - exact measured EC / root-zone temperature override data for the De Koning harvest-time FDMC path
 - measured greenhouse pruning-management logs to replace current harvest-delay / leaf-removal management assumptions
 
+## Runtime-complete rerun reading
+
+Issue `#255` removes the missing post-maturity runtime-state blocker as the main explanation for the current KNU rerun outcome.
+
+- the sanity probe now sees populated `matured_at`, `days_since_maturity`, `sink_active_flag`, and step-flux harvest outputs on the actual-data lane
+- the current KNU window still leaves `tomgro_ageclass`, `dekoning_fds`, and `vanthoor_boxcar` on a `shared_tdvs_proxy` surface with `proxy_mode_used = true`
+- the rerun does not observe partial outflow in this window, so that path stays contract-complete but empirically unused here
+- the selected research family is now `dekoning_fds`, but the research families remain effectively tied on validation metrics
+
 ## Decision
 
-The current repository now has a literature-aware harvest family layer, but the promotion gate still does not justify changing the public incumbent baseline.
+The current repository now has a literature-aware and runtime-complete harvest family layer, but the promotion gate still does not justify changing the public incumbent baseline.
+
+The correct interpretation is no longer "the harvest runtime is missing." It is "runtime-complete harvest reruns still show weak family discrimination on the current KNU window."
