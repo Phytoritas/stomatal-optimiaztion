@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import json
 from pathlib import Path
 
@@ -45,3 +46,47 @@ def test_harvest_docs_reference_current_selected_family_when_artifacts_exist() -
     assert selected["selected_fruit_harvest_family"] in docs_text
     assert selected["selected_leaf_harvest_family"] in docs_text
     assert "Keep shipped TOMICS + incumbent TOMSIM harvest as the incumbent baseline." in docs_text
+
+
+def test_readme_mentions_harvest_rerun_entrypoints_and_outputs() -> None:
+    repo_root = _repo_root()
+    readme_text = (repo_root / "README.md").read_text(encoding="utf-8")
+
+    assert "out/tomics_knu_harvest_family_factorial/" in readme_text
+    assert "out/tomics_knu_harvest_promotion_gate/" in readme_text
+    assert "scripts/run_tomics_knu_harvest_family_factorial.py" in readme_text
+    assert "scripts/run_tomics_knu_harvest_promotion_gate.py" in readme_text
+
+
+def test_harvest_promotion_gate_docs_track_guardrails_and_audit_invariants_when_artifacts_exist() -> None:
+    repo_root = _repo_root()
+    scorecard_path = repo_root / "out/tomics_knu_harvest_promotion_gate/harvest_promotion_scorecard.csv"
+    guardrails_path = repo_root / "out/tomics_knu_harvest_promotion_gate/promotion_guardrails.json"
+    if not scorecard_path.exists() or not guardrails_path.exists():
+        pytest.skip("Harvest promotion scorecard is not present; run the harvest promotion gate before docs/artifact sync validation.")
+
+    rows = {}
+    with scorecard_path.open(encoding="utf-8", newline="") as handle:
+        for row in csv.DictReader(handle):
+            rows[row["candidate_label"]] = row
+
+    guardrails = json.loads(guardrails_path.read_text(encoding="utf-8"))["guardrails"]
+    docs_text = "\n".join(
+        (
+            (repo_root / "docs/architecture/review/tomics-knu-harvest-aware-promotion-gate.md").read_text(
+                encoding="utf-8"
+            ),
+            (repo_root / "docs/architecture/review/tomics-harvest-mass-balance.md").read_text(encoding="utf-8"),
+        )
+    )
+
+    current = rows["current_selected"]
+    promoted = rows["promoted_selected"]
+
+    assert str(guardrails["material_cumulative_rmse_margin"]) in docs_text
+    assert str(guardrails["material_daily_rmse_margin"]) in docs_text
+    assert current["any_all_zero_harvest_series"].lower() in docs_text
+    assert promoted["any_all_zero_harvest_series"].lower() in docs_text
+    assert f"{float(current['max_post_writeback_dropped_nonharvested_mass_g_m2']):.1f}" in docs_text
+    assert f"{float(current['max_harvest_mass_balance_error']):.1f}" in docs_text
+    assert f"{float(current['max_leaf_harvest_mass_balance_error']):.1f}" in docs_text

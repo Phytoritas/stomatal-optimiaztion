@@ -16,6 +16,7 @@
 - Validation artifacts from `pytest` and `ruff`
 - Reproducible Plotkit figure bundles under `out/` with saved spec, resolved spec, tokens, metadata, and PNG/data sidecars
 - TOMICS output roots grouped under `out/tomics/analysis/` and `out/tomics/validation/knu/` so synthetic studies, actual-data architecture studies, and fairness-gate reruns stay distinguishable
+- Harvest-aware TOMICS rerun roots under `out/tomics_knu_harvest_family_factorial/` and `out/tomics_knu_harvest_promotion_gate/` for research-family screening, post-writeback audit, and promotion-gate scorecards
 
 ## How to run
 ```bash
@@ -25,6 +26,8 @@ poetry run python scripts/render_root_rerun_parity_figures.py --output-dir out/r
 poetry run python scripts/render_root_rerun_parity_figures.py --output-dir out/rerun_parity --fast-smoke
 poetry run python scripts/run_tomics_partition_compare.py --config configs/exp/tomics_partition_compare.yaml
 poetry run python scripts/run_tomics_factorial.py --config configs/exp/tomics_factorial.yaml
+poetry run python scripts/run_tomics_knu_harvest_family_factorial.py --config configs/exp/tomics_knu_harvest_family_factorial.yaml
+poetry run python scripts/run_tomics_knu_harvest_promotion_gate.py --config configs/exp/tomics_knu_harvest_promotion_gate.yaml
 poetry run pytest
 poetry run ruff check .
 ```
@@ -44,6 +47,9 @@ poetry run ruff check .
 - Issue `#236` / module `117` adds KNU actual-data current-vs-promoted TOMICS allocation replay on floor-area basis and fixes the public validation target to cumulative harvested fruit dry weight rather than latent on-plant fruit mass.
 - Issue `#239` / module `118` adds the KNU fair-validation pipeline: private-data contract support, harvest observation operator, hidden-state reconstruction, root-zone inversion, equal-budget calibration, and the promotion gate that keeps shipped TOMICS incumbent.
 - Issue `#243` / module `119` adds the first-class TOMICS harvest architecture layer, literature-aware harvest family factorial screening, and a harvest-aware promotion gate that still keeps shipped TOMICS plus incumbent TOMSIM harvest as the incumbent baseline.
+- Issue `#247` closes the external-harvest zero-yield replay seam by separating mature, on-plant, and harvested fruit lifecycle states so harvested yield reaches the validation surface again.
+- Issue `#249` cleans harvested-vs-total observation semantics and adds post-writeback dropped-mass guardrails so clean adapter diagnostics cannot hide a broken writeback path.
+- Issue `#251` reruns the KNU harvest-family factorial and harvest-aware promotion gate after the zero-yield repair; `vanthoor_boxcar + max_lai_pruning_flow + constant_observed_mean` remains the best research harvest family, but shipped TOMICS plus incumbent TOMSIM harvest stays incumbent.
 - Gates A through C are satisfied for the first bounded migration slice.
 - THORP `model_card` and traceability helpers are migrated into the new package layout.
 - THORP `radiation` runtime seam is migrated as slice 002.
@@ -168,4 +174,8 @@ poetry run ruff check .
   - `scripts/run_tomics_knu_calibration.py --config configs/exp/tomics_knu_calibration.yaml`
   - `scripts/run_tomics_knu_identifiability.py --config configs/exp/tomics_knu_identifiability.yaml`
   - `scripts/run_tomics_knu_promotion_gate.py --config configs/exp/tomics_knu_promotion_gate.yaml`
+- Re-run the harvest-aware TOMICS lane when harvest replay, writeback, or harvested-yield operator semantics change:
+  - `scripts/run_tomics_knu_harvest_family_factorial.py --config configs/exp/tomics_knu_harvest_family_factorial.yaml`
+  - `scripts/run_tomics_knu_harvest_promotion_gate.py --config configs/exp/tomics_knu_harvest_promotion_gate.yaml`
+  - audit `src/stomatal_optimiaztion/domains/tomato/tomics/alloc/validation/harvest_family_eval.py`, `harvest_family_summary.py`, `harvest_mass_balance_eval.py`, and `harvest_calibration_bridge.py` when harvest-specific score surfaces or guardrails change
 - Use `docs/architecture/review/tdgm-reference-payload-resume-provenance-note.md` if later-horizon root `TDGM` control payload diffs need to be interpreted again.
