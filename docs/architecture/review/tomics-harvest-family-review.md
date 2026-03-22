@@ -36,8 +36,14 @@ The implementation rule is strict:
 
 ## Current KNU research-family result
 
-Under the current harvest-family factorial on KNU actual data, the best research harvest family is:
+Under the runtime-complete harvest-family factorial on KNU actual data, the selected research harvest family resolves to:
 
-- `vanthoor_boxcar + max_lai_pruning_flow + constant_observed_mean`
+- `dekoning_fds + vegetative_unit_pruning + dekoning_fds`
 
-That result improves canopy-management behaviour relative to the incumbent harvest baseline, but it does not improve holdout promotion-gate performance enough to replace shipped TOMICS plus incumbent TOMSIM harvest.
+However, the current KNU window still shows weak research-family discrimination:
+
+- `dekoning_fds`, `tomgro_ageclass`, and `vanthoor_boxcar` are effectively tied on cumulative and daily holdout error
+- `dekoning_fds` is selected because the ranking still breaks that tie in its favor
+- the runtime-complete probe still records proxy-heavy state reconstruction for the research families in this window
+
+That makes `dekoning_fds` the current research lead, but not a promotion-grade replacement for shipped TOMICS plus incumbent TOMSIM harvest.

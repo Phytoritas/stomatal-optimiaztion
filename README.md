@@ -44,6 +44,7 @@ poetry run ruff check .
 - Issue `#236` / module `117` adds KNU actual-data current-vs-promoted TOMICS allocation replay on floor-area basis and fixes the public validation target to cumulative harvested fruit dry weight rather than latent on-plant fruit mass.
 - Issue `#239` / module `118` adds the KNU fair-validation pipeline: private-data contract support, harvest observation operator, hidden-state reconstruction, root-zone inversion, equal-budget calibration, and the promotion gate that keeps shipped TOMICS incumbent.
 - Issue `#243` / module `119` adds the first-class TOMICS harvest architecture layer, literature-aware harvest family factorial screening, and a harvest-aware promotion gate that still keeps shipped TOMICS plus incumbent TOMSIM harvest as the incumbent baseline.
+- Issue `#255` reruns the KNU harvest-aware factorial and promotion gate after the runtime-complete harvest state/writeback contract landed on `main`; the rerun probe confirms populated post-maturity clocks and step-flux `h1`/`h2`, the selected research family now resolves to `dekoning_fds + vegetative_unit_pruning + dekoning_fds`, but holdout RMSE remains tied and the gate still says `Keep shipped TOMICS + incumbent TOMSIM harvest as the incumbent baseline.`
 - Gates A through C are satisfied for the first bounded migration slice.
 - THORP `model_card` and traceability helpers are migrated into the new package layout.
 - THORP `radiation` runtime seam is migrated as slice 002.
@@ -168,4 +169,7 @@ poetry run ruff check .
   - `scripts/run_tomics_knu_calibration.py --config configs/exp/tomics_knu_calibration.yaml`
   - `scripts/run_tomics_knu_identifiability.py --config configs/exp/tomics_knu_identifiability.yaml`
   - `scripts/run_tomics_knu_promotion_gate.py --config configs/exp/tomics_knu_promotion_gate.yaml`
+- Re-run the runtime-complete harvest-aware lane when harvest-runtime or validation/writeback semantics change:
+  - `scripts/run_tomics_knu_harvest_family_factorial.py --config configs/exp/tomics_knu_harvest_family_factorial.yaml`
+  - `scripts/run_tomics_knu_harvest_promotion_gate.py --config configs/exp/tomics_knu_harvest_promotion_gate.yaml`
 - Use `docs/architecture/review/tdgm-reference-payload-resume-provenance-note.md` if later-horizon root `TDGM` control payload diffs need to be interpreted again.

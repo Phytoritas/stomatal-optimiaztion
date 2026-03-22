@@ -98,16 +98,26 @@ Current output roots:
 - `out/tomics_knu_harvest_family_factorial/`
 - `out/tomics_knu_harvest_promotion_gate/`
 
+Runtime-complete probe result:
+
+- `matured_at` and `days_since_maturity` populate in the actual KNU lane
+- common-structure harvest step flux matches baseline-adjusted harvested cumulative daily diffs
+- `offplant_with_positive_mass_flag` stays false and `post_writeback_dropped_nonharvested_mass_g_m2` stays zero
+- `partial_outflow_flag` round-trips as a diagnostic field, but the current KNU window does not trigger a partial-outflow event
+- `tomsim_truss` reaches both `native_payload` and `shared_tdvs_proxy` states in the sampled window, while `tomgro_ageclass`, `dekoning_fds`, and `vanthoor_boxcar` still report `shared_tdvs_proxy` with `proxy_mode_used = true`
+
 Current research-family shortlist:
 
-- `vanthoor_boxcar + max_lai_pruning_flow + constant_observed_mean`
+- `dekoning_fds + vegetative_unit_pruning + dekoning_fds`
 - `tomgro_ageclass + vegetative_unit_pruning + constant_observed_mean`
 
 Current selected research harvest family:
 
-- `vanthoor_boxcar + max_lai_pruning_flow + constant_observed_mean`
+- `dekoning_fds + vegetative_unit_pruning + dekoning_fds`
 
 Promotion-gate result:
 
 - shipped TOMICS plus incumbent TOMSIM harvest remains the incumbent baseline
 - no harvest-aware research candidate clears promotion guardrails yet
+- shipped, current, and promoted holdout RMSE remain tied at `33.3229` cumulative offset and `4.9743` daily increment on the current KNU window
+- the runtime-complete rerun therefore improves contract coverage, not practical family discrimination; the selected research family is still partly proxy-dependent in this window
