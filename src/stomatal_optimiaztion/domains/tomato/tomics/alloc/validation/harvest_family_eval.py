@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import json
 import math
 from dataclasses import dataclass
 from datetime import date
@@ -51,6 +52,70 @@ def _as_dict(raw: object) -> dict[str, Any]:
     if isinstance(raw, dict):
         return {str(key): value for key, value in raw.items()}
     return {}
+
+
+def _distribution_json(series: pd.Series) -> str:
+    if series is None or series.empty:
+        return json.dumps({}, sort_keys=True)
+    cleaned = series.dropna().astype(str)
+    if cleaned.empty:
+        return json.dumps({}, sort_keys=True)
+    counts = cleaned.value_counts(normalize=True).sort_index()
+    return json.dumps({str(key): float(value) for key, value in counts.items()}, sort_keys=True)
+
+
+def summarize_family_state_coverage(
+    harvest_mass_balance_df: pd.DataFrame,
+    *,
+    observed_dates: pd.Series | None = None,
+) -> dict[str, object]:
+    if harvest_mass_balance_df.empty:
+        return {
+            "native_family_state_fraction": 0.0,
+            "proxy_family_state_fraction": 0.0,
+            "shared_tdvs_proxy_fraction": 0.0,
+            "family_state_mode": "",
+            "family_state_mode_distribution": json.dumps({}, sort_keys=True),
+            "proxy_mode_used_distribution": json.dumps({}, sort_keys=True),
+            "proxy_mode_used": False,
+        }
+    coverage_df = harvest_mass_balance_df.copy()
+    coverage_df["date"] = pd.to_datetime(coverage_df["date"], errors="coerce").dt.normalize()
+    if observed_dates is not None:
+        observed_series = pd.Series(observed_dates)
+        observed_index = pd.to_datetime(observed_series, errors="coerce").dt.normalize().dropna().unique()
+        scored_df = coverage_df.loc[coverage_df["date"].isin(observed_index)].copy()
+        if not scored_df.empty:
+            coverage_df = scored_df
+    native_fraction = float(
+        pd.to_numeric(coverage_df.get("native_family_state_fraction"), errors="coerce").fillna(0.0).mean()
+    )
+    proxy_fraction = float(
+        pd.to_numeric(coverage_df.get("proxy_family_state_fraction"), errors="coerce").fillna(0.0).mean()
+    )
+    shared_proxy_fraction = float(
+        pd.to_numeric(coverage_df.get("shared_tdvs_proxy_flag"), errors="coerce").fillna(0.0).mean()
+    )
+    family_state_mode_distribution = _distribution_json(coverage_df.get("family_state_mode", pd.Series(dtype=str)))
+    proxy_mode_used_distribution = _distribution_json(
+        coverage_df.get("proxy_mode_used", pd.Series(dtype=bool)).map(lambda value: str(bool(value)).lower())
+        if "proxy_mode_used" in coverage_df
+        else pd.Series(dtype=str)
+    )
+    family_state_mode = ""
+    if "family_state_mode" in coverage_df and not coverage_df["family_state_mode"].dropna().empty:
+        family_state_mode = str(coverage_df["family_state_mode"].dropna().mode().iloc[0])
+    return {
+        "native_family_state_fraction": native_fraction,
+        "proxy_family_state_fraction": proxy_fraction,
+        "shared_tdvs_proxy_fraction": shared_proxy_fraction,
+        "family_state_mode": family_state_mode,
+        "family_state_mode_distribution": family_state_mode_distribution,
+        "proxy_mode_used_distribution": proxy_mode_used_distribution,
+        "proxy_mode_used": bool(
+            coverage_df.get("proxy_mode_used", pd.Series(dtype=bool)).fillna(False).astype(bool).any()
+        ),
+    }
 
 
 def _daily_env_summary(day_rows: list[dict[str, object]], *, ec: float = 0.3) -> dict[str, float]:
@@ -255,12 +320,20 @@ def run_harvest_family_simulation(
             plants_per_m2=plants_per_m2,
             floor_area_basis=True,
             allow_bulk_proxy=(fruit_harvest_family == "tomsim_truss"),
+            fruit_harvest_family=fruit_harvest_family,
         )
         fruit_frame = state.fruit_entities.copy()
         fruit_mass = pd.to_numeric(fruit_frame.get("fruit_dm_g_m2"), errors="coerce").fillna(0.0)
         onplant_mask = fruit_frame.get("onplant_flag", pd.Series(dtype=bool)).fillna(False).astype(bool)
         mature_mask = fruit_frame.get("mature_flag", pd.Series(dtype=bool)).fillna(False).astype(bool)
         ready_mask = fruit_frame.get("harvest_ready_flag", pd.Series(dtype=bool)).fillna(False).astype(bool)
+        proxy_mask = fruit_frame.get("proxy_state_flag", pd.Series(dtype=bool)).fillna(False).astype(bool)
+        fruit_entity_count = int(len(fruit_frame))
+        proxy_entity_count = int(proxy_mask.sum()) if fruit_entity_count else 0
+        native_entity_count = max(fruit_entity_count - proxy_entity_count, 0)
+        native_fraction = float(native_entity_count / fruit_entity_count) if fruit_entity_count else 0.0
+        proxy_fraction = float(proxy_entity_count / fruit_entity_count) if fruit_entity_count else 0.0
+        family_state_mode = str(state.diagnostics.get("family_state_mode", ""))
         pre_onplant_total = float(fruit_mass.loc[onplant_mask].sum()) if not fruit_frame.empty else 0.0
         pre_total_system = pre_onplant_total + float(state.harvested_fruit_cumulative_g_m2)
         mature_onplant_mass = float(fruit_mass.loc[mature_mask & onplant_mask].sum()) if not fruit_frame.empty else 0.0
@@ -337,9 +410,14 @@ def run_harvest_family_simulation(
                 "offplant_with_positive_mass_flag": bool(
                     result.final_update.diagnostics.get("offplant_with_positive_mass_flag", False)
                 ),
-                "family_state_mode": str(result.final_update.updated_state.diagnostics.get("family_state_mode", "")),
+                "native_family_state_fraction": native_fraction,
+                "proxy_family_state_fraction": proxy_fraction,
+                "shared_tdvs_proxy_flag": bool(family_state_mode == "shared_tdvs_proxy"),
+                "family_state_mode": family_state_mode,
                 "proxy_mode_used": bool(
-                    result.final_update.updated_state.diagnostics.get("synthetic_fruit_state_flag", False)
+                    proxy_fraction > 0.0
+                    or result.final_update.updated_state.diagnostics.get("proxy_mode_used", False)
+                    or result.final_update.updated_state.diagnostics.get("synthetic_fruit_state_flag", False)
                     or result.final_update.diagnostics.get("proxy_mode_used", False)
                 ),
             }
@@ -413,12 +491,6 @@ def run_harvest_family_simulation(
         )
         if not model_daily_df.empty
         else math.nan,
-        "proxy_mode_used": bool(pd.Series(harvest_mass_balance_df.get("proxy_mode_used")).fillna(False).astype(bool).any())
-        if not harvest_mass_balance_df.empty
-        else False,
-        "family_state_mode": str(harvest_mass_balance_df.get("family_state_mode", pd.Series(dtype=str)).dropna().iloc[-1])
-        if not harvest_mass_balance_df.empty and harvest_mass_balance_df.get("family_state_mode") is not None and not harvest_mass_balance_df["family_state_mode"].dropna().empty
-        else "",
         "partial_outflow_flag": bool(
             pd.Series(harvest_mass_balance_df.get("partial_outflow_flag")).fillna(False).astype(bool).any()
         )
@@ -443,6 +515,12 @@ def run_harvest_family_simulation(
         if not harvest_mass_balance_df.empty
         else 0.0,
     }
+    metrics.update(
+        summarize_family_state_coverage(
+            harvest_mass_balance_df,
+            observed_dates=observed_df.get("date"),
+        )
+    )
     return HarvestFamilyRunResult(
         run_df=run_df,
         model_daily_df=model_daily_df,
@@ -506,4 +584,5 @@ __all__ = [
     "build_harvest_mass_balance_overlay_frame",
     "build_harvest_overlay_frame",
     "run_harvest_family_simulation",
+    "summarize_family_state_coverage",
 ]

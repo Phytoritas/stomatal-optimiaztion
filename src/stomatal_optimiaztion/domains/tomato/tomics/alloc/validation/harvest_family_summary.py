@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any
 
@@ -30,6 +31,29 @@ def score_harvest_row(row: pd.Series) -> float:
     )
 
 
+def _aggregate_distribution_json(series: pd.Series) -> str:
+    if series is None or series.empty:
+        return json.dumps({}, sort_keys=True)
+    aggregate: dict[str, float] = {}
+    count = 0
+    for raw in series.dropna():
+        try:
+            parsed = json.loads(str(raw))
+        except (TypeError, ValueError, json.JSONDecodeError):
+            continue
+        if not isinstance(parsed, dict):
+            continue
+        count += 1
+        for key, value in parsed.items():
+            numeric = pd.to_numeric(pd.Series([value]), errors="coerce").iloc[0]
+            if pd.isna(numeric):
+                continue
+            aggregate[str(key)] = aggregate.get(str(key), 0.0) + float(numeric)
+    if count <= 0:
+        return json.dumps({}, sort_keys=True)
+    return json.dumps({key: value / count for key, value in sorted(aggregate.items())}, sort_keys=True)
+
+
 def rank_harvest_candidates(
     metrics_df: pd.DataFrame,
     *,
@@ -57,6 +81,11 @@ def rank_harvest_candidates(
             mean_rmse_daily_increment=("rmse_daily_increment", "mean"),
             max_harvest_mass_balance_error=("harvest_mass_balance_error", "max"),
             max_canopy_collapse_days=("canopy_collapse_days", "max"),
+            mean_native_family_state_fraction=("native_family_state_fraction", "mean"),
+            mean_proxy_family_state_fraction=("proxy_family_state_fraction", "mean"),
+            mean_shared_tdvs_proxy_fraction=("shared_tdvs_proxy_fraction", "mean"),
+            family_state_mode_distribution=("family_state_mode_distribution", _aggregate_distribution_json),
+            proxy_mode_used_distribution=("proxy_mode_used_distribution", _aggregate_distribution_json),
             run_count=("score", "count"),
         )
         .sort_values(["mean_score", "mean_rmse_cumulative_offset"], ascending=[False, True])

@@ -17,6 +17,41 @@ def _baseline_leaf_mass_from_lai(lai_value: float, *, sla_m2_g: float = 0.022) -
     return max(float(lai_value) / max(float(sla_m2_g), 1e-6), 1.0)
 
 
+def _runtime_seed(
+    *,
+    tdvs: float,
+    cohort_index: int,
+) -> dict[str, object]:
+    tdvs = max(float(tdvs), 0.0)
+    days_since_anthesis = max(3.0 + float(cohort_index) * 2.5, 0.0)
+    maturity_progress = max(min((tdvs - 0.78) / 0.20, 1.0), 0.0)
+    days_since_maturity = maturity_progress * 6.0
+    mature_flag = bool(days_since_maturity > 0.0 or tdvs >= 0.92)
+    age_class_native = int(min(20, max(1, round(1.0 + days_since_anthesis / 1.6))))
+    stage_index_native = int(min(5, max(1, round(1.0 + days_since_anthesis / 4.5))))
+    if mature_flag:
+        stage_index_native = 5
+    fds = min(max(0.55 * tdvs + 0.35 * min(days_since_anthesis / 18.0, 1.0) + 0.15 * min(days_since_maturity / 6.0, 1.0), 0.0), 1.05)
+    return {
+        "fds": fds,
+        "sink_active_flag": not mature_flag,
+        "mature_flag": mature_flag,
+        "harvest_ready_flag": bool(mature_flag and days_since_maturity >= 1.0),
+        "onplant_flag": True,
+        "harvested_flag": False,
+        "days_since_anthesis": days_since_anthesis,
+        "days_since_maturity": days_since_maturity,
+        "age_class_native": age_class_native,
+        "stage_index_native": stage_index_native,
+        "mature_pool_flag": mature_flag,
+        "mature_pool_residence_days": days_since_maturity if mature_flag else 0.0,
+        "final_stage_flag": bool(mature_flag or stage_index_native >= 5),
+        "final_stage_residence_days": days_since_maturity if mature_flag or stage_index_native >= 5 else 0.0,
+        "explicit_outflow_capacity_g_m2_d": 0.0,
+        "proxy_state_flag": False,
+    }
+
+
 def _fruit_cohorts(
     *,
     fruit_mass_g_m2: float,
@@ -31,13 +66,16 @@ def _fruit_cohorts(
     tdvs_values = [0.35 + 0.55 * idx / max(active_trusses - 1, 1) for idx in range(active_trusses)]
     cohorts: list[dict[str, object]] = []
     for idx in range(active_trusses):
+        runtime_seed = _runtime_seed(tdvs=tdvs_values[idx], cohort_index=idx)
         cohorts.append(
             {
+                "entity_id": f"truss_{idx + 1:04d}",
                 "tdvs": min(tdvs_values[idx], 0.98),
                 "n_fruits": n_fruits_per_truss,
                 "w_fr_cohort": fruit_mass_g_m2 * weights[idx] / total_weight,
-                "active": True,
+                "active": bool(runtime_seed["sink_active_flag"]),
                 "mult": shoots_per_m2,
+                **runtime_seed,
             }
         )
     return cohorts

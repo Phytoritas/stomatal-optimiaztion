@@ -72,6 +72,81 @@ def _window_metrics(validation_df: pd.DataFrame, *, start: pd.Timestamp, end: pd
     return bundle.metrics
 
 
+def _aggregate_distribution_json(series: pd.Series) -> str:
+    if series is None or series.empty:
+        return json.dumps({}, sort_keys=True)
+    aggregate: dict[str, float] = {}
+    count = 0
+    for raw in series.dropna():
+        try:
+            parsed = json.loads(str(raw))
+        except (TypeError, ValueError, json.JSONDecodeError):
+            continue
+        if not isinstance(parsed, dict):
+            continue
+        count += 1
+        for key, value in parsed.items():
+            numeric = pd.to_numeric(pd.Series([value]), errors="coerce").iloc[0]
+            if pd.isna(numeric):
+                continue
+            aggregate[str(key)] = aggregate.get(str(key), 0.0) + float(numeric)
+    if count <= 0:
+        return json.dumps({}, sort_keys=True)
+    return json.dumps({key: value / count for key, value in sorted(aggregate.items())}, sort_keys=True)
+
+
+def proxy_coverage_guardrail(
+    candidate: pd.Series,
+    *,
+    native_state_coverage_min: float,
+    shared_tdvs_proxy_fraction_max: float,
+) -> dict[str, float | bool]:
+    native_state_coverage = float(
+        pd.to_numeric(
+            pd.Series(
+                [
+                    candidate.get("mean_native_family_state_fraction", candidate.get("winner_native_state_coverage", 0.0))
+                ]
+            ),
+            errors="coerce",
+        ).fillna(0.0).iloc[0]
+    )
+    proxy_state_fraction = float(
+        pd.to_numeric(
+            pd.Series(
+                [
+                    candidate.get("mean_proxy_family_state_fraction", candidate.get("winner_proxy_state_fraction", 0.0))
+                ]
+            ),
+            errors="coerce",
+        ).fillna(0.0).iloc[0]
+    )
+    shared_tdvs_proxy_fraction = float(
+        pd.to_numeric(
+            pd.Series(
+                [
+                    candidate.get(
+                        "mean_shared_tdvs_proxy_fraction",
+                        candidate.get("winner_shared_tdvs_proxy_fraction", 0.0),
+                    )
+                ]
+            ),
+            errors="coerce",
+        ).fillna(0.0).iloc[0]
+    )
+    proxy_heavy_flag = bool(
+        native_state_coverage < native_state_coverage_min
+        or shared_tdvs_proxy_fraction > shared_tdvs_proxy_fraction_max
+    )
+    return {
+        "winner_native_state_coverage": native_state_coverage,
+        "winner_proxy_state_fraction": proxy_state_fraction,
+        "winner_shared_tdvs_proxy_fraction": shared_tdvs_proxy_fraction,
+        "winner_proxy_heavy_flag": proxy_heavy_flag,
+        "winner_not_promotion_grade_due_to_proxy_dependence": proxy_heavy_flag,
+    }
+
+
 def _build_candidate_rows(
     *,
     candidates_by_label: dict[str, object],
@@ -334,6 +409,11 @@ def run_harvest_promotion_gate(
                         "harvest_mass_balance_error": result.metrics["harvest_mass_balance_error"],
                         "latent_fruit_residual_end": result.metrics["latent_fruit_residual_end"],
                         "leaf_harvest_mass_balance_error": result.metrics["leaf_harvest_mass_balance_error"],
+                        "native_family_state_fraction": result.metrics.get("native_family_state_fraction", 0.0),
+                        "proxy_family_state_fraction": result.metrics.get("proxy_family_state_fraction", 0.0),
+                        "shared_tdvs_proxy_fraction": result.metrics.get("shared_tdvs_proxy_fraction", 0.0),
+                        "family_state_mode_distribution": result.metrics.get("family_state_mode_distribution", "{}"),
+                        "proxy_mode_used_distribution": result.metrics.get("proxy_mode_used_distribution", "{}"),
                         "post_writeback_dropped_nonharvested_mass_g_m2": result.metrics.get(
                             "post_writeback_dropped_nonharvested_mass_g_m2",
                             0.0,
@@ -369,6 +449,11 @@ def run_harvest_promotion_gate(
             max_canopy_collapse_days=("canopy_collapse_days", "max"),
             max_harvest_mass_balance_error=("harvest_mass_balance_error", "max"),
             max_leaf_harvest_mass_balance_error=("leaf_harvest_mass_balance_error", "max"),
+            mean_native_family_state_fraction=("native_family_state_fraction", "mean"),
+            mean_proxy_family_state_fraction=("proxy_family_state_fraction", "mean"),
+            mean_shared_tdvs_proxy_fraction=("shared_tdvs_proxy_fraction", "mean"),
+            family_state_mode_distribution=("family_state_mode_distribution", _aggregate_distribution_json),
+            proxy_mode_used_distribution=("proxy_mode_used_distribution", _aggregate_distribution_json),
             max_post_writeback_dropped_nonharvested_mass_g_m2=("post_writeback_dropped_nonharvested_mass_g_m2", "max"),
             any_offplant_with_positive_mass_flag=("offplant_with_positive_mass_flag", "max"),
             any_all_zero_harvest_series=("all_zero_harvest_series", "max"),
@@ -379,6 +464,19 @@ def run_harvest_promotion_gate(
     stability_df = winner_stability_score(results_df, candidate_column="candidate_label")
     scorecard_df = scorecard_df.merge(stability_df, on="candidate_label", how="left")
     scorecard_df["winner_stability_score"] = scorecard_df["winner_stability_score"].fillna(0.0)
+    guardrail_native_state_coverage_min = float(gate_cfg.get("winner_native_state_coverage_min", 0.5))
+    guardrail_shared_tdvs_proxy_fraction_max = float(gate_cfg.get("winner_shared_tdvs_proxy_fraction_max", 0.5))
+    proxy_guardrail_df = scorecard_df.apply(
+        lambda row: pd.Series(
+            proxy_coverage_guardrail(
+                row,
+                native_state_coverage_min=guardrail_native_state_coverage_min,
+                shared_tdvs_proxy_fraction_max=guardrail_shared_tdvs_proxy_fraction_max,
+            )
+        ),
+        axis=1,
+    )
+    scorecard_df = pd.concat([scorecard_df, proxy_guardrail_df], axis=1)
     scorecard_df.to_csv(output_root / "harvest_promotion_scorecard.csv", index=False)
     stability_df.to_csv(output_root / "winner_stability.csv", index=False)
 
@@ -394,6 +492,8 @@ def run_harvest_promotion_gate(
         "material_cumulative_rmse_margin": float(gate_cfg.get("material_cumulative_rmse_margin", 0.5)),
         "material_daily_rmse_margin": float(gate_cfg.get("material_daily_rmse_margin", 0.25)),
         "post_writeback_dropped_nonharvested_mass_g_m2_max": 0.0,
+        "winner_native_state_coverage_min": guardrail_native_state_coverage_min,
+        "winner_shared_tdvs_proxy_fraction_max": guardrail_shared_tdvs_proxy_fraction_max,
     }
 
     def _passes(candidate: pd.Series) -> bool:
@@ -409,6 +509,7 @@ def run_harvest_promotion_gate(
             and (not bool(candidate["any_all_zero_harvest_series"]))
             and float(candidate["max_wet_condition_root_excess_penalty"]) <= guardrails["wet_condition_root_excess_penalty_max"]
             and float(candidate["winner_stability_score"]) >= guardrails["winner_stability_score_min"]
+            and (not bool(candidate["winner_not_promotion_grade_due_to_proxy_dependence"]))
         )
 
     current_passes = _passes(current)
@@ -433,14 +534,38 @@ def run_harvest_promotion_gate(
         f"- promoted mean holdout RMSE offset: {float(promoted['mean_holdout_rmse_cumulative_offset']):.4f}",
         f"- current stability score: {float(current['winner_stability_score']):.2f}",
         f"- promoted stability score: {float(promoted['winner_stability_score']):.2f}",
+        f"- current native-state coverage: {float(current['winner_native_state_coverage']):.2f}",
+        f"- promoted native-state coverage: {float(promoted['winner_native_state_coverage']):.2f}",
+        f"- current shared-TDVS proxy fraction: {float(current['winner_shared_tdvs_proxy_fraction']):.2f}",
+        f"- promoted shared-TDVS proxy fraction: {float(promoted['winner_shared_tdvs_proxy_fraction']):.2f}",
+        f"- current proxy-heavy flag: {bool(current['winner_proxy_heavy_flag'])}",
+        f"- promoted proxy-heavy flag: {bool(promoted['winner_proxy_heavy_flag'])}",
     ]
     (output_root / "harvest_promotion_decision.md").write_text("\n".join(decision_lines) + "\n", encoding="utf-8")
     write_json(
         output_root / "promotion_guardrails.json",
         {
             "guardrails": guardrails,
-            "current_selected": {"passes": current_passes, "metrics": current.to_dict()},
-            "promoted_selected": {"passes": promoted_passes, "metrics": promoted.to_dict()},
+            "current_selected": {
+                "passes": current_passes,
+                "metrics": current.to_dict(),
+                "winner_proxy_heavy_flag": bool(current["winner_proxy_heavy_flag"]),
+                "winner_native_state_coverage": float(current["winner_native_state_coverage"]),
+                "winner_shared_tdvs_proxy_fraction": float(current["winner_shared_tdvs_proxy_fraction"]),
+                "winner_not_promotion_grade_due_to_proxy_dependence": bool(
+                    current["winner_not_promotion_grade_due_to_proxy_dependence"]
+                ),
+            },
+            "promoted_selected": {
+                "passes": promoted_passes,
+                "metrics": promoted.to_dict(),
+                "winner_proxy_heavy_flag": bool(promoted["winner_proxy_heavy_flag"]),
+                "winner_native_state_coverage": float(promoted["winner_native_state_coverage"]),
+                "winner_shared_tdvs_proxy_fraction": float(promoted["winner_shared_tdvs_proxy_fraction"]),
+                "winner_not_promotion_grade_due_to_proxy_dependence": bool(
+                    promoted["winner_not_promotion_grade_due_to_proxy_dependence"]
+                ),
+            },
             "recommendation": recommendation,
         },
     )
