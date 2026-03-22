@@ -29,23 +29,47 @@ class DeKoningFdsHarvestPolicy:
     def step(self, state: HarvestState, env: dict[str, float], dt_days: float):
         frame = state.fruit_entities.copy()
         if frame.empty:
-            return build_harvest_update(state, extra_diagnostics={"fruit_harvest_family": self.family})
-        threshold = self.config.fds_harvest_threshold + self.config.harvest_delay_days * self.config.fds_delay_per_day
+            return build_harvest_update(
+                state,
+                extra_diagnostics={
+                    "fruit_harvest_family": self.family,
+                    "delay_mode": "residence_clock",
+                    "readiness_basis": "fds_plus_post_maturity_residence",
+                },
+            )
         frame["fds"] = pd.to_numeric(frame.get("fds"), errors="coerce").fillna(0.0)
+        frame["days_since_maturity"] = pd.to_numeric(frame.get("days_since_maturity"), errors="coerce").fillna(0.0)
         frame["fruit_dm_g_m2"] = pd.to_numeric(frame.get("fruit_dm_g_m2"), errors="coerce").fillna(0.0)
         frame["fruit_count"] = pd.to_numeric(frame.get("fruit_count"), errors="coerce").fillna(0.0)
         events: list[FruitHarvestEvent] = []
         dayno = float(pd.Timestamp(state.datetime).dayofyear)
         tf = float(env.get("T_air_C", env.get("TF", 23.0)))
+        proxy_mode_used = False
         for row in frame.itertuples(index=False):
-            if not bool(getattr(row, "onplant_flag", True)):
+            onplant_flag = getattr(row, "onplant_flag", True)
+            harvested_flag = getattr(row, "harvested_flag", False)
+            proxy_state_flag = getattr(row, "proxy_state_flag", False)
+            if pd.isna(onplant_flag):
+                onplant_flag = True
+            if pd.isna(harvested_flag):
+                harvested_flag = False
+            if pd.isna(proxy_state_flag):
+                proxy_state_flag = False
+            if not bool(onplant_flag) or bool(harvested_flag):
                 continue
             fds_value = float(getattr(row, "fds", 0.0))
-            if not ready_dekoning_fds(fds_value, threshold=threshold):
+            maturity_days = float(getattr(row, "days_since_maturity", 0.0))
+            if not ready_dekoning_fds(
+                fds_value,
+                threshold=self.config.fds_harvest_threshold,
+                days_since_maturity=maturity_days,
+                harvest_delay_days=self.config.harvest_delay_days,
+            ):
                 continue
             dry_weight = max(float(getattr(row, "fruit_dm_g_m2", 0.0)), 0.0)
             if dry_weight <= 0.0:
                 continue
+            proxy_mode_used = proxy_mode_used or bool(proxy_state_flag)
             fdmc_used = fdmc_family_dispatch(
                 self.config.fdmc_mode,
                 fds=fds_value,
@@ -66,10 +90,23 @@ class DeKoningFdsHarvestPolicy:
                     fdmc_used=fdmc_used,
                     fresh_weight_equivalent_g_m2=fresh_weight,
                     dry_weight_g_m2=dry_weight,
-                    notes="FDS-based research harvest with De Koning FDMC helpers.",
+                    removes_entity=True,
+                    removal_fraction=1.0,
+                    partial_outflow_flag=False,
+                    notes="FDS-based research harvest with De Koning FDMC helpers and post-maturity residence-clock gating.",
                 )
             )
-        return build_harvest_update(state, fruit_events=events, extra_diagnostics={"fruit_harvest_family": self.family})
+        return build_harvest_update(
+            state,
+            fruit_events=events,
+            extra_diagnostics={
+                "fruit_harvest_family": self.family,
+                "delay_mode": "residence_clock",
+                "readiness_basis": "fds_plus_post_maturity_residence",
+                "proxy_mode_used": proxy_mode_used,
+                "fds_proxy_used": proxy_mode_used,
+            },
+        )
 
 
 DeKoningFruitHarvestPolicy = DeKoningFdsHarvestPolicy

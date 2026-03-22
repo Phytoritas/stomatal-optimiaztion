@@ -16,6 +16,16 @@ def _sum_positive(frame: pd.DataFrame, column: str) -> float:
     return float(values.clip(lower=0.0).sum())
 
 
+def _sum_onplant_positive(frame: pd.DataFrame, column: str) -> float:
+    if frame.empty or column not in frame.columns:
+        return 0.0
+    onplant_mask = frame.get("onplant_flag", True)
+    if not isinstance(onplant_mask, pd.Series):
+        onplant_mask = pd.Series([bool(onplant_mask)] * len(frame), index=frame.index)
+    values = pd.to_numeric(frame.loc[onplant_mask.fillna(True).astype(bool), column], errors="coerce").fillna(0.0)
+    return float(values.clip(lower=0.0).sum())
+
+
 def harvest_mass_balance_error(
     before_state: HarvestState,
     after_state: HarvestState,
@@ -45,6 +55,17 @@ def negative_mass_flag(state: HarvestState) -> bool:
     return bool(fruit_negative or leaf_negative)
 
 
+def offplant_with_positive_mass_flag(state: HarvestState) -> bool:
+    if state.fruit_entities.empty or "fruit_dm_g_m2" not in state.fruit_entities.columns:
+        return False
+    onplant_mask = state.fruit_entities.get("onplant_flag", True)
+    if not isinstance(onplant_mask, pd.Series):
+        onplant_mask = pd.Series([bool(onplant_mask)] * len(state.fruit_entities), index=state.fruit_entities.index)
+    offplant_mask = ~onplant_mask.fillna(True).astype(bool)
+    values = pd.to_numeric(state.fruit_entities.loc[offplant_mask, "fruit_dm_g_m2"], errors="coerce").fillna(0.0)
+    return bool((values > 1e-12).any())
+
+
 def mass_balance_metrics(
     before_state: HarvestState,
     after_state: HarvestState,
@@ -52,8 +73,24 @@ def mass_balance_metrics(
     fruit_events: list[FruitHarvestEvent],
     leaf_events: list[LeafHarvestEvent],
 ) -> dict[str, float | bool]:
+    pre_onplant_fruit = _sum_onplant_positive(before_state.fruit_entities, "fruit_dm_g_m2")
+    post_onplant_fruit = _sum_onplant_positive(after_state.fruit_entities, "fruit_dm_g_m2")
+    harvested_flux = float(sum(max(float(event.dry_weight_g_m2), 0.0) for event in fruit_events))
+    partial_event_ids = {event.entity_id for event in fruit_events if bool(getattr(event, "partial_outflow_flag", False))}
+    partial_residual = 0.0
+    if partial_event_ids and not after_state.fruit_entities.empty:
+        partial_mask = after_state.fruit_entities["entity_id"].astype(str).isin({str(value) for value in partial_event_ids})
+        partial_residual = float(
+            pd.to_numeric(after_state.fruit_entities.loc[partial_mask, "fruit_dm_g_m2"], errors="coerce").fillna(0.0).sum()
+        )
     return {
         "harvest_mass_balance_error": harvest_mass_balance_error(before_state, after_state, fruit_events, leaf_events),
+        "pre_onplant_fruit_g_m2": pre_onplant_fruit,
+        "post_onplant_fruit_g_m2": post_onplant_fruit,
+        "harvested_fruit_flux_g_m2": harvested_flux,
+        "partial_outflow_mass_residual_g_m2": partial_residual,
+        "dropped_nonharvested_mass_g_m2": max(pre_onplant_fruit - post_onplant_fruit - harvested_flux, 0.0),
+        "offplant_with_positive_mass_flag": offplant_with_positive_mass_flag(after_state),
         "latent_fruit_residual_end": _sum_positive(after_state.fruit_entities, "fruit_dm_g_m2"),
         "leaf_harvest_mass_balance_error": abs(
             _sum_positive(before_state.leaf_entities, "leaf_dm_g_m2")
@@ -79,4 +116,5 @@ __all__ = [
     "harvest_mass_balance_error",
     "mass_balance_metrics",
     "negative_mass_flag",
+    "offplant_with_positive_mass_flag",
 ]

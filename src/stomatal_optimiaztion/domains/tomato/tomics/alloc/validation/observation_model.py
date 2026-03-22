@@ -101,7 +101,7 @@ def merge_validation_series(
     observed_df: pd.DataFrame,
     model_daily_df: pd.DataFrame,
     *,
-    model_value_column: str = "model_cumulative_total_fruit_dry_weight_floor_area",
+    model_value_column: str = "model_cumulative_harvested_fruit_dry_weight_floor_area",
     source_label: str,
 ) -> pd.DataFrame:
     merged = observed_df.merge(
@@ -109,12 +109,11 @@ def merge_validation_series(
         on="date",
         how="left",
     )
-    merged = merged.rename(
-        columns={
-            model_value_column: f"{source_label}_cumulative_total_fruit_dry_weight_floor_area",
-            "model_daily_increment_floor_area": f"{source_label}_daily_increment_floor_area",
-        }
-    )
+    harvested_column = f"{source_label}_cumulative_harvested_fruit_dry_weight_floor_area"
+    merged = merged.rename(columns={model_value_column: harvested_column})
+    merged[f"{source_label}_cumulative_total_fruit_dry_weight_floor_area"] = merged[harvested_column]
+    merged[f"{source_label}_daily_increment_floor_area"] = merged["model_daily_increment_floor_area"]
+    merged = merged.drop(columns=["model_daily_increment_floor_area"])
     return merged
 
 
@@ -127,14 +126,16 @@ def compute_validation_bundle(
     unit_declared_in_observation_file: str,
 ) -> ValidationSeriesBundle:
     merged = observed_df.copy()
+    harvested_column = f"{candidate_label}_cumulative_harvested_fruit_dry_weight_floor_area"
     cumulative_column = f"{candidate_label}_cumulative_total_fruit_dry_weight_floor_area"
-    merged[cumulative_column] = pd.to_numeric(candidate_series, errors="coerce")
+    merged[harvested_column] = pd.to_numeric(candidate_series, errors="coerce")
+    merged[cumulative_column] = merged[harvested_column]
     merged["measured_offset_adjusted"] = _offset_adjusted(
         merged["measured_cumulative_total_fruit_dry_weight_floor_area"]
     )
-    merged[f"{candidate_label}_offset_adjusted"] = _offset_adjusted(merged[cumulative_column])
+    merged[f"{candidate_label}_offset_adjusted"] = _offset_adjusted(merged[harvested_column])
     if candidate_daily_increment_series is None:
-        merged[f"{candidate_label}_daily_increment_floor_area"] = pd.to_numeric(merged[cumulative_column], errors="coerce").diff()
+        merged[f"{candidate_label}_daily_increment_floor_area"] = pd.to_numeric(merged[harvested_column], errors="coerce").diff()
     else:
         merged[f"{candidate_label}_daily_increment_floor_area"] = pd.to_numeric(
             candidate_daily_increment_series,
@@ -143,7 +144,7 @@ def compute_validation_bundle(
 
     raw_metrics = _series_metrics(
         merged["measured_cumulative_total_fruit_dry_weight_floor_area"],
-        merged[cumulative_column],
+        merged[harvested_column],
     )
     offset_metrics = _series_metrics(
         merged["measured_offset_adjusted"],
@@ -165,7 +166,7 @@ def compute_validation_bundle(
         offset_adjustment_applied = False
     else:
         final_bias = float(
-            pd.to_numeric(merged[cumulative_column], errors="coerce").iloc[-1]
+            pd.to_numeric(merged[harvested_column], errors="coerce").iloc[-1]
             - pd.to_numeric(merged["measured_cumulative_total_fruit_dry_weight_floor_area"], errors="coerce").iloc[-1]
         )
         observed_final = float(
@@ -225,7 +226,10 @@ def resolve_validation_series_columns(
         prefixes.append("model")
 
     for prefix in prefixes:
-        cumulative_column = f"{prefix}_cumulative_total_fruit_dry_weight_floor_area"
+        harvested_column = f"{prefix}_cumulative_harvested_fruit_dry_weight_floor_area"
+        cumulative_column = harvested_column
+        if harvested_column not in validation_df.columns:
+            cumulative_column = f"{prefix}_cumulative_total_fruit_dry_weight_floor_area"
         offset_column = f"{prefix}_offset_adjusted"
         increment_column = f"{prefix}_daily_increment_floor_area"
         if {

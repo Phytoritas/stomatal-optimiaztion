@@ -20,15 +20,17 @@ def model_floor_area_cumulative_total_fruit(model_df: pd.DataFrame) -> pd.DataFr
     daily = daily_last(model_df)
     fruit = pd.to_numeric(daily.get("fruit_dry_weight_g_m2"), errors="coerce").fillna(0.0)
     harvested = pd.to_numeric(daily.get("harvested_fruit_g_m2"), errors="coerce").fillna(0.0)
-    total_latent = fruit + harvested
+    total_system = fruit + harvested
     out = pd.DataFrame(
         {
             "date": daily["date"],
             "model_onplant_fruit_dry_weight_floor_area": fruit,
             "model_harvested_fruit_floor_area": harvested,
             "model_cumulative_harvested_fruit_dry_weight_floor_area": harvested,
+            "model_observed_target_proxy_floor_area": harvested,
+            "model_total_system_fruit_dry_weight_floor_area": total_system,
             "model_cumulative_total_fruit_dry_weight_floor_area": harvested,
-            "model_total_latent_fruit_dry_weight_floor_area": total_latent,
+            "model_total_latent_fruit_dry_weight_floor_area": total_system,
         }
     )
     out["model_daily_increment_floor_area"] = _daily_increment_from_cumulative(

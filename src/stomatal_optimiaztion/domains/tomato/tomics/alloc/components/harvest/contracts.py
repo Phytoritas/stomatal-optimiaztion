@@ -17,8 +17,21 @@ HARVEST_FRUIT_COLUMNS = [
     "fds",
     "fruit_dm_g_m2",
     "fruit_count",
+    "sink_active_flag",
+    "mature_flag",
+    "harvest_ready_flag",
     "onplant_flag",
     "harvested_flag",
+    "anthesis_at",
+    "matured_at",
+    "days_since_anthesis",
+    "days_since_maturity",
+    "mature_pool_flag",
+    "mature_pool_residence_days",
+    "final_stage_flag",
+    "final_stage_residence_days",
+    "explicit_outflow_capacity_g_m2_d",
+    "proxy_state_flag",
     "potential_weight_proxy_g_m2",
 ]
 
@@ -65,7 +78,11 @@ class HarvestState:
     stem_root_state: dict[str, float] | None
     harvested_fruit_cumulative_g_m2: float
     harvested_leaf_cumulative_g_m2: float
-    diagnostics: dict[str, float] = field(default_factory=dict)
+    # Standard diagnostics keys may include:
+    # - family_state_mode
+    # - native_family_state_available
+    # - synthetic_fruit_state_flag
+    diagnostics: dict[str, float | int | str | bool] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "fruit_entities", _ensure_frame(self.fruit_entities, HARVEST_FRUIT_COLUMNS))
@@ -116,6 +133,9 @@ class FruitHarvestEvent:
     fdmc_used: float | None
     fresh_weight_equivalent_g_m2: float | None
     dry_weight_g_m2: float
+    removes_entity: bool = True
+    removal_fraction: float = 1.0
+    partial_outflow_flag: bool = False
     notes: str = ""
 
 
@@ -138,7 +158,7 @@ class HarvestUpdate:
     fruit_harvest_event_count: int
     leaf_harvest_event_count: int
     mass_balance_error: float
-    diagnostics: dict[str, float] = field(default_factory=dict)
+    diagnostics: dict[str, float | int | str | bool] = field(default_factory=dict)
 
 
 class HarvestPolicy(Protocol):

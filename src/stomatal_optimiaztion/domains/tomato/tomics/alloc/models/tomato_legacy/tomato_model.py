@@ -317,8 +317,8 @@ class TomatoModel:
             growth_respiration_g=0.0,
             growth_g=0.0,
             maintenance_g=0.0,
-            fruit_harvest_g=self.W_fr_harvested,
-            leaf_harvest_g=0.0,
+            fruit_harvest_g=self.last_fruit_harvest_g,
+            leaf_harvest_g=self.last_leaf_harvest_g,
         )
         self._apply_initial_state_overrides()
         self._tomics_research_prev_root_fraction = None
@@ -329,6 +329,179 @@ class TomatoModel:
         self.eps_eff_last = 0.0
         self.T_env_last_K = self.T_a
         self.r_lw_net_last = 0.0
+
+    @staticmethod
+    def _cohort_timestamp_iso(value: object) -> str | None:
+        if value is None:
+            return None
+        try:
+            ts = pd.Timestamp(value)
+        except Exception:
+            return None
+        if pd.isna(ts):
+            return None
+        return ts.isoformat()
+
+    @staticmethod
+    def _cohort_timestamp_or_none(value: object) -> str | None:
+        if isinstance(value, str) and value.strip():
+            return value
+        return TomatoModel._cohort_timestamp_iso(value)
+
+    @staticmethod
+    def _cohort_bool(value: object, default: bool) -> bool:
+        if value is None or value is pd.NA:
+            return bool(default)
+        if isinstance(value, str):
+            lowered = value.strip().lower()
+            if lowered in {"true", "1", "yes"}:
+                return True
+            if lowered in {"false", "0", "no"}:
+                return False
+        try:
+            return bool(value)
+        except Exception:
+            return bool(default)
+
+    def _derived_age_class(self, tdvs: float) -> int:
+        return int(min(20, max(1, math.ceil(max(0.0, float(tdvs)) * 20.0))))
+
+    def _derived_stage_index(self, tdvs: float) -> int:
+        return int(min(5, max(1, math.ceil(max(0.0, float(tdvs)) * 5.0))))
+
+    def _ensure_cohort_runtime_fields(
+        self,
+        cohort: dict[str, object],
+        *,
+        current_time: datetime | None = None,
+    ) -> dict[str, object]:
+        tdvs = max(0.0, _finite_float(cohort.get("tdvs"), default=0.0))
+        harvested_flag = self._cohort_bool(cohort.get("harvested_flag"), False)
+        sink_active_flag = self._cohort_bool(cohort.get("sink_active_flag", cohort.get("active", True)), True)
+        onplant_default = (not harvested_flag) and (
+            max(0.0, _finite_float(cohort.get("w_fr_cohort"), default=0.0)) > 1e-12 or sink_active_flag
+        )
+        onplant_flag = self._cohort_bool(cohort.get("onplant_flag"), onplant_default)
+        mature_flag = self._cohort_bool(
+            cohort.get("mature_flag"),
+            tdvs >= self.tdvs_max or ((not sink_active_flag) and onplant_flag),
+        )
+        anthesis_at = self._cohort_timestamp_or_none(cohort.get("anthesis_at"))
+        matured_at = self._cohort_timestamp_or_none(cohort.get("matured_at"))
+        if anthesis_at is None and current_time is not None and tdvs > 0.0:
+            anthesis_at = self._cohort_timestamp_iso(current_time)
+        age_class_native = int(
+            max(
+                1,
+                round(
+                    _finite_float(
+                        cohort.get("age_class_native", cohort.get("age_class")),
+                        default=float(self._derived_age_class(tdvs)),
+                    )
+                ),
+            )
+        )
+        stage_index_native = int(
+            max(
+                1,
+                round(
+                    _finite_float(
+                        cohort.get("stage_index_native", cohort.get("stage_index")),
+                        default=float(self._derived_stage_index(tdvs)),
+                    )
+                ),
+            )
+        )
+        days_since_maturity = max(_finite_float(cohort.get("days_since_maturity"), default=0.0), 0.0)
+        mature_pool_flag = self._cohort_bool(
+            cohort.get("mature_pool_flag"),
+            mature_flag or age_class_native >= self._derived_age_class(self.tdvs_max),
+        )
+        final_stage_flag = self._cohort_bool(
+            cohort.get("final_stage_flag"),
+            mature_flag or stage_index_native >= self._derived_stage_index(self.tdvs_max),
+        )
+        cohort.update(
+            {
+                "active": sink_active_flag,
+                "sink_active_flag": sink_active_flag,
+                "mature_flag": mature_flag,
+                "harvest_ready_flag": self._cohort_bool(cohort.get("harvest_ready_flag"), mature_flag and onplant_flag),
+                "onplant_flag": onplant_flag,
+                "harvested_flag": harvested_flag,
+                "anthesis_at": anthesis_at,
+                "matured_at": matured_at,
+                "days_since_anthesis": max(_finite_float(cohort.get("days_since_anthesis"), default=0.0), 0.0),
+                "days_since_maturity": days_since_maturity,
+                "fds": max(0.0, _finite_float(cohort.get("fds"), default=tdvs)),
+                "age_class_native": age_class_native,
+                "stage_index_native": stage_index_native,
+                "mature_pool_flag": mature_pool_flag,
+                "mature_pool_residence_days": max(
+                    _finite_float(
+                        cohort.get("mature_pool_residence_days"),
+                        default=(days_since_maturity if mature_pool_flag else 0.0),
+                    ),
+                    0.0,
+                ),
+                "final_stage_flag": final_stage_flag,
+                "final_stage_residence_days": max(
+                    _finite_float(
+                        cohort.get("final_stage_residence_days"),
+                        default=(days_since_maturity if final_stage_flag else 0.0),
+                    ),
+                    0.0,
+                ),
+                "explicit_outflow_capacity_g_m2_d": max(
+                    _finite_float(cohort.get("explicit_outflow_capacity_g_m2_d"), default=0.0),
+                    0.0,
+                ),
+                "proxy_state_flag": self._cohort_bool(cohort.get("proxy_state_flag"), False),
+            }
+        )
+        return cohort
+
+    def _mark_cohort_mature_onplant(self, cohort: dict[str, object], current_time: datetime) -> None:
+        self._ensure_cohort_runtime_fields(cohort, current_time=current_time)
+        if cohort.get("matured_at") is None:
+            cohort["matured_at"] = self._cohort_timestamp_iso(current_time)
+            cohort["days_since_maturity"] = 0.0
+        cohort["active"] = False
+        cohort["sink_active_flag"] = False
+        cohort["mature_flag"] = True
+        cohort["onplant_flag"] = not self._cohort_bool(cohort.get("harvested_flag"), False)
+        cohort["harvest_ready_flag"] = bool(cohort["onplant_flag"])
+        cohort["mature_pool_flag"] = True
+        cohort["final_stage_flag"] = True
+
+    def _update_cohort_runtime_state(self, current_time: datetime, dt_days: float) -> None:
+        dt_days = max(float(dt_days), 0.0)
+        for cohort in self.truss_cohorts:
+            self._ensure_cohort_runtime_fields(cohort, current_time=current_time)
+            if bool(cohort.get("onplant_flag", False)) and not bool(cohort.get("harvested_flag", False)):
+                cohort["days_since_anthesis"] = max(
+                    _finite_float(cohort.get("days_since_anthesis"), default=0.0) + dt_days,
+                    0.0,
+                )
+            was_mature = bool(cohort.get("mature_flag", False))
+            tdvs = max(0.0, _finite_float(cohort.get("tdvs"), default=0.0))
+            if tdvs >= self.tdvs_max or (not bool(cohort.get("active", True)) and bool(cohort.get("onplant_flag", True))):
+                self._mark_cohort_mature_onplant(cohort, current_time)
+                if was_mature and bool(cohort.get("onplant_flag", False)) and not bool(cohort.get("harvested_flag", False)):
+                    cohort["days_since_maturity"] = max(
+                        _finite_float(cohort.get("days_since_maturity"), default=0.0) + dt_days,
+                        0.0,
+                    )
+            cohort["mature_pool_residence_days"] = (
+                max(_finite_float(cohort.get("days_since_maturity"), default=0.0), 0.0)
+                if bool(cohort.get("mature_pool_flag", False))
+                else 0.0
+            )
+            cohort["final_stage_residence_days"] = (
+                max(_finite_float(cohort.get("days_since_maturity"), default=0.0), 0.0)
+                if bool(cohort.get("final_stage_flag", False))
+                else 0.0
+            )
 
     def _apply_initial_state_overrides(self) -> None:
         overrides = getattr(self, "initial_state_overrides", {}) or {}
@@ -400,8 +573,56 @@ class TomatoModel:
                         "w_fr_cohort": max(0.0, _finite_float(raw.get("w_fr_cohort"), default=0.0)),
                         "active": bool(raw.get("active", True)),
                         "mult": max(0.0, _finite_float(raw.get("mult"), default=float(self.shoots_per_m2))),
+                        "fds": max(0.0, _finite_float(raw.get("fds"), default=_finite_float(raw.get("tdvs"), default=0.0))),
+                        "onplant_flag": bool(raw.get("onplant_flag", True)),
+                        "harvested_flag": bool(raw.get("harvested_flag", False)),
+                        "sink_active_flag": bool(raw.get("sink_active_flag", raw.get("active", True))),
+                        "mature_flag": bool(raw.get("mature_flag", False)),
+                        "harvest_ready_flag": bool(raw.get("harvest_ready_flag", False)),
+                        "anthesis_at": self._cohort_timestamp_or_none(raw.get("anthesis_at")),
+                        "matured_at": self._cohort_timestamp_or_none(raw.get("matured_at")),
+                        "days_since_anthesis": max(_finite_float(raw.get("days_since_anthesis"), default=0.0), 0.0),
+                        "days_since_maturity": max(_finite_float(raw.get("days_since_maturity"), default=0.0), 0.0),
+                        "age_class_native": int(
+                            max(
+                                1,
+                                round(
+                                    _finite_float(
+                                        raw.get("age_class_native", raw.get("age_class")),
+                                        default=float(self._derived_age_class(_finite_float(raw.get("tdvs"), default=0.0))),
+                                    )
+                                ),
+                            )
+                        ),
+                        "stage_index_native": int(
+                            max(
+                                1,
+                                round(
+                                    _finite_float(
+                                        raw.get("stage_index_native", raw.get("stage_index")),
+                                        default=float(self._derived_stage_index(_finite_float(raw.get("tdvs"), default=0.0))),
+                                    )
+                                ),
+                            )
+                        ),
+                        "mature_pool_flag": bool(raw.get("mature_pool_flag", False)),
+                        "mature_pool_residence_days": max(
+                            _finite_float(raw.get("mature_pool_residence_days"), default=0.0),
+                            0.0,
+                        ),
+                        "final_stage_flag": bool(raw.get("final_stage_flag", False)),
+                        "final_stage_residence_days": max(
+                            _finite_float(raw.get("final_stage_residence_days"), default=0.0),
+                            0.0,
+                        ),
+                        "explicit_outflow_capacity_g_m2_d": max(
+                            _finite_float(raw.get("explicit_outflow_capacity_g_m2_d"), default=0.0),
+                            0.0,
+                        ),
+                        "proxy_state_flag": bool(raw.get("proxy_state_flag", False)),
                     }
                 )
+                self._ensure_cohort_runtime_fields(normalized[-1], current_time=self.start_date)
             self.truss_cohorts = normalized
             self._next_truss_entity_id = len(normalized) + 1
             if "truss_count" not in overrides:
@@ -424,8 +645,8 @@ class TomatoModel:
             growth_respiration_g=0.0,
             growth_g=0.0,
             maintenance_g=0.0,
-            fruit_harvest_g=self.W_fr_harvested,
-            leaf_harvest_g=0.0,
+            fruit_harvest_g=self.last_fruit_harvest_g,
+            leaf_harvest_g=self.last_leaf_harvest_g,
         )
 
     def to_floor_from_plant(self, x_per_plant: float) -> float:
@@ -577,24 +798,73 @@ class TomatoModel:
         transpiration_amount_g_m2 = transp_rate_evap_g_s_m2 * self.dt_seconds
         cond_rate_g_s_m2 = (self.LE_cond / self.lambda_v * 1000.0) if self.lambda_v > 0 else 0.0
         cond_amount_g_m2 = cond_rate_g_s_m2 * self.dt_seconds
-        truss_payload = [
-            {
-                "entity_id": str(cohort.get("entity_id", f"truss_{index + 1:04d}")),
-                "truss_id": index + 1,
-                "fruit_position": float(max(1, int(round(float(cohort.get('n_fruits', self.n_f or 1)))) // 2)),
-                "age_class": float(min(20, max(1, math.ceil(max(0.0, float(cohort.get("tdvs", 0.0))) * 20.0)))),
-                "stage_index": float(min(5, max(1, math.ceil(max(0.0, float(cohort.get("tdvs", 0.0))) * 5.0)))),
-                "tdvs": float(max(0.0, float(cohort.get("tdvs", 0.0)))),
-                "fds": float(max(0.0, float(cohort.get("tdvs", 0.0)))),
-                "fruit_dm_g_m2": float(max(0.0, float(cohort.get("w_fr_cohort", 0.0)))),
-                "fruit_count": float(max(0.0, float(cohort.get("n_fruits", self.n_f)))),
-                "mult": float(max(0.0, float(cohort.get("mult", self.shoots_per_m2)))),
-                "onplant_flag": bool(cohort.get("active", True)),
-                "harvested_flag": False,
-                "potential_weight_proxy_g_m2": float(max(0.0, float(cohort.get("w_fr_cohort", 0.0)))),
-            }
-            for index, cohort in enumerate(self.truss_cohorts)
-        ]
+        truss_payload: list[dict[str, object]] = []
+        for index, cohort in enumerate(self.truss_cohorts):
+            self._ensure_cohort_runtime_fields(cohort, current_time=current_time)
+            tdvs = max(0.0, _finite_float(cohort.get("tdvs"), default=0.0))
+            age_class_native = int(
+                max(
+                    1,
+                    round(
+                        _finite_float(
+                            cohort.get("age_class_native"),
+                            default=float(self._derived_age_class(tdvs)),
+                        )
+                    ),
+                )
+            )
+            stage_index_native = int(
+                max(
+                    1,
+                    round(
+                        _finite_float(
+                            cohort.get("stage_index_native"),
+                            default=float(self._derived_stage_index(tdvs)),
+                        )
+                    ),
+                )
+            )
+            truss_payload.append(
+                {
+                    "entity_id": str(cohort.get("entity_id", f"truss_{index + 1:04d}")),
+                    "truss_id": index + 1,
+                    "fruit_position": float(max(1, int(round(float(cohort.get("n_fruits", self.n_f or 1)))) // 2)),
+                    "age_class": float(age_class_native),
+                    "stage_index": float(stage_index_native),
+                    "age_class_native": float(age_class_native),
+                    "stage_index_native": float(stage_index_native),
+                    "tdvs": tdvs,
+                    "fds": max(0.0, _finite_float(cohort.get("fds"), default=tdvs)),
+                    "fruit_dm_g_m2": float(max(0.0, float(cohort.get("w_fr_cohort", 0.0)))),
+                    "fruit_count": float(max(0.0, float(cohort.get("n_fruits", self.n_f)))),
+                    "mult": float(max(0.0, float(cohort.get("mult", self.shoots_per_m2)))),
+                    "sink_active_flag": bool(cohort.get("sink_active_flag", cohort.get("active", True))),
+                    "mature_flag": bool(cohort.get("mature_flag", False)),
+                    "harvest_ready_flag": bool(cohort.get("harvest_ready_flag", False)),
+                    "onplant_flag": bool(cohort.get("onplant_flag", True)),
+                    "harvested_flag": bool(cohort.get("harvested_flag", False)),
+                    "anthesis_at": cohort.get("anthesis_at"),
+                    "matured_at": cohort.get("matured_at"),
+                    "days_since_anthesis": max(_finite_float(cohort.get("days_since_anthesis"), default=0.0), 0.0),
+                    "days_since_maturity": max(_finite_float(cohort.get("days_since_maturity"), default=0.0), 0.0),
+                    "mature_pool_flag": bool(cohort.get("mature_pool_flag", False)),
+                    "mature_pool_residence_days": max(
+                        _finite_float(cohort.get("mature_pool_residence_days"), default=0.0),
+                        0.0,
+                    ),
+                    "final_stage_flag": bool(cohort.get("final_stage_flag", False)),
+                    "final_stage_residence_days": max(
+                        _finite_float(cohort.get("final_stage_residence_days"), default=0.0),
+                        0.0,
+                    ),
+                    "explicit_outflow_capacity_g_m2_d": max(
+                        _finite_float(cohort.get("explicit_outflow_capacity_g_m2_d"), default=0.0),
+                        0.0,
+                    ),
+                    "proxy_state_flag": bool(cohort.get("proxy_state_flag", False)),
+                    "potential_weight_proxy_g_m2": float(max(0.0, float(cohort.get("w_fr_cohort", 0.0)))),
+                }
+            )
         mean_truss_tdvs = (
             float(np.mean([float(cohort.get("tdvs", 0.0)) for cohort in self.truss_cohorts]))
             if self.truss_cohorts
@@ -793,8 +1063,11 @@ class TomatoModel:
         dt = float(dt_seconds)
         if dt <= 0:
             raise ValueError(f"dt_seconds must be > 0, got {dt_seconds!r}.")
+        dt_days = dt / 86400.0
         self.last_fruit_harvest_g = 0.0
         self.last_leaf_harvest_g = 0.0
+        for cohort in self.truss_cohorts:
+            self._ensure_cohort_runtime_fields(cohort, current_time=current_time)
 
         sim_date = current_time.date()
         if sim_date > self.current_date:
@@ -843,11 +1116,15 @@ class TomatoModel:
 
         t_air_c = self.T_a - 273.15
         for cohort in self.truss_cohorts:
-            if not cohort.get("active", True):
+            self._ensure_cohort_runtime_fields(cohort, current_time=current_time)
+            if not bool(cohort.get("sink_active_flag", cohort.get("active", True))):
                 continue
             cohort["tdvs"] = self._advance_tdvs_with_fdvr(float(cohort.get("tdvs", 0.0)), t_air_c, dt)
             if float(cohort["tdvs"]) >= self.tdvs_max:
                 cohort["active"] = False
+                cohort["sink_active_flag"] = False
+                self._mark_cohort_mature_onplant(cohort, current_time)
+        self._update_cohort_runtime_state(current_time, dt_days)
 
         sinks, per_truss_sinks = self._compute_sink_state()
         active_trusses = self._count_active_trusses()
@@ -950,8 +1227,8 @@ class TomatoModel:
             growth_respiration_g=max(0.0, dW_total_step / max(c_f, 1e-9) - dW_total_step),
             growth_g=max(0.0, dW_total_step),
             maintenance_g=max(0.0, rm_eff_g_s * dt),
-            fruit_harvest_g=self.W_fr_harvested,
-            leaf_harvest_g=0.0,
+            fruit_harvest_g=self.last_fruit_harvest_g,
+            leaf_harvest_g=self.last_leaf_harvest_g,
         )
 
     def calculate_current_lai(self) -> float:
@@ -1236,14 +1513,28 @@ class TomatoModel:
             else:
                 nfr = int(self.n_f)
             self.truss_cohorts.append(
-                {
-                    "entity_id": f"truss_{self._next_truss_entity_id:04d}",
-                    "tdvs": 0.0,
-                    "n_fruits": nfr,
-                    "w_fr_cohort": 0.0,
-                    "active": True,
-                    "mult": self.shoots_per_m2,
-                }
+                self._ensure_cohort_runtime_fields(
+                    {
+                        "entity_id": f"truss_{self._next_truss_entity_id:04d}",
+                        "tdvs": 0.0,
+                        "fds": 0.0,
+                        "n_fruits": nfr,
+                        "w_fr_cohort": 0.0,
+                        "active": True,
+                        "mult": self.shoots_per_m2,
+                        "onplant_flag": True,
+                        "harvested_flag": False,
+                        "sink_active_flag": True,
+                        "mature_flag": False,
+                        "harvest_ready_flag": False,
+                        "anthesis_at": self._cohort_timestamp_iso(datetime.combine(sim_date, datetime.min.time())),
+                        "matured_at": None,
+                        "days_since_anthesis": 0.0,
+                        "days_since_maturity": 0.0,
+                        "proxy_state_flag": False,
+                    },
+                    current_time=datetime.combine(sim_date, datetime.min.time()),
+                )
             )
             self._next_truss_entity_id += 1
 
@@ -1506,13 +1797,19 @@ class TomatoModel:
         matured_indices: list[int] = []
         harvested_now = 0.0
         for idx, cohort in enumerate(self.truss_cohorts):
+            self._ensure_cohort_runtime_fields(cohort, current_time=datetime.combine(self.current_date, datetime.min.time()))
             tdvs = float(cohort.get("tdvs", 0.0))
-            is_active = bool(cohort.get("active", True))
+            is_active = bool(cohort.get("sink_active_flag", cohort.get("active", True)))
             truss_dm = max(0.0, float(cohort.get("w_fr_cohort", 0.0)))
             if truss_dm >= self.harvest_truss_dm_g:
                 cohort["active"] = False
+                cohort["sink_active_flag"] = False
                 is_active = False
             if (not is_active) or tdvs >= self.tdvs_max:
+                self._mark_cohort_mature_onplant(cohort, datetime.combine(self.current_date, datetime.min.time()))
+                cohort["onplant_flag"] = False
+                cohort["harvested_flag"] = True
+                cohort["harvest_ready_flag"] = True
                 harvested_now += truss_dm
                 matured_indices.append(idx)
 
