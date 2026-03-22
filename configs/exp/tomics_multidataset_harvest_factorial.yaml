@@ -1,0 +1,41 @@
+exp:
+  name: tomics_multidataset_harvest_factorial
+
+validation:
+  datasets:
+    default_dataset_ids:
+      - knu_actual
+    items:
+      - dataset_id: knu_actual
+        dataset_kind: knu_measured_harvest
+        display_name: KNU measured harvest longrun
+        forcing_path: data/forcing/KNU_Tomato_Env.CSV
+        observed_harvest_path: data/forcing/tomato_validation_data_yield_260321.xlsx
+        validation_start: "2025-10-20"
+        validation_end: "2025-12-31"
+        cultivar: unknown
+        greenhouse: KNU
+        season: current_window
+        basis:
+          reporting_basis: floor_area_g_m2
+          plants_per_m2: 1.836091
+        observation:
+          date_column: Date
+          measured_cumulative_column: Measured_Cumulative_Total_Fruit_DW (g/m^2)
+          estimated_cumulative_column: Estimated_Cumulative_Total_Fruit_DW (g/m^2)
+          measured_semantics: cumulative_harvested_fruit_dry_weight_floor_area
+        sanitized_fixture:
+          fixture_kind: sanitized_csv_fixture
+          forcing_fixture_path: tests/fixtures/knu_sanitized/KNU_Tomato_Env_fixture.csv
+          observed_harvest_fixture_path: tests/fixtures/knu_sanitized/tomato_validation_data_yield_fixture.csv
+        priority_tags:
+          - baseline_window
+          - needs_additional_season
+          - needs_longer_harvest_wave
+          - needs_management_metadata
+          - needs_residence_signal_dataset
+          - prefer_rootzone_metadata
+  multidataset_factorial:
+    output_root: out/tomics_multidataset_harvest_factorial
+    dataset_factorial_roots:
+      knu_actual: out/tomics_knu_harvest_family_factorial
