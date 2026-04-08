@@ -33,6 +33,7 @@ class KnuValidationData:
     observation_unit_label: str
     measured_column: str
     estimated_column: str
+    date_column: str = "Date"
 
 
 def _finite_float_series(series: pd.Series) -> pd.Series:
@@ -149,26 +150,69 @@ def _first_sheet_rows_from_xlsx(path: Path) -> list[dict[int, Any]]:
     return rows
 
 
-def _read_knu_yield_csv(path: Path) -> tuple[pd.DataFrame, str, str, str]:
+def _require_column(df: pd.DataFrame, column: str, *, label: str) -> str:
+    if column not in df.columns:
+        raise ValueError(f"KNU yield table is missing requested {label} column {column!r}.")
+    return column
+
+
+def _read_knu_yield_csv(
+    path: Path,
+    *,
+    date_column: str | None = None,
+    measured_column: str | None = None,
+    estimated_column: str | None = None,
+) -> tuple[pd.DataFrame, str, str, str, str]:
     df = pd.read_csv(path)
-    if df.shape[1] < 3:
+    if df.shape[1] < 2:
         raise ValueError(f"KNU yield CSV has too few columns: {list(df.columns)!r}")
-    date_col = str(df.columns[0])
-    measured_col = str(df.columns[1])
-    estimated_col = str(df.columns[2])
+    date_col = _require_column(df, str(date_column or df.columns[0]), label="date")
+    measured_col = _require_column(
+        df,
+        str(measured_column or df.columns[min(1, len(df.columns) - 1)]),
+        label="measured",
+    )
+    estimated_col = str(estimated_column or (df.columns[2] if df.shape[1] >= 3 else measured_col))
+    estimated_col = _require_column(df, estimated_col, label="estimated")
     out = df.copy()
     out[date_col] = pd.to_datetime(out[date_col], errors="coerce").dt.normalize()
     out = out.dropna(subset=[date_col]).reset_index(drop=True)
     out[measured_col] = _finite_float_series(out[measured_col])
-    out[estimated_col] = _finite_float_series(out[estimated_col])
+    if estimated_col == measured_col:
+        out[estimated_col] = out[measured_col].copy()
+    else:
+        out[estimated_col] = _finite_float_series(out[estimated_col])
     unit_label = measured_col[measured_col.find("(") + 1 : measured_col.rfind(")")] if "(" in measured_col and ")" in measured_col else measured_col
-    return out, unit_label, measured_col, estimated_col
+    return out, unit_label, date_col, measured_col, estimated_col
 
 
-def read_knu_yield_workbook(path: str | Path) -> tuple[pd.DataFrame, str, str, str]:
+def _resolve_header_index(headers: list[Any], requested: str | None, *, default_index: int, label: str) -> int:
+    if requested:
+        normalized = str(requested)
+        for idx, header in enumerate(headers):
+            if str(header) == normalized:
+                return idx
+        raise ValueError(f"KNU yield workbook is missing requested {label} column {requested!r}.")
+    if default_index >= len(headers):
+        raise ValueError(f"KNU yield workbook has no default {label} column at index {default_index}.")
+    return default_index
+
+
+def read_knu_yield_workbook(
+    path: str | Path,
+    *,
+    date_column: str | None = None,
+    measured_column: str | None = None,
+    estimated_column: str | None = None,
+) -> tuple[pd.DataFrame, str, str, str, str]:
     workbook_path = Path(path)
     if workbook_path.suffix.lower() == ".csv":
-        return _read_knu_yield_csv(workbook_path)
+        return _read_knu_yield_csv(
+            workbook_path,
+            date_column=date_column,
+            measured_column=measured_column,
+            estimated_column=estimated_column,
+        )
 
     rows = _first_sheet_rows_from_xlsx(workbook_path)
     if not rows:
@@ -177,23 +221,30 @@ def read_knu_yield_workbook(path: str | Path) -> tuple[pd.DataFrame, str, str, s
     header_map = rows[0]
     max_header_idx = max(header_map) if header_map else -1
     headers = [header_map.get(idx) for idx in range(max_header_idx + 1)]
-    if len(headers) < 3:
+    minimum_columns = 2 if estimated_column is None else 3
+    if len(headers) < minimum_columns:
         raise ValueError(f"KNU yield workbook has too few header columns: {headers!r}")
 
-    date_col = str(headers[0])
-    measured_col = str(headers[1])
-    estimated_col = str(headers[2])
+    date_idx = _resolve_header_index(headers, date_column, default_index=0, label="date")
+    measured_idx = _resolve_header_index(headers, measured_column, default_index=1, label="measured")
+    if estimated_column is None and len(headers) < 3:
+        estimated_idx = measured_idx
+    else:
+        estimated_idx = _resolve_header_index(headers, estimated_column, default_index=2, label="estimated")
+    date_col = str(headers[date_idx])
+    measured_col = str(headers[measured_idx])
+    estimated_col = str(headers[estimated_idx])
 
     records: list[dict[str, Any]] = []
     for raw_row in rows[1:]:
-        date_value = raw_row.get(0)
+        date_value = raw_row.get(date_idx)
         if not isinstance(date_value, datetime):
             continue
         records.append(
             {
                 date_col: pd.Timestamp(date_value).normalize(),
-                measured_col: raw_row.get(1),
-                estimated_col: raw_row.get(2),
+                measured_col: raw_row.get(measured_idx),
+                estimated_col: raw_row.get(estimated_idx),
             }
         )
 
@@ -202,9 +253,12 @@ def read_knu_yield_workbook(path: str | Path) -> tuple[pd.DataFrame, str, str, s
 
     df = pd.DataFrame.from_records(records)
     df[measured_col] = _finite_float_series(df[measured_col])
-    df[estimated_col] = _finite_float_series(df[estimated_col])
+    if estimated_col == measured_col:
+        df[estimated_col] = df[measured_col].copy()
+    else:
+        df[estimated_col] = _finite_float_series(df[estimated_col])
     unit_label = measured_col[measured_col.find("(") + 1 : measured_col.rfind(")")] if "(" in measured_col and ")" in measured_col else measured_col
-    return df, unit_label, measured_col, estimated_col
+    return df, unit_label, date_col, measured_col, estimated_col
 
 
 def forcing_summary(forcing_df: pd.DataFrame) -> dict[str, Any]:
@@ -219,11 +273,17 @@ def forcing_summary(forcing_df: pd.DataFrame) -> dict[str, Any]:
     }
 
 
-def yield_summary(yield_df: pd.DataFrame, *, measured_column: str, estimated_column: str) -> dict[str, Any]:
+def yield_summary(
+    yield_df: pd.DataFrame,
+    *,
+    date_column: str,
+    measured_column: str,
+    estimated_column: str,
+) -> dict[str, Any]:
     return {
         "rows": int(yield_df.shape[0]),
-        "start": pd.Timestamp(yield_df.iloc[0, 0]).isoformat(),
-        "end": pd.Timestamp(yield_df.iloc[-1, 0]).isoformat(),
+        "start": pd.Timestamp(yield_df[date_column].iloc[0]).isoformat(),
+        "end": pd.Timestamp(yield_df[date_column].iloc[-1]).isoformat(),
         "measured_start": float(yield_df[measured_column].iloc[0]),
         "measured_end": float(yield_df[measured_column].iloc[-1]),
         "estimated_start": float(yield_df[estimated_column].iloc[0]),
@@ -265,12 +325,15 @@ def write_knu_manifest(
     output_root: Path,
     forcing_df: pd.DataFrame,
     yield_df: pd.DataFrame,
+    date_column: str,
     measured_column: str,
     estimated_column: str,
     observation_unit_label: str,
     forcing_source_path: Path,
     yield_source_path: Path,
     resample_rule: str,
+    reporting_basis: str = "floor_area_g_m2",
+    plants_per_m2: float = PLANTS_PER_M2,
 ) -> dict[str, str]:
     output_root.mkdir(parents=True, exist_ok=True)
     forcing_summary_path = output_root / "forcing_summary.csv"
@@ -296,12 +359,13 @@ def write_knu_manifest(
         "forcing_source_path": str(forcing_source_path.resolve()),
         "yield_source_path": str(yield_source_path.resolve()),
         "resample_rule": resample_rule,
-        "reporting_basis": "floor_area",
-        "plants_per_m2": PLANTS_PER_M2,
+        "reporting_basis": reporting_basis,
+        "plants_per_m2": float(plants_per_m2),
         "observation_unit_label": observation_unit_label,
         "forcing_summary": forcing_summary(forcing_df),
         "yield_summary": yield_summary(
             yield_df,
+            date_column=date_column,
             measured_column=measured_column,
             estimated_column=estimated_column,
         ),
@@ -318,21 +382,31 @@ def load_knu_validation_data(
     *,
     forcing_path: str | Path,
     yield_path: str | Path,
+    date_column: str | None = None,
+    measured_column: str | None = None,
+    estimated_column: str | None = None,
 ) -> KnuValidationData:
     forcing_df = read_knu_forcing_csv(forcing_path)
-    yield_df, observation_unit_label, measured_column, estimated_column = read_knu_yield_workbook(yield_path)
+    yield_df, observation_unit_label, resolved_date_column, measured_column, estimated_column = read_knu_yield_workbook(
+        yield_path,
+        date_column=date_column,
+        measured_column=measured_column,
+        estimated_column=estimated_column,
+    )
     return KnuValidationData(
         forcing_df=forcing_df,
         yield_df=yield_df,
         forcing_summary=forcing_summary(forcing_df),
         yield_summary=yield_summary(
             yield_df,
+            date_column=resolved_date_column,
             measured_column=measured_column,
             estimated_column=estimated_column,
         ),
         observation_unit_label=observation_unit_label,
         measured_column=measured_column,
         estimated_column=estimated_column,
+        date_column=resolved_date_column,
     )
 
 

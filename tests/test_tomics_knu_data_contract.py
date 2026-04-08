@@ -3,11 +3,15 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pandas as pd
 import yaml
 
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.data_contract import (
     resolve_knu_data_contract,
     write_data_contract_manifest,
+)
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.harvest_operator import (
+    observed_floor_area_yield,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.knu_data import load_knu_validation_data
 
@@ -32,6 +36,12 @@ def test_knu_data_contract_resolves_private_root_and_writes_manifest(tmp_path: P
                 "yield_relative_path": "data/forcing/tomato_validation_data_yield_260222.csv",
                 "reporting_basis": "floor_area_g_m2",
                 "plants_per_m2": 1.836091,
+                "observation": {
+                    "date_column": "Date",
+                    "measured_cumulative_column": "Measured_Cumulative_Total_Fruit_DW (g/m^2)",
+                    "estimated_cumulative_column": "Estimated_Cumulative_Total_Fruit_DW (g/m^2)",
+                    "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area",
+                },
             },
             sort_keys=False,
             allow_unicode=False,
@@ -47,9 +57,72 @@ def test_knu_data_contract_resolves_private_root_and_writes_manifest(tmp_path: P
     contract = resolve_knu_data_contract(validation_cfg=validation_cfg, repo_root=repo_root, config_path=contract_path)
     assert contract.forcing_source_kind == "private_root"
     assert contract.yield_source_kind == "private_root"
+    assert contract.date_column == "Date"
+    assert contract.measured_cumulative_column == "Measured_Cumulative_Total_Fruit_DW (g/m^2)"
+    assert contract.estimated_cumulative_column == "Estimated_Cumulative_Total_Fruit_DW (g/m^2)"
     data = load_knu_validation_data(forcing_path=contract.forcing_path, yield_path=contract.yield_path)
     manifest_path = write_data_contract_manifest(output_root=tmp_path / "out", contract=contract, data=data)
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     assert manifest["reporting_basis"] == "floor_area_g_m2"
     assert manifest["plants_per_m2"] == 1.836091
+    assert manifest["observation_columns"]["date"] == "Date"
     assert manifest["parser_assumptions"]["observation_semantics"] == "cumulative_harvested_fruit_dry_weight_floor_area"
+
+
+def test_load_knu_validation_data_honors_explicit_observation_columns(tmp_path: Path) -> None:
+    forcing_path = tmp_path / "forcing.csv"
+    forcing_path.write_text(
+        "\n".join(
+            [
+                "datetime,T_air_C,PAR_umol,CO2_ppm,RH_percent,wind_speed_ms",
+                "2025-01-01 00:00:00,20,200,400,70,0.5",
+                "2025-01-01 01:00:00,20,220,400,69,0.5",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    yield_path = tmp_path / "yield.csv"
+    yield_path.write_text(
+        "\n".join(
+            [
+                "stamp,harvest_obs,harvest_est,notes",
+                "2025-01-01,1.0,1.2,a",
+                "2025-01-02,2.0,2.2,b",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    data = load_knu_validation_data(
+        forcing_path=forcing_path,
+        yield_path=yield_path,
+        date_column="stamp",
+        measured_column="harvest_obs",
+        estimated_column="harvest_est",
+    )
+
+    assert data.date_column == "stamp"
+    assert data.measured_column == "harvest_obs"
+    assert data.estimated_column == "harvest_est"
+    assert data.yield_summary["start"].startswith("2025-01-01")
+    assert data.yield_summary["end"].startswith("2025-01-02")
+
+
+def test_observed_floor_area_yield_normalizes_per_plant_input_to_floor_area() -> None:
+    yield_df = pd.DataFrame.from_records(
+        [
+            {"stamp": "2025-01-01", "harvest_obs": 1.0, "harvest_est": 1.5},
+            {"stamp": "2025-01-02", "harvest_obs": 2.0, "harvest_est": 2.5},
+        ]
+    )
+    observed = observed_floor_area_yield(
+        yield_df=yield_df,
+        date_column="stamp",
+        measured_column="harvest_obs",
+        estimated_column="harvest_est",
+        reporting_basis="g_per_plant",
+        plants_per_m2=2.0,
+    )
+
+    assert observed["measured_cumulative_harvested_fruit_dry_weight_floor_area"].tolist() == [2.0, 4.0]
+    assert observed["estimated_cumulative_harvested_fruit_dry_weight_floor_area"].tolist() == [3.0, 5.0]
