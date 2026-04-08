@@ -1,0 +1,14 @@
+exp:
+  name: tomics_lane_matrix_gate
+
+paths:
+  repo_root: ../..
+
+validation:
+  lane_matrix_gate:
+    matrix_root: out/tomics/validation/lane-matrix
+    output_root: out/tomics/validation/lane-matrix
+    native_state_coverage_min: 0.5
+    shared_tdvs_proxy_fraction_max: 0.5
+    cross_dataset_stability_score_min: 0.5
+    min_dataset_count: 2

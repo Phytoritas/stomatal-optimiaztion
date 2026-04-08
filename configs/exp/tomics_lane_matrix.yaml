@@ -1,0 +1,64 @@
+exp:
+  name: tomics_lane_matrix
+
+paths:
+  repo_root: ../..
+
+validation:
+  forcing_csv_path: data/forcing/KNU_Tomato_Env.CSV
+  yield_xlsx_path: data/forcing/tomato_validation_data_yield_260321.xlsx
+  private_data_contract_path: configs/data/knu_private_data_contract.template.yaml
+  prepared_output_root: out/tomics/validation/knu/longrun
+  resample_rule: 1h
+  theta_proxy_mode: bucket_irrigated
+  theta_proxy_scenarios: [dry, moderate, wet]
+  calibration_end: 2024-08-19
+  datasets:
+    default_dataset_ids:
+      - knu_actual
+    items:
+      - dataset_id: knu_actual
+        dataset_kind: knu_measured_harvest
+        display_name: KNU measured harvest longrun
+        forcing_path: data/forcing/KNU_Tomato_Env.CSV
+        observed_harvest_path: data/forcing/tomato_validation_data_yield_260321.xlsx
+        validation_start: "2025-10-20"
+        validation_end: "2025-12-31"
+        cultivar: unknown
+        greenhouse: KNU
+        season: current_window
+        basis:
+          reporting_basis: floor_area_g_m2
+          plants_per_m2: 1.836091
+        observation:
+          date_column: Date
+          measured_cumulative_column: Measured_Cumulative_Total_Fruit_DW (g/m^2)
+          estimated_cumulative_column: Estimated_Cumulative_Total_Fruit_DW (g/m^2)
+          measured_semantics: cumulative_harvested_fruit_dry_weight_floor_area
+        sanitized_fixture:
+          fixture_kind: sanitized_csv_fixture
+          forcing_fixture_path: tests/fixtures/knu_sanitized/KNU_Tomato_Env_fixture.csv
+          observed_harvest_fixture_path: tests/fixtures/knu_sanitized/tomato_validation_data_yield_fixture.csv
+        priority_tags:
+          - baseline_window
+        notes:
+          dataset_role_hint: measured_harvest
+  lane_matrix:
+    output_root: out/tomics/validation/lane-matrix
+    theta_proxy_scenario: moderate
+    selected_harvest_family_path: out/tomics_knu_harvest_family_factorial/selected_harvest_family.json
+    allocation_lane_ids:
+      - legacy_sink_baseline
+      - incumbent_current
+      - research_current
+      - research_promoted
+      - raw_reference_thorp
+    harvest_profile_ids:
+      - incumbent_harvest_profile
+      - locked_research_selected_harvest_profile
+      - diagnostic_factorial_harvest_profile
+
+reference:
+  current_vs_promoted_config: configs/exp/tomics_current_vs_promoted_factorial_knu.yaml
+  current_output_root: out/tomics/validation/knu/architecture/current-factorial
+  promoted_output_root: out/tomics/validation/knu/architecture/promoted-factorial
