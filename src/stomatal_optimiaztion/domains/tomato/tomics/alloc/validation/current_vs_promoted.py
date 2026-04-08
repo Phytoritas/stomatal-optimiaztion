@@ -242,17 +242,23 @@ def prepare_knu_bundle(
     data = load_knu_validation_data(
         forcing_path=data_contract.forcing_path,
         yield_path=data_contract.yield_path,
+        date_column=data_contract.date_column,
+        measured_column=data_contract.measured_cumulative_column,
+        estimated_column=data_contract.estimated_cumulative_column,
     )
     manifest_summary = write_knu_manifest(
         output_root=prepared_root,
         forcing_df=data.forcing_df,
         yield_df=data.yield_df,
+        date_column=data.date_column,
         measured_column=data.measured_column,
         estimated_column=data.estimated_column,
         observation_unit_label=data.observation_unit_label,
         forcing_source_path=data_contract.forcing_path,
         yield_source_path=data_contract.yield_path,
         resample_rule=resample_rule,
+        reporting_basis=data_contract.reporting_basis,
+        plants_per_m2=data_contract.plants_per_m2,
     )
     data_contract_manifest = write_data_contract_manifest(
         output_root=prepared_root,
@@ -261,8 +267,11 @@ def prepare_knu_bundle(
     )
     observed_df = observed_floor_area_yield(
         data.yield_df,
+        date_column=data.date_column,
         measured_column=data.measured_column,
         estimated_column=data.estimated_column,
+        reporting_basis=data_contract.reporting_basis,
+        plants_per_m2=data_contract.plants_per_m2,
     )
     validation_start = pd.Timestamp(observed_df["date"].min()).normalize()
     validation_end = pd.Timestamp(observed_df["date"].max()).normalize()

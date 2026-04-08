@@ -6,8 +6,32 @@ from typing import Any
 
 import pandas as pd
 
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.datasets.metadata import (
+    build_dataset_inventory_summary,
+)
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.datasets.registry import (
+    DatasetRegistry,
+)
+
 
 KEY_COLUMNS = ["fruit_harvest_family", "leaf_harvest_family", "fdmc_mode"]
+EMPTY_SCORECARD_COLUMNS = [
+    *KEY_COLUMNS,
+    "mean_score",
+    "mean_rmse_cumulative_offset",
+    "mean_rmse_daily_increment",
+    "max_harvest_mass_balance_error",
+    "max_canopy_collapse_days",
+    "mean_native_family_state_fraction",
+    "mean_proxy_family_state_fraction",
+    "mean_shared_tdvs_proxy_fraction",
+    "family_state_mode_distribution",
+    "proxy_mode_used_distribution",
+    "dataset_count",
+    "dataset_ids",
+    "dataset_win_count",
+    "cross_dataset_stability_score",
+]
 
 
 def _aggregate_distribution_json(series: pd.Series) -> str:
@@ -51,9 +75,11 @@ def load_dataset_factorial_outputs(
 def build_cross_dataset_scorecard(
     dataset_rankings: list[pd.DataFrame],
     dataset_selected_payloads: list[dict[str, Any]],
+    *,
+    registry: DatasetRegistry | None = None,
 ) -> pd.DataFrame:
     if not dataset_rankings:
-        return pd.DataFrame()
+        return pd.DataFrame(columns=EMPTY_SCORECARD_COLUMNS)
     combined = pd.concat(dataset_rankings, ignore_index=True)
     dataset_count = max(len({str(value) for value in combined["dataset_id"].dropna()}), 1)
     scorecard = (
@@ -91,7 +117,51 @@ def build_cross_dataset_scorecard(
         axis=1,
     )
     scorecard["cross_dataset_stability_score"] = scorecard["dataset_win_count"].astype(float) / float(dataset_count)
+    if registry is not None:
+        summary = build_dataset_inventory_summary(list(registry.datasets))
+        scorecard["total_registry_datasets"] = int(summary["total_registry_datasets"])
+        scorecard["runnable_measured_harvest_datasets"] = int(summary["runnable_measured_harvest_datasets"])
+        scorecard["proxy_datasets"] = int(summary["proxy_datasets"])
+        scorecard["context_only_datasets"] = int(summary["context_only_datasets"])
+        scorecard["blocked_by_missing_raw_fixture"] = int(summary["blocked_by_missing_raw_fixture"])
+        scorecard["blocked_by_missing_basis_or_density"] = int(summary["blocked_by_missing_basis_or_density"])
+        scorecard["blocked_by_missing_cumulative_mapping"] = int(summary["blocked_by_missing_cumulative_mapping"])
     return scorecard
 
 
-__all__ = ["KEY_COLUMNS", "build_cross_dataset_scorecard", "load_dataset_factorial_outputs"]
+def build_cross_dataset_scorecard_report(
+    scorecard_df: pd.DataFrame,
+    *,
+    registry: DatasetRegistry,
+    skipped_datasets: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    return {
+        "dataset_inventory_summary": build_dataset_inventory_summary(list(registry.datasets)),
+        "runnable_measured_dataset_ids": [dataset.dataset_id for dataset in registry.runnable_measured_harvest_datasets()],
+        "draft_dataset_ids": [dataset.dataset_id for dataset in registry.draft_datasets()],
+        "skipped_datasets": skipped_datasets or [],
+        "scorecard_rows": scorecard_df.to_dict(orient="records"),
+    }
+
+
+def build_cross_dataset_inventory_scorecard(
+    registry: DatasetRegistry,
+    *,
+    scorecard_df: pd.DataFrame | None = None,
+    skipped_datasets: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    return build_cross_dataset_scorecard_report(
+        scorecard_df if scorecard_df is not None else pd.DataFrame(columns=EMPTY_SCORECARD_COLUMNS),
+        registry=registry,
+        skipped_datasets=skipped_datasets,
+    )
+
+
+__all__ = [
+    "EMPTY_SCORECARD_COLUMNS",
+    "KEY_COLUMNS",
+    "build_cross_dataset_inventory_scorecard",
+    "build_cross_dataset_scorecard",
+    "build_cross_dataset_scorecard_report",
+    "load_dataset_factorial_outputs",
+]

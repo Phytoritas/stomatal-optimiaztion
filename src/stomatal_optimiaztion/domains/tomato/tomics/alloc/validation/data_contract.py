@@ -23,6 +23,10 @@ class KnuDataContractPaths:
     reporting_basis: str
     plants_per_m2: float
     parser_assumptions: dict[str, Any]
+    date_column: str | None = None
+    measured_cumulative_column: str | None = None
+    estimated_cumulative_column: str | None = None
+    measured_semantics: str = "cumulative_harvested_fruit_dry_weight_floor_area"
     private_data_root: str | None = None
     contract_path: Path | None = None
 
@@ -140,14 +144,28 @@ def resolve_knu_data_contract(
             + (f" and private root {private_root!r}" if private_root else f"; env {env_name!r} was not configured")
         )
 
+    observation_cfg = _as_dict(contract.get("observation"))
+    contract_parser_assumptions = _as_dict(contract.get("parser_assumptions"))
+    measured_semantics = str(
+        observation_cfg.get(
+            "measured_semantics",
+            contract.get(
+                "measured_semantics",
+                contract_parser_assumptions.get(
+                    "observation_semantics",
+                    "cumulative_harvested_fruit_dry_weight_floor_area",
+                ),
+            ),
+        )
+    )
     parser_assumptions = {
         "forcing_parser": "csv_datetime_first_class",
         "yield_parser": yield_path.suffix.lower(),
         "units_policy": "preserve_source_declared_units",
         "datetime_policy": "naive_local_greenhouse_timestamps",
-        "observation_semantics": "cumulative_harvested_fruit_dry_weight_floor_area",
-        **_as_dict(contract.get("parser_assumptions")),
+        **contract_parser_assumptions,
     }
+    parser_assumptions["observation_semantics"] = measured_semantics
     return KnuDataContractPaths(
         forcing_path=forcing_path,
         yield_path=yield_path,
@@ -155,6 +173,30 @@ def resolve_knu_data_contract(
         yield_source_kind=yield_source_kind,
         reporting_basis=str(contract.get("reporting_basis", "floor_area_g_m2")),
         plants_per_m2=float(contract.get("plants_per_m2", PLANTS_PER_M2)),
+        date_column=(
+            str(observation_cfg["date_column"])
+            if observation_cfg.get("date_column") is not None
+            else (str(contract["date_column"]) if contract.get("date_column") is not None else None)
+        ),
+        measured_cumulative_column=(
+            str(observation_cfg["measured_cumulative_column"])
+            if observation_cfg.get("measured_cumulative_column") is not None
+            else (
+                str(contract["measured_cumulative_column"])
+                if contract.get("measured_cumulative_column") is not None
+                else None
+            )
+        ),
+        estimated_cumulative_column=(
+            str(observation_cfg["estimated_cumulative_column"])
+            if observation_cfg.get("estimated_cumulative_column") is not None
+            else (
+                str(contract["estimated_cumulative_column"])
+                if contract.get("estimated_cumulative_column") is not None
+                else None
+            )
+        ),
+        measured_semantics=measured_semantics,
         parser_assumptions=parser_assumptions,
         private_data_root=private_root,
         contract_path=contract_path,
@@ -179,6 +221,7 @@ def write_data_contract_manifest(
         "reporting_basis": contract.reporting_basis,
         "plants_per_m2": contract.plants_per_m2,
         "observation_columns": {
+            "date": data.date_column,
             "measured": data.measured_column,
             "estimated": data.estimated_column,
         },

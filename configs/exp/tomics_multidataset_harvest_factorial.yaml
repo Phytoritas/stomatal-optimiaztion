@@ -3,6 +3,8 @@ exp:
 
 validation:
   datasets:
+    registry_snapshot_path: configs/data/tomics_multidataset_candidates/traitenv_candidate_registry.json
+    allow_missing_registry_snapshot: true
     default_dataset_ids:
       - knu_actual
     items:
@@ -36,6 +38,6 @@ validation:
           - needs_residence_signal_dataset
           - prefer_rootzone_metadata
   multidataset_factorial:
-    output_root: out/tomics_multidataset_harvest_factorial
+    output_root: out/tomics/validation/multidataset
     dataset_factorial_roots:
       knu_actual: out/tomics_knu_harvest_family_factorial
