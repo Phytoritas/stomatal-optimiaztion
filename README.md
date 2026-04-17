@@ -16,6 +16,7 @@
 - Validation artifacts from `pytest` and `ruff`
 - Reproducible Plotkit figure bundles under `out/` with saved spec, resolved spec, tokens, metadata, and PNG/data sidecars
 - TOMICS output roots grouped under `out/tomics/analysis/` and `out/tomics/validation/knu/` so synthetic studies, actual-data architecture studies, and fairness-gate reruns stay distinguishable
+- TOMICS lane-matrix comparison artifacts under `out/tomics/validation/lane-matrix/` so allocation lanes, harvest profiles, and dataset roles share one scorecard and one gate surface
 
 ## How to run
 ```bash
@@ -25,6 +26,8 @@ poetry run python scripts/render_root_rerun_parity_figures.py --output-dir out/r
 poetry run python scripts/render_root_rerun_parity_figures.py --output-dir out/rerun_parity --fast-smoke
 poetry run python scripts/run_tomics_partition_compare.py --config configs/exp/tomics_partition_compare.yaml
 poetry run python scripts/run_tomics_factorial.py --config configs/exp/tomics_factorial.yaml
+poetry run python scripts/run_tomics_lane_matrix.py --config configs/exp/tomics_lane_matrix.yaml
+poetry run python scripts/run_tomics_lane_matrix_gate.py --config configs/exp/tomics_lane_matrix_gate.yaml
 poetry run pytest
 poetry run ruff check .
 ```
@@ -45,6 +48,7 @@ poetry run ruff check .
 - Issue `#239` / module `118` adds the KNU fair-validation pipeline: private-data contract support, harvest observation operator, hidden-state reconstruction, root-zone inversion, equal-budget calibration, and the promotion gate that keeps shipped TOMICS incumbent.
 - Issue `#243` / module `119` adds the first-class TOMICS harvest architecture layer, literature-aware harvest family factorial screening, and a harvest-aware promotion gate that still keeps shipped TOMICS plus incumbent TOMSIM harvest as the incumbent baseline.
 - Issue `#255` reruns the KNU harvest-aware factorial and promotion gate after the runtime-complete harvest state/writeback contract landed on `main`; the rerun probe confirms populated post-maturity clocks and step-flux `h1`/`h2`, the selected research family now resolves to `dekoning_fds + vegetative_unit_pruning + dekoning_fds`, but holdout RMSE remains tied and the gate still says `Keep shipped TOMICS + incumbent TOMSIM harvest as the incumbent baseline.`
+- Issue `#259` stages a TOMICS-native lane-matrix architecture under `out/tomics/validation/lane-matrix/`, keeps `legacy` and raw `thorp_fruit_veg` diagnostic-only, and reuses the same KNU observation/writeback surface for incumbent, research, and promoted TOMICS lanes.
 - Gates A through C are satisfied for the first bounded migration slice.
 - THORP `model_card` and traceability helpers are migrated into the new package layout.
 - THORP `radiation` runtime seam is migrated as slice 002.
@@ -172,4 +176,7 @@ poetry run ruff check .
 - Re-run the runtime-complete harvest-aware lane when harvest-runtime or validation/writeback semantics change:
   - `scripts/run_tomics_knu_harvest_family_factorial.py --config configs/exp/tomics_knu_harvest_family_factorial.yaml`
   - `scripts/run_tomics_knu_harvest_promotion_gate.py --config configs/exp/tomics_knu_harvest_promotion_gate.yaml`
+- Re-run the shared TOMICS lane matrix when allocation-lane comparison, harvest-profile selection, or measured-dataset registry changes:
+  - `scripts/run_tomics_lane_matrix.py --config configs/exp/tomics_lane_matrix.yaml`
+  - `scripts/run_tomics_lane_matrix_gate.py --config configs/exp/tomics_lane_matrix_gate.yaml`
 - Use `docs/architecture/review/tdgm-reference-payload-resume-provenance-note.md` if later-horizon root `TDGM` control payload diffs need to be interpreted again.
