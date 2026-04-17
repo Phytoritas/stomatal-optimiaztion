@@ -112,6 +112,11 @@ def dataset_registry_frame(datasets: list[DatasetMetadataContract]) -> pd.DataFr
                 "validation_end": payload["validation_end"],
                 "date_column": payload["observation"]["date_column"],
                 "measured_cumulative_column": payload["observation"]["measured_cumulative_column"],
+                "dry_matter_conversion_mode": payload["dry_matter_conversion"]["mode"],
+                "dry_matter_ratio": payload["dry_matter_conversion"]["dry_matter_ratio"],
+                "dry_matter_ratio_low": payload["dry_matter_conversion"]["dry_matter_ratio_low"],
+                "dry_matter_ratio_high": payload["dry_matter_conversion"]["dry_matter_ratio_high"],
+                "dry_matter_conversion_review_only": payload["dry_matter_conversion"]["review_only"],
                 "cultivar": payload["cultivar"],
                 "greenhouse": payload["greenhouse"],
                 "season": payload["season"],
@@ -177,6 +182,39 @@ BLOCKER_ACTIONS = {
     ),
 }
 
+DRY_MATTER_LITERATURE_REFS = (
+    (
+        "Ref 4",
+        "General mature-fruit DW/FW reported at 5.917-6.495% in a conservative whole-fruit comparison.",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC11339430/",
+    ),
+    (
+        "Ref 8",
+        "Greenhouse destructive measurements reported mean fruit dry-matter fraction 5.6%, range 4.9-6.9%.",
+        "https://linkinghub.elsevier.com/retrieve/pii/030442389400729Y",
+    ),
+    (
+        "Ref 3",
+        "Supplemental-light greenhouse tomatoes spanned 4.6-11.3%; larger-fruit lines centered near 6.6%, cherry near 9.5%.",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC8980428/",
+    ),
+    (
+        "Ref 6",
+        "Cherry tomato dry-matter fraction reached 8.2-13.9% under genotype/storage comparisons.",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC7760833/",
+    ),
+    (
+        "Ref 7",
+        "Greenhouse drought treatment shifted fruit DW/FW upward to about 9.30-9.72%.",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC12251554/",
+    ),
+    (
+        "Ref 9",
+        "Mechanistic fruit-growth analysis reported maturity water content near 95%, supporting a review-only prior near 5% dry matter with condition-dependent spread.",
+        "https://academic.oup.com/jxb/article-lookup/doi/10.1093/jxb/erm202",
+    ),
+)
+
 
 def blocker_action_items(blocker_codes: list[str] | tuple[str, ...]) -> list[str]:
     actions: list[str] = []
@@ -187,15 +225,135 @@ def blocker_action_items(blocker_codes: list[str] | tuple[str, ...]) -> list[str
     return actions
 
 
+def _source_ref_preview(dataset: DatasetMetadataContract, *, limit: int = 3) -> str:
+    preview_refs = [str(ref) for ref in dataset.source_refs[:limit] if str(ref).strip()]
+    if not preview_refs:
+        return "no source refs recorded in the current inventory snapshot"
+    preview = "; ".join(preview_refs)
+    if len(dataset.source_refs) > limit:
+        preview += "; ..."
+    return preview
+
+
+def _default_basis_provenance_note(dataset: DatasetMetadataContract) -> str:
+    if dataset.basis.reporting_basis != "unknown":
+        return (
+            f"Reviewed basis is currently `{dataset.basis.reporting_basis}`. "
+            "Keep this provenance explicit if the dataset later becomes runnable."
+        )
+    partition_path = dataset.notes.get("candidate_partition_integrated_observations_path")
+    basis_fields_present = list(dataset.notes.get("candidate_basis_fields_present", []))
+    basis_fields_missing = list(dataset.notes.get("candidate_basis_fields_missing", []))
+    if partition_path and not basis_fields_present and basis_fields_missing:
+        return (
+            "Inventory-derived candidate only. Harmonized observation partition "
+            f"`{partition_path}` does not yet provide non-null basis evidence in `{basis_fields_missing}`. "
+            "Reporting basis remains unresolved and must be reviewed from upstream source metadata before promotion use."
+        )
+    if partition_path and basis_fields_present:
+        return (
+            "Inventory-derived candidate only. Harmonized observation partition "
+            f"`{partition_path}` exposes candidate basis-related fields `{basis_fields_present}`, but the reporting basis "
+            "still needs explicit review before promotion use."
+        )
+    return (
+        "Inventory-derived candidate only. Reporting basis is still unresolved and must be reviewed directly "
+        f"from the source files before promotion use. Source preview: {_source_ref_preview(dataset)}."
+    )
+
+
+def _default_cumulative_mapping_note(dataset: DatasetMetadataContract) -> str:
+    candidate_date_key = dataset.notes.get("candidate_date_key")
+    candidate_harvest_column = dataset.notes.get("candidate_harvest_column")
+    semantics_hint = dataset.notes.get("candidate_target_semantics_hint", dataset.observation.measured_semantics)
+    preferred_season = dataset.notes.get("candidate_preferred_validation_season")
+    preferred_window = dataset.notes.get("candidate_preferred_validation_window")
+    construction_hint = dataset.notes.get("candidate_cumulative_construction_hint")
+    preferred_window_note = ""
+    if preferred_season is not None and isinstance(preferred_window, dict):
+        start = preferred_window.get("validation_start_candidate")
+        end = preferred_window.get("validation_end_candidate")
+        row_count = preferred_window.get("harvest_row_count")
+        preferred_window_note = (
+            f" Preferred intake season is `{preferred_season}` with candidate window `{start}` -> `{end}` "
+            f"and `{row_count}` comparison rows."
+        )
+    construction_note = f" {construction_hint}" if construction_hint else ""
+    if candidate_harvest_column is not None:
+        return (
+            f"Candidate date hint `{candidate_date_key}` and daily harvest signal `{candidate_harvest_column}` are "
+            f"visible in the harmonized inventory, but `measured_cumulative_column` must remain unresolved until "
+            f"review confirms a valid cumulative-harvest construction and explicit dry-weight/public-basis semantics. "
+            f"Current semantics hint: `{semantics_hint}`.{preferred_window_note}{construction_note}"
+        )
+    if candidate_date_key is not None:
+        return (
+            f"Candidate date hint `{candidate_date_key}` is visible, but no direct standardized harvest signal is "
+            f"currently mapped for cumulative comparison. Keep `measured_cumulative_column` unresolved until a "
+            f"reviewed harvest source and construction rule are added. Current semantics hint: `{semantics_hint}`."
+            f"{preferred_window_note}"
+        )
+    return (
+        "No reviewed date/cumulative mapping is currently available in the inventory-derived contract. "
+        f"Current semantics hint: `{semantics_hint}`."
+    )
+
+
+def _default_fixture_provenance_note(dataset: DatasetMetadataContract) -> str:
+    return (
+        "This candidate is still inventory-backed only. Add a reproducible raw-to-sanitized fixture pair and wire "
+        "`forcing_path`, `observed_harvest_path`, and `sanitized_fixture` before promoting it beyond review/diagnostic "
+        f"use. Source preview: {_source_ref_preview(dataset)}."
+    )
+
+
+def _default_dry_matter_review_note(dataset: DatasetMetadataContract) -> str | None:
+    semantics_hint = str(
+        dataset.notes.get("candidate_target_semantics_hint", dataset.observation.measured_semantics)
+    ).lower()
+    if "dry_weight" not in semantics_hint:
+        return None
+    return (
+        "Review-only dry-matter prior: literature synthesis for whole-fruit tomato typically centers near "
+        "`5-8% DW/FW`, with fresh-market fruit commonly around `6-7%` and a practical review baseline near "
+        "`0.065 g DW / g FW`; cherry/high-solids or stress cases can shift upward toward `8-10%` or higher. "
+        "Keep these values as review guidance only and do not auto-convert this candidate from fresh-weight or "
+        "removed-fruit-weight signals into cumulative harvested dry weight until dataset-specific source semantics "
+        "are reviewed explicitly. [Ref 4][Ref 8][Ref 3][Ref 6][Ref 7][Ref 9]"
+    )
+
+
+def _dry_matter_literature_refs(dataset: DatasetMetadataContract) -> list[str]:
+    if _default_dry_matter_review_note(dataset) is None:
+        return []
+    return [f"[{ref_id}] {summary} {url}" for ref_id, summary, url in DRY_MATTER_LITERATURE_REFS]
+
+
 def build_dataset_review_template(dataset: DatasetMetadataContract) -> dict[str, Any]:
     payload = dataset.to_payload()
+    dry_matter_review_note = _default_dry_matter_review_note(dataset)
     candidate_schema_hints = {
         key: payload["notes"][key]
         for key in (
             "candidate_date_key",
+            "candidate_raw_date_columns",
             "candidate_harvest_column",
+            "candidate_raw_harvest_columns",
             "candidate_harvest_requires_cumulative_construction",
             "candidate_harvest_includes_fallen_fruit",
+            "candidate_target_semantics_hint",
+            "candidate_requires_dry_weight_review",
+            "candidate_validation_windows",
+            "candidate_preferred_validation_season",
+            "candidate_preferred_validation_window",
+            "candidate_cumulative_group_keys",
+            "candidate_cumulative_construction_hint",
+            "candidate_seasons_missing_harvest_signal",
+            "candidate_partition_integrated_observations_path",
+            "candidate_partition_integrated_measurements_long_path",
+            "candidate_partition_comparison_daily_path",
+            "candidate_basis_fields_present",
+            "candidate_basis_fields_missing",
             "comparison_daily_standard_names",
             "traitenv_bundle_ref",
         )
@@ -211,6 +369,7 @@ def build_dataset_review_template(dataset: DatasetMetadataContract) -> dict[str,
         "blocker_codes": list(dataset.blocker_codes),
         "next_actions": blocker_action_items(dataset.blocker_codes),
         "candidate_schema_hints": candidate_schema_hints,
+        "dry_matter_conversion": payload["dry_matter_conversion"],
         "promotion_ready_checklist": {
             "forcing_path": dataset.forcing_path is not None,
             "observed_harvest_path": dataset.observed_harvest_path is not None,
@@ -220,7 +379,9 @@ def build_dataset_review_template(dataset: DatasetMetadataContract) -> dict[str,
                 True if not dataset.basis.requires_plant_density else dataset.basis.plants_per_m2 is not None
             ),
             "date_column": dataset.observation.date_column is not None,
+            "daily_increment_column": dataset.observation.daily_increment_column is not None,
             "measured_cumulative_column": dataset.observation.measured_cumulative_column is not None,
+            "harvest_semantics_explicit": "cumulative_harvested" in dataset.observation.measured_semantics.lower(),
             "sanitized_fixture_pair": dataset.sanitized_fixture.is_complete,
         },
         "review_updates": {
@@ -232,6 +393,7 @@ def build_dataset_review_template(dataset: DatasetMetadataContract) -> dict[str,
                 "reporting_basis": payload["basis"]["reporting_basis"],
                 "plants_per_m2": payload["basis"]["plants_per_m2"],
             },
+            "dry_matter_conversion": payload["dry_matter_conversion"],
             "observation": {
                 "date_column": payload["observation"]["date_column"],
                 "measured_cumulative_column": payload["observation"]["measured_cumulative_column"],
@@ -245,9 +407,17 @@ def build_dataset_review_template(dataset: DatasetMetadataContract) -> dict[str,
             },
             "notes": {
                 "review_status": "todo",
-                "basis_provenance_note": None,
-                "cumulative_mapping_note": None,
-                "fixture_provenance_note": None,
+                "basis_provenance_note": _default_basis_provenance_note(dataset),
+                "cumulative_mapping_note": _default_cumulative_mapping_note(dataset),
+                "fixture_provenance_note": _default_fixture_provenance_note(dataset),
+                **(
+                    {
+                        "dry_matter_review_note": dry_matter_review_note,
+                        "dry_matter_literature_refs": _dry_matter_literature_refs(dataset),
+                    }
+                    if dry_matter_review_note is not None
+                    else {}
+                ),
             },
         },
     }
@@ -291,10 +461,24 @@ def build_dataset_blocker_report(datasets: list[DatasetMetadataContract]) -> str
         )
         for action in blocker_action_items(dataset.blocker_codes):
             lines.append(f"- next_action: {action}")
+        if dataset.observation.date_column is not None:
+            lines.append(f"- schema_hint: standardized date column `{dataset.observation.date_column}` is already identified.")
+        elif dataset.notes.get("candidate_raw_date_columns"):
+            raw_date_columns = ", ".join(f"`{value}`" for value in dataset.notes["candidate_raw_date_columns"])
+            lines.append(f"- schema_hint: raw date-like columns {raw_date_columns} were detected in the source inventory and still need explicit standardization review.")
         candidate_harvest_column = dataset.observation.daily_increment_column or dataset.notes.get("candidate_harvest_column")
         if candidate_harvest_column is not None:
             lines.append(
                 f"- schema_hint: standardized daily harvest signal `{candidate_harvest_column}` is available but cumulative mapping is not yet resolved."
+            )
+        elif dataset.notes.get("candidate_raw_harvest_columns"):
+            raw_harvest_columns = ", ".join(f"`{value}`" for value in dataset.notes["candidate_raw_harvest_columns"])
+            lines.append(
+                f"- schema_hint: raw harvest-like columns {raw_harvest_columns} were detected in the source inventory but are not yet promoted to a standardized cumulative target."
+            )
+        if "ambiguous_harvest_semantics" in dataset.blocker_codes:
+            lines.append(
+                f"- semantics_hint: `{dataset.notes.get('candidate_target_semantics_hint', dataset.observation.measured_semantics)}` still needs an explicit dry-weight or approved equivalent mapping."
             )
         lines.append("")
     for dataset in proxy_candidates:

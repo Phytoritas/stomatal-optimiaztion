@@ -35,6 +35,7 @@ HARVEST_MAPPING_BLOCKER_CODES = frozenset(
         "missing_date_column",
         "missing_measured_cumulative_column",
         "ambiguous_harvest_semantics",
+        "review_only_dry_matter_conversion",
     }
 )
 
@@ -140,6 +141,58 @@ class DatasetObservationContract:
 
 
 @dataclass(frozen=True, slots=True)
+class DatasetDryMatterConversionContract:
+    mode: str = "none"
+    fresh_weight_column: str | None = None
+    dry_matter_ratio: float | None = None
+    dry_matter_ratio_low: float | None = None
+    dry_matter_ratio_high: float | None = None
+    citations: tuple[str, ...] = ()
+    review_only: bool = True
+
+    def __post_init__(self) -> None:
+        mode = str(self.mode or "none").strip().lower()
+        if mode in {"", "disabled"}:
+            mode = "none"
+        object.__setattr__(self, "mode", mode)
+        object.__setattr__(self, "fresh_weight_column", _normalize_optional_text(self.fresh_weight_column))
+        ratio = None if self.dry_matter_ratio in (None, "") else float(self.dry_matter_ratio)
+        ratio_low = None if self.dry_matter_ratio_low in (None, "") else float(self.dry_matter_ratio_low)
+        ratio_high = None if self.dry_matter_ratio_high in (None, "") else float(self.dry_matter_ratio_high)
+        for value, label in (
+            (ratio, "dry_matter_ratio"),
+            (ratio_low, "dry_matter_ratio_low"),
+            (ratio_high, "dry_matter_ratio_high"),
+        ):
+            if value is not None and not (0.0 < value < 1.0):
+                raise ValueError(f"{label} must be between 0 and 1 when provided.")
+        if ratio_low is not None and ratio_high is not None and ratio_low > ratio_high:
+            raise ValueError("dry_matter_ratio_low cannot exceed dry_matter_ratio_high.")
+        if ratio is not None and ratio_low is not None and ratio < ratio_low:
+            raise ValueError("dry_matter_ratio cannot be lower than dry_matter_ratio_low.")
+        if ratio is not None and ratio_high is not None and ratio > ratio_high:
+            raise ValueError("dry_matter_ratio cannot exceed dry_matter_ratio_high.")
+        object.__setattr__(self, "dry_matter_ratio", ratio)
+        object.__setattr__(self, "dry_matter_ratio_low", ratio_low)
+        object.__setattr__(self, "dry_matter_ratio_high", ratio_high)
+        object.__setattr__(
+            self,
+            "citations",
+            tuple(str(citation) for citation in self.citations if str(citation).strip()),
+        )
+        object.__setattr__(self, "review_only", bool(self.review_only))
+        if self.mode != "none" and self.dry_matter_ratio is None:
+            raise ValueError("dry_matter_ratio is required when dry-matter conversion mode is enabled.")
+
+    @property
+    def enabled(self) -> bool:
+        return self.mode != "none" and self.dry_matter_ratio is not None
+
+    def to_payload(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True, slots=True)
 class DatasetManagementMetadata:
     pruning_records_path: Path | None = None
     defoliation_records_path: Path | None = None
@@ -215,6 +268,9 @@ class DatasetMetadataContract:
     source_refs: tuple[str, ...] = ()
     basis: DatasetBasisContract = field(default_factory=DatasetBasisContract)
     observation: DatasetObservationContract = field(default_factory=DatasetObservationContract)
+    dry_matter_conversion: DatasetDryMatterConversionContract = field(
+        default_factory=DatasetDryMatterConversionContract
+    )
     management: DatasetManagementMetadata = field(default_factory=DatasetManagementMetadata)
     sanitized_fixture: DatasetSanitizedFixtureContract = field(default_factory=DatasetSanitizedFixtureContract)
     priority_tags: tuple[str, ...] = ()
@@ -307,6 +363,7 @@ class DatasetMetadataContract:
             "season": self.season,
             "basis": self.basis.to_payload(),
             "observation": self.observation.to_payload(),
+            "dry_matter_conversion": self.dry_matter_conversion.to_payload(),
             "management": self.management.to_payload(),
             "sanitized_fixture": self.sanitized_fixture.to_payload(),
             "sanitized_fixture_path": (
@@ -363,7 +420,9 @@ def classify_blockers(dataset: DatasetMetadataContract) -> list[str]:
         if dataset.observation.measured_cumulative_column is None:
             blockers.append("missing_measured_cumulative_column")
         semantics = dataset.observation.measured_semantics.strip().lower()
-        if "cumulative_harvested" not in semantics:
+        if dataset.dry_matter_conversion.enabled and dataset.dry_matter_conversion.review_only:
+            blockers.append("review_only_dry_matter_conversion")
+        elif "cumulative_harvested" not in semantics:
             blockers.append("ambiguous_harvest_semantics")
         if not dataset.sanitized_fixture.is_complete:
             blockers.append("missing_sanitized_fixture")
@@ -402,6 +461,8 @@ def is_measured_harvest_runnable(dataset: DatasetMetadataContract) -> bool:
         return False
     if dataset.ingestion_status is not DatasetIngestionStatus.RUNNABLE:
         return False
+    if dataset.dry_matter_conversion.enabled and dataset.dry_matter_conversion.review_only:
+        return False
     if classify_blockers(dataset):
         return False
     semantics = dataset.observation.measured_semantics.strip().lower()
@@ -420,6 +481,7 @@ def is_measured_harvest_runnable(dataset: DatasetMetadataContract) -> bool:
 __all__ = [
     "DatasetBasisContract",
     "DatasetCapability",
+    "DatasetDryMatterConversionContract",
     "DatasetIngestionStatus",
     "DatasetManagementMetadata",
     "DatasetMetadataContract",

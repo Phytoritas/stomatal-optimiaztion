@@ -13,6 +13,7 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.data_contract 
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.datasets.contracts import (
     DatasetBasisContract,
     DatasetCapability,
+    DatasetDryMatterConversionContract,
     DatasetIngestionStatus,
     DatasetManagementMetadata,
     DatasetMetadataContract,
@@ -90,6 +91,7 @@ def _build_dataset_from_config(
 ) -> DatasetMetadataContract:
     basis_cfg = _as_dict(raw.get("basis"))
     observation_cfg = _as_dict(raw.get("observation"))
+    dry_matter_cfg = _as_dict(raw.get("dry_matter_conversion"))
     management_cfg = _as_dict(raw.get("management"))
     fixture_cfg = _as_dict(raw.get("sanitized_fixture"))
     notes = _as_dict(raw.get("notes"))
@@ -137,6 +139,15 @@ def _build_dataset_from_config(
                 )
             ),
             daily_increment_column=observation_cfg.get("daily_increment_column"),
+        ),
+        dry_matter_conversion=DatasetDryMatterConversionContract(
+            mode=str(dry_matter_cfg.get("mode", "none")),
+            fresh_weight_column=dry_matter_cfg.get("fresh_weight_column"),
+            dry_matter_ratio=dry_matter_cfg.get("dry_matter_ratio"),
+            dry_matter_ratio_low=dry_matter_cfg.get("dry_matter_ratio_low"),
+            dry_matter_ratio_high=dry_matter_cfg.get("dry_matter_ratio_high"),
+            citations=tuple(str(value) for value in _as_list(dry_matter_cfg.get("citations"))),
+            review_only=bool(dry_matter_cfg.get("review_only", True)),
         ),
         management=DatasetManagementMetadata(
             pruning_records_path=_resolve_config_path(
