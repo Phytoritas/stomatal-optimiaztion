@@ -1,0 +1,3644 @@
+{
+  "datasets": [
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_ai_competition",
+      "dataset_id": "public_ai_competition__dictionary_doc",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_ai_competition / dictionary_doc",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": null,
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "documentation"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "documentation only"
+        ],
+        "n_files": 2,
+        "preview_statuses": [
+          "binary_document_no_preview"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "dictionary_doc",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_ai_competition",
+        "dictionary_doc"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_AI\uacbd\uc9c4\ub300\ud68c \ub370\uc774\ud130\uc14b/2022_\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub370\uc774\ud130\uc815\uc758\uc11c.hwp",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_AI\uacbd\uc9c4\ub300\ud68c \ub370\uc774\ud130\uc14b/2023_\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub370\uc774\ud130\uc815\uc758\uc11c.hwp"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_ai_competition",
+      "dataset_id": "public_ai_competition__environment",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_ai_competition / environment",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": null,
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [],
+        "comparison_rollup_hints": [
+          "daily_or_event_window_rollup_required"
+        ],
+        "comparison_rule_ids": [
+          "environment_rollup_required",
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "timestamp_site"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "farm_cde + measDate + itemCode"
+        ],
+        "n_files": 2,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "environment",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_ai_competition",
+        "environment"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_AI\uacbd\uc9c4\ub300\ud68c \ub370\uc774\ud130\uc14b/2022\ub144 \uac1c\ubc29\ub370\uc774\ud130/22_\ud658\uacbd\uc815\ubcf4.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_AI\uacbd\uc9c4\ub300\ud68c \ub370\uc774\ud130\uc14b/2023\ub144 \uac1c\ubc29\ub370\uc774\ud130/23_\ud658\uacbd\uc815\ubcf4.csv"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_ai_competition",
+      "dataset_id": "public_ai_competition__growth",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_ai_competition / growth",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": "observation_date",
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [
+          "flowering_cluster_score",
+          "fruit_count",
+          "growth_length_cm",
+          "stem_diameter_mm"
+        ],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "sample_day"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "farm_cde + measDate + itemCode"
+        ],
+        "n_files": 2,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "growth",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_ai_competition",
+        "growth"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_AI\uacbd\uc9c4\ub300\ud68c \ub370\uc774\ud130\uc14b/2022\ub144 \uac1c\ubc29\ub370\uc774\ud130/22_\uc0dd\uc721\uc815\ubcf4.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_AI\uacbd\uc9c4\ub300\ud68c \ub370\uc774\ud130\uc14b/2023\ub144 \uac1c\ubc29\ub370\uc774\ud130/23_\uc0dd\uc721\uc815\ubcf4.csv"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_ai_competition",
+      "dataset_id": "public_ai_competition__public_misc",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_ai_competition / public_misc",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": null,
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "dataset_file"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "farm_cde + measDate + itemCode"
+        ],
+        "n_files": 2,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "public_misc",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_ai_competition",
+        "public_misc"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_AI\uacbd\uc9c4\ub300\ud68c \ub370\uc774\ud130\uc14b/2022\ub144 \uac1c\ubc29\ub370\uc774\ud130/22_\uc5d0\ub108\uc9c0\uc0ac\uc6a9\uc815\ubcf4.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_AI\uacbd\uc9c4\ub300\ud68c \ub370\uc774\ud130\uc14b/2023\ub144 \uac1c\ubc29\ub370\uc774\ud130/23_\uc5d0\ub108\uc9c0\uc815\ubcf4.csv"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_date_column",
+        "missing_measured_cumulative_column",
+        "missing_observed_harvest_path",
+        "missing_raw_fixture",
+        "missing_reporting_basis",
+        "missing_sanitized_fixture",
+        "missing_validation_window"
+      ],
+      "capability": "measured_harvest",
+      "cultivar": "unknown",
+      "dataset_family": "public_ai_competition",
+      "dataset_id": "public_ai_competition__yield",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_ai_competition / yield",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": "observation_date",
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": true,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [
+          "fruit_count"
+        ],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "school_total_yield_count",
+          "school_total_yield_weight",
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "line_or_truss_day"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "farm_cde + measDate + itemCode"
+        ],
+        "n_files": 1,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "yield",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_ai_competition",
+        "yield"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_AI\uacbd\uc9c4\ub300\ud68c \ub370\uc774\ud130\uc14b/2022\ub144 \uac1c\ubc29\ub370\uc774\ud130/22_\uc0dd\uc0b0\uc815\ubcf4.csv"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_bigdata_platform",
+      "dataset_id": "public_bigdata_platform__dictionary_doc",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_bigdata_platform / dictionary_doc",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": null,
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "documentation"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "documentation only"
+        ],
+        "n_files": 1,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "dictionary_doc",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_bigdata_platform",
+        "dictionary_doc"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/variables_cleaned.csv"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_bigdata_platform",
+      "dataset_id": "public_bigdata_platform__flowering_environment",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_bigdata_platform / flowering_environment",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": null,
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [],
+        "comparison_rollup_hints": [
+          "daily_or_event_window_rollup_required"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "timestamp_zone_with_trait_target"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "MSRM_DT + ZONE_NM"
+        ],
+        "n_files": 9,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "flowering_environment",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_bigdata_platform",
+        "flowering_environment"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FLOWER_CLUSTER_HEIGHT_ENV_20231123.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FLOWER_CLUSTER_HEIGHT_ENV_20240927.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FLOWER_CLUSTER_HEIGHT_ENV_20250630.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FLOWER_PER_TRUSS_ENV_20231123.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FLOWER_PER_TRUSS_ENV_20240927.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FLOWER_PER_TRUSS_ENV_20250630.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_LAST_FLOWERING_BUD_ENV_20231123.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_LAST_FLOWERING_BUD_ENV_20240927.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_LAST_FLOWERING_BUD_ENV_20250630.csv"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_bigdata_platform",
+      "dataset_id": "public_bigdata_platform__growth_environment",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_bigdata_platform / growth_environment",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": null,
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [],
+        "comparison_rollup_hints": [
+          "daily_or_event_window_rollup_required"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "timestamp_zone_with_trait_target"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "MSRM_DT + ZONE_NM"
+        ],
+        "n_files": 3,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "growth_environment",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_bigdata_platform",
+        "growth_environment"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_GROWTH_LENGTH_ENV_20231123.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_GROWTH_LENGTH_ENV_20240927.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_GROWTH_LENGTH_ENV_20250630.csv"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_bigdata_platform",
+      "dataset_id": "public_bigdata_platform__public_misc",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_bigdata_platform / public_misc",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": null,
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "dataset_file"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "MSRM_DT + ZONE_NM"
+        ],
+        "n_files": 14,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "public_misc",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_bigdata_platform",
+        "public_misc"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_LEAF_LEN_ENV_20231123.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_LEAF_LEN_ENV_20240927.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_LEAF_LEN_ENV_20250630.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_LEAF_NUM_ENV_20231123.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_LEAF_NUM_ENV_20240927.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_LEAF_NUM_ENV_20250630.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_LEAF_WIDTH_ENV_20231123.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_LEAF_WIDTH_ENV_20240927.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_LEAF_WIDTH_ENV_20250630.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_SOIL_SURFACE_LEN_ENV_20231123.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_SOIL_SURFACE_LEN_ENV_20240927.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_STEM_THICKNESS_ENV_20231123.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_STEM_THICKNESS_ENV_20240927.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_STEM_THICKNESS_ENV_20250630.csv"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "harvest_proxy",
+      "cultivar": "unknown",
+      "dataset_family": "public_bigdata_platform",
+      "dataset_id": "public_bigdata_platform__yield_environment",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_bigdata_platform / yield_environment",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": null,
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [],
+        "comparison_rollup_hints": [
+          "daily_or_event_window_rollup_required"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "timestamp_zone_with_trait_target"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "MSRM_DT + ZONE_NM"
+        ],
+        "n_files": 15,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "yield_environment",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_bigdata_platform",
+        "yield_environment"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FRUIT_PER_TRUSS_ENV_20231123.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FRUIT_PER_TRUSS_ENV_20240927.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FRUIT_PER_TRUSS_ENV_20250630.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FRUIT_SETTING_ENV_20231123.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FRUIT_SETTING_ENV_20240927.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FRUIT_SETTING_ENV_20250630.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FRUIT_WEIGHT_ENV_20231123.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FRUIT_WEIGHT_ENV_20240927.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FRUIT_WEIGHT_ENV_20250630.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FRUIT_WIDTH_ENV_20231123.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FRUIT_WIDTH_ENV_20240927.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_FRUIT_WIDTH_ENV_20250630.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_HARVEST_PER_TRUSS_ENV_20231123.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_HARVEST_PER_TRUSS_ENV_20240927.csv",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/(\uc7ac)\uacbd\ub0a8\ud14c\ud06c\ub178\ud30c\ud06c_\ud1a0\ub9c8\ud1a0 \ub370\uc774\ud130_\uc2a4\ub9c8\ud2b8\ud31c \ube45\ub370\uc774\ud130 \ud50c\ub7ab\ud3fc/TOMATO_HARVEST_PER_TRUSS_ENV_20250630.csv"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_data_driven_smart_agri",
+      "dataset_id": "public_data_driven_smart_agri__dictionary_doc",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_data_driven_smart_agri / dictionary_doc",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": null,
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "documentation"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "documentation only"
+        ],
+        "n_files": 1,
+        "preview_statuses": [
+          "binary_document_no_preview"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "dictionary_doc",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_data_driven_smart_agri",
+        "dictionary_doc"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub370\uc774\ud130\uae30\ubc18 \uc2a4\ub9c8\ud2b8\ub18d\uc5c5 \ub370\uc774\ud130\uc14b/\uc774\ub808\uc544\uc774\uc5d0\uc2a4_\uc791\ubb3c \uadfc\uad8c\ubd80 \ub370\uc774\ud130 \uae30\ubc18 \uad00\uc218 \uc758\uc0ac\uacb0\uc815 \ub370\uc774\ud130 \uc14b/\uc774\ub808\uc544\uc774\uc5d0\uc2a4_\uc791\ubb3c \uadfc\uad8c\ubd80 \ub370\uc774\ud130 \uae30\ubc18 \uad00\uc218 \uc758\uc0ac\uacb0\uc815 \ub370\uc774\ud130\uc14b \uc815\uc758\uc11c.hwpx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_data_driven_smart_agri",
+      "dataset_id": "public_data_driven_smart_agri__public_misc",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_data_driven_smart_agri / public_misc",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": null,
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "dataset_file"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "dataset-specific file metadata + \uc870\uc0ac\uc77c\uc790"
+        ],
+        "n_files": 1,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "public_misc",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_data_driven_smart_agri",
+        "public_misc"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub370\uc774\ud130\uae30\ubc18 \uc2a4\ub9c8\ud2b8\ub18d\uc5c5 \ub370\uc774\ud130\uc14b/\uc774\ub808\uc544\uc774\uc5d0\uc2a4_\uc791\ubb3c \uadfc\uad8c\ubd80 \ub370\uc774\ud130 \uae30\ubc18 \uad00\uc218 \uc758\uc0ac\uacb0\uc815 \ub370\uc774\ud130 \uc14b/\uc774\ub808\uc544\uc774\uc5d0\uc2a4_\uc791\ubb3c \uadfc\uad8c\ubd80 \ub370\uc774\ud130 \uae30\ubc18 \uad00\uc218 \uc758\uc0ac\uacb0\uc815 \ub370\uc774\ud130 \uc14b.csv"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_facility_horticulture",
+      "dataset_id": "public_facility_horticulture__control",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_facility_horticulture / control",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": null,
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [],
+        "comparison_rollup_hints": [
+          "daily_or_event_window_rollup_required"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "timestamp_site"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "site folder + \uc870\uc0ac\uc77c/\uc218\uc9d1\uc77c + \uc8fc\ucc28"
+        ],
+        "n_files": 8,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "control",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_facility_horticulture",
+        "control"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc2dc\uac04\uae30\uc900_\uc81c\uc5b4\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0020209_01_\ud1a0\ub9c8\ud1a0_\uacbd\uc0c1\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc2dc\uac04\uae30\uc900_\uc81c\uc5b4\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0024693_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc2dc\uac04\uae30\uc900_\uc81c\uc5b4\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0024696_01_\ud1a0\ub9c8\ud1a0_\uacbd\uc0c1\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc2dc\uac04\uae30\uc900_\uc81c\uc5b4\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0024697_01_\ud1a0\ub9c8\ud1a0_\uacbd\uc0c1\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc2dc\uac04\uae30\uc900_\uc81c\uc5b4\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0024698_01_\ud1a0\ub9c8\ud1a0_\uacbd\uc0c1\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc2dc\uac04\uae30\uc900_\uc81c\uc5b4\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0025101_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc2dc\uac04\uae30\uc900_\uc81c\uc5b4\uc815\ubcf4_2026-03-18.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0025108_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ubd81\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc2dc\uac04\uae30\uc900_\uc81c\uc5b4\uc815\ubcf4_2026-03-18.xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_facility_horticulture",
+      "dataset_id": "public_facility_horticulture__environment",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_facility_horticulture / environment",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": "observation_datetime",
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [
+          "air_temperature_c",
+          "co2_ppm",
+          "radiation_wm2",
+          "rh_pct"
+        ],
+        "comparison_rollup_hints": [
+          "daily_or_event_window_rollup_required"
+        ],
+        "comparison_rule_ids": [
+          "environment_rollup_required",
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "timestamp_site"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "site folder + \uc870\uc0ac\uc77c/\uc218\uc9d1\uc77c + \uc8fc\ucc28"
+        ],
+        "n_files": 9,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "environment",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_facility_horticulture",
+        "environment"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc2dc\uac04\uae30\uc900_\ud658\uacbd\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0020209_01_\ud1a0\ub9c8\ud1a0_\uacbd\uc0c1\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc2dc\uac04\uae30\uc900_\ud658\uacbd\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0020356_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc2dc\uac04\uae30\uc900_\ud658\uacbd\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0024693_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc2dc\uac04\uae30\uc900_\ud658\uacbd\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0024696_01_\ud1a0\ub9c8\ud1a0_\uacbd\uc0c1\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc2dc\uac04\uae30\uc900_\ud658\uacbd\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0024697_01_\ud1a0\ub9c8\ud1a0_\uacbd\uc0c1\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc2dc\uac04\uae30\uc900_\ud658\uacbd\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0024698_01_\ud1a0\ub9c8\ud1a0_\uacbd\uc0c1\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc2dc\uac04\uae30\uc900_\ud658\uacbd\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0025101_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc2dc\uac04\uae30\uc900_\ud658\uacbd\uc815\ubcf4_2026-03-18.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0025108_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ubd81\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc2dc\uac04\uae30\uc900_\ud658\uacbd\uc815\ubcf4_2026-03-18.xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_facility_horticulture",
+      "dataset_id": "public_facility_horticulture__growth",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_facility_horticulture / growth",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": "observation_date",
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [
+          "leaf_count",
+          "plant_height_cm",
+          "season_label",
+          "stem_diameter_mm"
+        ],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "sample_day"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "site folder + \uc870\uc0ac\uc77c/\uc218\uc9d1\uc77c + \uc8fc\ucc28"
+        ],
+        "n_files": 9,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "growth",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_facility_horticulture",
+        "growth"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc0dd\uc721\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0020209_01_\ud1a0\ub9c8\ud1a0_\uacbd\uc0c1\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc0dd\uc721\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0020356_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc0dd\uc721\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0024693_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc0dd\uc721\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0024696_01_\ud1a0\ub9c8\ud1a0_\uacbd\uc0c1\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc0dd\uc721\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0024697_01_\ud1a0\ub9c8\ud1a0_\uacbd\uc0c1\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc0dd\uc721\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0024698_01_\ud1a0\ub9c8\ud1a0_\uacbd\uc0c1\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc0dd\uc721\uc815\ubcf4_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0025101_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc0dd\uc721\uc815\ubcf4_2026-03-18.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0025108_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ubd81\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uc0dd\uc721\uc815\ubcf4_2026-03-18.xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_facility_horticulture",
+      "dataset_id": "public_facility_horticulture__public_misc",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_facility_horticulture / public_misc",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": null,
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "dataset_file"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "site folder + \uc870\uc0ac\uc77c/\uc218\uc9d1\uc77c + \uc8fc\ucc28"
+        ],
+        "n_files": 232,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "public_misc",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_facility_horticulture",
+        "public_misc"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/10\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/11\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/12\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/13\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/14\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/15\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/16\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/17\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/18\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/19\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/20\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/21\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/22\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/23\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/24\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/25\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/27\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/28\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/29\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/30\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/31\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/32\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/9\uc8fc\ucc28-\uc0dd\uc721.xls",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\uacbd\uc601\uc815\ubcf4_\ucd9c\ud558\ub7c9_2026-01-28.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\uc2dc\uc124\uc6d0\uc608 \ub370\uc774\ud130\uc14b/PF_0002529_01_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\uc2dc\uc124\uc6d0\uc608_\ub18d\uc7a5\uc815\ubcf4.xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_innovation_valley",
+      "dataset_id": "public_innovation_valley__control",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_innovation_valley / control",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": null,
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [],
+        "comparison_rollup_hints": [
+          "daily_or_event_window_rollup_required"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "timestamp_site"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "site folder + \uc870\uc0ac\uc77c/\uc218\uc9d1\uc77c + \uc8fc\ucc28"
+        ],
+        "n_files": 5,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "control",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_innovation_valley",
+        "control"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010903_02_02_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\uc2dc\uac04\uae30\uc900_\uc81c\uc5b4\uc815\ubcf4_2026-03-18.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010903_02_03_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\uc2dc\uac04\uae30\uc900_\uc81c\uc5b4\uc815\ubcf4_2026-03-18.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010903_02_04_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\uc2dc\uac04\uae30\uc900_\uc81c\uc5b4\uc815\ubcf4_2026-03-18.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010903_04_02_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\uc2dc\uac04\uae30\uc900_\uc81c\uc5b4\uc815\ubcf4_2026-03-18.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010904_02_02_\ud1a0\ub9c8\ud1a0_\uacbd\uc0c1\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\uc2dc\uac04\uae30\uc900_\uc81c\uc5b4\uc815\ubcf4_2026-03-18.xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_innovation_valley",
+      "dataset_id": "public_innovation_valley__environment",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_innovation_valley / environment",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": "observation_datetime",
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [
+          "air_temperature_c",
+          "co2_ppm",
+          "radiation_wm2",
+          "rh_pct"
+        ],
+        "comparison_rollup_hints": [
+          "daily_or_event_window_rollup_required"
+        ],
+        "comparison_rule_ids": [
+          "environment_rollup_required",
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "timestamp_site"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "site folder + \uc870\uc0ac\uc77c/\uc218\uc9d1\uc77c + \uc8fc\ucc28"
+        ],
+        "n_files": 5,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "environment",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_innovation_valley",
+        "environment"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010903_02_02_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\uc2dc\uac04\uae30\uc900_\ud658\uacbd\uc815\ubcf4_2026-03-18.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010903_02_03_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\uc2dc\uac04\uae30\uc900_\ud658\uacbd\uc815\ubcf4_2026-03-18.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010903_02_04_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\uc2dc\uac04\uae30\uc900_\ud658\uacbd\uc815\ubcf4_2026-03-18.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010903_04_02_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\uc2dc\uac04\uae30\uc900_\ud658\uacbd\uc815\ubcf4_2026-03-18.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010904_02_02_\ud1a0\ub9c8\ud1a0_\uacbd\uc0c1\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\uc2dc\uac04\uae30\uc900_\ud658\uacbd\uc815\ubcf4_2026-03-18.xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_innovation_valley",
+      "dataset_id": "public_innovation_valley__growth",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_innovation_valley / growth",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": "observation_date",
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [
+          "flower_cluster_height_cm",
+          "flowering_cluster_score",
+          "fruit_count",
+          "fruit_weight_g",
+          "leaf_count",
+          "plant_height_cm",
+          "season_label",
+          "stem_diameter_mm"
+        ],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "sample_day"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "site folder + \uc870\uc0ac\uc77c/\uc218\uc9d1\uc77c + \uc8fc\ucc28"
+        ],
+        "n_files": 5,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "growth",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_innovation_valley",
+        "growth"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010903_02_02_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\uc0dd\uc721\uc815\ubcf4_2026-03-18.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010903_02_03_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\uc0dd\uc721\uc815\ubcf4_2026-03-18.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010903_02_04_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\uc0dd\uc721\uc815\ubcf4_2026-03-18.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010903_04_02_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\uc0dd\uc721\uc815\ubcf4_2026-03-18.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010904_02_02_\ud1a0\ub9c8\ud1a0_\uacbd\uc0c1\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\uc0dd\uc721\uc815\ubcf4_2026-03-18.xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_innovation_valley",
+      "dataset_id": "public_innovation_valley__public_misc",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_innovation_valley / public_misc",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": null,
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "dataset_file"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "site folder + \uc870\uc0ac\uc77c/\uc218\uc9d1\uc77c + \uc8fc\ucc28"
+        ],
+        "n_files": 6,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "public_misc",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_innovation_valley",
+        "public_misc"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010903_02_02_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\ub18d\uc7a5\uc815\ubcf4.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010903_02_03_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\ub18d\uc7a5\uc815\ubcf4.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010903_02_04_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\ub18d\uc7a5\uc815\ubcf4.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010903_04_02_\ud1a0\ub9c8\ud1a0_\uc804\ub77c\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\ub18d\uc7a5\uc815\ubcf4.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/C010904_02_02_\ud1a0\ub9c8\ud1a0_\uacbd\uc0c1\ub0a8\ub3c4/\ud601\uc2e0\ubc38\ub9ac_\ub18d\uc7a5\uc815\ubcf4.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ud601\uc2e0\ubc38\ub9ac \ub370\uc774\ud130\uc14b/\ud601\uc2e0\ubc38\ub9ac_\ub18d\uc7a5\uc815\ubcf4.xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_rda",
+      "dataset_id": "public_rda__environment",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_rda / environment",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": "observation_datetime",
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [
+          "farm_code",
+          "season_label"
+        ],
+        "comparison_rollup_hints": [
+          "daily_or_event_window_rollup_required"
+        ],
+        "comparison_rule_ids": [
+          "environment_rollup_required",
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "timestamp_site"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "farm/site + \uc870\uc0ac\uc77c\uc790 + \uac1c\uccb4\ubc88\ud638/\uc904\uae30\ubc88\ud638"
+        ],
+        "n_files": 4,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "environment",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_rda",
+        "environment"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub18d\ucd0c\uc9c4\ud765\uccad \ub370\uc774\ud130\uc14b/2018_env.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub18d\ucd0c\uc9c4\ud765\uccad \ub370\uc774\ud130\uc14b/2019_env.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub18d\ucd0c\uc9c4\ud765\uccad \ub370\uc774\ud130\uc14b/2020_env.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub18d\ucd0c\uc9c4\ud765\uccad \ub370\uc774\ud130\uc14b/2021_env.xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_rda",
+      "dataset_id": "public_rda__growth",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_rda / growth",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": "observation_date",
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [
+          "cluster_id",
+          "farm_code",
+          "growth_length_cm",
+          "sample_id",
+          "season_label"
+        ],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "sample_day"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "farm/site + \uc870\uc0ac\uc77c\uc790 + \uac1c\uccb4\ubc88\ud638/\uc904\uae30\ubc88\ud638"
+        ],
+        "n_files": 4,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "growth",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_rda",
+        "growth"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub18d\ucd0c\uc9c4\ud765\uccad \ub370\uc774\ud130\uc14b/2018_growth_tomatoes.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub18d\ucd0c\uc9c4\ud765\uccad \ub370\uc774\ud130\uc14b/2019_growth_tomatoes.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub18d\ucd0c\uc9c4\ud765\uccad \ub370\uc774\ud130\uc14b/2020_growth_tomatoes.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub18d\ucd0c\uc9c4\ud765\uccad \ub370\uc774\ud130\uc14b/2021_growth_tomatoes.xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "public_rda",
+      "dataset_id": "public_rda__metadata",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_rda / metadata",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": "observation_date",
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [
+          "cultivar",
+          "farm_code",
+          "season_label"
+        ],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "season_or_dataset_level"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "farm/site + \uc870\uc0ac\uc77c\uc790 + \uac1c\uccb4\ubc88\ud638/\uc904\uae30\ubc88\ud638"
+        ],
+        "n_files": 4,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "metadata",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_rda",
+        "metadata"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub18d\ucd0c\uc9c4\ud765\uccad \ub370\uc774\ud130\uc14b/2018_cultInfo.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub18d\ucd0c\uc9c4\ud765\uccad \ub370\uc774\ud130\uc14b/2019_cultInfo.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub18d\ucd0c\uc9c4\ud765\uccad \ub370\uc774\ud130\uc14b/2020_cultInfo.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub18d\ucd0c\uc9c4\ud765\uccad \ub370\uc774\ud130\uc14b/2021_cultInfo.xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_date_column",
+        "missing_measured_cumulative_column",
+        "missing_observed_harvest_path",
+        "missing_raw_fixture",
+        "missing_reporting_basis",
+        "missing_sanitized_fixture",
+        "missing_validation_window"
+      ],
+      "capability": "measured_harvest",
+      "cultivar": "unknown",
+      "dataset_family": "public_rda",
+      "dataset_id": "public_rda__yield",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "public_rda / yield",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": "observation_date",
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": true,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [
+          "farm_code",
+          "season_label"
+        ],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "school_total_yield_count",
+          "school_total_yield_weight",
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "line_or_truss_day"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "farm/site + \uc870\uc0ac\uc77c\uc790 + \uac1c\uccb4\ubc88\ud638/\uc904\uae30\ubc88\ud638"
+        ],
+        "n_files": 4,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "public_data"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "yield",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "public_data",
+        "public_rda",
+        "yield"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub18d\ucd0c\uc9c4\ud765\uccad \ub370\uc774\ud130\uc14b/2018_sale.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub18d\ucd0c\uc9c4\ud765\uccad \ub370\uc774\ud130\uc14b/2019_sale.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub18d\ucd0c\uc9c4\ud765\uccad \ub370\uc774\ud130\uc14b/2020_sale.xlsx",
+        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_\ub18d\ucd0c\uc9c4\ud765\uccad \ub370\uc774\ud130\uc14b/2021_sale.xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "school_crop_info",
+      "dataset_id": "school_crop_info__metadata",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "school_crop_info / metadata",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": null,
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "season_or_dataset_level"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "season metadata anchor"
+        ],
+        "n_files": 4,
+        "preview_statuses": [
+          "ok",
+          "text_note_no_columns"
+        ],
+        "source_group_candidates": [
+          "school_metadata"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "metadata",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "school_metadata",
+        "school_crop_info",
+        "metadata"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "40_\uc791\uc5c5\u00b7\uc7ac\ubc30\uc815\ubcf4/2023_\ud1a0\ub9c8\ud1a0_\ubaa8\uc2dd\ub3c4_\uc2dc\ud5d8\uc791\uae30.xlsx",
+        "40_\uc791\uc5c5\u00b7\uc7ac\ubc30\uc815\ubcf4/20240807_\ub370\uc774\ud130\ucc98\ub9ac_\ucc38\uace0\uc0ac\ud56d.txt",
+        "40_\uc791\uc5c5\u00b7\uc7ac\ubc30\uc815\ubcf4/2024_\ud1a0\ub9c8\ud1a0_\uc791\uc5c5\uc9c0\uc2dc\uc11c.xlsx",
+        "40_\uc791\uc5c5\u00b7\uc7ac\ubc30\uc815\ubcf4/\ud1a0\ub9c8\ud1a0_\uc7ac\ubc30\uc815\ubcf4_\uacf5\ud1b5.xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "school_greenhouse_environment",
+      "dataset_id": "school_greenhouse_environment__environment",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "school_greenhouse_environment / environment",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": "observation_datetime",
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [
+          "air_temperature_c",
+          "co2_ppm",
+          "radiation_wm2",
+          "rh_pct",
+          "vpd_kpa"
+        ],
+        "comparison_rollup_hints": [
+          "daily_or_event_window_rollup_required"
+        ],
+        "comparison_rule_ids": [
+          "environment_rollup_required",
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "timestamp_site"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "timestamp/date + season metadata"
+        ],
+        "n_files": 1135,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "school_environment"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "environment",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "school_environment",
+        "school_greenhouse_environment",
+        "environment"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 10\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 11\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 12\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 13\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 14\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 15\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 16\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 17\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 18\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 19\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 1\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 20\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 21\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 22\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 23\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 24\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 25\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 26\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 27\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 28\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 29\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 2\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 30\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 31\uc77c.csv",
+        "30_\ud658\uacbd\u00b7\ubc30\uc9c0\u00b7\uac00\uc2a4\uad50\ud658/\ud658\uacbd\ub370\uc774\ud130/2023_\uc2a4\ub9c8\ud2b8 \uc628\uc2e4 \ud658\uacbd \ub370\uc774\ud130_10\uc6d4 3\uc77c.csv"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "school_trait_bundle",
+      "dataset_id": "school_trait_bundle__destructive",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "school_trait_bundle / destructive",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": "observation_date",
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [
+          "leaf_area_cm2",
+          "leaf_count",
+          "leaf_dry_weight_g",
+          "leaf_fresh_weight_g",
+          "node_count",
+          "sample_id",
+          "stem_diameter_mm"
+        ],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "school_treatment_priority",
+          "school_line_unification",
+          "school_loadcell_treatment_bridge",
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "sample_event"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "season + treatment + line/sample + observation_date"
+        ],
+        "n_files": 2,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "school_traits"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "destructive",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "school_traits",
+        "school_trait_bundle",
+        "destructive"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "20_\uc0dd\uc721\u00b7\uac1c\ud654\u00b7\uc218\ud655/2024_\ud1a0\ub9c8\ud1a0_\ud30c\uad34\uc870\uc0ac\ub370\uc774\ud130.xlsx",
+        "20_\uc0dd\uc721\u00b7\uac1c\ud654\u00b7\uc218\ud655/2025_\ud1a0\ub9c8\ud1a0_\ud30c\uad34\uc870\uc0ac\ub370\uc774\ud130.xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "school_trait_bundle",
+      "dataset_id": "school_trait_bundle__flowering",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "school_trait_bundle / flowering",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": "observation_date",
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [
+          "cluster_id",
+          "flower_cluster_height_cm",
+          "sample_id",
+          "stem_diameter_mm"
+        ],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "school_treatment_priority",
+          "school_line_unification",
+          "school_loadcell_treatment_bridge",
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "sample_cluster_event"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "season + treatment + line/sample + observation_date"
+        ],
+        "n_files": 4,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "school_traits"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "flowering",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "school_traits",
+        "school_trait_bundle",
+        "flowering"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "20_\uc0dd\uc721\u00b7\uac1c\ud654\u00b7\uc218\ud655/2024_\ud1a0\ub9c8\ud1a0_\uac1c\ud654\ub370\uc774\ud130.xlsx",
+        "20_\uc0dd\uc721\u00b7\uac1c\ud654\u00b7\uc218\ud655/2025_1\uc791\uae30_\ud1a0\ub9c8\ud1a0_\uac1c\ud654\ub370\uc774\ud130.xlsx",
+        "20_\uc0dd\uc721\u00b7\uac1c\ud654\u00b7\uc218\ud655/2025_2\uc791\uae30_\ud1a0\ub9c8\ud1a0_\uac1c\ud654\ub370\uc774\ud130.xlsx",
+        "20_\uc0dd\uc721\u00b7\uac1c\ud654\u00b7\uc218\ud655/2026_1\uc791\uae30_\ud1a0\ub9c8\ud1a0_\uac1c\ud654\ub370\uc774\ud130.xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "school_trait_bundle",
+      "dataset_id": "school_trait_bundle__growth",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "school_trait_bundle / growth",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": "observation_date",
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [
+          "cluster_id",
+          "flower_cluster_height_cm",
+          "growth_length_cm",
+          "leaf_count",
+          "node_count",
+          "plant_height_cm",
+          "sample_id",
+          "stem_diameter_mm"
+        ],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "school_treatment_priority",
+          "school_line_unification",
+          "school_loadcell_treatment_bridge",
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "sample_day"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "season + treatment + line/sample + observation_date"
+        ],
+        "n_files": 3,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "school_traits"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "growth",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "school_traits",
+        "school_trait_bundle",
+        "growth"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "20_\uc0dd\uc721\u00b7\uac1c\ud654\u00b7\uc218\ud655/2024_\ud1a0\ub9c8\ud1a0_\uc0dd\uc721\ub370\uc774\ud130.xlsx",
+        "20_\uc0dd\uc721\u00b7\uac1c\ud654\u00b7\uc218\ud655/2025_1\uc791\uae30_\ud1a0\ub9c8\ud1a0_\uc0dd\uc721\ub370\uc774\ud130.xlsx",
+        "20_\uc0dd\uc721\u00b7\uac1c\ud654\u00b7\uc218\ud655/2025_2\uc791\uae30_\ud1a0\ub9c8\ud1a0_\uc0dd\uc721\ub370\uc774\ud130.xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "school_trait_bundle",
+      "dataset_id": "school_trait_bundle__plant_sensor",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "school_trait_bundle / plant_sensor",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": null,
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [],
+        "comparison_rollup_hints": [
+          "event_window_rollup_recommended"
+        ],
+        "comparison_rule_ids": [
+          "school_treatment_priority",
+          "school_line_unification",
+          "school_loadcell_treatment_bridge",
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "timestamp_sample"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "season + treatment + line/sample + observation_date"
+        ],
+        "n_files": 1,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "school_traits"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "plant_sensor",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "school_traits",
+        "school_trait_bundle",
+        "plant_sensor"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "20_\uc0dd\uc721\u00b7\uac1c\ud654\u00b7\uc218\ud655/2026_2\uc791\uae30_\ud1a0\ub9c8\ud1a0_\uc5fd\uc628_\uacfc\uc2e4\uc9c1\uacbd.dat"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_raw_fixture"
+      ],
+      "capability": "context_only",
+      "cultivar": "unknown",
+      "dataset_family": "school_trait_bundle",
+      "dataset_id": "school_trait_bundle__sla",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "school_trait_bundle / sla",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": "observation_date",
+        "candidate_harvest_column": null,
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": false,
+        "comparison_daily_standard_names": [
+          "leaf_area_cm2",
+          "leaf_dry_weight_g",
+          "leaf_fresh_weight_g",
+          "sla_m2_per_g"
+        ],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "school_treatment_priority",
+          "school_line_unification",
+          "school_loadcell_treatment_bridge",
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "treatment_sample_event"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "season + treatment + line/sample + observation_date"
+        ],
+        "n_files": 1,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "school_traits"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "sla",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "school_traits",
+        "school_trait_bundle",
+        "sla"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "20_\uc0dd\uc721\u00b7\uac1c\ud654\u00b7\uc218\ud655/2025_2\uc791\uae30_\ud1a0\ub9c8\ud1a0_\ube44\uc5fd\uba74\uc801(SLA).xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    },
+    {
+      "basis": {
+        "basis_unit_label": "unknown",
+        "plants_per_m2": null,
+        "reporting_basis": "unknown"
+      },
+      "blocker_codes": [
+        "missing_date_column",
+        "missing_measured_cumulative_column",
+        "missing_observed_harvest_path",
+        "missing_raw_fixture",
+        "missing_reporting_basis",
+        "missing_sanitized_fixture",
+        "missing_validation_window"
+      ],
+      "capability": "measured_harvest",
+      "cultivar": "unknown",
+      "dataset_family": "school_trait_bundle",
+      "dataset_id": "school_trait_bundle__yield",
+      "dataset_kind": "traitenv_candidate",
+      "display_name": "school_trait_bundle / yield",
+      "dry_matter_conversion": {
+        "citations": [],
+        "dry_matter_ratio": null,
+        "dry_matter_ratio_high": null,
+        "dry_matter_ratio_low": null,
+        "fresh_weight_column": null,
+        "mode": "none",
+        "review_only": true
+      },
+      "forcing_path": null,
+      "greenhouse": "unknown",
+      "ingestion_status": "draft_needs_raw_fixture",
+      "management": {
+        "defoliation_records_path": null,
+        "ec_path": null,
+        "harvest_timing_records_path": null,
+        "irrigation_path": null,
+        "pruning_records_path": null,
+        "rootzone_path": null
+      },
+      "notes": {
+        "candidate_date_key": "observation_date",
+        "candidate_harvest_column": "total_yield_weight_g",
+        "candidate_harvest_includes_fallen_fruit": true,
+        "candidate_harvest_requires_cumulative_construction": true,
+        "comparison_daily_standard_names": [
+          "cluster_id",
+          "cultivar",
+          "fallen_fruit_count",
+          "fallen_fruit_weight_g",
+          "fruit_count",
+          "fruit_weight_g",
+          "sample_id",
+          "total_yield_fruit_count",
+          "total_yield_weight_g"
+        ],
+        "comparison_rollup_hints": [
+          "direct_trait_event_or_daily"
+        ],
+        "comparison_rule_ids": [
+          "school_treatment_priority",
+          "school_line_unification",
+          "school_total_yield_count",
+          "school_total_yield_weight",
+          "school_loadcell_treatment_bridge",
+          "unit_normalization_gate"
+        ],
+        "design_workbook_present": true,
+        "grain_hints": [
+          "line_or_truss_day"
+        ],
+        "integration_fact_tables": [
+          "trait_measurements_long",
+          "environment_measurements_long",
+          "comparison_daily"
+        ],
+        "metadata_join_hints": [
+          "season + treatment + line/sample + observation_date"
+        ],
+        "n_files": 3,
+        "preview_statuses": [
+          "ok"
+        ],
+        "source_group_candidates": [
+          "school_traits"
+        ],
+        "special_rules": [
+          "School yield comparison includes fallen or removed fruits in total yield metrics.",
+          "School A/B/C/D lines are preserved as a unified line dimension.",
+          "Treatment precedence is explicit and anchored to the crop-info workbook for school data.",
+          "Public datasets stay provenance-tagged by dataset family and farm/site identifiers.",
+          "Environment time series require controlled daily or event-window rollups before comparison."
+        ],
+        "traitenv_bundle_kind": "directory",
+        "traitenv_bundle_ref": "traitenv"
+      },
+      "observation": {
+        "daily_increment_column": null,
+        "date_column": null,
+        "estimated_cumulative_column": null,
+        "measured_cumulative_column": null,
+        "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
+      },
+      "observation_family": "yield",
+      "observed_harvest_path": null,
+      "priority_tags": [],
+      "provenance_tags": [
+        "school_traits",
+        "school_trait_bundle",
+        "yield"
+      ],
+      "sanitized_fixture": {
+        "fixture_kind": "sanitized_csv_fixture",
+        "forcing_fixture_path": null,
+        "observed_harvest_fixture_path": null
+      },
+      "sanitized_fixture_path": null,
+      "season": "unknown",
+      "source_refs": [
+        "20_\uc0dd\uc721\u00b7\uac1c\ud654\u00b7\uc218\ud655/2023_\ud1a0\ub9c8\ud1a0_\uc7ac\ubc30\uc815\ubcf4_\uc218\ud655\ub370\uc774\ud130.xlsx",
+        "20_\uc0dd\uc721\u00b7\uac1c\ud654\u00b7\uc218\ud655/2024_\ud1a0\ub9c8\ud1a0_\uc218\ud655\ub370\uc774\ud130.xlsx",
+        "20_\uc0dd\uc721\u00b7\uac1c\ud654\u00b7\uc218\ud655/2025_2\uc791\uae30_\ud1a0\ub9c8\ud1a0_\uc218\ud655\ub370\uc774\ud130.xlsx"
+      ],
+      "validation_end": null,
+      "validation_start": null
+    }
+  ],
+  "default_dataset_ids": [],
+  "summary": {
+    "blocked_by_missing_basis_or_density": 3,
+    "blocked_by_missing_cumulative_mapping": 3,
+    "blocked_by_missing_raw_fixture": 32,
+    "capability_counts": {
+      "context_only": 28,
+      "harvest_proxy": 1,
+      "measured_harvest": 3
+    },
+    "context_only_datasets": 28,
+    "ingestion_status_counts": {
+      "draft_blocked": 0,
+      "draft_needs_basis_metadata": 0,
+      "draft_needs_harvest_mapping": 0,
+      "draft_needs_raw_fixture": 32,
+      "runnable": 0
+    },
+    "proxy_datasets": 1,
+    "runnable_measured_harvest_datasets": 0,
+    "total_registry_datasets": 32
+  }
+}

@@ -4,7 +4,6 @@ exp:
 validation:
   datasets:
     registry_snapshot_path: configs/data/tomics_multidataset_candidates/traitenv_candidate_registry.json
-    allow_missing_registry_snapshot: true
     default_dataset_ids:
       - knu_actual
     items:
