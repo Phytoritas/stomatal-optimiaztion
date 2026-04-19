@@ -406,3 +406,41 @@ def test_cross_dataset_guardrail_counts_review_flagged_public_ai_competition_dat
     assert summary["selected_candidate"]["winner_not_promotion_grade_due_to_review_only_proxy_support"] is True
     assert summary["selected_candidate"]["passes"] is False
     assert "blocked" in summary["recommendation"].lower()
+
+
+def test_cross_dataset_guardrail_falls_back_without_review_flags_column(tmp_path: Path) -> None:
+    registry = DatasetRegistry(
+        datasets=(
+            _runnable_measured_dataset(tmp_path, "knu_actual", dataset_family="knu_actual"),
+            _review_flagged_public_ai_competition_derived_dw_dataset(
+                tmp_path,
+                "public_ai_competition__yield",
+            ),
+        ),
+        default_dataset_ids=("knu_actual", "public_ai_competition__yield"),
+    )
+    registry_df = registry.to_frame().drop(columns=["review_flags"])
+    scorecard = pd.DataFrame(
+        [
+            {
+                "fruit_harvest_family": "dekoning_fds",
+                "leaf_harvest_family": "vegetative_unit_pruning",
+                "fdmc_mode": "dekoning_fds",
+                "dataset_count": 2,
+                "dataset_ids": "[\"knu_actual\", \"public_ai_competition__yield\"]",
+                "mean_native_family_state_fraction": 0.9,
+                "mean_proxy_family_state_fraction": 0.1,
+                "mean_shared_tdvs_proxy_fraction": 0.0,
+                "cross_dataset_stability_score": 1.0,
+            }
+        ]
+    )
+
+    summary = build_cross_dataset_guardrail_summary(scorecard, registry_df=registry_df, min_dataset_count=2)
+
+    assert summary["measured_dataset_count"] == 2
+    assert summary["selected_candidate"]["winner_review_only_proxy_support_flag"] is True
+    assert summary["selected_candidate"]["winner_review_only_proxy_dataset_ids"] == [
+        "public_ai_competition__yield"
+    ]
+    assert summary["selected_candidate"]["passes"] is False

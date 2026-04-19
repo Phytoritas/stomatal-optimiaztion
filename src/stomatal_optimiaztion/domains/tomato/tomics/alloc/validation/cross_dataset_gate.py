@@ -44,6 +44,12 @@ def _json_list(value: object) -> list[str]:
     return []
 
 
+def _column_or_default(frame: pd.DataFrame, column: str, default: object) -> pd.Series:
+    if column in frame.columns:
+        return frame[column]
+    return pd.Series(default, index=frame.index)
+
+
 def _selected_candidate_review_proxy_dataset_ids(
     registry_df: pd.DataFrame | None,
     candidate: pd.Series,
@@ -56,18 +62,18 @@ def _selected_candidate_review_proxy_dataset_ids(
     candidate_rows = registry_df.loc[registry_df["dataset_id"].astype(str).isin(selected_dataset_ids)].copy()
     if candidate_rows.empty:
         return []
-    review_flag_mask = candidate_rows.get("review_flags", pd.Series(dtype=object)).apply(
+    review_flag_mask = _column_or_default(candidate_rows, "review_flags", None).apply(
         lambda value: "review_only_dry_matter_conversion" in _json_list(value)
     )
     derivation_mask = (
-        candidate_rows.get("observed_harvest_derivation", pd.Series(dtype=object))
+        _column_or_default(candidate_rows, "observed_harvest_derivation", "")
         .fillna("")
         .astype(str)
         .str.strip()
         .str.startswith("derived_dw_from_measured_fresh_")
     )
     direct_dw_mask = (
-        candidate_rows.get("is_direct_dry_weight", pd.Series(dtype=object))
+        _column_or_default(candidate_rows, "is_direct_dry_weight", True)
         .fillna(True)
         .astype(str)
         .str.strip()
@@ -75,7 +81,7 @@ def _selected_candidate_review_proxy_dataset_ids(
         .isin({"true", "1", "yes"})
     )
     literature_ratio_mask = (
-        candidate_rows.get("uses_literature_dry_matter_fraction", pd.Series(dtype=object))
+        _column_or_default(candidate_rows, "uses_literature_dry_matter_fraction", False)
         .fillna(False)
         .astype(str)
         .str.strip()
