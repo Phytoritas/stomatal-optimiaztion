@@ -269,6 +269,123 @@ def test_dataset_registry_snapshot_nonexistent_paths_do_not_become_runnable(tmp_
     assert [item.dataset_id for item in registry.runnable_measured_harvest_datasets()] == []
 
 
+def test_dataset_registry_accepts_review_flagged_public_ai_competition_derived_dw_runtime(
+    tmp_path: Path,
+) -> None:
+    snapshot_path = tmp_path / "snapshot.json"
+    fixture_root = (
+        tmp_path
+        / "data"
+        / "fixtures"
+        / "public_ai_competition_sanitized"
+        / "2023_farmKRKW000001_season_na_tomato"
+    )
+    fixture_root.mkdir(parents=True)
+    forcing_path = fixture_root / "forcing_fixture.csv"
+    harvest_path = fixture_root / "observed_harvest_fixture.csv"
+    forcing_path.write_text(
+        (
+            "datetime,T_air_C,PAR_umol,CO2_ppm,RH_percent,wind_speed_ms\n"
+            "2024-01-19 00:00:00,17.725,0.0,475.083,56.917,0.3\n"
+        ),
+        encoding="utf-8",
+    )
+    harvest_path.write_text(
+        (
+            "Date,Measured_Cumulative_Total_Fruit_DW (g/m^2)\n"
+            "2024-01-19,7.1487\n"
+            "2024-01-26,16.5282\n"
+        ),
+        encoding="utf-8",
+    )
+    snapshot_payload = {
+        "default_dataset_ids": [],
+        "datasets": [
+            {
+                "dataset_id": "public_ai_competition__yield",
+                "dataset_kind": "traitenv_candidate",
+                "display_name": "public_ai_competition / yield",
+                "dataset_family": "public_ai_competition",
+                "observation_family": "yield",
+                "capability": "measured_harvest",
+                "ingestion_status": "runnable",
+                "forcing_path": "data/fixtures/public_ai_competition_sanitized/2023_farmKRKW000001_season_na_tomato/forcing_fixture.csv",
+                "observed_harvest_path": "data/fixtures/public_ai_competition_sanitized/2023_farmKRKW000001_season_na_tomato/observed_harvest_fixture.csv",
+                "validation_start": "2024-01-19",
+                "validation_end": "2024-01-26",
+                "basis": {"reporting_basis": "floor_area_g_m2", "plants_per_m2": 2.86},
+                "observation": {
+                    "date_column": "Date",
+                    "measured_cumulative_column": "Measured_Cumulative_Total_Fruit_DW (g/m^2)",
+                    "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area",
+                },
+                "dry_matter_conversion": {
+                    "mode": "derived_dw_from_measured_fresh_harvest_per_plant",
+                    "fresh_weight_column": "outtrn",
+                    "dry_matter_ratio": 0.065,
+                    "citations": ["user-provided tomato fruit dry matter synthesis dated 2026-03-21"],
+                    "review_only": True,
+                },
+                "sanitized_fixture": {
+                    "forcing_fixture_path": "data/fixtures/public_ai_competition_sanitized/2023_farmKRKW000001_season_na_tomato/forcing_fixture.csv",
+                    "observed_harvest_fixture_path": "data/fixtures/public_ai_competition_sanitized/2023_farmKRKW000001_season_na_tomato/observed_harvest_fixture.csv",
+                },
+                "notes": {
+                    "is_direct_dry_weight": False,
+                    "uses_literature_dry_matter_fraction": True,
+                    "observed_harvest_derivation": "derived_dw_from_measured_fresh_harvest_per_plant",
+                    "review_flags": ["review_only_dry_matter_conversion"],
+                    "floor_area_basis_source": "sampled-plant mean harvest scaled by 2.86 plants_per_m2",
+                    "dry_matter_conversion_method": (
+                        "daily_dw_g_per_sampled_plant = (sum(outtrn_g_by_day) / 22) * 0.065; "
+                        "daily_dw_g_per_m2 = daily_dw_g_per_sampled_plant * 2.86; "
+                        "cumulative_dw_g_per_m2 = cumsum(daily_dw_g_per_m2)"
+                    ),
+                    "dry_matter_conversion_provenance": (
+                        "competition slice provenance: measured fresh harvest mass-like outtrn scaled by "
+                        "user-provided 0.065 dry matter fraction"
+                    ),
+                },
+                "source_refs": ["competition/23_env.csv", "competition/23_growth.csv"],
+                "provenance_tags": [
+                    "competition_candidate",
+                    "derived_dw_proxy",
+                    "runnable_review_only",
+                ],
+                "blocker_codes": [],
+            }
+        ],
+    }
+    snapshot_path.write_text(json.dumps(snapshot_payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    config = {"validation": {"datasets": {"registry_snapshot_path": str(snapshot_path)}}}
+    config_path = tmp_path / "config.yaml"
+    config_path.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
+
+    registry = load_dataset_registry(config, repo_root=tmp_path, config_path=config_path)
+    dataset = registry.require("public_ai_competition__yield")
+    registry_frame = registry.to_frame()
+    row = registry_frame.loc[registry_frame["dataset_id"] == "public_ai_competition__yield"].iloc[0]
+
+    assert dataset.ingestion_status is DatasetIngestionStatus.RUNNABLE
+    assert dataset.is_runnable_measured_harvest is True
+    assert tuple(dataset.blocker_codes) == ()
+    assert dataset.notes["is_direct_dry_weight"] is False
+    assert dataset.notes["observed_harvest_derivation"] == "derived_dw_from_measured_fresh_harvest_per_plant"
+    assert dataset.dry_matter_conversion.mode == "derived_dw_from_measured_fresh_harvest_per_plant"
+    assert dataset.dry_matter_conversion.fresh_weight_column == "outtrn"
+    assert dataset.dry_matter_conversion.dry_matter_ratio == 0.065
+    assert dataset.dry_matter_conversion.review_only is True
+    assert [item.dataset_id for item in registry.runnable_measured_harvest_datasets()] == [
+        "public_ai_competition__yield"
+    ]
+    assert bool(row["accepted_review_only_derived_dw_runtime"]) is True
+    assert row["observed_harvest_derivation"] == "derived_dw_from_measured_fresh_harvest_per_plant"
+    assert bool(row["is_direct_dry_weight"]) is False
+    assert bool(row["uses_literature_dry_matter_fraction"]) is True
+    assert bool(row["dry_matter_conversion_review_only"]) is True
+    assert json.loads(row["review_flags"]) == ["review_only_dry_matter_conversion"]
+
+
 def test_dataset_registry_explicit_items_overlay_snapshot_rows_instead_of_replacing_them(tmp_path: Path) -> None:
     snapshot_path = tmp_path / "snapshot.json"
     forcing_path = tmp_path / "forcing.csv"

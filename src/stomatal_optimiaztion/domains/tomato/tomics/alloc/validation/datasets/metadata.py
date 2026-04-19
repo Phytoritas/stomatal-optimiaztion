@@ -13,6 +13,8 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.datasets.contr
     DatasetManagementMetadata,
     DatasetMetadataContract,
     DatasetObservationContract,
+    accepted_review_only_dry_matter_runtime,
+    dataset_review_flags,
     is_measured_harvest_runnable,
 )
 
@@ -117,6 +119,13 @@ def dataset_registry_frame(datasets: list[DatasetMetadataContract]) -> pd.DataFr
                 "dry_matter_ratio_low": payload["dry_matter_conversion"]["dry_matter_ratio_low"],
                 "dry_matter_ratio_high": payload["dry_matter_conversion"]["dry_matter_ratio_high"],
                 "dry_matter_conversion_review_only": payload["dry_matter_conversion"]["review_only"],
+                "accepted_review_only_derived_dw_runtime": accepted_review_only_dry_matter_runtime(dataset),
+                "observed_harvest_derivation": payload["notes"].get("observed_harvest_derivation"),
+                "is_direct_dry_weight": payload["notes"].get("is_direct_dry_weight"),
+                "uses_literature_dry_matter_fraction": payload["notes"].get(
+                    "uses_literature_dry_matter_fraction"
+                ),
+                "review_flags": json.dumps(dataset_review_flags(dataset), sort_keys=True),
                 "cultivar": payload["cultivar"],
                 "greenhouse": payload["greenhouse"],
                 "season": payload["season"],

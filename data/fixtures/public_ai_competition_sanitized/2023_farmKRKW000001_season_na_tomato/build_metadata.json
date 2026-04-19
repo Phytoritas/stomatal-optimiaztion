@@ -1,0 +1,19 @@
+{
+  "sampled_plants": 22,
+  "validation_start": "2024-01-19",
+  "validation_end": "2024-01-26",
+  "positive_harvest_rows": 7,
+  "positive_harvest_dates": [
+    "2024-01-19",
+    "2024-01-26"
+  ],
+  "daily_fresh_harvest_g_total_sum": 1956.0,
+  "daily_dw_g_per_sampled_plant_cumulative_final": 5.779090909090909,
+  "forcing_rows": 192,
+  "forcing_start": "2024-01-19 00:00:00",
+  "forcing_end": "2024-01-26 23:00:00",
+  "plants_per_m2": 2.86,
+  "daily_dw_g_per_m2_cumulative_final": 16.5282,
+  "reporting_basis": "g_per_m2",
+  "review_flag": "review_only_dry_matter_conversion"
+}

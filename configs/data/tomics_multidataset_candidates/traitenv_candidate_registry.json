@@ -428,19 +428,11 @@
     },
     {
       "basis": {
-        "basis_unit_label": "unknown",
-        "plants_per_m2": null,
-        "reporting_basis": "unknown"
+        "basis_unit_label": "g/m^2",
+        "plants_per_m2": 2.86,
+        "reporting_basis": "floor_area_g_m2"
       },
-      "blocker_codes": [
-        "missing_date_column",
-        "missing_measured_cumulative_column",
-        "missing_observed_harvest_path",
-        "missing_raw_fixture",
-        "missing_reporting_basis",
-        "missing_sanitized_fixture",
-        "missing_validation_window"
-      ],
+      "blocker_codes": [],
       "capability": "measured_harvest",
       "cultivar": "unknown",
       "dataset_family": "public_ai_competition",
@@ -448,17 +440,19 @@
       "dataset_kind": "traitenv_candidate",
       "display_name": "public_ai_competition / yield",
       "dry_matter_conversion": {
-        "citations": [],
-        "dry_matter_ratio": null,
+        "citations": [
+          "user-provided tomato fruit dry matter synthesis dated 2026-03-21"
+        ],
+        "dry_matter_ratio": 0.065,
         "dry_matter_ratio_high": null,
         "dry_matter_ratio_low": null,
-        "fresh_weight_column": null,
-        "mode": "none",
+        "fresh_weight_column": "outtrn",
+        "mode": "derived_dw_from_measured_fresh_harvest_per_plant",
         "review_only": true
       },
-      "forcing_path": null,
-      "greenhouse": "unknown",
-      "ingestion_status": "draft_needs_raw_fixture",
+      "forcing_path": "data/fixtures/public_ai_competition_sanitized/2023_farmKRKW000001_season_na_tomato/forcing_fixture.csv",
+      "greenhouse": "FG",
+      "ingestion_status": "runnable",
       "management": {
         "defoliation_records_path": null,
         "ec_path": null,
@@ -468,10 +462,10 @@
         "rootzone_path": null
       },
       "notes": {
-        "candidate_date_key": "observation_date",
-        "candidate_harvest_column": null,
-        "candidate_harvest_includes_fallen_fruit": true,
-        "candidate_harvest_requires_cumulative_construction": false,
+        "candidate_date_key": "Date",
+        "candidate_harvest_column": "outtrn",
+        "candidate_harvest_includes_fallen_fruit": false,
+        "candidate_harvest_requires_cumulative_construction": true,
         "comparison_daily_standard_names": [
           "fruit_count"
         ],
@@ -510,35 +504,52 @@
           "Environment time series require controlled daily or event-window rollups before comparison."
         ],
         "traitenv_bundle_kind": "directory",
-        "traitenv_bundle_ref": "traitenv"
+        "traitenv_bundle_ref": "traitenv",
+        "resolved_fixture_slice_id": "2023_farmKRKW000001_season_na_tomato",
+        "sampled_plants_count": 22,
+        "basis_status": "resolved_via_plant_density",
+        "plants_per_m2_source": "user-provided density in chat on 2026-04-19",
+        "review_flags": [
+          "review_only_dry_matter_conversion"
+        ],
+        "observed_harvest_derivation": "derived_dw_from_measured_fresh_harvest_per_plant",
+        "is_direct_dry_weight": false,
+        "uses_literature_dry_matter_fraction": true,
+        "floor_area_basis_source": "sampled-plant mean fresh harvest scaled by 2.86 plants_per_m2",
+        "dry_matter_conversion_method": "daily_dw_g_per_sampled_plant = (sum(outtrn_g_by_day) / 22) * 0.065; daily_dw_g_per_m2 = daily_dw_g_per_sampled_plant * 2.86; cumulative_dw_g_per_m2 = cumsum(daily_dw_g_per_m2)",
+        "dry_matter_conversion_provenance": "competition slice provenance: measured fresh harvest mass-like outtrn scaled by user-provided 0.065 dry matter fraction"
       },
       "observation": {
         "daily_increment_column": null,
-        "date_column": null,
+        "date_column": "Date",
         "estimated_cumulative_column": null,
-        "measured_cumulative_column": null,
+        "measured_cumulative_column": "Measured_Cumulative_Total_Fruit_DW (g/m^2)",
         "measured_semantics": "cumulative_harvested_fruit_dry_weight_floor_area"
       },
       "observation_family": "yield",
-      "observed_harvest_path": null,
+      "observed_harvest_path": "data/fixtures/public_ai_competition_sanitized/2023_farmKRKW000001_season_na_tomato/observed_harvest_fixture.csv",
       "priority_tags": [],
       "provenance_tags": [
-        "public_data",
-        "public_ai_competition",
-        "yield"
+        "competition_candidate",
+        "fresh_harvest_proxy",
+        "derived_dw_proxy",
+        "plant_density_assumed",
+        "runnable_review_only"
       ],
       "sanitized_fixture": {
         "fixture_kind": "sanitized_csv_fixture",
-        "forcing_fixture_path": null,
-        "observed_harvest_fixture_path": null
+        "forcing_fixture_path": "data/fixtures/public_ai_competition_sanitized/2023_farmKRKW000001_season_na_tomato/forcing_fixture.csv",
+        "observed_harvest_fixture_path": "data/fixtures/public_ai_competition_sanitized/2023_farmKRKW000001_season_na_tomato/observed_harvest_fixture.csv"
       },
-      "sanitized_fixture_path": null,
-      "season": "unknown",
+      "sanitized_fixture_path": "data/fixtures/public_ai_competition_sanitized/2023_farmKRKW000001_season_na_tomato",
+      "season": "na",
       "source_refs": [
-        "70_\uacf5\uacf5\ub370\uc774\ud130/\uc2a4\ub9c8\ud2b8\ud31c\ucf54\ub9ac\uc544_AI\uacbd\uc9c4\ub300\ud68c \ub370\uc774\ud130\uc14b/2022\ub144 \uac1c\ubc29\ub370\uc774\ud130/22_\uc0dd\uc0b0\uc815\ubcf4.csv"
+        "70_?????/???????_AI???? ????/2023? ?????/23_????.csv",
+        "70_?????/???????_AI???? ????/2023? ?????/23_????.csv",
+        "70_?????/???????_AI???? ????/2023_???????_??????.hwp"
       ],
-      "validation_end": null,
-      "validation_start": null
+      "validation_end": "2024-01-26",
+      "validation_start": "2024-01-19"
     },
     {
       "basis": {
@@ -3621,9 +3632,9 @@
   ],
   "default_dataset_ids": [],
   "summary": {
-    "blocked_by_missing_basis_or_density": 3,
-    "blocked_by_missing_cumulative_mapping": 3,
-    "blocked_by_missing_raw_fixture": 32,
+    "blocked_by_missing_basis_or_density": 2,
+    "blocked_by_missing_cumulative_mapping": 2,
+    "blocked_by_missing_raw_fixture": 31,
     "capability_counts": {
       "context_only": 28,
       "harvest_proxy": 1,
@@ -3634,11 +3645,11 @@
       "draft_blocked": 0,
       "draft_needs_basis_metadata": 0,
       "draft_needs_harvest_mapping": 0,
-      "draft_needs_raw_fixture": 32,
-      "runnable": 0
+      "draft_needs_raw_fixture": 31,
+      "runnable": 1
     },
     "proxy_datasets": 1,
-    "runnable_measured_harvest_datasets": 0,
+    "runnable_measured_harvest_datasets": 1,
     "total_registry_datasets": 32
   }
 }
