@@ -207,14 +207,25 @@ def _window_metrics(
     start: pd.Timestamp,
     end: pd.Timestamp,
 ) -> dict[str, float | bool | str]:
-    mask = (observed_df["date"] >= start) & (observed_df["date"] <= end)
+    mask = ((observed_df["date"] >= start) & (observed_df["date"] <= end)).reset_index(drop=True)
+    aligned_candidate_series = pd.Series(candidate_series).reset_index(drop=True)
     bundle = compute_validation_bundle(
-        observed_df.loc[mask].copy(),
-        candidate_series=candidate_series.loc[mask],
+        observed_df.loc[mask].copy().reset_index(drop=True),
+        candidate_series=aligned_candidate_series.loc[mask],
         candidate_label=candidate_label,
         unit_declared_in_observation_file=unit_label,
     )
     return bundle.metrics
+
+
+def _aligned_candidate_series(
+    observed_df: pd.DataFrame,
+    model_daily_df: pd.DataFrame,
+    *,
+    value_column: str = "model_cumulative_total_fruit_dry_weight_floor_area",
+) -> pd.Series:
+    indexed = model_daily_df.set_index("date")
+    return observed_df["date"].map(indexed[value_column])
 
 
 def prepare_knu_bundle(
@@ -528,15 +539,16 @@ def _compute_run_metrics(
         (validation_df["date"] >= prepared_bundle.validation_start)
         & (validation_df["date"] <= prepared_bundle.validation_end)
     ].reset_index(drop=True)
+    candidate_series = _aligned_candidate_series(prepared_bundle.observed_df, validation_df)
     bundle = compute_validation_bundle(
         prepared_bundle.observed_df.copy(),
-        candidate_series=validation_df["model_cumulative_total_fruit_dry_weight_floor_area"],
+        candidate_series=candidate_series,
         candidate_label=candidate_label,
         unit_declared_in_observation_file=prepared_bundle.data.observation_unit_label,
     )
     calibration_metrics = _window_metrics(
         prepared_bundle.observed_df,
-        candidate_series=validation_df["model_cumulative_total_fruit_dry_weight_floor_area"],
+        candidate_series=candidate_series,
         candidate_label=candidate_label,
         unit_label=prepared_bundle.data.observation_unit_label,
         start=prepared_bundle.validation_start,
@@ -544,7 +556,7 @@ def _compute_run_metrics(
     )
     holdout_metrics = _window_metrics(
         prepared_bundle.observed_df,
-        candidate_series=validation_df["model_cumulative_total_fruit_dry_weight_floor_area"],
+        candidate_series=candidate_series,
         candidate_label=candidate_label,
         unit_label=prepared_bundle.data.observation_unit_label,
         start=prepared_bundle.holdout_start,

@@ -1,0 +1,15 @@
+private_data_root_env: PHYTORITAS_PRIVATE_DATA_ROOT
+private_data_root:
+forcing_relative_path: data/fixtures/public_ai_competition_sanitized/2023_farmKRKW000001_season_na_tomato/forcing_fixture.csv
+yield_relative_path: data/fixtures/public_ai_competition_sanitized/2023_farmKRKW000001_season_na_tomato/observed_harvest_fixture.csv
+reporting_basis: floor_area_g_m2
+plants_per_m2: 2.86
+parser_assumptions:
+  forcing_parser: csv_datetime_first_class
+  yield_parser: xlsx_or_csv_fixture
+  units_policy: preserve_source_declared_units
+  datetime_policy: naive_local_greenhouse_timestamps
+  observation_semantics: cumulative_harvested_fruit_dry_weight_floor_area
+observation:
+  date_column: Date
+  measured_cumulative_column: Measured_Cumulative_Total_Fruit_DW (g/m^2)

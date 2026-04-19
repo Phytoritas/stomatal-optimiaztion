@@ -1,0 +1,26 @@
+exp:
+  name: tomics_public_rda_harvest_family_factorial_2018_farm10_season1
+
+paths:
+  repo_root: ../..
+
+validation:
+  forcing_csv_path: data/fixtures/public_rda_sanitized/2018_farm10_season1_ripe_tomato/forcing_fixture.csv
+  yield_xlsx_path: data/fixtures/public_rda_sanitized/2018_farm10_season1_ripe_tomato/observed_harvest_fixture.csv
+  private_data_contract_path: configs/data/public_rda_2018_farm10_season1_contract.yaml
+  prepared_output_root: out/tomics/validation/public_rda/2018_farm10_season1/prepared
+  resample_rule: 1h
+  theta_proxy_mode: bucket_irrigated
+  theta_proxy_scenarios: [dry, moderate, wet]
+
+reference:
+  current_vs_promoted_config: configs/exp/tomics_current_vs_promoted_factorial_public_rda_2018_farm10_season1.yaml
+  current_output_root: out/tomics/validation/public_rda/2018_farm10_season1/architecture/current-factorial
+  promoted_output_root: out/tomics/validation/public_rda/2018_farm10_season1/architecture/promoted-factorial
+
+harvest_factorial:
+  output_root: ../../out/tomics_public_rda_harvest_family_factorial
+  theta_proxy_scenario: moderate
+  cumulative_overlay_spec: configs/plotkit/tomics/knu_harvest_yield_fit_overlay.yaml
+  daily_overlay_spec: configs/plotkit/tomics/knu_harvest_daily_increment_overlay.yaml
+  mass_balance_overlay_spec: configs/plotkit/tomics/knu_harvest_mass_balance_overlay.yaml

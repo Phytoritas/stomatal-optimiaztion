@@ -1,0 +1,27 @@
+exp:
+  name: tomics_public_ai_competition_harvest_family_factorial_2023_farmKRKW000001
+
+paths:
+  repo_root: ../..
+
+validation:
+  forcing_csv_path: data/fixtures/public_ai_competition_sanitized/2023_farmKRKW000001_season_na_tomato/forcing_fixture.csv
+  yield_xlsx_path: data/fixtures/public_ai_competition_sanitized/2023_farmKRKW000001_season_na_tomato/observed_harvest_fixture.csv
+  private_data_contract_path: configs/data/public_ai_competition_2023_farmKRKW000001_contract.yaml
+  prepared_output_root: out/tomics/validation/public_ai_competition/2023_farmKRKW000001/prepared
+  resample_rule: 1h
+  theta_proxy_mode: bucket_irrigated
+  theta_proxy_scenarios: [dry, moderate, wet]
+  calibration_end: 2024-01-26
+
+reference:
+  current_vs_promoted_config: configs/exp/tomics_current_vs_promoted_factorial_public_ai_competition_2023_farmKRKW000001.yaml
+  current_output_root: out/tomics/validation/public_ai_competition/2023_farmKRKW000001/architecture/current-factorial
+  promoted_output_root: out/tomics/validation/public_ai_competition/2023_farmKRKW000001/architecture/promoted-factorial
+
+harvest_factorial:
+  output_root: ../../out/tomics_public_ai_competition_harvest_family_factorial
+  theta_proxy_scenario: moderate
+  cumulative_overlay_spec: configs/plotkit/tomics/knu_harvest_yield_fit_overlay.yaml
+  daily_overlay_spec: configs/plotkit/tomics/knu_harvest_daily_increment_overlay.yaml
+  mass_balance_overlay_spec: configs/plotkit/tomics/knu_harvest_mass_balance_overlay.yaml
