@@ -38,6 +38,8 @@ HARVEST_MAPPING_BLOCKER_CODES = frozenset(
         "review_only_dry_matter_conversion",
     }
 )
+REVIEW_ONLY_DRY_MATTER_FLAG = "review_only_dry_matter_conversion"
+ACCEPTED_DERIVED_DW_OBSERVATION_PREFIX = "derived_dw_from_measured_fresh_"
 
 
 def _normalize_optional_text(value: object) -> str | None:
@@ -56,6 +58,28 @@ def _normalize_reporting_basis(value: str | None) -> str:
     if key in {"per_plant", "g/plant"}:
         return "g_per_plant"
     raise ValueError(f"Unsupported reporting basis {value!r}.")
+
+
+def _normalize_note_bool(value: object) -> bool | None:
+    if isinstance(value, bool):
+        return value
+    if value is None:
+        return None
+    key = str(value).strip().lower()
+    if key in {"true", "1", "yes"}:
+        return True
+    if key in {"false", "0", "no"}:
+        return False
+    return None
+
+
+def _normalize_note_flag_set(value: object) -> frozenset[str]:
+    if isinstance(value, (list, tuple, set, frozenset)):
+        return frozenset(str(item).strip() for item in value if str(item).strip())
+    if value is None:
+        return frozenset()
+    text = str(value).strip()
+    return frozenset({text}) if text else frozenset()
 
 
 def _normalize_capability(value: DatasetCapability | str | None) -> DatasetCapability:
@@ -376,6 +400,39 @@ class DatasetMetadataContract:
         }
 
 
+def dataset_review_flags(dataset: DatasetMetadataContract) -> tuple[str, ...]:
+    return tuple(sorted(_normalize_note_flag_set(dataset.notes.get("review_flags"))))
+
+
+def accepted_review_only_dry_matter_runtime(dataset: DatasetMetadataContract) -> bool:
+    derivation = str(dataset.notes.get("observed_harvest_derivation") or "").strip().lower()
+    is_direct_dry_weight = _normalize_note_bool(dataset.notes.get("is_direct_dry_weight"))
+    uses_literature_ratio = _normalize_note_bool(dataset.notes.get("uses_literature_dry_matter_fraction"))
+    floor_area_basis_source = _normalize_optional_text(dataset.notes.get("floor_area_basis_source"))
+    conversion_method = _normalize_optional_text(dataset.notes.get("dry_matter_conversion_method"))
+    conversion_provenance = _normalize_optional_text(dataset.notes.get("dry_matter_conversion_provenance"))
+    review_flags = dataset_review_flags(dataset)
+    return (
+        dataset.dry_matter_conversion.enabled
+        and dataset.dry_matter_conversion.review_only
+        and dataset.dry_matter_conversion.fresh_weight_column is not None
+        and dataset.forcing_path is not None
+        and dataset.observed_harvest_path is not None
+        and dataset.sanitized_fixture.is_complete
+        and dataset.validation_start is not None
+        and dataset.validation_end is not None
+        and dataset.observation.has_explicit_cumulative_mapping
+        and dataset.basis.reporting_basis == "floor_area_g_m2"
+        and derivation.startswith(ACCEPTED_DERIVED_DW_OBSERVATION_PREFIX)
+        and is_direct_dry_weight is False
+        and uses_literature_ratio is True
+        and bool(floor_area_basis_source)
+        and bool(conversion_method)
+        and bool(conversion_provenance or dataset.dry_matter_conversion.citations)
+        and REVIEW_ONLY_DRY_MATTER_FLAG in review_flags
+    )
+
+
 def missing_required_fields(dataset: DatasetMetadataContract) -> list[str]:
     missing: list[str] = []
     if dataset.forcing_path is None:
@@ -421,7 +478,8 @@ def classify_blockers(dataset: DatasetMetadataContract) -> list[str]:
             blockers.append("missing_measured_cumulative_column")
         semantics = dataset.observation.measured_semantics.strip().lower()
         if dataset.dry_matter_conversion.enabled and dataset.dry_matter_conversion.review_only:
-            blockers.append("review_only_dry_matter_conversion")
+            if not accepted_review_only_dry_matter_runtime(dataset):
+                blockers.append(REVIEW_ONLY_DRY_MATTER_FLAG)
         elif "cumulative_harvested" not in semantics:
             blockers.append("ambiguous_harvest_semantics")
         if not dataset.sanitized_fixture.is_complete:
@@ -462,7 +520,8 @@ def is_measured_harvest_runnable(dataset: DatasetMetadataContract) -> bool:
     if dataset.ingestion_status is not DatasetIngestionStatus.RUNNABLE:
         return False
     if dataset.dry_matter_conversion.enabled and dataset.dry_matter_conversion.review_only:
-        return False
+        if not accepted_review_only_dry_matter_runtime(dataset):
+            return False
     if classify_blockers(dataset):
         return False
     semantics = dataset.observation.measured_semantics.strip().lower()
@@ -487,7 +546,9 @@ __all__ = [
     "DatasetMetadataContract",
     "DatasetObservationContract",
     "DatasetSanitizedFixtureContract",
+    "accepted_review_only_dry_matter_runtime",
     "classify_blockers",
+    "dataset_review_flags",
     "derive_ingestion_status",
     "infer_ingestion_status",
     "is_measured_harvest_runnable",

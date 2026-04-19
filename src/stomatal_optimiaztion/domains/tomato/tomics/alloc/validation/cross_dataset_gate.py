@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -27,6 +28,65 @@ def _existing_path_series(frame: pd.DataFrame, column: str) -> pd.Series:
         return pd.Series(False, index=frame.index, dtype=bool)
     values = frame[column].fillna("").astype(str).str.strip()
     return values.apply(lambda value: bool(value) and Path(value).exists())
+
+
+def _json_list(value: object) -> list[str]:
+    if isinstance(value, list):
+        return [str(item) for item in value]
+    if value is None:
+        return []
+    try:
+        parsed = json.loads(str(value))
+    except (TypeError, ValueError, json.JSONDecodeError):
+        return []
+    if isinstance(parsed, list):
+        return [str(item) for item in parsed]
+    return []
+
+
+def _selected_candidate_review_proxy_dataset_ids(
+    registry_df: pd.DataFrame | None,
+    candidate: pd.Series,
+) -> list[str]:
+    if registry_df is None or registry_df.empty:
+        return []
+    selected_dataset_ids = set(_json_list(candidate.get("dataset_ids")))
+    if not selected_dataset_ids:
+        return []
+    candidate_rows = registry_df.loc[registry_df["dataset_id"].astype(str).isin(selected_dataset_ids)].copy()
+    if candidate_rows.empty:
+        return []
+    review_flag_mask = candidate_rows.get("review_flags", pd.Series(dtype=object)).apply(
+        lambda value: "review_only_dry_matter_conversion" in _json_list(value)
+    )
+    derivation_mask = (
+        candidate_rows.get("observed_harvest_derivation", pd.Series(dtype=object))
+        .fillna("")
+        .astype(str)
+        .str.strip()
+        .str.startswith("derived_dw_from_measured_fresh_")
+    )
+    direct_dw_mask = (
+        candidate_rows.get("is_direct_dry_weight", pd.Series(dtype=object))
+        .fillna(True)
+        .astype(str)
+        .str.strip()
+        .str.lower()
+        .isin({"true", "1", "yes"})
+    )
+    literature_ratio_mask = (
+        candidate_rows.get("uses_literature_dry_matter_fraction", pd.Series(dtype=object))
+        .fillna(False)
+        .astype(str)
+        .str.strip()
+        .str.lower()
+        .isin({"true", "1", "yes"})
+    )
+    flagged = candidate_rows.loc[
+        review_flag_mask | (derivation_mask & (~direct_dw_mask) & literature_ratio_mask),
+        "dataset_id",
+    ]
+    return sorted({str(value) for value in flagged.dropna()})
 
 
 def _registry_measured_dataset_support(registry_df: pd.DataFrame | None) -> tuple[int, list[str]]:
@@ -57,7 +117,8 @@ def cross_dataset_proxy_guardrail(
     cross_dataset_stability_score_min: float,
     min_dataset_count: int,
     measured_dataset_count: int | None = None,
-) -> dict[str, float | bool | int]:
+    review_only_proxy_dataset_ids: list[str] | None = None,
+) -> dict[str, Any]:
     native_state_coverage = float(
         pd.to_numeric(pd.Series([candidate.get("mean_native_family_state_fraction", 0.0)]), errors="coerce")
         .fillna(0.0)
@@ -83,6 +144,8 @@ def cross_dataset_proxy_guardrail(
     )
     measured_dataset_evidence_available = measured_dataset_count is not None
     registry_measured_dataset_count = int(measured_dataset_count or 0)
+    review_only_proxy_dataset_ids = sorted({str(value) for value in review_only_proxy_dataset_ids or []})
+    review_only_proxy_support_flag = bool(review_only_proxy_dataset_ids)
     proxy_heavy_flag = bool(
         native_state_coverage < native_state_coverage_min
         or shared_tdvs_proxy_fraction > shared_tdvs_proxy_fraction_max
@@ -98,6 +161,8 @@ def cross_dataset_proxy_guardrail(
         "winner_proxy_state_fraction": proxy_state_fraction,
         "winner_shared_tdvs_proxy_fraction": shared_tdvs_proxy_fraction,
         "winner_proxy_heavy_flag": proxy_heavy_flag,
+        "winner_review_only_proxy_dataset_ids": review_only_proxy_dataset_ids,
+        "winner_review_only_proxy_support_flag": review_only_proxy_support_flag,
         "cross_dataset_stability_score": stability_score,
         "measured_dataset_count": registry_measured_dataset_count,
         "measured_dataset_evidence_available": measured_dataset_evidence_available,
@@ -105,10 +170,17 @@ def cross_dataset_proxy_guardrail(
         "single_dataset_only_flag": single_dataset_only_flag,
         "missing_dataset_registry_flag": missing_dataset_registry_flag,
         "winner_not_promotion_grade_due_to_proxy_dependence": proxy_heavy_flag,
+        "winner_not_promotion_grade_due_to_review_only_proxy_support": review_only_proxy_support_flag,
         "winner_not_promotion_grade_due_to_cross_dataset_instability": (
             single_dataset_only_flag or stability_fail_flag or missing_dataset_registry_flag
         ),
-        "passes": not (proxy_heavy_flag or single_dataset_only_flag or stability_fail_flag or missing_dataset_registry_flag),
+        "passes": not (
+            proxy_heavy_flag
+            or review_only_proxy_support_flag
+            or single_dataset_only_flag
+            or stability_fail_flag
+            or missing_dataset_registry_flag
+        ),
     }
 
 
@@ -178,6 +250,7 @@ def build_cross_dataset_guardrail_summary(
             "selected_candidate": {},
         }
     selected = scorecard_df.iloc[0]
+    review_only_proxy_dataset_ids = _selected_candidate_review_proxy_dataset_ids(registry_df, selected)
     guardrail = cross_dataset_proxy_guardrail(
         selected,
         native_state_coverage_min=native_state_coverage_min,
@@ -185,6 +258,7 @@ def build_cross_dataset_guardrail_summary(
         cross_dataset_stability_score_min=cross_dataset_stability_score_min,
         min_dataset_count=min_dataset_count,
         measured_dataset_count=measured_dataset_count if registry_evidence_available else None,
+        review_only_proxy_dataset_ids=review_only_proxy_dataset_ids,
     )
     if not registry_evidence_available:
         recommendation = (

@@ -11,6 +11,7 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.cross_dataset_
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.datasets.contracts import (
     DatasetBasisContract,
     DatasetCapability,
+    DatasetDryMatterConversionContract,
     DatasetIngestionStatus,
     DatasetMetadataContract,
     DatasetObservationContract,
@@ -44,6 +45,78 @@ def _runnable_measured_dataset(tmp_path: Path, dataset_id: str, *, dataset_famil
             forcing_fixture_path=forcing_path,
             observed_harvest_fixture_path=harvest_path,
         ),
+    )
+
+
+def _review_flagged_public_ai_competition_derived_dw_dataset(
+    tmp_path: Path,
+    dataset_id: str,
+) -> DatasetMetadataContract:
+    fixture_root = tmp_path / dataset_id
+    fixture_root.mkdir(parents=True, exist_ok=True)
+    forcing_path = fixture_root / "forcing_fixture.csv"
+    harvest_path = fixture_root / "observed_harvest_fixture.csv"
+    forcing_path.write_text(
+        (
+            "datetime,T_air_C,PAR_umol,CO2_ppm,RH_percent,wind_speed_ms\n"
+            "2024-01-19 00:00:00,17.725,0.0,475.083,56.917,0.3\n"
+        ),
+        encoding="utf-8",
+    )
+    harvest_path.write_text(
+        (
+            "Date,Measured_Cumulative_Total_Fruit_DW (g/m^2)\n"
+            "2024-01-19,7.1487\n"
+            "2024-01-26,16.5282\n"
+        ),
+        encoding="utf-8",
+    )
+    return DatasetMetadataContract(
+        dataset_id=dataset_id,
+        dataset_kind="traitenv_candidate",
+        display_name=dataset_id,
+        dataset_family="public_ai_competition",
+        observation_family="yield",
+        capability=DatasetCapability.MEASURED_HARVEST,
+        ingestion_status=DatasetIngestionStatus.RUNNABLE,
+        source_refs=("competition/23_env.csv", "competition/23_growth.csv"),
+        forcing_path=forcing_path,
+        observed_harvest_path=harvest_path,
+        validation_start="2024-01-19",
+        validation_end="2024-01-26",
+        basis=DatasetBasisContract(reporting_basis="floor_area_g_m2", plants_per_m2=2.86),
+        observation=DatasetObservationContract(
+            date_column="Date",
+            measured_cumulative_column="Measured_Cumulative_Total_Fruit_DW (g/m^2)",
+        ),
+        dry_matter_conversion=DatasetDryMatterConversionContract(
+            mode="derived_dw_from_measured_fresh_harvest_per_plant",
+            fresh_weight_column="outtrn",
+            dry_matter_ratio=0.065,
+            citations=("user-provided tomato fruit dry matter synthesis dated 2026-03-21",),
+            review_only=True,
+        ),
+        sanitized_fixture=DatasetSanitizedFixtureContract(
+            forcing_fixture_path=forcing_path,
+            observed_harvest_fixture_path=harvest_path,
+        ),
+        provenance_tags=("competition_candidate", "derived_dw_proxy", "runnable_review_only"),
+        notes={
+            "is_direct_dry_weight": False,
+            "uses_literature_dry_matter_fraction": True,
+            "observed_harvest_derivation": "derived_dw_from_measured_fresh_harvest_per_plant",
+            "review_flags": ["review_only_dry_matter_conversion"],
+            "floor_area_basis_source": "sampled-plant mean harvest scaled by 2.86 plants_per_m2",
+            "dry_matter_conversion_method": (
+                "daily_dw_g_per_sampled_plant = (sum(outtrn_g_by_day) / 22) * 0.065; "
+                "daily_dw_g_per_m2 = daily_dw_g_per_sampled_plant * 2.86; "
+                "cumulative_dw_g_per_m2 = cumsum(daily_dw_g_per_m2)"
+            ),
+            "dry_matter_conversion_provenance": (
+                "competition slice provenance: measured fresh harvest mass-like outtrn scaled by "
+                "user-provided 0.065 dry matter fraction"
+            ),
+        },
     )
 
 
@@ -293,3 +366,43 @@ def test_cross_dataset_guardrail_ignores_registry_rows_marked_runnable_without_r
     summary = build_cross_dataset_guardrail_summary(pd.DataFrame(), registry_df=registry_df, min_dataset_count=2)
     assert summary["measured_dataset_count"] == 0
     assert summary["measured_dataset_ids"] == []
+
+
+def test_cross_dataset_guardrail_counts_review_flagged_public_ai_competition_dataset(tmp_path: Path) -> None:
+    registry = DatasetRegistry(
+        datasets=(
+            _runnable_measured_dataset(tmp_path, "knu_actual", dataset_family="knu_actual"),
+            _review_flagged_public_ai_competition_derived_dw_dataset(
+                tmp_path,
+                "public_ai_competition__yield",
+            ),
+        ),
+        default_dataset_ids=("knu_actual", "public_ai_competition__yield"),
+    )
+    scorecard = pd.DataFrame(
+        [
+            {
+                "fruit_harvest_family": "dekoning_fds",
+                "leaf_harvest_family": "vegetative_unit_pruning",
+                "fdmc_mode": "dekoning_fds",
+                "dataset_count": 2,
+                "dataset_ids": "[\"knu_actual\", \"public_ai_competition__yield\"]",
+                "mean_native_family_state_fraction": 0.9,
+                "mean_proxy_family_state_fraction": 0.1,
+                "mean_shared_tdvs_proxy_fraction": 0.0,
+                "cross_dataset_stability_score": 1.0,
+            }
+        ]
+    )
+
+    summary = build_cross_dataset_guardrail_summary(scorecard, registry=registry, min_dataset_count=2)
+
+    assert summary["measured_dataset_count"] == 2
+    assert summary["measured_dataset_ids"] == ["knu_actual", "public_ai_competition__yield"]
+    assert summary["selected_candidate"]["winner_review_only_proxy_support_flag"] is True
+    assert summary["selected_candidate"]["winner_review_only_proxy_dataset_ids"] == [
+        "public_ai_competition__yield"
+    ]
+    assert summary["selected_candidate"]["winner_not_promotion_grade_due_to_review_only_proxy_support"] is True
+    assert summary["selected_candidate"]["passes"] is False
+    assert "blocked" in summary["recommendation"].lower()
