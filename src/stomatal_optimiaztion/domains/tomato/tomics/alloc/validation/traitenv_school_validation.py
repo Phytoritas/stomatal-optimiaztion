@@ -546,6 +546,12 @@ def build_school_traitenv_dataset_overlay(
             "dataset_role_hint": (
                 "measured_harvest_runnable" if approve_runnable_contract else "measured_harvest_review_only"
             ),
+            "observed_harvest_derivation": "derived_dw_from_measured_fresh_school_harvest",
+            "is_direct_dry_weight": False,
+            "uses_literature_dry_matter_fraction": True,
+            "dry_weight_derivation_review_grade": (
+                "manual_reviewed_private" if approve_runnable_contract else "review_only"
+            ),
             "private_derivation_official_mode": "manual_reviewed_derivative",
             "private_derivation_helper_role": "local_preparation_utility",
             "private_derivation_public_promotion_default": "unchanged",
@@ -680,6 +686,10 @@ def write_school_traitenv_generated_configs(
     merged_items = [item for item in existing_items if str(item.get("dataset_id", "")) != SCHOOL_DATASET_ID]
     merged_items.append(overlay_item)
     datasets_cfg["items"] = merged_items
+    default_dataset_ids = [str(value) for value in datasets_cfg.get("default_dataset_ids", [])]
+    if SCHOOL_DATASET_ID not in default_dataset_ids:
+        default_dataset_ids.append(SCHOOL_DATASET_ID)
+    datasets_cfg["default_dataset_ids"] = default_dataset_ids
     multidataset_cfg["validation"]["multidataset_factorial"]["output_root"] = str(multidataset_output_root)
     multidataset_cfg["validation"]["multidataset_factorial"].setdefault("dataset_factorial_roots", {})
     multidataset_cfg["validation"]["multidataset_factorial"]["dataset_factorial_roots"][SCHOOL_DATASET_ID] = str(

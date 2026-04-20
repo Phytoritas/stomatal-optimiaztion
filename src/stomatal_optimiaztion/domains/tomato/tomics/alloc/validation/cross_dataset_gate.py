@@ -88,8 +88,16 @@ def _selected_candidate_review_proxy_dataset_ids(
         .str.lower()
         .isin({"true", "1", "yes"})
     )
+    review_grade_mask = (
+        _column_or_default(candidate_rows, "dry_weight_derivation_review_grade", "")
+        .fillna("")
+        .astype(str)
+        .str.strip()
+        .str.lower()
+        .eq("manual_reviewed_private")
+    )
     flagged = candidate_rows.loc[
-        review_flag_mask | (derivation_mask & (~direct_dw_mask) & literature_ratio_mask),
+        review_flag_mask | (derivation_mask & (~direct_dw_mask) & literature_ratio_mask & (~review_grade_mask)),
         "dataset_id",
     ]
     return sorted({str(value) for value in flagged.dropna()})
