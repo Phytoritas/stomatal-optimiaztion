@@ -1,0 +1,121 @@
+exp:
+  name: tomics_multidataset_harvest_factorial_mixed_measured
+
+validation:
+  datasets:
+    registry_snapshot_path: configs/data/tomics_multidataset_candidates/traitenv_candidate_registry.json
+    default_dataset_ids:
+      - knu_actual
+      - public_rda__yield
+      - public_ai_competition__yield
+    items:
+      - dataset_id: knu_actual
+        dataset_kind: knu_measured_harvest
+        display_name: KNU measured harvest longrun
+        dataset_family: knu_actual
+        observation_family: yield
+        capability: measured_harvest
+        ingestion_status: runnable
+        source_refs:
+          - tests/fixtures/knu_sanitized/KNU_Tomato_Env_fixture.csv
+          - tests/fixtures/knu_sanitized/tomato_validation_data_yield_fixture.csv
+        forcing_path: tests/fixtures/knu_sanitized/KNU_Tomato_Env_fixture.csv
+        observed_harvest_path: tests/fixtures/knu_sanitized/tomato_validation_data_yield_fixture.csv
+        validation_start: "2024-08-08"
+        validation_end: "2024-08-11"
+        cultivar: unknown
+        greenhouse: KNU
+        season: current_window
+        basis:
+          reporting_basis: floor_area_g_m2
+          plants_per_m2: 1.836091
+        observation:
+          date_column: Date
+          measured_cumulative_column: Measured_Cumulative_Total_Fruit_DW (g/m^2)
+          estimated_cumulative_column: Estimated_Cumulative_Total_Fruit_DW (g/m^2)
+          measured_semantics: cumulative_harvested_fruit_dry_weight_floor_area
+        sanitized_fixture:
+          fixture_kind: sanitized_csv_fixture
+          forcing_fixture_path: tests/fixtures/knu_sanitized/KNU_Tomato_Env_fixture.csv
+          observed_harvest_fixture_path: tests/fixtures/knu_sanitized/tomato_validation_data_yield_fixture.csv
+        priority_tags:
+          - baseline_window
+          - needs_additional_season
+          - needs_longer_harvest_wave
+          - needs_management_metadata
+          - needs_residence_signal_dataset
+          - prefer_rootzone_metadata
+        provenance_tags:
+          - actual_data_contract
+          - knu
+          - measured_harvest
+        notes:
+          dataset_source_kind: sanitized_fixture_smoke
+          reporting_basis: floor_area_g_m2
+      - dataset_id: public_rda__yield
+        dataset_kind: traitenv_candidate
+        display_name: public_rda / yield
+        dataset_family: public_rda
+        observation_family: yield
+        capability: measured_harvest
+        ingestion_status: runnable
+        source_refs:
+          - 70_공공데이터/농촌진흥청_토마토/2018_sale.xlsx
+          - 70_공공데이터/농촌진흥청_토마토/2018_env.xlsx
+          - 70_공공데이터/농촌진흥청_토마토/2018_cultInfo.xlsx
+        forcing_path: data/fixtures/public_rda_sanitized/2018_farm10_season1_ripe_tomato/forcing_fixture.csv
+        observed_harvest_path: data/fixtures/public_rda_sanitized/2018_farm10_season1_ripe_tomato/observed_harvest_fixture.csv
+        validation_start: "2019-01-17"
+        validation_end: "2019-06-30"
+        cultivar: deirose
+        greenhouse: vinyl
+        season: season1
+        basis:
+          reporting_basis: floor_area_g_m2
+          plants_per_m2: 4.0
+        observation:
+          date_column: Date
+          measured_cumulative_column: Measured_Cumulative_Total_Fruit_DW (g/m^2)
+          estimated_cumulative_column:
+          measured_semantics: cumulative_harvested_fruit_dry_weight_floor_area
+        dry_matter_conversion:
+          mode: derived_dw_from_measured_fresh_shipment
+          fresh_weight_column: 총출하량
+          dry_matter_ratio: 0.065
+          dry_matter_ratio_low: 0.05
+          dry_matter_ratio_high: 0.09
+          citations:
+            - user-provided tomato fruit dry matter literature synthesis dated 2026-03-21
+          review_only: true
+        sanitized_fixture:
+          fixture_kind: sanitized_csv_fixture
+          forcing_fixture_path: data/fixtures/public_rda_sanitized/2018_farm10_season1_ripe_tomato/forcing_fixture.csv
+          observed_harvest_fixture_path: data/fixtures/public_rda_sanitized/2018_farm10_season1_ripe_tomato/observed_harvest_fixture.csv
+        blocker_codes: []
+        priority_tags:
+          - review_only_derived_dw
+          - public_data
+        provenance_tags:
+          - public_data
+          - public_rda
+          - yield
+          - derived_dw_proxy
+        notes:
+          selected_slice_id: 2018_farm10_season1_ripe_tomato
+          source_observed_quantity: measured_fresh_shipment_mass
+          validation_target_quantity: cumulative_total_fruit_dry_mass_floor_area
+          observed_harvest_derivation: derived_dw_from_measured_fresh_shipment
+          is_direct_dry_weight: false
+          uses_literature_dry_matter_fraction: true
+          review_flags:
+            - review_only_dry_matter_conversion
+          floor_area_basis_source: cultInfo total floor area
+          dry_matter_conversion_method: cumsum(sum(총출하량_kg_by_day) * 1000 * 0.065) / floor_area_g_m2
+          dry_matter_conversion_provenance: user-provided tomato fruit dry matter literature synthesis dated 2026-03-21
+          fixture_provenance_path: data/fixtures/public_rda_sanitized/2018_farm10_season1_ripe_tomato/provenance.md
+  multidataset_factorial:
+    output_root: out/tomics/validation/mixed_multidataset
+    dataset_factorial_roots:
+      knu_actual: out/tomics_knu_harvest_family_factorial
+      public_rda__yield: out/tomics_public_rda_harvest_family_factorial
+      public_ai_competition__yield: out/tomics_public_ai_competition_harvest_family_factorial

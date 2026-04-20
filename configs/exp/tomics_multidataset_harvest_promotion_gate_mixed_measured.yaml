@@ -1,0 +1,11 @@
+exp:
+  name: tomics_multidataset_harvest_promotion_gate_mixed_measured
+
+validation:
+  multidataset_promotion_gate:
+    scorecard_root: out/tomics/validation/mixed_multidataset
+    output_root: out/tomics/validation/mixed_multidataset
+    winner_native_state_coverage_min: 0.5
+    winner_shared_tdvs_proxy_fraction_max: 0.5
+    cross_dataset_stability_score_min: 0.5
+    min_dataset_count: 2
