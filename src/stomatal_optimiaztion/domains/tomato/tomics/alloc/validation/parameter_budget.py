@@ -158,12 +158,16 @@ def load_fairness_candidates(
     config_path: Path,
 ) -> tuple[CanonicalWinnerIds, list[CalibrationCandidate], dict[str, Any]]:
     reference_cfg = _as_dict(fairness_config.get("reference"))
-    current_vs_promoted_path = _resolve_config_path(
-        reference_cfg.get("current_vs_promoted_config", "configs/exp/tomics_current_vs_promoted_factorial_knu.yaml"),
-        repo_root=repo_root,
-        config_path=config_path,
-    )
-    current_vs_promoted_cfg = load_config(current_vs_promoted_path)
+    if not reference_cfg and {"current", "promoted", "paths"}.issubset(fairness_config):
+        current_vs_promoted_path = config_path
+        current_vs_promoted_cfg = fairness_config
+    else:
+        current_vs_promoted_path = _resolve_config_path(
+            reference_cfg.get("current_vs_promoted_config", "configs/exp/tomics_current_vs_promoted_factorial_knu.yaml"),
+            repo_root=repo_root,
+            config_path=config_path,
+        )
+        current_vs_promoted_cfg = load_config(current_vs_promoted_path)
     output_paths = _as_dict(current_vs_promoted_cfg.get("paths"))
     current_output_root = _resolve_config_path(
         reference_cfg.get("current_output_root", output_paths.get("current_output_root", "out/tomics/validation/knu/architecture/current-factorial")),

@@ -120,6 +120,68 @@ def _review_flagged_public_ai_competition_derived_dw_dataset(
     )
 
 
+def _manual_reviewed_school_derived_dw_dataset(
+    tmp_path: Path,
+    dataset_id: str,
+) -> DatasetMetadataContract:
+    fixture_root = tmp_path / dataset_id
+    fixture_root.mkdir(parents=True, exist_ok=True)
+    forcing_path = fixture_root / "forcing_fixture.csv"
+    harvest_path = fixture_root / "observed_harvest_fixture.csv"
+    forcing_path.write_text(
+        (
+            "datetime,T_air_C,PAR_umol,CO2_ppm,RH_percent,wind_speed_ms\n"
+            "2024-08-08 00:00:00,24.0,345.0,420.0,70.0,0.5\n"
+        ),
+        encoding="utf-8",
+    )
+    harvest_path.write_text(
+        (
+            "Date,Measured_Cumulative_Total_Fruit_DW (g/m^2)\n"
+            "2024-08-08,0.195\n"
+            "2024-08-21,2.730\n"
+        ),
+        encoding="utf-8",
+    )
+    return DatasetMetadataContract(
+        dataset_id=dataset_id,
+        dataset_kind="traitenv_private_reviewed_candidate",
+        display_name=dataset_id,
+        dataset_family="school_trait_bundle",
+        observation_family="yield",
+        capability=DatasetCapability.MEASURED_HARVEST,
+        ingestion_status=DatasetIngestionStatus.RUNNABLE,
+        source_refs=("school/2024_tomato_harvest.xlsx",),
+        forcing_path=forcing_path,
+        observed_harvest_path=harvest_path,
+        validation_start="2024-08-08",
+        validation_end="2024-08-21",
+        basis=DatasetBasisContract(reporting_basis="floor_area_g_m2", plants_per_m2=1.98),
+        observation=DatasetObservationContract(
+            date_column="Date",
+            measured_cumulative_column="Measured_Cumulative_Total_Fruit_DW (g/m^2)",
+        ),
+        dry_matter_conversion=DatasetDryMatterConversionContract(
+            mode="literature_fixed_ratio",
+            fresh_weight_column="Source_Daily_Fresh_Weight_Total_g",
+            dry_matter_ratio=0.065,
+            citations=("manual-reviewed school private bundle",),
+            review_only=False,
+        ),
+        sanitized_fixture=DatasetSanitizedFixtureContract(
+            forcing_fixture_path=forcing_path,
+            observed_harvest_fixture_path=harvest_path,
+        ),
+        provenance_tags=("school_private_reviewed", "derived_dw_manual_reviewed"),
+        notes={
+            "is_direct_dry_weight": False,
+            "uses_literature_dry_matter_fraction": True,
+            "observed_harvest_derivation": "derived_dw_from_measured_fresh_school_harvest",
+            "dry_weight_derivation_review_grade": "manual_reviewed_private",
+        },
+    )
+
+
 def test_cross_dataset_proxy_guardrail_blocks_single_dataset_proxy_heavy_winner() -> None:
     candidate = pd.Series(
         {
@@ -444,3 +506,36 @@ def test_cross_dataset_guardrail_falls_back_without_review_flags_column(tmp_path
         "public_ai_competition__yield"
     ]
     assert summary["selected_candidate"]["passes"] is False
+
+
+def test_cross_dataset_guardrail_does_not_flag_manual_reviewed_school_private_derivation(tmp_path: Path) -> None:
+    registry = DatasetRegistry(
+        datasets=(
+            _runnable_measured_dataset(tmp_path, "knu_actual", dataset_family="knu_actual"),
+            _manual_reviewed_school_derived_dw_dataset(tmp_path, "school_trait_bundle__yield"),
+        ),
+        default_dataset_ids=("knu_actual", "school_trait_bundle__yield"),
+    )
+    scorecard = pd.DataFrame(
+        [
+            {
+                "fruit_harvest_family": "dekoning_fds",
+                "leaf_harvest_family": "vegetative_unit_pruning",
+                "fdmc_mode": "dekoning_fds",
+                "dataset_count": 2,
+                "dataset_ids": "[\"knu_actual\", \"school_trait_bundle__yield\"]",
+                "mean_native_family_state_fraction": 0.9,
+                "mean_proxy_family_state_fraction": 0.1,
+                "mean_shared_tdvs_proxy_fraction": 0.0,
+                "cross_dataset_stability_score": 1.0,
+            }
+        ]
+    )
+
+    summary = build_cross_dataset_guardrail_summary(scorecard, registry=registry, min_dataset_count=2)
+
+    assert summary["measured_dataset_count"] == 2
+    assert summary["measured_dataset_ids"] == ["knu_actual", "school_trait_bundle__yield"]
+    assert summary["selected_candidate"]["winner_review_only_proxy_support_flag"] is False
+    assert summary["selected_candidate"]["winner_review_only_proxy_dataset_ids"] == []
+    assert summary["selected_candidate"]["passes"] is True

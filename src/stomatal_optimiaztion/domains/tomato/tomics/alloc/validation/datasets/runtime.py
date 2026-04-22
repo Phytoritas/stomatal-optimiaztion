@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -27,6 +27,21 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.theta_proxy im
 
 
 CANONICAL_REPORTING_BASIS = "floor_area_g_m2"
+ROOTZONE_REQUIRED_COLUMNS = (
+    "datetime",
+    "theta_substrate",
+    "slab_weight_kg",
+    "sensor_id",
+    "zone_id",
+    "depth_cm",
+)
+ROOTZONE_EC_REQUIRED_COLUMNS = (
+    "datetime",
+    "rootzone_ec_dS_m",
+    "sensor_id",
+    "zone_id",
+    "depth_cm",
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -54,6 +69,11 @@ class PreparedMeasuredHarvestBundle:
     basis_normalization_resolved: bool
     normalization_factor_to_floor_area: float
     manifest_summary: dict[str, object]
+    rootzone_df: pd.DataFrame | None = None
+    rootzone_ec_df: pd.DataFrame | None = None
+    rootzone_path: Path | None = None
+    rootzone_ec_path: Path | None = None
+    rootzone_summary: dict[str, object] = field(default_factory=dict)
 
 
 def _as_list(raw: object) -> list[Any]:
@@ -92,6 +112,80 @@ def read_dataset_observation_table(path: str | Path) -> pd.DataFrame:
     if suffix in {".xlsx", ".xlsm"}:
         return _read_first_sheet_frame(resolved_path)
     raise ValueError(f"Unsupported observation table format {resolved_path.suffix!r}.")
+
+
+def _read_csv_with_required_columns(
+    path: str | Path,
+    *,
+    required_columns: tuple[str, ...],
+    numeric_columns: tuple[str, ...],
+    table_label: str,
+) -> pd.DataFrame:
+    resolved_path = Path(path)
+    frame = pd.read_csv(resolved_path)
+    missing = [column for column in required_columns if column not in frame.columns]
+    if missing:
+        raise ValueError(f"{table_label} {resolved_path} is missing required columns: {missing}")
+
+    frame = frame.copy()
+    frame["datetime"] = pd.to_datetime(frame["datetime"], errors="coerce")
+    if frame["datetime"].isna().any():
+        raise ValueError(f"{table_label} {resolved_path} contains blank or invalid datetime values.")
+    for column in numeric_columns:
+        frame[column] = pd.to_numeric(frame[column], errors="coerce")
+
+    sort_columns = ["datetime", *[column for column in ("sensor_id", "zone_id", "depth_cm") if column in frame.columns]]
+    return frame.sort_values(sort_columns).reset_index(drop=True)
+
+
+def read_rootzone_table(path: str | Path) -> pd.DataFrame:
+    """Read measured KNU substrate water content and slab weight without imputing blanks."""
+
+    return _read_csv_with_required_columns(
+        path,
+        required_columns=ROOTZONE_REQUIRED_COLUMNS,
+        numeric_columns=("theta_substrate", "slab_weight_kg", "depth_cm"),
+        table_label="Rootzone table",
+    )
+
+
+def read_rootzone_ec_table(path: str | Path) -> pd.DataFrame:
+    """Read measured KNU substrate EC without deriving rootzone stress metrics."""
+
+    return _read_csv_with_required_columns(
+        path,
+        required_columns=ROOTZONE_EC_REQUIRED_COLUMNS,
+        numeric_columns=("rootzone_ec_dS_m", "depth_cm"),
+        table_label="Rootzone EC table",
+    )
+
+
+def _filter_by_validation_window(
+    frame: pd.DataFrame,
+    *,
+    validation_start: pd.Timestamp,
+    validation_end: pd.Timestamp,
+) -> pd.DataFrame:
+    end_exclusive = validation_end.normalize() + pd.Timedelta(days=1)
+    return frame.loc[
+        frame["datetime"].ge(validation_start.normalize()) & frame["datetime"].lt(end_exclusive)
+    ].reset_index(drop=True)
+
+
+def _time_series_summary(frame: pd.DataFrame | None, *, value_columns: tuple[str, ...]) -> dict[str, object]:
+    if frame is None:
+        return {"rows": 0, "start": None, "end": None, "sensor_count": 0, "non_null_counts": {}}
+    if frame.empty:
+        return {"rows": 0, "start": None, "end": None, "sensor_count": 0, "non_null_counts": {}}
+    return {
+        "rows": int(len(frame)),
+        "start": str(frame["datetime"].min()),
+        "end": str(frame["datetime"].max()),
+        "sensor_count": int(frame["sensor_id"].nunique(dropna=True)) if "sensor_id" in frame.columns else 0,
+        "non_null_counts": {
+            column: int(frame[column].notna().sum()) for column in value_columns if column in frame.columns
+        },
+    }
 
 
 def _normalization_factor(dataset: DatasetMetadataContract) -> float:
@@ -191,6 +285,40 @@ def prepare_measured_harvest_bundle(
     observed_df, normalization_factor = _canonical_observed_frame(dataset)
     validation_start = pd.Timestamp(dataset.validation_start).normalize()
     validation_end = pd.Timestamp(dataset.validation_end).normalize()
+    rootzone_path = dataset.management.rootzone_path
+    rootzone_ec_path = dataset.management.ec_path
+    rootzone_df = (
+        _filter_by_validation_window(
+            read_rootzone_table(rootzone_path),
+            validation_start=validation_start,
+            validation_end=validation_end,
+        )
+        if rootzone_path is not None
+        else None
+    )
+    rootzone_ec_df = (
+        _filter_by_validation_window(
+            read_rootzone_ec_table(rootzone_ec_path),
+            validation_start=validation_start,
+            validation_end=validation_end,
+        )
+        if rootzone_ec_path is not None
+        else None
+    )
+    rootzone_summary = {
+        "rootzone_path": str(rootzone_path) if rootzone_path is not None else None,
+        "rootzone_ec_path": str(rootzone_ec_path) if rootzone_ec_path is not None else None,
+        "rootzone": _time_series_summary(
+            rootzone_df,
+            value_columns=("theta_substrate", "slab_weight_kg"),
+        ),
+        "rootzone_ec": _time_series_summary(
+            rootzone_ec_df,
+            value_columns=("rootzone_ec_dS_m",),
+        ),
+        "missing_policy": "preserve_missing_no_forward_fill",
+        "derived_rootzone_stress_metrics_included": False,
+    }
     if validation_cfg.get("calibration_end"):
         calibration_end = pd.Timestamp(validation_cfg["calibration_end"]).normalize()
     else:
@@ -233,6 +361,8 @@ def prepare_measured_harvest_bundle(
             "measured_cumulative_column": dataset.observation.measured_cumulative_column,
             "estimated_cumulative_column": dataset.observation.estimated_cumulative_column,
             "measured_semantics": dataset.observation.measured_semantics,
+            "management": dataset.management.to_payload(),
+            "rootzone_measurements": rootzone_summary,
             "sanitized_fixture": dataset.sanitized_fixture.to_payload(),
         },
     )
@@ -253,7 +383,13 @@ def prepare_measured_harvest_bundle(
         manifest_summary={
             "observed_harvest_canonical_csv": str(observed_canonical_path),
             "observation_contract_manifest_json": str(observation_contract_manifest_path),
+            "rootzone_measurements": rootzone_summary,
         },
+        rootzone_df=rootzone_df,
+        rootzone_ec_df=rootzone_ec_df,
+        rootzone_path=rootzone_path,
+        rootzone_ec_path=rootzone_ec_path,
+        rootzone_summary=rootzone_summary,
     )
 
 
@@ -263,4 +399,6 @@ __all__ = [
     "PreparedMeasuredHarvestBundle",
     "prepare_measured_harvest_bundle",
     "read_dataset_observation_table",
+    "read_rootzone_ec_table",
+    "read_rootzone_table",
 ]

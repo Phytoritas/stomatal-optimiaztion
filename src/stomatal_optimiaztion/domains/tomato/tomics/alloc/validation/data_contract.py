@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import os
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -23,6 +23,12 @@ class KnuDataContractPaths:
     reporting_basis: str
     plants_per_m2: float
     parser_assumptions: dict[str, Any]
+    rootzone_path: Path | None = None
+    ec_path: Path | None = None
+    rootzone_source_kind: str | None = None
+    ec_source_kind: str | None = None
+    rootzone_parser_assumptions: dict[str, Any] = field(default_factory=dict)
+    ec_parser_assumptions: dict[str, Any] = field(default_factory=dict)
     date_column: str | None = None
     measured_cumulative_column: str | None = None
     estimated_cumulative_column: str | None = None
@@ -103,6 +109,22 @@ def _resolve_source_path(
     return repo_candidate, "missing"
 
 
+def _resolve_optional_source_path(
+    *,
+    repo_candidate: Path,
+    private_root: str | None,
+    configured_relative_path: str | None,
+) -> tuple[Path | None, str | None]:
+    resolved_path, source_kind = _resolve_source_path(
+        repo_candidate=repo_candidate,
+        private_root=private_root,
+        configured_relative_path=configured_relative_path,
+    )
+    if source_kind == "missing":
+        return None, None
+    return resolved_path, source_kind
+
+
 def resolve_knu_data_contract(
     *,
     validation_cfg: dict[str, Any],
@@ -120,8 +142,18 @@ def resolve_knu_data_contract(
 
     forcing_raw = validation_cfg.get("forcing_csv_path", "data/forcing/KNU_Tomato_Env.CSV")
     yield_raw = validation_cfg.get("yield_xlsx_path", "data/forcing/tomato_validation_data_yield_260321.xlsx")
+    rootzone_raw = validation_cfg.get(
+        "rootzone_csv_path",
+        contract.get("rootzone_relative_path", "data/rootzone/KNU_Tomato_Rootzone.csv"),
+    )
+    ec_raw = validation_cfg.get(
+        "ec_csv_path",
+        contract.get("ec_relative_path", "data/ec/KNU_Tomato_Rootzone_EC.csv"),
+    )
     forcing_repo_candidate = _resolve_existing_path(str(forcing_raw), repo_root=repo_root, config_path=config_path)
     yield_repo_candidate = _resolve_existing_path(str(yield_raw), repo_root=repo_root, config_path=config_path)
+    rootzone_repo_candidate = _resolve_existing_path(str(rootzone_raw), repo_root=repo_root, config_path=config_path)
+    ec_repo_candidate = _resolve_existing_path(str(ec_raw), repo_root=repo_root, config_path=config_path)
 
     forcing_path, forcing_source_kind = _resolve_source_path(
         repo_candidate=forcing_repo_candidate,
@@ -132,6 +164,16 @@ def resolve_knu_data_contract(
         repo_candidate=yield_repo_candidate,
         private_root=private_root,
         configured_relative_path=str(contract.get("yield_relative_path", yield_repo_candidate.name)),
+    )
+    rootzone_path, rootzone_source_kind = _resolve_optional_source_path(
+        repo_candidate=rootzone_repo_candidate,
+        private_root=private_root,
+        configured_relative_path=str(contract.get("rootzone_relative_path", rootzone_repo_candidate.name)),
+    )
+    ec_path, ec_source_kind = _resolve_optional_source_path(
+        repo_candidate=ec_repo_candidate,
+        private_root=private_root,
+        configured_relative_path=str(contract.get("ec_relative_path", ec_repo_candidate.name)),
     )
     if forcing_source_kind == "missing":
         raise FileNotFoundError(
@@ -166,6 +208,23 @@ def resolve_knu_data_contract(
         **contract_parser_assumptions,
     }
     parser_assumptions["observation_semantics"] = measured_semantics
+    rootzone_parser_assumptions = {
+        "rootzone_parser": "csv_datetime_first_class",
+        "theta_semantics": "measured_substrate_water_content",
+        "slab_weight_semantics": "measured_substrate_weight",
+        "datetime_policy": "naive_local_greenhouse_timestamps",
+        "missing_policy": "preserve_missing",
+        "long_format": True,
+        **_as_dict(contract.get("rootzone_parser_assumptions")),
+    }
+    ec_parser_assumptions = {
+        "ec_parser": "csv_datetime_first_class",
+        "ec_semantics": "measured_substrate_ec",
+        "datetime_policy": "naive_local_greenhouse_timestamps",
+        "missing_policy": "preserve_missing",
+        "long_format": True,
+        **_as_dict(contract.get("ec_parser_assumptions")),
+    }
     return KnuDataContractPaths(
         forcing_path=forcing_path,
         yield_path=yield_path,
@@ -198,6 +257,12 @@ def resolve_knu_data_contract(
         ),
         measured_semantics=measured_semantics,
         parser_assumptions=parser_assumptions,
+        rootzone_path=rootzone_path,
+        ec_path=ec_path,
+        rootzone_source_kind=rootzone_source_kind,
+        ec_source_kind=ec_source_kind,
+        rootzone_parser_assumptions=rootzone_parser_assumptions,
+        ec_parser_assumptions=ec_parser_assumptions,
         private_data_root=private_root,
         contract_path=contract_path,
     )
@@ -214,8 +279,12 @@ def write_data_contract_manifest(
     payload = {
         "forcing_source_path": str(contract.forcing_path.resolve()),
         "yield_source_path": str(contract.yield_path.resolve()),
+        "rootzone_source_path": str(contract.rootzone_path.resolve()) if contract.rootzone_path is not None else None,
+        "ec_source_path": str(contract.ec_path.resolve()) if contract.ec_path is not None else None,
         "forcing_source_kind": contract.forcing_source_kind,
         "yield_source_kind": contract.yield_source_kind,
+        "rootzone_source_kind": contract.rootzone_source_kind,
+        "ec_source_kind": contract.ec_source_kind,
         "private_data_root": contract.private_data_root,
         "contract_path": str(contract.contract_path.resolve()) if contract.contract_path is not None else None,
         "reporting_basis": contract.reporting_basis,
@@ -233,6 +302,8 @@ def write_data_contract_manifest(
             "yield_end": data.yield_summary["end"],
         },
         "parser_assumptions": contract.parser_assumptions,
+        "rootzone_parser_assumptions": contract.rootzone_parser_assumptions,
+        "ec_parser_assumptions": contract.ec_parser_assumptions,
     }
     manifest_path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
     return manifest_path
@@ -242,6 +313,8 @@ def contract_payload(contract: KnuDataContractPaths) -> dict[str, Any]:
     payload = asdict(contract)
     payload["forcing_path"] = str(contract.forcing_path)
     payload["yield_path"] = str(contract.yield_path)
+    payload["rootzone_path"] = str(contract.rootzone_path) if contract.rootzone_path is not None else None
+    payload["ec_path"] = str(contract.ec_path) if contract.ec_path is not None else None
     payload["contract_path"] = str(contract.contract_path) if contract.contract_path is not None else None
     return payload
 

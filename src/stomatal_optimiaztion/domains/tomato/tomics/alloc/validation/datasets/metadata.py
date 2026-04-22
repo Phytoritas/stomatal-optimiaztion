@@ -125,6 +125,9 @@ def dataset_registry_frame(datasets: list[DatasetMetadataContract]) -> pd.DataFr
                 "uses_literature_dry_matter_fraction": payload["notes"].get(
                     "uses_literature_dry_matter_fraction"
                 ),
+                "dry_weight_derivation_review_grade": payload["notes"].get(
+                    "dry_weight_derivation_review_grade"
+                ),
                 "review_flags": json.dumps(dataset_review_flags(dataset), sort_keys=True),
                 "cultivar": payload["cultivar"],
                 "greenhouse": payload["greenhouse"],

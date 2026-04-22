@@ -285,11 +285,19 @@ def test_school_traitenv_bundle_can_become_runnable_with_explicit_private_approv
         config_path=bundle.generated_config_paths["multidataset_factorial_config"],
     )
     school_dataset = registry.require(SCHOOL_DATASET_ID)
+    registry_frame = registry.to_frame()
+    school_row = registry_frame.loc[registry_frame["dataset_id"] == SCHOOL_DATASET_ID].iloc[0]
 
     assert school_dataset.is_runnable_measured_harvest is True
     assert school_dataset.blocker_codes == ()
     assert school_dataset.observation.measured_cumulative_column == CANONICAL_MEASURED_COLUMN
     assert school_dataset.notes["dataset_role_hint"] == "measured_harvest_runnable"
+    assert school_dataset.notes["observed_harvest_derivation"] == "derived_dw_from_measured_fresh_school_harvest"
+    assert school_dataset.notes["is_direct_dry_weight"] is False
+    assert school_dataset.notes["uses_literature_dry_matter_fraction"] is True
+    assert school_dataset.notes["dry_weight_derivation_review_grade"] == "manual_reviewed_private"
+    assert SCHOOL_DATASET_ID in config["validation"]["datasets"]["default_dataset_ids"]
+    assert school_row["dry_weight_derivation_review_grade"] == "manual_reviewed_private"
 
 
 def test_school_traitenv_generated_current_config_resolves_repo_root_and_prepares_bundle(tmp_path: Path) -> None:

@@ -16,6 +16,9 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.pipelines import resolve_
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.current_vs_promoted import (  # noqa: E402
     prepare_knu_bundle,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.datasets.runtime import (  # noqa: E402
+    read_rootzone_table,
+)
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.rootzone_inversion import (  # noqa: E402
     reconstruct_rootzone,
     write_rootzone_manifest,
@@ -60,6 +63,12 @@ def main() -> int:
         scenario_ids=tuple(rootzone_cfg.get("scenario_ids", ["dry", "moderate", "wet"])),
         theta_min_hard=float(rootzone_cfg.get("theta_min_hard", 0.40)),
         theta_max_hard=float(rootzone_cfg.get("theta_max_hard", 0.85)),
+        measured_rootzone_df=read_rootzone_table(prepared_bundle.data_contract.rootzone_path)
+        if prepared_bundle.data_contract.rootzone_path is not None
+        else None,
+        measured_scenario_id=str(rootzone_cfg.get("measured_scenario_id", "measured")),
+        measured_theta_coverage_min=float(rootzone_cfg.get("measured_theta_coverage_min", 0.50)),
+        measured_theta_max_gap=str(rootzone_cfg.get("measured_theta_max_gap", "1h")),
     )
     result.summary_df.to_csv(output_root / "rootzone_summary.csv", index=False)
     result.band_df.to_csv(output_root / "theta_uncertainty_band.csv", index=False)

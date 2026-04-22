@@ -15,5 +15,7 @@ logs/
 
 docs/references/source_papers/
 
+data/fixtures/knu_rootzone_sanitized/
+
 .env
 config.yaml

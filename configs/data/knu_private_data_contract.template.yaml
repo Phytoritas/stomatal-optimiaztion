@@ -2,6 +2,8 @@ private_data_root_env: PHYTORITAS_PRIVATE_DATA_ROOT
 private_data_root:
 forcing_relative_path: data/forcing/KNU_Tomato_Env.CSV
 yield_relative_path: data/forcing/tomato_validation_data_yield_260321.xlsx
+rootzone_relative_path: data/rootzone/KNU_Tomato_Rootzone.csv
+ec_relative_path: data/ec/KNU_Tomato_Rootzone_EC.csv
 reporting_basis: floor_area_g_m2
 plants_per_m2: 1.836091
 parser_assumptions:
@@ -10,3 +12,16 @@ parser_assumptions:
   units_policy: preserve_source_declared_units
   datetime_policy: naive_local_greenhouse_timestamps
   observation_semantics: cumulative_harvested_fruit_dry_weight_floor_area
+rootzone_parser_assumptions:
+  rootzone_parser: csv_datetime_first_class
+  theta_semantics: measured_substrate_water_content
+  slab_weight_semantics: measured_substrate_weight
+  datetime_policy: naive_local_greenhouse_timestamps
+  missing_policy: preserve_missing
+  long_format: true
+ec_parser_assumptions:
+  ec_parser: csv_datetime_first_class
+  ec_semantics: measured_substrate_ec
+  datetime_policy: naive_local_greenhouse_timestamps
+  missing_policy: preserve_missing
+  long_format: true
