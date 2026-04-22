@@ -386,6 +386,61 @@ def test_dataset_registry_accepts_review_flagged_public_ai_competition_derived_d
     assert json.loads(row["review_flags"]) == ["review_only_dry_matter_conversion"]
 
 
+def test_canonical_registry_treats_public_rda_as_review_flagged_derived_dw_runtime() -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    config_path = repo_root / "configs" / "exp" / "tomics_multidataset_harvest_factorial_public_measured.yaml"
+    registry_config = {
+        "validation": {
+            "datasets": {
+                "registry_snapshot_path": "configs/data/tomics_multidataset_candidates/traitenv_candidate_registry.json"
+            }
+        }
+    }
+
+    registry = load_dataset_registry(registry_config, repo_root=repo_root, config_path=config_path)
+    dataset = registry.require("public_rda__yield")
+    row = registry.to_frame().loc[lambda frame: frame["dataset_id"] == "public_rda__yield"].iloc[0]
+
+    assert dataset.ingestion_status is DatasetIngestionStatus.RUNNABLE
+    assert dataset.is_runnable_measured_harvest is True
+    assert dataset.blocker_codes == ()
+    assert dataset.forcing_path == (
+        repo_root
+        / "data"
+        / "fixtures"
+        / "public_rda_sanitized"
+        / "2018_farm10_season1_ripe_tomato"
+        / "forcing_fixture.csv"
+    )
+    assert dataset.observed_harvest_path == (
+        repo_root
+        / "data"
+        / "fixtures"
+        / "public_rda_sanitized"
+        / "2018_farm10_season1_ripe_tomato"
+        / "observed_harvest_fixture.csv"
+    )
+    assert dataset.basis.reporting_basis == "floor_area_g_m2"
+    assert dataset.observation.date_column == "Date"
+    assert dataset.observation.measured_cumulative_column == "Measured_Cumulative_Total_Fruit_DW (g/m^2)"
+    assert dataset.validation_start == "2019-01-17"
+    assert dataset.validation_end == "2019-06-30"
+    assert dataset.dry_matter_conversion.mode == "derived_dw_from_measured_fresh_shipment"
+    assert dataset.dry_matter_conversion.fresh_weight_column == "raw_total_shipment_kg"
+    assert dataset.dry_matter_conversion.dry_matter_ratio == 0.065
+    assert dataset.dry_matter_conversion.review_only is True
+    assert dataset.notes["is_direct_dry_weight"] is False
+    assert dataset.notes["uses_literature_dry_matter_fraction"] is True
+    assert dataset.notes["observed_harvest_derivation"] == "derived_dw_from_measured_fresh_shipment"
+    assert "review_only_dry_matter_conversion" in dataset.notes["review_flags"]
+    assert "public_rda__yield" in {
+        item.dataset_id for item in registry.runnable_measured_harvest_datasets()
+    }
+    assert bool(row["accepted_review_only_derived_dw_runtime"]) is True
+    assert bool(row["is_direct_dry_weight"]) is False
+    assert json.loads(row["review_flags"]) == ["review_only_dry_matter_conversion"]
+
+
 def test_dataset_registry_explicit_items_overlay_snapshot_rows_instead_of_replacing_them(tmp_path: Path) -> None:
     snapshot_path = tmp_path / "snapshot.json"
     forcing_path = tmp_path / "forcing.csv"
