@@ -1,0 +1,2 @@
+change_id,linked_adr,linked_module,objective,tests_added_or_updated,regression_risk,status,notes
+issue-280,none,docs-architecture-system,Normalize post-PR-279 RAH and architecture baseline hygiene,docs format ruff and git status only,low,validating,No runtime code or dataset semantics changed

@@ -1,0 +1,4 @@
+query_id,date,target_decision,query_mode,result_summary,source_refs,follow_up_needed
+Q-280-001,2026-04-22,post-PR-279 RAH baseline hygiene,git status,.rah plus generated architecture scaffold files are untracked,local git status,Open docs workflow issue and normalize policy
+Q-280-002,2026-04-22,RAH tracking policy,git ls-files .rah,no tracked .rah entries,local git index,Ignore local RAH sidecar
+Q-280-003,2026-04-22,TOMICS validation architecture surface,rg --files,Identified multidataset scripts configs validation modules and tests,local repo search,Populate system architecture docs

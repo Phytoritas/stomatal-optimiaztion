@@ -1,0 +1,2 @@
+issue_id,issue_summary,source_artifact,action_taken,status,evidence_updated,follow_up_needed
+280,Normalize post-PR-279 RAH architecture baseline hygiene,PR-279 main baseline and local RAH scaffold,Ignored local .rah sidecar and populated architecture system scaffold,validating,yes,Merge PR after review
