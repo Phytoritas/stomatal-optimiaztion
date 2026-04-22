@@ -130,7 +130,14 @@ def resolve_dataset_roles(
     *,
     dataset_ids: Iterable[str] | None = None,
 ) -> list[ResolvedDatasetRole]:
-    requested = set(str(value) for value in dataset_ids) if dataset_ids is not None else None
+    if dataset_ids is None:
+        requested = None
+    else:
+        requested = {str(value) for value in dataset_ids}
+        available_ids = {dataset.dataset_id for dataset in registry.datasets}
+        unknown_ids = sorted(requested.difference(available_ids))
+        if unknown_ids:
+            raise ValueError(f"Unknown dataset ids requested: {', '.join(unknown_ids)}")
     resolved: list[ResolvedDatasetRole] = []
     for dataset in registry.datasets:
         if requested is not None and dataset.dataset_id not in requested:

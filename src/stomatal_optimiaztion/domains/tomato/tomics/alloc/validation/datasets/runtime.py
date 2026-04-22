@@ -54,6 +54,26 @@ class PreparedDatasetThetaScenario:
 
 
 @dataclass(frozen=True, slots=True)
+class PreparedDatasetRuntimeBundle:
+    dataset_id: str
+    validation_start: pd.Timestamp
+    validation_end: pd.Timestamp
+    prepared_root: Path
+    scenarios: dict[str, PreparedDatasetThetaScenario]
+    source_unit_label: str
+    reporting_basis_in: str
+    reporting_basis_canonical: str
+    basis_normalization_resolved: bool
+    normalization_factor_to_floor_area: float
+    manifest_summary: dict[str, object]
+    rootzone_df: pd.DataFrame | None = None
+    rootzone_ec_df: pd.DataFrame | None = None
+    rootzone_path: Path | None = None
+    rootzone_ec_path: Path | None = None
+    rootzone_summary: dict[str, object] = field(default_factory=dict)
+
+
+@dataclass(frozen=True, slots=True)
 class PreparedMeasuredHarvestBundle:
     dataset_id: str
     observed_df: pd.DataFrame
@@ -264,16 +284,12 @@ def _canonical_observed_frame(dataset: DatasetMetadataContract) -> tuple[pd.Data
     return observed_df, factor
 
 
-def prepare_measured_harvest_bundle(
+def prepare_dataset_runtime_bundle(
     dataset: DatasetMetadataContract,
     *,
     validation_cfg: dict[str, Any],
     prepared_root: Path,
-) -> PreparedMeasuredHarvestBundle:
-    if not is_measured_harvest_runnable(dataset):
-        raise ValueError(
-            f"Dataset {dataset.dataset_id!r} is not a runnable measured-harvest dataset."
-        )
+) -> PreparedDatasetRuntimeBundle:
     prepared_root = ensure_dir(prepared_root)
     resample_rule = str(validation_cfg.get("resample_rule", "1h"))
     theta_mode = str(validation_cfg.get("theta_proxy_mode", "bucket_irrigated"))
@@ -282,9 +298,9 @@ def prepare_measured_harvest_bundle(
     if dataset.forcing_path is None:
         raise ValueError(f"Dataset {dataset.dataset_id!r} does not define a forcing_path.")
     forcing_df = read_knu_forcing_csv(dataset.forcing_path)
-    observed_df, normalization_factor = _canonical_observed_frame(dataset)
     validation_start = pd.Timestamp(dataset.validation_start).normalize()
     validation_end = pd.Timestamp(dataset.validation_end).normalize()
+    normalization_factor = _normalization_factor(dataset)
     rootzone_path = dataset.management.rootzone_path
     rootzone_ec_path = dataset.management.ec_path
     rootzone_df = (
@@ -319,12 +335,6 @@ def prepare_measured_harvest_bundle(
         "missing_policy": "preserve_missing_no_forward_fill",
         "derived_rootzone_stress_metrics_included": False,
     }
-    if validation_cfg.get("calibration_end"):
-        calibration_end = pd.Timestamp(validation_cfg["calibration_end"]).normalize()
-    else:
-        midpoint = len(observed_df) // 2
-        calibration_end = pd.Timestamp(observed_df["date"].iloc[max(midpoint - 1, 0)]).normalize()
-    holdout_start = calibration_end + pd.Timedelta(days=1)
 
     prepared_dir = ensure_dir(prepared_root / "prepared_forcing")
     scenarios: dict[str, PreparedDatasetThetaScenario] = {}
@@ -341,7 +351,71 @@ def prepare_measured_harvest_bundle(
             summary=theta_proxy_summary(minute_df),
         )
 
-    observed_canonical_path = prepared_root / "observed_harvest_canonical.csv"
+    runtime_contract_manifest_path = prepared_root / "runtime_contract_manifest.json"
+    write_json(
+        runtime_contract_manifest_path,
+        {
+            "dataset_id": dataset.dataset_id,
+            "forcing_path": str(dataset.forcing_path),
+            "validation_start": dataset.validation_start,
+            "validation_end": dataset.validation_end,
+            "reporting_basis_in": dataset.basis.reporting_basis,
+            "reporting_basis_canonical": CANONICAL_REPORTING_BASIS,
+            "basis_normalization_resolved": True,
+            "normalization_factor_to_floor_area": normalization_factor,
+            "plants_per_m2": float(dataset.basis.plants_per_m2) if dataset.basis.plants_per_m2 is not None else None,
+            "management": dataset.management.to_payload(),
+            "rootzone_measurements": rootzone_summary,
+            "sanitized_fixture": dataset.sanitized_fixture.to_payload(),
+        },
+    )
+    return PreparedDatasetRuntimeBundle(
+        dataset_id=dataset.dataset_id,
+        validation_start=validation_start,
+        validation_end=validation_end,
+        prepared_root=prepared_root,
+        scenarios=scenarios,
+        source_unit_label=dataset.basis.basis_unit_label,
+        reporting_basis_in=dataset.basis.reporting_basis,
+        reporting_basis_canonical=CANONICAL_REPORTING_BASIS,
+        basis_normalization_resolved=True,
+        normalization_factor_to_floor_area=normalization_factor,
+        manifest_summary={
+            "runtime_contract_manifest_json": str(runtime_contract_manifest_path),
+            "rootzone_measurements": rootzone_summary,
+        },
+        rootzone_df=rootzone_df,
+        rootzone_ec_df=rootzone_ec_df,
+        rootzone_path=rootzone_path,
+        rootzone_ec_path=rootzone_ec_path,
+        rootzone_summary=rootzone_summary,
+    )
+
+
+def prepare_measured_harvest_bundle(
+    dataset: DatasetMetadataContract,
+    *,
+    validation_cfg: dict[str, Any],
+    prepared_root: Path,
+) -> PreparedMeasuredHarvestBundle:
+    if not is_measured_harvest_runnable(dataset):
+        raise ValueError(
+            f"Dataset {dataset.dataset_id!r} is not a runnable measured-harvest dataset."
+        )
+    runtime_bundle = prepare_dataset_runtime_bundle(
+        dataset,
+        validation_cfg=validation_cfg,
+        prepared_root=prepared_root,
+    )
+    observed_df, _ = _canonical_observed_frame(dataset)
+    if validation_cfg.get("calibration_end"):
+        calibration_end = pd.Timestamp(validation_cfg["calibration_end"]).normalize()
+    else:
+        midpoint = len(observed_df) // 2
+        calibration_end = pd.Timestamp(observed_df["date"].iloc[max(midpoint - 1, 0)]).normalize()
+    holdout_start = calibration_end + pd.Timedelta(days=1)
+
+    observed_canonical_path = runtime_bundle.prepared_root / "observed_harvest_canonical.csv"
     observed_df.to_csv(observed_canonical_path, index=False)
     observation_contract_manifest_path = prepared_root / "observation_contract_manifest.json"
     write_json(
@@ -355,48 +429,50 @@ def prepare_measured_harvest_bundle(
             "reporting_basis_in": dataset.basis.reporting_basis,
             "reporting_basis_canonical": CANONICAL_REPORTING_BASIS,
             "basis_normalization_resolved": True,
-            "normalization_factor_to_floor_area": normalization_factor,
+            "normalization_factor_to_floor_area": runtime_bundle.normalization_factor_to_floor_area,
             "plants_per_m2": float(dataset.basis.plants_per_m2) if dataset.basis.plants_per_m2 is not None else None,
             "date_column": dataset.observation.date_column,
             "measured_cumulative_column": dataset.observation.measured_cumulative_column,
             "estimated_cumulative_column": dataset.observation.estimated_cumulative_column,
             "measured_semantics": dataset.observation.measured_semantics,
             "management": dataset.management.to_payload(),
-            "rootzone_measurements": rootzone_summary,
+            "rootzone_measurements": runtime_bundle.rootzone_summary,
             "sanitized_fixture": dataset.sanitized_fixture.to_payload(),
         },
     )
     return PreparedMeasuredHarvestBundle(
-        dataset_id=dataset.dataset_id,
+        dataset_id=runtime_bundle.dataset_id,
         observed_df=observed_df,
-        validation_start=validation_start,
-        validation_end=validation_end,
+        validation_start=runtime_bundle.validation_start,
+        validation_end=runtime_bundle.validation_end,
         calibration_end=calibration_end,
         holdout_start=holdout_start,
-        prepared_root=prepared_root,
-        scenarios=scenarios,
-        source_unit_label=dataset.basis.basis_unit_label,
-        reporting_basis_in=dataset.basis.reporting_basis,
-        reporting_basis_canonical=CANONICAL_REPORTING_BASIS,
-        basis_normalization_resolved=True,
-        normalization_factor_to_floor_area=normalization_factor,
+        prepared_root=runtime_bundle.prepared_root,
+        scenarios=runtime_bundle.scenarios,
+        source_unit_label=runtime_bundle.source_unit_label,
+        reporting_basis_in=runtime_bundle.reporting_basis_in,
+        reporting_basis_canonical=runtime_bundle.reporting_basis_canonical,
+        basis_normalization_resolved=runtime_bundle.basis_normalization_resolved,
+        normalization_factor_to_floor_area=runtime_bundle.normalization_factor_to_floor_area,
         manifest_summary={
+            **runtime_bundle.manifest_summary,
             "observed_harvest_canonical_csv": str(observed_canonical_path),
             "observation_contract_manifest_json": str(observation_contract_manifest_path),
-            "rootzone_measurements": rootzone_summary,
         },
-        rootzone_df=rootzone_df,
-        rootzone_ec_df=rootzone_ec_df,
-        rootzone_path=rootzone_path,
-        rootzone_ec_path=rootzone_ec_path,
-        rootzone_summary=rootzone_summary,
+        rootzone_df=runtime_bundle.rootzone_df,
+        rootzone_ec_df=runtime_bundle.rootzone_ec_df,
+        rootzone_path=runtime_bundle.rootzone_path,
+        rootzone_ec_path=runtime_bundle.rootzone_ec_path,
+        rootzone_summary=runtime_bundle.rootzone_summary,
     )
 
 
 __all__ = [
     "CANONICAL_REPORTING_BASIS",
+    "PreparedDatasetRuntimeBundle",
     "PreparedDatasetThetaScenario",
     "PreparedMeasuredHarvestBundle",
+    "prepare_dataset_runtime_bundle",
     "prepare_measured_harvest_bundle",
     "read_dataset_observation_table",
     "read_rootzone_ec_table",

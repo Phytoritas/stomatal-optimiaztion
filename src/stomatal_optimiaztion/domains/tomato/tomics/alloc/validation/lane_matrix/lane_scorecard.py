@@ -154,6 +154,28 @@ def build_lane_scorecard_row(
     }
 
 
+def build_diagnostic_runtime_lane_scorecard_row(
+    scenario: ComparisonScenario,
+    *,
+    validation_df: pd.DataFrame,
+    run_df: pd.DataFrame,
+    metrics: dict[str, object],
+    basis_normalization_resolved: bool | None = None,
+) -> dict[str, object]:
+    row = build_lane_scorecard_row(
+        scenario,
+        validation_df=validation_df,
+        run_df=run_df,
+        metrics=metrics,
+        basis_normalization_resolved=basis_normalization_resolved,
+    )
+    row["execution_status"] = "diagnostic_runtime_scored"
+    row["rmse_cumulative_offset"] = math.nan
+    row["rmse_daily_increment"] = math.nan
+    row["winner_stability_score"] = math.nan
+    return row
+
+
 def build_split_score_rows(
     scenario: ComparisonScenario,
     *,
@@ -261,6 +283,7 @@ __all__ = [
     "RUNTIME_COMPLETE_SEMANTICS",
     "RUNTIME_UNRESOLVED",
     "build_context_only_lane_scorecard_row",
+    "build_diagnostic_runtime_lane_scorecard_row",
     "build_lane_scorecard_row",
     "build_split_score_rows",
     "finalize_lane_scorecard",

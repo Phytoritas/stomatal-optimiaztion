@@ -24,8 +24,10 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.datasets.regis
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.datasets.runtime import (
     CANONICAL_REPORTING_BASIS,
+    PreparedDatasetRuntimeBundle,
     PreparedDatasetThetaScenario,
     PreparedMeasuredHarvestBundle,
+    prepare_dataset_runtime_bundle,
     prepare_measured_harvest_bundle,
     read_dataset_observation_table,
 )
@@ -45,6 +47,7 @@ __all__ = [
     "DatasetObservationContract",
     "DatasetRegistry",
     "DatasetSanitizedFixtureContract",
+    "PreparedDatasetRuntimeBundle",
     "PreparedDatasetThetaScenario",
     "PreparedMeasuredHarvestBundle",
     "TraitenvInventoryBundle",
@@ -60,6 +63,7 @@ __all__ = [
     "load_dataset_registry",
     "load_traitenv_inventory",
     "missing_required_fields",
+    "prepare_dataset_runtime_bundle",
     "prepare_measured_harvest_bundle",
     "read_dataset_observation_table",
 ]

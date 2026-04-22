@@ -14,6 +14,7 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.datasets.regis
     load_dataset_registry,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.datasets.runtime import (
+    prepare_dataset_runtime_bundle,
     prepare_measured_harvest_bundle,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.harvest_calibration_bridge import (
@@ -37,6 +38,7 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.lane_matrix.ha
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.lane_matrix.lane_scorecard import (
     build_context_only_lane_scorecard_row,
+    build_diagnostic_runtime_lane_scorecard_row,
     build_lane_scorecard_row,
     build_split_score_rows,
     finalize_lane_scorecard,
@@ -111,6 +113,54 @@ def _write_scenario_sidecars(
             "dataset_id": scenario.dataset_role_assignment.dataset_id,
             "metrics": dict(metrics),
         },
+    )
+
+
+def _write_scenario_error_sidecar(
+    scenario: ComparisonScenario,
+    *,
+    scenario_root: Path,
+    error: Exception,
+) -> None:
+    write_json(
+        scenario_root / "audit.json",
+        {
+            "scenario_id": scenario.scenario_id,
+            "allocation_lane_id": scenario.allocation_lane.lane_id,
+            "harvest_profile_id": scenario.harvest_profile.harvest_profile_id,
+            "dataset_id": scenario.dataset_role_assignment.dataset_id,
+            "error": {
+                "type": type(error).__name__,
+                "message": str(error),
+            },
+        },
+    )
+
+
+def _build_diagnostic_observed_df(*, validation_start: pd.Timestamp, validation_end: pd.Timestamp) -> pd.DataFrame:
+    dates = pd.date_range(validation_start.normalize(), validation_end.normalize(), freq="D")
+    return pd.DataFrame(
+        {
+            "date": dates,
+            "measured_cumulative_harvested_fruit_dry_weight_floor_area": pd.Series(
+                [pd.NA] * len(dates),
+                dtype="Float64",
+            ),
+            "estimated_cumulative_harvested_fruit_dry_weight_floor_area": pd.Series(
+                [pd.NA] * len(dates),
+                dtype="Float64",
+            ),
+            "measured_cumulative_total_fruit_dry_weight_floor_area": pd.Series(
+                [pd.NA] * len(dates),
+                dtype="Float64",
+            ),
+            "estimated_cumulative_total_fruit_dry_weight_floor_area": pd.Series(
+                [pd.NA] * len(dates),
+                dtype="Float64",
+            ),
+            "measured_daily_increment_floor_area": pd.Series([pd.NA] * len(dates), dtype="Float64"),
+            "estimated_daily_increment_floor_area": pd.Series([pd.NA] * len(dates), dtype="Float64"),
+        }
     )
 
 
@@ -211,7 +261,8 @@ def run_lane_matrix(
 
     base_config = load_harvest_base_config(reference_meta)
     theta_scenario_id = str(lane_cfg.get("theta_proxy_scenario", "moderate"))
-    bundle_cache: dict[str, Any] = {}
+    measured_bundle_cache: dict[str, Any] = {}
+    runtime_bundle_cache: dict[str, Any] = {}
     reconstruction_cache: dict[tuple[str, str], dict[str, object]] = {}
     scorecard_rows: list[dict[str, object]] = []
     split_rows: list[dict[str, object]] = []
@@ -230,14 +281,72 @@ def run_lane_matrix(
             )
             continue
         if dataset_assignment.dataset_role != "measured_harvest":
-            scorecard_rows.append(
-                build_context_only_lane_scorecard_row(
-                    scenario,
-                    execution_status="dataset_role_not_harvest_scoreable",
+            try:
+                runtime_bundle = runtime_bundle_cache.get(dataset_assignment.dataset_id)
+                if runtime_bundle is None:
+                    prepared_root = ensure_dir(output_root / "_prepared" / dataset_assignment.dataset_id)
+                    runtime_bundle = prepare_dataset_runtime_bundle(
+                        dataset_assignment.dataset,
+                        validation_cfg=validation_cfg,
+                        prepared_root=prepared_root,
+                    )
+                    runtime_bundle_cache[dataset_assignment.dataset_id] = runtime_bundle
+                forcing_scenario = runtime_bundle.scenarios[theta_scenario_id]
+                diagnostic_observed_df = _build_diagnostic_observed_df(
+                    validation_start=runtime_bundle.validation_start,
+                    validation_end=runtime_bundle.validation_end,
                 )
-            )
+                run_cfg = configure_candidate_run(
+                    base_config=copy.deepcopy(base_config),
+                    forcing_csv_path=forcing_scenario.forcing_csv_path,
+                    theta_center=float(forcing_scenario.summary.get("theta_mean", 0.65)),
+                    row=scenario.allocation_lane.candidate_row,
+                    initial_state_overrides={},
+                )
+                result = run_harvest_family_simulation(
+                    run_config=run_cfg,
+                    observed_df=diagnostic_observed_df,
+                    unit_label=runtime_bundle.source_unit_label,
+                    repo_root=repo_root,
+                    fruit_harvest_family=scenario.harvest_profile.fruit_harvest_family,
+                    leaf_harvest_family=scenario.harvest_profile.leaf_harvest_family,
+                    fdmc_mode=scenario.harvest_profile.fdmc_mode,
+                    fruit_params=scenario.harvest_profile.fruit_params,
+                    leaf_params=scenario.harvest_profile.leaf_params,
+                )
+                diagnostic_metrics = dict(result.metrics)
+                diagnostic_metrics["diagnostic_hidden_state_mode"] = "no_observed_harvest_default_init"
+                diagnostic_metrics["diagnostic_dataset_role"] = dataset_assignment.dataset_role
+                scorecard_rows.append(
+                    build_diagnostic_runtime_lane_scorecard_row(
+                        scenario,
+                        validation_df=result.validation_df,
+                        run_df=result.run_df,
+                        metrics=diagnostic_metrics,
+                        basis_normalization_resolved=runtime_bundle.basis_normalization_resolved,
+                    )
+                )
+                _write_scenario_sidecars(
+                    scenario,
+                    scenario_root=scenario_root,
+                    validation_df=result.validation_df,
+                    harvest_mass_balance_df=result.harvest_mass_balance_df,
+                    metrics=diagnostic_metrics,
+                )
+            except (FileNotFoundError, KeyError, ValueError) as error:
+                scorecard_rows.append(
+                    build_context_only_lane_scorecard_row(
+                        scenario,
+                        execution_status="diagnostic_runtime_unavailable",
+                    )
+                )
+                _write_scenario_error_sidecar(
+                    scenario,
+                    scenario_root=scenario_root,
+                    error=error,
+                )
             continue
-        bundle = bundle_cache.get(dataset_assignment.dataset_id)
+        bundle = measured_bundle_cache.get(dataset_assignment.dataset_id)
         if bundle is None:
             prepared_root = ensure_dir(output_root / "_prepared" / dataset_assignment.dataset_id)
             bundle = prepare_measured_harvest_bundle(
@@ -245,7 +354,7 @@ def run_lane_matrix(
                 validation_cfg=validation_cfg,
                 prepared_root=prepared_root,
             )
-            bundle_cache[dataset_assignment.dataset_id] = bundle
+            measured_bundle_cache[dataset_assignment.dataset_id] = bundle
         forcing_scenario = bundle.scenarios[theta_scenario_id]
         cache_key = (dataset_assignment.dataset_id, scenario.allocation_lane.lane_id)
         initial_state_overrides = reconstruction_cache.get(cache_key)

@@ -29,6 +29,15 @@ class HarvestProfileSpec:
     selected_family_is_proxy: bool
 
 
+KNOWN_HARVEST_PROFILE_IDS = frozenset(
+    {
+        "incumbent_harvest_profile",
+        "locked_research_selected_harvest_profile",
+        "diagnostic_factorial_harvest_profile",
+    }
+)
+
+
 def _selected_payload_path(*, repo_root: Path, selected_payload_path: str | Path | None = None) -> Path:
     if selected_payload_path is not None:
         candidate = Path(selected_payload_path)
@@ -38,13 +47,23 @@ def _selected_payload_path(*, repo_root: Path, selected_payload_path: str | Path
     return (repo_root / "out" / "tomics_knu_harvest_family_factorial" / "selected_harvest_family.json").resolve()
 
 
+def _requested_profile_ids(requested_ids: list[str] | None) -> set[str] | None:
+    if not requested_ids:
+        return None
+    requested = {str(value) for value in requested_ids}
+    unknown_ids = sorted(requested.difference(KNOWN_HARVEST_PROFILE_IDS))
+    if unknown_ids:
+        raise ValueError(f"Unknown harvest profile ids requested: {', '.join(unknown_ids)}")
+    return requested
+
+
 def resolve_harvest_profiles(
     *,
     repo_root: Path,
     requested_ids: list[str] | None = None,
     selected_payload_path: str | Path | None = None,
 ) -> list[HarvestProfileSpec]:
-    requested = set(requested_ids) if requested_ids else None
+    requested = _requested_profile_ids(requested_ids)
     profiles: list[HarvestProfileSpec] = [
         HarvestProfileSpec(
             harvest_profile_id="incumbent_harvest_profile",
