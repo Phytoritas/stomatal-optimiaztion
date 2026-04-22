@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import pandas as pd
+import pytest
 import yaml
 
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.core import load_config
@@ -426,6 +427,7 @@ def test_lane_gate_keeps_raw_reference_only_in_diagnostics(tmp_path: Path) -> No
     assert decision["diagnostic_surface_path"].endswith("diagnostic_surface.csv")
 
 
+@pytest.mark.slow
 def test_lane_matrix_runner_current_knu_smoke(tmp_path: Path) -> None:
     repo_root = _repo_root()
     current_vs_promoted_config = write_minimal_knu_config(tmp_path, repo_root=repo_root, mode="both")
@@ -498,6 +500,7 @@ def test_lane_matrix_runner_current_knu_smoke(tmp_path: Path) -> None:
     assert (gate_root / "lane_gate_decision.json").exists()
 
 
+@pytest.mark.slow
 def test_lane_matrix_runner_supports_multidataset_mode(tmp_path: Path) -> None:
     repo_root = _repo_root()
     current_vs_promoted_config = write_minimal_knu_config(tmp_path, repo_root=repo_root, mode="both")

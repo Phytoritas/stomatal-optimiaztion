@@ -29,8 +29,13 @@ poetry run python scripts/run_tomics_factorial.py --config configs/exp/tomics_fa
 poetry run python scripts/run_tomics_lane_matrix.py --config configs/exp/tomics_lane_matrix.yaml
 poetry run python scripts/run_tomics_lane_matrix_gate.py --config configs/exp/tomics_lane_matrix_gate.yaml
 poetry run pytest
+poetry run pytest -o addopts= -m slow
+poetry run pytest -o addopts=
 poetry run ruff check .
 ```
+
+The default `poetry run pytest` suite excludes tests marked `slow`. Use `poetry run pytest -o addopts= -m slow`
+for opt-in slow validation, or `poetry run pytest -o addopts=` for the complete test suite.
 
 `THORP` and `TDGM` full-series control rerenders are long-running. On the current workstation, the canonical full rerender completed in about 52 minutes for `THORP` and 56 minutes for `TDGM`.
 
@@ -160,7 +165,7 @@ poetry run ruff check .
 - Slice 108 vectorizes the THORP/TDGM root-uptake bottleneck so the canonical full-series control rerenders finish in practical time, regenerates the live Plotkit comparison bundles, and records that root `TDGM` still shows long-horizon full-series drift against the legacy MATLAB control payload.
 
 ## Next validation
-- Keep `pytest`, `ruff`, and the root rerun parity renderers green while the architecture remains in monitor mode.
+- Keep the default fast `pytest`, opt-in slow `pytest`, `ruff`, and the root rerun parity renderers green while the architecture remains in monitor mode.
 - Keep the fast root `GOSM` rerun tests warning-free and run the opt-in slow `imag` branch whenever root `gosm` hydraulics or stomatal logic changes.
 - Run the opt-in slow `GOSM` `imag` conductance-loss parity branch when root `gosm` hydraulics or stomatal logic changes.
 - Re-render `scripts/render_root_rerun_parity_figures.py` whenever root `THORP`, `GOSM`, or `TDGM` rerun kernels change.
