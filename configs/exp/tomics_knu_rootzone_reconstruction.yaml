@@ -17,4 +17,7 @@ rootzone_reconstruction:
   scenario_ids: [dry, moderate, wet]
   theta_min_hard: 0.40
   theta_max_hard: 0.85
+  measured_scenario_id: measured
+  measured_theta_coverage_min: 0.05
+  measured_theta_max_gap: 1h
   overlay_spec: configs/plotkit/tomics/knu_theta_proxy_diagnostics.yaml

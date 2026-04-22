@@ -249,7 +249,10 @@ def _default_knu_dataset(
             estimated_cumulative_column=data.estimated_column,
             measured_semantics="cumulative_harvested_fruit_dry_weight_floor_area",
         ),
-        management=DatasetManagementMetadata(),
+        management=DatasetManagementMetadata(
+            ec_path=contract.ec_path,
+            rootzone_path=contract.rootzone_path,
+        ),
         sanitized_fixture=DatasetSanitizedFixtureContract(
             forcing_fixture_path=(repo_root / "tests" / "fixtures" / "knu_sanitized" / "KNU_Tomato_Env_fixture.csv"),
             observed_harvest_fixture_path=(
