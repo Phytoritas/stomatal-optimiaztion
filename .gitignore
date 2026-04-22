@@ -12,6 +12,7 @@ out/
 results/
 runs*/
 logs/
+.rah/
 
 docs/references/source_papers/
 
