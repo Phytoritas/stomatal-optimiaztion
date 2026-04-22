@@ -21,6 +21,9 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.harvest_family
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.lane_matrix.lane_gate import (
     run_lane_matrix_gate,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.lane_matrix.lane_scorecard import (
+    RUNTIME_COMPLETE_SEMANTICS,
+)
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.lane_matrix.matrix_runner import (
     run_lane_matrix,
 )
@@ -469,8 +472,11 @@ def test_lane_matrix_keeps_context_only_dataset_diagnostic_only(tmp_path: Path, 
     context_rows = scorecard_df.loc[scorecard_df["dataset_id"].eq("trait_context")].copy()
     assert not context_rows.empty
     assert set(context_rows["dataset_role"]) == {"trait_plus_env_no_harvest"}
-    assert set(context_rows["execution_status"]) == {"dataset_role_not_harvest_scoreable"}
-    assert not context_rows["execution_status"].eq("scored").any()
+    assert set(context_rows["execution_status"]) == {"diagnostic_runtime_scored"}
+    assert context_rows["runtime_complete_semantics"].eq(RUNTIME_COMPLETE_SEMANTICS).all()
+    assert context_rows["native_state_coverage"].notna().all()
+    assert context_rows["mean_alloc_frac_fruit"].notna().all()
+    assert context_rows["rmse_cumulative_offset"].isna().all()
 
     gate_config = {
         "validation": {
@@ -485,6 +491,7 @@ def test_lane_matrix_keeps_context_only_dataset_diagnostic_only(tmp_path: Path, 
     diagnostic_df = pd.read_csv(output_root / "diagnostic_surface.csv")
     decision = json.loads((output_root / "lane_gate_decision.json").read_text(encoding="utf-8"))
     assert "trait_context" in set(diagnostic_df["dataset_id"])
+    assert diagnostic_df.loc[diagnostic_df["dataset_id"].eq("trait_context"), "diagnostic_score"].notna().all()
     assert decision["measured_dataset_count"] == 1
 
 

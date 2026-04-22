@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.datasets.contracts import (
     DatasetBasisContract,
     DatasetManagementMetadata,
@@ -111,6 +113,11 @@ def test_allocation_lane_registry_resolves_required_policies() -> None:
     assert lane_map["raw_reference_thorp"].promotion_eligible is False
 
 
+def test_allocation_lane_registry_rejects_unknown_requested_lane() -> None:
+    with pytest.raises(ValueError, match="Unknown allocation lane ids requested: missing_lane"):
+        resolve_allocation_lanes(_calibration_candidates(), lane_ids=["incumbent_current", "missing_lane"])
+
+
 def test_dataset_roles_do_not_auto_promote_yield_environment() -> None:
     registry = DatasetRegistry(
         datasets=(
@@ -133,6 +140,17 @@ def test_dataset_roles_do_not_auto_promote_yield_environment() -> None:
     assert role_map["traitenv_context"].dataset_role == "trait_plus_env_no_harvest"
     assert role_map["yield_env_only"].dataset_role == "yield_environment_only"
     assert role_map["yield_env_only"].promotion_denominator_eligible is False
+
+
+def test_dataset_role_registry_rejects_unknown_requested_dataset() -> None:
+    registry = DatasetRegistry(
+        datasets=(
+            _dataset(dataset_id="knu_actual", dataset_kind="knu_measured_harvest"),
+        ),
+        default_dataset_ids=("knu_actual",),
+    )
+    with pytest.raises(ValueError, match="Unknown dataset ids requested: missing_dataset"):
+        resolve_dataset_roles(registry, dataset_ids=["knu_actual", "missing_dataset"])
 
 
 def test_measured_harvest_contract_requires_sanitized_fixture_metadata() -> None:
@@ -197,3 +215,8 @@ def test_harvest_profile_registry_reads_locked_selected_family(tmp_path: Path) -
     assert profile_map["locked_research_selected_harvest_profile"].fruit_harvest_family == "dekoning_fds"
     assert profile_map["locked_research_selected_harvest_profile"].selected_family_is_native is True
     assert profile_map["locked_research_selected_harvest_profile"].selected_family_is_proxy is True
+
+
+def test_harvest_profile_registry_rejects_unknown_requested_profile(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="Unknown harvest profile ids requested: missing_profile"):
+        resolve_harvest_profiles(repo_root=tmp_path, requested_ids=["incumbent_harvest_profile", "missing_profile"])

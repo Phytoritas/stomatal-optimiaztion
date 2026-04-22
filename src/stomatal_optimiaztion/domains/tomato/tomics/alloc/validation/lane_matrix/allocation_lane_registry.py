@@ -81,15 +81,30 @@ def default_allocation_lane_specs() -> tuple[AllocationLaneSpec, ...]:
     )
 
 
+def _requested_lane_ids(
+    lane_ids: Iterable[str] | None,
+    *,
+    available_ids: Iterable[str],
+) -> set[str] | None:
+    if lane_ids is None:
+        return None
+    requested = {str(value) for value in lane_ids}
+    unknown_ids = sorted(requested.difference(str(value) for value in available_ids))
+    if unknown_ids:
+        raise ValueError(f"Unknown allocation lane ids requested: {', '.join(unknown_ids)}")
+    return requested
+
+
 def resolve_allocation_lanes(
     candidates: Iterable[CalibrationCandidate],
     *,
     lane_ids: Iterable[str] | None = None,
 ) -> list[ResolvedAllocationLane]:
+    specs = default_allocation_lane_specs()
     candidate_map = {candidate.candidate_label: candidate for candidate in candidates}
-    requested = set(str(value) for value in lane_ids) if lane_ids is not None else None
+    requested = _requested_lane_ids(lane_ids, available_ids=(spec.lane_id for spec in specs))
     resolved: list[ResolvedAllocationLane] = []
-    for spec in default_allocation_lane_specs():
+    for spec in specs:
         if requested is not None and spec.lane_id not in requested:
             continue
         candidate = candidate_map[spec.candidate_label]

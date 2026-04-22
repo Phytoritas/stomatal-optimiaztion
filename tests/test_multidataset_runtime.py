@@ -7,12 +7,14 @@ import pandas as pd
 
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.datasets.contracts import (
     DatasetBasisContract,
+    DatasetCapability,
     DatasetManagementMetadata,
     DatasetMetadataContract,
     DatasetObservationContract,
     DatasetSanitizedFixtureContract,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.datasets.runtime import (
+    prepare_dataset_runtime_bundle,
     prepare_measured_harvest_bundle,
 )
 
@@ -67,6 +69,48 @@ def _write_rootzone_ec_fixture(path: Path) -> None:
             "depth_cm": [10, 10, 10, 10],
         }
     ).to_csv(path, index=False)
+
+
+def test_prepare_dataset_runtime_bundle_does_not_require_observed_harvest(tmp_path: Path) -> None:
+    forcing_path = tmp_path / "forcing.csv"
+    _write_forcing_fixture(forcing_path)
+    dataset = DatasetMetadataContract(
+        dataset_id="context_only",
+        dataset_kind="traitenv_bundle",
+        display_name="Context-only forcing",
+        forcing_path=forcing_path,
+        observed_harvest_path=None,
+        validation_start="2025-01-01",
+        validation_end="2025-01-03",
+        cultivar="cv",
+        greenhouse="gh",
+        season="winter",
+        capability=DatasetCapability.CONTEXT_ONLY,
+        basis=DatasetBasisContract(reporting_basis="floor_area_g_m2"),
+        observation=DatasetObservationContract(),
+        management=DatasetManagementMetadata(),
+        sanitized_fixture=DatasetSanitizedFixtureContract(forcing_fixture_path=forcing_path),
+        notes={"dataset_role_hint": "trait_plus_env_no_harvest"},
+    )
+
+    bundle = prepare_dataset_runtime_bundle(
+        dataset,
+        validation_cfg={
+            "resample_rule": "1D",
+            "theta_proxy_mode": "bucket_irrigated",
+            "theta_proxy_scenarios": ["moderate"],
+        },
+        prepared_root=tmp_path / "prepared-runtime",
+    )
+
+    manifest_path = bundle.prepared_root / "runtime_contract_manifest.json"
+    assert bundle.dataset_id == "context_only"
+    assert bundle.scenarios["moderate"].forcing_csv_path.exists()
+    assert manifest_path.exists()
+    assert not (bundle.prepared_root / "observation_contract_manifest.json").exists()
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert manifest["forcing_path"] == str(forcing_path)
+    assert manifest["sanitized_fixture"]["observed_harvest_fixture_path"] is None
 
 
 def test_prepare_measured_harvest_bundle_honors_contract_columns_and_basis_conversion(tmp_path: Path) -> None:

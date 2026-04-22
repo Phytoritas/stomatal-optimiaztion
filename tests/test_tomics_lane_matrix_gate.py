@@ -432,3 +432,131 @@ def test_lane_matrix_gate_measured_dataset_count_uses_only_promotion_passing_row
     assert not incumbent_row.empty
     assert float(incumbent_row.iloc[0]["cross_dataset_stability_score"]) == 1.0
     assert bool(incumbent_row.iloc[0]["passes"]) is True
+
+
+def _diagnostic_context_scorecard_row(
+    *,
+    dataset_id: str,
+    allocation_lane_id: str,
+    native_state_coverage: float,
+    shared_tdvs_proxy_fraction: float,
+    family_separability_score: float,
+    any_all_zero_harvest_series: bool = False,
+    offplant_with_positive_mass_flag: bool = False,
+    canopy_collapse_days: float = 0.0,
+) -> dict[str, object]:
+    return {
+        "scenario_id": f"{allocation_lane_id}__incumbent_harvest_profile__{dataset_id}",
+        "allocation_lane_id": allocation_lane_id,
+        "harvest_profile_id": "incumbent_harvest_profile",
+        "dataset_id": dataset_id,
+        "dataset_role": "trait_plus_env_no_harvest",
+        "promotion_eligible": False,
+        "reference_only": False,
+        "reporting_basis_in": "floor_area_g_m2",
+        "reporting_basis_canonical": "floor_area_g_m2",
+        "basis_normalization_resolved": True,
+        "rmse_cumulative_offset": float("nan"),
+        "rmse_daily_increment": float("nan"),
+        "fruit_anchor_error": 0.0,
+        "canopy_collapse_days": canopy_collapse_days,
+        "winner_stability_score": float("nan"),
+        "native_state_coverage": native_state_coverage,
+        "shared_tdvs_proxy_fraction": shared_tdvs_proxy_fraction,
+        "family_separability_score": family_separability_score,
+        "any_all_zero_harvest_series": any_all_zero_harvest_series,
+        "dropped_nonharvested_mass_g_m2": 0.0,
+        "offplant_with_positive_mass_flag": offplant_with_positive_mass_flag,
+        "runtime_complete_semantics": "explicit_harvested_cumulative_writeback_audited",
+        "selected_family_label": "incumbent",
+        "selected_family_is_native": True,
+        "selected_family_is_proxy": False,
+        "execution_status": "diagnostic_runtime_scored",
+        "candidate_label": "shipped_tomics",
+        "architecture_id": f"{allocation_lane_id}_architecture",
+        "partition_policy": "tomics",
+        "mean_alloc_frac_fruit": 0.45,
+        "mean_proxy_family_state_fraction": shared_tdvs_proxy_fraction,
+    }
+
+
+def test_lane_matrix_gate_ranks_context_only_runtime_rows_by_diagnostic_score(tmp_path: Path) -> None:
+    matrix_root = tmp_path / "out" / "tomics" / "validation" / "lane-matrix"
+    matrix_root.mkdir(parents=True, exist_ok=True)
+    scorecard_df = pd.DataFrame(
+        [
+            _diagnostic_context_scorecard_row(
+                dataset_id="ctx",
+                allocation_lane_id="incumbent_current",
+                native_state_coverage=0.9,
+                shared_tdvs_proxy_fraction=0.1,
+                family_separability_score=0.8,
+            ),
+            _diagnostic_context_scorecard_row(
+                dataset_id="ctx",
+                allocation_lane_id="research_promoted",
+                native_state_coverage=0.3,
+                shared_tdvs_proxy_fraction=0.6,
+                family_separability_score=0.0,
+                any_all_zero_harvest_series=True,
+                offplant_with_positive_mass_flag=True,
+                canopy_collapse_days=4.0,
+            ),
+        ]
+    )
+    scorecard_df.to_csv(matrix_root / "lane_scorecard.csv", index=False)
+    config = {
+        "validation": {
+            "lane_matrix_gate": {
+                "matrix_root": str(matrix_root),
+                "output_root": str(matrix_root),
+                "min_dataset_count": 2,
+            }
+        }
+    }
+
+    run_lane_matrix_gate(config, repo_root=tmp_path, config_path=tmp_path / "gate.yaml")
+
+    diagnostic_df = pd.read_csv(matrix_root / "diagnostic_surface.csv")
+    assert diagnostic_df.iloc[0]["allocation_lane_id"] == "incumbent_current"
+    assert float(diagnostic_df.iloc[0]["diagnostic_score"]) > float(diagnostic_df.iloc[1]["diagnostic_score"])
+
+
+def test_lane_matrix_gate_selects_highest_scoring_diagnostic_record_in_decision_payload(tmp_path: Path) -> None:
+    matrix_root = tmp_path / "out" / "tomics" / "validation" / "lane-matrix"
+    matrix_root.mkdir(parents=True, exist_ok=True)
+    scorecard_df = pd.DataFrame(
+        [
+            _diagnostic_context_scorecard_row(
+                dataset_id="a_ctx",
+                allocation_lane_id="incumbent_current",
+                native_state_coverage=0.1,
+                shared_tdvs_proxy_fraction=0.8,
+                family_separability_score=0.1,
+            ),
+            _diagnostic_context_scorecard_row(
+                dataset_id="z_ctx",
+                allocation_lane_id="research_current",
+                native_state_coverage=0.95,
+                shared_tdvs_proxy_fraction=0.05,
+                family_separability_score=0.9,
+            ),
+        ]
+    )
+    scorecard_df.to_csv(matrix_root / "lane_scorecard.csv", index=False)
+    config = {
+        "validation": {
+            "lane_matrix_gate": {
+                "matrix_root": str(matrix_root),
+                "output_root": str(matrix_root),
+                "min_dataset_count": 2,
+            }
+        }
+    }
+
+    run_lane_matrix_gate(config, repo_root=tmp_path, config_path=tmp_path / "gate.yaml")
+
+    decision = json.loads((matrix_root / "lane_gate_decision.json").read_text(encoding="utf-8"))
+    assert decision["diagnostic_selection_basis"] == "highest_diagnostic_score"
+    assert decision["diagnostic_selected"]["dataset_id"] == "z_ctx"
+    assert decision["diagnostic_selected"]["allocation_lane_id"] == "research_current"

@@ -107,8 +107,8 @@ The diagnostic surface may include:
 - non-promotable harvest profiles
 - context-only datasets
 
-In the current staged implementation, context-only dataset roles stay visible on the shared scorecard and diagnostic surface as explicit placeholder diagnostic rows.
-They do not yet run observer/regime diagnostic metrics through the measured-harvest runtime.
+Context-only dataset roles stay visible on the shared scorecard and diagnostic surface as diagnostic-runtime rows when a forcing fixture and basis contract are available.
+They run the same harvest-family runtime with `no_observed_harvest_default_init`, but their observed columns remain missing and their RMSE fields stay excluded from promotion scoring.
 
 Diagnostic winners must not be treated as promotion winners.
 

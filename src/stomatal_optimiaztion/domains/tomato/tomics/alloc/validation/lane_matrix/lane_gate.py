@@ -38,10 +38,63 @@ def _gate_config(config: dict[str, Any]) -> dict[str, Any]:
 
 
 def _gate_score(row: pd.Series) -> float:
-    rmse_cumulative = float(pd.to_numeric(pd.Series([row.get("rmse_cumulative_offset", math.inf)]), errors="coerce").fillna(math.inf).iloc[0])
-    rmse_daily = float(pd.to_numeric(pd.Series([row.get("rmse_daily_increment", math.inf)]), errors="coerce").fillna(math.inf).iloc[0])
-    fruit_anchor_error = float(pd.to_numeric(pd.Series([row.get("fruit_anchor_error", math.inf)]), errors="coerce").fillna(math.inf).iloc[0])
-    canopy_collapse_days = float(pd.to_numeric(pd.Series([row.get("canopy_collapse_days", math.inf)]), errors="coerce").fillna(math.inf).iloc[0])
+    rmse_cumulative = float(
+        pd.to_numeric(pd.Series([row.get("rmse_cumulative_offset", math.inf)]), errors="coerce")
+        .fillna(math.inf)
+        .iloc[0]
+    )
+    rmse_daily = float(
+        pd.to_numeric(pd.Series([row.get("rmse_daily_increment", math.inf)]), errors="coerce")
+        .fillna(math.inf)
+        .iloc[0]
+    )
+    fruit_anchor_error = float(
+        pd.to_numeric(pd.Series([row.get("fruit_anchor_error", math.inf)]), errors="coerce")
+        .fillna(math.inf)
+        .iloc[0]
+    )
+    canopy_collapse_days = float(
+        pd.to_numeric(pd.Series([row.get("canopy_collapse_days", math.inf)]), errors="coerce")
+        .fillna(math.inf)
+        .iloc[0]
+    )
+    if math.isfinite(rmse_cumulative) or math.isfinite(rmse_daily):
+        return -rmse_cumulative - 0.5 * rmse_daily - 0.25 * fruit_anchor_error - 0.1 * canopy_collapse_days
+
+    native_state_coverage = float(
+        pd.to_numeric(pd.Series([row.get("native_state_coverage", math.nan)]), errors="coerce")
+        .fillna(math.nan)
+        .iloc[0]
+    )
+    shared_tdvs_proxy_fraction = float(
+        pd.to_numeric(pd.Series([row.get("shared_tdvs_proxy_fraction", math.nan)]), errors="coerce")
+        .fillna(math.nan)
+        .iloc[0]
+    )
+    family_separability_score = float(
+        pd.to_numeric(pd.Series([row.get("family_separability_score", math.nan)]), errors="coerce")
+        .fillna(math.nan)
+        .iloc[0]
+    )
+    if (
+        math.isfinite(native_state_coverage)
+        or math.isfinite(shared_tdvs_proxy_fraction)
+        or math.isfinite(family_separability_score)
+    ):
+        native_term = native_state_coverage if math.isfinite(native_state_coverage) else 0.0
+        proxy_term = shared_tdvs_proxy_fraction if math.isfinite(shared_tdvs_proxy_fraction) else 1.0
+        separability_term = family_separability_score if math.isfinite(family_separability_score) else 0.0
+        canopy_term = canopy_collapse_days if math.isfinite(canopy_collapse_days) else 0.0
+        all_zero_penalty = 1.0 if bool(row.get("any_all_zero_harvest_series", False)) else 0.0
+        offplant_penalty = 1.0 if bool(row.get("offplant_with_positive_mass_flag", False)) else 0.0
+        return (
+            separability_term
+            + native_term
+            - 0.5 * proxy_term
+            - 0.1 * canopy_term
+            - all_zero_penalty
+            - offplant_penalty
+        )
     return -rmse_cumulative - 0.5 * rmse_daily - 0.25 * fruit_anchor_error - 0.1 * canopy_collapse_days
 
 
@@ -87,6 +140,20 @@ def _lane_audit_summary(promotion_rows: pd.DataFrame) -> pd.DataFrame:
             }
         )
     return pd.DataFrame(summary_rows)
+
+
+def _select_diagnostic_record(diagnostic_surface_df: pd.DataFrame) -> dict[str, object]:
+    if diagnostic_surface_df.empty:
+        return {}
+    selected_row = (
+        diagnostic_surface_df.sort_values(
+            ["diagnostic_score", "dataset_id", "allocation_lane_id", "harvest_profile_id"],
+            ascending=[False, True, True, True],
+        )
+        .reset_index(drop=True)
+        .iloc[0]
+    )
+    return selected_row.to_dict()
 
 
 def run_lane_matrix_gate(
@@ -282,7 +349,7 @@ def run_lane_matrix_gate(
             selected_promotion = promotion_surface_df.iloc[0].to_dict()
     promotion_surface_df.to_csv(paths.promotion_surface_path, index=False)
 
-    diagnostic_selected = diagnostic_surface_df.iloc[0].to_dict() if not diagnostic_surface_df.empty else {}
+    diagnostic_selected = _select_diagnostic_record(diagnostic_surface_df)
     decision_payload = {
         "matrix_root": str(matrix_root),
         "promotion_surface_path": str(paths.promotion_surface_path),
@@ -296,6 +363,7 @@ def run_lane_matrix_gate(
         },
         "promotion_selected": selected_promotion,
         "promotion_blocked": (not bool(selected_promotion)) or (not bool(selected_promotion.get("passes", False))),
+        "diagnostic_selection_basis": "highest_diagnostic_score" if diagnostic_selected else None,
         "diagnostic_selected": diagnostic_selected,
     }
     write_json(paths.lane_gate_decision_path, decision_payload)
