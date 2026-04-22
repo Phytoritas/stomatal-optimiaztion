@@ -9,6 +9,8 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation import (
     run_current_vs_promoted_factorial,
 )
 
+pytestmark = pytest.mark.slow
+
 
 def _write_public_config(tmp_path: Path, *, repo_root: Path, source_config: str) -> Path:
     source_path = repo_root / source_config

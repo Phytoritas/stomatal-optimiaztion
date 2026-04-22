@@ -15,7 +15,8 @@ Broad implementation is blocked until all required items are checked.
 
 ## Slice 001 Validation Commands
 
-- `poetry run pytest`
+- `poetry run pytest` (default fast suite; slow tests are opt-in through `pyproject.toml`)
+- `poetry run pytest -o addopts= -m slow` when long-running parity or TOMICS integration smoke surfaces are in scope
 - `poetry run ruff check .`
 
 ## Artifact Retention Rule

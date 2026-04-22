@@ -32,7 +32,8 @@ pytest = "^9.0.2"
 ruff = "^0.15.5"
 
 [tool.pytest.ini_options]
+addopts = "-m 'not slow'"
 markers = [
-    "slow: long-running legacy parity regressions",
+    "slow: long-running legacy parity or TOMICS integration regressions",
 ]
 
