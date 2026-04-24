@@ -29,6 +29,19 @@ def _all_zero_series(frame: pd.DataFrame, column: str) -> bool:
     return bool((series.abs() <= 1e-12).all())
 
 
+def _harvest_series_diagnostics(validation_df: pd.DataFrame) -> dict[str, bool]:
+    zero_increment = _all_zero_series(validation_df, "model_daily_increment_floor_area")
+    zero_cumulative = _all_zero_series(
+        validation_df,
+        "model_cumulative_harvested_fruit_dry_weight_floor_area",
+    )
+    return {
+        "all_zero_model_daily_increment_series": zero_increment,
+        "all_zero_model_cumulative_harvest_series": zero_cumulative,
+        "any_all_zero_harvest_series": bool(zero_increment and zero_cumulative),
+    }
+
+
 def _runtime_complete(validation_df: pd.DataFrame, metrics: dict[str, object]) -> str:
     required_columns = {
         "model_cumulative_harvested_fruit_dry_weight_floor_area",
@@ -86,6 +99,8 @@ def build_context_only_lane_scorecard_row(
         "shared_tdvs_proxy_fraction": math.nan,
         "family_separability_score": math.nan,
         "any_all_zero_harvest_series": False,
+        "all_zero_model_daily_increment_series": False,
+        "all_zero_model_cumulative_harvest_series": False,
         "dropped_nonharvested_mass_g_m2": 0.0,
         "offplant_with_positive_mass_flag": False,
         "runtime_complete_semantics": RUNTIME_UNRESOLVED,
@@ -121,6 +136,7 @@ def build_lane_scorecard_row(
     native_state_coverage = float(metrics.get("native_family_state_fraction", 0.0))
     shared_tdvs_proxy_fraction = float(metrics.get("shared_tdvs_proxy_fraction", 0.0))
     proxy_fraction = float(metrics.get("proxy_family_state_fraction", 0.0))
+    harvest_series = _harvest_series_diagnostics(validation_df)
     return {
         "scenario_id": scenario.scenario_id,
         "allocation_lane_id": scenario.allocation_lane.lane_id,
@@ -147,10 +163,7 @@ def build_lane_scorecard_row(
         "native_state_coverage": native_state_coverage,
         "shared_tdvs_proxy_fraction": shared_tdvs_proxy_fraction,
         "family_separability_score": max(native_state_coverage - shared_tdvs_proxy_fraction, 0.0),
-        "any_all_zero_harvest_series": bool(
-            _all_zero_series(validation_df, "model_daily_increment_floor_area")
-            or _all_zero_series(validation_df, "model_cumulative_harvested_fruit_dry_weight_floor_area")
-        ),
+        **harvest_series,
         "dropped_nonharvested_mass_g_m2": float(metrics.get("post_writeback_dropped_nonharvested_mass_g_m2", 0.0)),
         "offplant_with_positive_mass_flag": bool(metrics.get("offplant_with_positive_mass_flag", False)),
         "runtime_complete_semantics": _runtime_complete(validation_df, metrics),

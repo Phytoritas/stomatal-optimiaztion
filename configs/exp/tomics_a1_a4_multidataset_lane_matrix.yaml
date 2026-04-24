@@ -73,7 +73,7 @@ validation:
     output_root: out/tomics_a1_a4_multidataset_lane_matrix
     theta_proxy_scenario: moderate
     allow_state_reconstruction_fallback: true
-    state_reconstruction_fallback_policy: smoke_only_default_init_when_reconstruction_fails
+    state_reconstruction_fallback_policy: smoke_only_observed_seed_init_when_reconstruction_fails
     dataset_ids:
       - knu_actual
       - public_rda__yield

@@ -63,14 +63,17 @@ def _fruit_cohorts(
         return []
     weights = [float(idx + 1) for idx in range(active_trusses)]
     total_weight = sum(weights)
-    tdvs_values = [0.35 + 0.55 * idx / max(active_trusses - 1, 1) for idx in range(active_trusses)]
+    # Seed the oldest reconstructed truss at TOMSIM harvest readiness so short
+    # validation windows can exercise harvested writeback without lowering the
+    # incumbent harvest threshold.
+    tdvs_values = [0.35 + 0.65 * idx / max(active_trusses - 1, 1) for idx in range(active_trusses)]
     cohorts: list[dict[str, object]] = []
     for idx in range(active_trusses):
         runtime_seed = _runtime_seed(tdvs=tdvs_values[idx], cohort_index=idx)
         cohorts.append(
             {
                 "entity_id": f"truss_{idx + 1:04d}",
-                "tdvs": min(tdvs_values[idx], 0.98),
+                "tdvs": min(tdvs_values[idx], 1.0),
                 "n_fruits": n_fruits_per_truss,
                 "w_fr_cohort": fruit_mass_g_m2 * weights[idx] / total_weight,
                 "active": bool(runtime_seed["sink_active_flag"]),

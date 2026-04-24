@@ -2,9 +2,14 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pandas as pd
+
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.core import load_config
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.current_vs_promoted import (
     prepare_knu_bundle,
+)
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.init_search import (
+    build_reconstruction_candidates,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.state_reconstruction import (
     reconstruct_hidden_state,
@@ -45,3 +50,22 @@ def test_state_reconstruction_returns_supported_mode_and_initial_state(tmp_path:
     assert "W_fr_harvested" in result.initial_state_overrides
     assert "W_lv" in result.initial_state_overrides
     assert result.metrics["init_fit_score"] == result.metrics["init_fit_score"]
+
+
+def test_cohort_reconstruction_seeds_harvest_ready_oldest_truss() -> None:
+    observed_df = pd.DataFrame(
+        {
+            "date": pd.to_datetime(["2025-01-01", "2025-01-02"]),
+            "measured_cumulative_total_fruit_dry_weight_floor_area": [5.0, 8.0],
+            "measured_daily_increment_floor_area": [pd.NA, 3.0],
+        }
+    )
+
+    candidates = build_reconstruction_candidates(observed_df, modes=("cohort_aware_init",))
+    cohort_candidates = [candidate for candidate in candidates if candidate.mode == "cohort_aware_init"]
+    assert cohort_candidates
+
+    truss_cohorts = cohort_candidates[0].initial_state_overrides["truss_cohorts"]
+    oldest = max(truss_cohorts, key=lambda row: float(row["tdvs"]))
+    assert float(oldest["tdvs"]) >= 1.0
+    assert oldest["harvest_ready_flag"] is True
