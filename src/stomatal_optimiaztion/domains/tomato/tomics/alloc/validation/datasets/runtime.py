@@ -297,9 +297,18 @@ def prepare_dataset_runtime_bundle(
 
     if dataset.forcing_path is None:
         raise ValueError(f"Dataset {dataset.dataset_id!r} does not define a forcing_path.")
-    forcing_df = read_knu_forcing_csv(dataset.forcing_path)
     validation_start = pd.Timestamp(dataset.validation_start).normalize()
     validation_end = pd.Timestamp(dataset.validation_end).normalize()
+    forcing_df = _filter_by_validation_window(
+        read_knu_forcing_csv(dataset.forcing_path),
+        validation_start=validation_start,
+        validation_end=validation_end,
+    )
+    if forcing_df.empty:
+        raise ValueError(
+            f"Dataset {dataset.dataset_id!r} did not retain any forcing rows inside "
+            f"{dataset.validation_start}..{dataset.validation_end}."
+        )
     normalization_factor = _normalization_factor(dataset)
     rootzone_path = dataset.management.rootzone_path
     rootzone_ec_path = dataset.management.ec_path

@@ -24,6 +24,9 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.harvest_calibr
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.harvest_family_eval import (
     run_harvest_family_simulation,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.init_search import (
+    build_reconstruction_candidates,
+)
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.lane_matrix.allocation_lane_registry import (
     resolve_allocation_lanes,
 )
@@ -168,6 +171,19 @@ def _build_diagnostic_observed_df(*, validation_start: pd.Timestamp, validation_
             "estimated_daily_increment_floor_area": pd.Series([pd.NA] * len(dates), dtype="Float64"),
         }
     )
+
+
+def _fallback_initial_state_overrides(observed_df: pd.DataFrame) -> dict[str, object]:
+    candidates = build_reconstruction_candidates(
+        observed_df,
+        modes=("cohort_aware_init", "buffer_aware_init", "minimal_scalar_init"),
+    )
+    if not candidates:
+        return {}
+    for candidate in candidates:
+        if candidate.mode == "cohort_aware_init":
+            return dict(candidate.initial_state_overrides)
+    return dict(candidates[0].initial_state_overrides)
 
 
 def run_lane_matrix(
@@ -394,8 +410,8 @@ def run_lane_matrix(
             except (RuntimeError, ValueError) as error:
                 if not allow_reconstruction_fallback:
                     raise
-                initial_state_overrides = {}
-                reconstruction_status = "fallback_default_init"
+                initial_state_overrides = _fallback_initial_state_overrides(bundle.observed_df)
+                reconstruction_status = "fallback_observed_seed_init"
                 reconstruction_error = f"{type(error).__name__}: {error}"
             else:
                 initial_state_overrides = dict(reconstruction.initial_state_overrides)

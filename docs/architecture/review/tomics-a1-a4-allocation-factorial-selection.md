@@ -225,6 +225,14 @@ The lane gate therefore keeps `primary_measured_score.json` separate from
 `review_only_public_score.json` and does not pool those values into one promotion score.
 No raw/private KNU data are committed by this follow-up.
 
+Issue #306 tightens the same lane matrix without changing allocation behavior.
+Dataset forcing is clipped to each declared validation window before the measured-harvest runtime is prepared,
+so public RDA no longer injects observed-window initial state at the earlier crop-start forcing date.
+If reconstruction fails on a short review-only smoke lane, the fallback now uses observed-harvest seeded
+cohort initialization instead of an empty default state. The `any_all_zero_harvest_series` guard now means
+both the model cumulative harvested series and the model increment series are all-zero; zero increment-only
+cases remain visible in `all_zero_model_daily_increment_series`.
+
 ## Next minimal issue
 
 After #304 lands, use the generated multi-dataset bundle to choose the next narrow validation dependency rather

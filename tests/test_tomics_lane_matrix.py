@@ -38,6 +38,7 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.lane_matrix.da
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.lane_matrix.lane_scorecard import (
     RUNTIME_COMPLETE_SEMANTICS,
+    _harvest_series_diagnostics,
     promotion_audit_passes,
 )
 
@@ -246,6 +247,21 @@ def test_promotion_audit_exclusions_cover_basis_and_writeback_flags() -> None:
     assert not promotion_audit_passes(pd.Series({**clean_payload, "dropped_nonharvested_mass_g_m2": 0.1}))
     assert not promotion_audit_passes(pd.Series({**clean_payload, "offplant_with_positive_mass_flag": True}))
     assert not promotion_audit_passes(pd.Series({**clean_payload, "basis_normalization_resolved": False}))
+
+
+def test_harvest_series_diagnostic_all_zero_requires_missing_cumulative_and_increment() -> None:
+    frame = pd.DataFrame(
+        {
+            "model_cumulative_harvested_fruit_dry_weight_floor_area": [2.4, 2.4, 2.4],
+            "model_daily_increment_floor_area": [pd.NA, 0.0, 0.0],
+        }
+    )
+
+    diagnostics = _harvest_series_diagnostics(frame)
+
+    assert diagnostics["all_zero_model_daily_increment_series"] is True
+    assert diagnostics["all_zero_model_cumulative_harvest_series"] is False
+    assert diagnostics["any_all_zero_harvest_series"] is False
 
 
 def test_lane_gate_keeps_raw_reference_only_in_diagnostics(tmp_path: Path) -> None:

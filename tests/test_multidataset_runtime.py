@@ -161,6 +161,8 @@ def test_prepare_measured_harvest_bundle_honors_contract_columns_and_basis_conve
     assert list(bundle.observed_df["date"].dt.strftime("%Y-%m-%d")) == ["2025-01-02", "2025-01-03"]
     assert list(bundle.observed_df["measured_cumulative_total_fruit_dry_weight_floor_area"]) == [4.0, 6.0]
     assert list(bundle.observed_df["estimated_cumulative_total_fruit_dry_weight_floor_area"]) == [4.2, 6.2]
+    forcing_df = pd.read_csv(bundle.scenarios["moderate"].forcing_csv_path)
+    assert list(pd.to_datetime(forcing_df["datetime"]).dt.strftime("%Y-%m-%d")) == ["2025-01-02", "2025-01-03"]
     assert bundle.reporting_basis_in == "g_per_plant"
     assert bundle.reporting_basis_canonical == "floor_area_g_m2"
     assert bundle.basis_normalization_resolved is True
