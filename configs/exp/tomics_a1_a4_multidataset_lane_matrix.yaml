@@ -1,0 +1,99 @@
+exp:
+  name: tomics_a1_a4_multidataset_lane_matrix
+
+paths:
+  repo_root: ../..
+
+validation:
+  resample_rule: 1h
+  theta_proxy_mode: bucket_irrigated
+  theta_proxy_scenarios: [moderate]
+  datasets:
+    registry_snapshot_path: configs/data/tomics_multidataset_candidates/traitenv_candidate_registry.json
+    default_dataset_ids:
+      - knu_actual
+      - public_rda__yield
+      - public_ai_competition__yield
+    items:
+      - dataset_id: knu_actual
+        dataset_kind: knu_measured_harvest
+        display_name: KNU measured harvest sanitized smoke fixture
+        dataset_family: knu_actual
+        observation_family: yield
+        capability: measured_harvest
+        ingestion_status: runnable
+        source_refs:
+          - tests/fixtures/knu_sanitized/KNU_Tomato_Env_fixture.csv
+          - tests/fixtures/knu_sanitized/tomato_validation_data_yield_fixture.csv
+        forcing_path: tests/fixtures/knu_sanitized/KNU_Tomato_Env_fixture.csv
+        observed_harvest_path: tests/fixtures/knu_sanitized/tomato_validation_data_yield_fixture.csv
+        validation_start: "2024-08-08"
+        validation_end: "2024-08-11"
+        cultivar: unknown
+        greenhouse: KNU
+        season: sanitized_smoke_window
+        basis:
+          reporting_basis: floor_area_g_m2
+          plants_per_m2: 1.836091
+        observation:
+          date_column: Date
+          measured_cumulative_column: Measured_Cumulative_Total_Fruit_DW (g/m^2)
+          estimated_cumulative_column: Estimated_Cumulative_Total_Fruit_DW (g/m^2)
+          measured_semantics: cumulative_harvested_fruit_dry_weight_floor_area
+        sanitized_fixture:
+          fixture_kind: sanitized_csv_fixture
+          forcing_fixture_path: tests/fixtures/knu_sanitized/KNU_Tomato_Env_fixture.csv
+          observed_harvest_fixture_path: tests/fixtures/knu_sanitized/tomato_validation_data_yield_fixture.csv
+        priority_tags:
+          - baseline_window
+          - sanitized_fixture_smoke
+        provenance_tags:
+          - actual_data_contract
+          - knu
+          - measured_harvest
+        notes:
+          dataset_role_hint: measured_harvest
+          evidence_grade: direct_measured_harvest
+          decision_weight: promotion_gate
+          dataset_source_kind: sanitized_fixture_smoke
+          reporting_basis: floor_area_g_m2
+      - dataset_id: public_rda__yield
+        notes:
+          dataset_role_hint: measured_harvest
+          evidence_grade: review_only_derived_dw
+          decision_weight: review_only_robustness
+          proxy_caveat: measured fresh shipment mass converted to derived fruit DW with 0.065 dry matter ratio; not direct fruit DW.
+      - dataset_id: public_ai_competition__yield
+        notes:
+          dataset_role_hint: measured_harvest
+          evidence_grade: review_only_derived_dw
+          decision_weight: review_only_robustness
+          proxy_caveat: public competition fresh harvest proxy converted to derived fruit DW with 0.065 dry matter ratio; not direct fruit DW.
+  lane_matrix:
+    output_root: out/tomics_a1_a4_multidataset_lane_matrix
+    theta_proxy_scenario: moderate
+    allow_state_reconstruction_fallback: true
+    state_reconstruction_fallback_policy: smoke_only_default_init_when_reconstruction_fails
+    dataset_ids:
+      - knu_actual
+      - public_rda__yield
+      - public_ai_competition__yield
+    allocation_lane_ids:
+      - legacy_sink_baseline
+      - raw_reference_thorp
+      - incumbent_current
+      - research_promoted
+    harvest_profile_ids:
+      - incumbent_harvest_profile
+  lane_matrix_gate:
+    matrix_root: out/tomics_a1_a4_multidataset_lane_matrix
+    output_root: out/tomics_a1_a4_multidataset_lane_matrix
+    native_state_coverage_min: 0.5
+    shared_tdvs_proxy_fraction_max: 0.5
+    cross_dataset_stability_score_min: 0.5
+    min_dataset_count: 2
+
+reference:
+  current_vs_promoted_config: configs/exp/tomics_current_vs_promoted_factorial_knu.yaml
+  current_output_root: out/tomics/validation/knu/architecture/current-factorial
+  promoted_output_root: out/tomics/validation/knu/architecture/promoted-factorial

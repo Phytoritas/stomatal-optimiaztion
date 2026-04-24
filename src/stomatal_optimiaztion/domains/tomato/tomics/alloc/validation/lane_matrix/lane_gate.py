@@ -17,6 +17,9 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.lane_matrix.ar
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.lane_matrix.lane_scorecard import (
     promotion_audit_passes,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.lane_matrix.summary_artifacts import (
+    write_promotion_gate_decision_artifact,
+)
 
 
 def _as_dict(raw: object) -> dict[str, Any]:
@@ -99,11 +102,16 @@ def _gate_score(row: pd.Series) -> float:
 
 
 def _base_promotion_mask(scorecard_df: pd.DataFrame) -> pd.Series:
-    return (
+    mask = (
         scorecard_df["promotion_eligible"].fillna(False).astype(bool)
         & ~scorecard_df["reference_only"].fillna(False).astype(bool)
         & scorecard_df["dataset_role"].eq("measured_harvest")
     )
+    if "decision_weight" in scorecard_df:
+        mask &= scorecard_df["decision_weight"].fillna("").astype(str).eq("promotion_gate")
+    if "evidence_grade" in scorecard_df:
+        mask &= scorecard_df["evidence_grade"].fillna("").astype(str).eq("direct_measured_harvest")
+    return mask
 
 
 def _lane_audit_summary(promotion_rows: pd.DataFrame) -> pd.DataFrame:
@@ -367,6 +375,11 @@ def run_lane_matrix_gate(
         "diagnostic_selected": diagnostic_selected,
     }
     write_json(paths.lane_gate_decision_path, decision_payload)
+    write_promotion_gate_decision_artifact(
+        paths=paths,
+        scorecard_df=scorecard_df,
+        decision_payload=decision_payload,
+    )
     return {
         "output_root": str(output_root),
         "promotion_rows": int(promotion_surface_df.shape[0]),

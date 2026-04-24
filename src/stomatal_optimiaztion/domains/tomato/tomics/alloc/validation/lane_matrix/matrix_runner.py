@@ -47,6 +47,9 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.lane_matrix.sc
     ComparisonScenario,
     compose_scenarios,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.lane_matrix.summary_artifacts import (
+    write_lane_matrix_reproducibility_artifacts,
+)
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.state_reconstruction import (
     reconstruct_hidden_state,
 )
@@ -89,6 +92,9 @@ def _scenario_index_row(scenario: ComparisonScenario) -> dict[str, object]:
         "harvest_profile_id": scenario.harvest_profile.harvest_profile_id,
         "dataset_id": dataset_assignment.dataset_id,
         "dataset_role": dataset_assignment.dataset_role,
+        "evidence_grade": dataset_assignment.evidence_grade,
+        "decision_weight": dataset_assignment.decision_weight,
+        "proxy_caveat": dataset_assignment.proxy_caveat,
         "promotion_surface_eligible": bool(scenario.promotion_surface_eligible),
         "scorecard_included": bool(dataset_assignment.scorecard_included),
     }
@@ -235,6 +241,12 @@ def run_lane_matrix(
                     "dataset_role": dataset.dataset_role,
                     "reporting_basis": dataset.reporting_basis,
                     "promotion_denominator_eligible": dataset.promotion_denominator_eligible,
+                    "evidence_grade": dataset.evidence_grade,
+                    "decision_weight": dataset.decision_weight,
+                    "proxy_caveat": dataset.proxy_caveat,
+                    "review_flags": list(dataset.review_flags),
+                    "is_direct_dry_weight": dataset.is_direct_dry_weight,
+                    "observed_harvest_derivation": dataset.observed_harvest_derivation,
                 }
                 for dataset in dataset_roles
             ],
@@ -253,6 +265,12 @@ def run_lane_matrix(
                 "has_measured_harvest_contract": dataset.has_measured_harvest_contract,
                 "reporting_basis": dataset.reporting_basis,
                 "plants_per_m2": dataset.plants_per_m2,
+                "evidence_grade": dataset.evidence_grade,
+                "decision_weight": dataset.decision_weight,
+                "proxy_caveat": dataset.proxy_caveat,
+                "review_flags": ";".join(dataset.review_flags),
+                "is_direct_dry_weight": dataset.is_direct_dry_weight,
+                "observed_harvest_derivation": dataset.observed_harvest_derivation,
             }
             for dataset in dataset_roles
         ]
@@ -261,9 +279,10 @@ def run_lane_matrix(
 
     base_config = load_harvest_base_config(reference_meta)
     theta_scenario_id = str(lane_cfg.get("theta_proxy_scenario", "moderate"))
+    allow_reconstruction_fallback = bool(lane_cfg.get("allow_state_reconstruction_fallback", False))
     measured_bundle_cache: dict[str, Any] = {}
     runtime_bundle_cache: dict[str, Any] = {}
-    reconstruction_cache: dict[tuple[str, str], dict[str, object]] = {}
+    reconstruction_cache: dict[tuple[str, str], tuple[dict[str, object], str, str]] = {}
     scorecard_rows: list[dict[str, object]] = []
     split_rows: list[dict[str, object]] = []
     scenario_index_rows: list[dict[str, object]] = []
@@ -317,6 +336,8 @@ def run_lane_matrix(
                 diagnostic_metrics = dict(result.metrics)
                 diagnostic_metrics["diagnostic_hidden_state_mode"] = "no_observed_harvest_default_init"
                 diagnostic_metrics["diagnostic_dataset_role"] = dataset_assignment.dataset_role
+                diagnostic_metrics["state_reconstruction_status"] = "not_attempted_context_runtime"
+                diagnostic_metrics["state_reconstruction_error"] = ""
                 scorecard_rows.append(
                     build_diagnostic_runtime_lane_scorecard_row(
                         scenario,
@@ -357,20 +378,36 @@ def run_lane_matrix(
             measured_bundle_cache[dataset_assignment.dataset_id] = bundle
         forcing_scenario = bundle.scenarios[theta_scenario_id]
         cache_key = (dataset_assignment.dataset_id, scenario.allocation_lane.lane_id)
-        initial_state_overrides = reconstruction_cache.get(cache_key)
-        if initial_state_overrides is None:
-            reconstruction = reconstruct_hidden_state(
-                architecture_row=scenario.allocation_lane.candidate_row,
-                base_config=copy.deepcopy(base_config),
-                forcing_csv_path=forcing_scenario.forcing_csv_path,
-                theta_center=float(forcing_scenario.summary.get("theta_mean", 0.65)),
-                observed_df=bundle.observed_df,
-                calibration_end=bundle.calibration_end,
-                repo_root=repo_root,
-                unit_label=bundle.source_unit_label,
+        cached_reconstruction = reconstruction_cache.get(cache_key)
+        if cached_reconstruction is None:
+            try:
+                reconstruction = reconstruct_hidden_state(
+                    architecture_row=scenario.allocation_lane.candidate_row,
+                    base_config=copy.deepcopy(base_config),
+                    forcing_csv_path=forcing_scenario.forcing_csv_path,
+                    theta_center=float(forcing_scenario.summary.get("theta_mean", 0.65)),
+                    observed_df=bundle.observed_df,
+                    calibration_end=bundle.calibration_end,
+                    repo_root=repo_root,
+                    unit_label=bundle.source_unit_label,
+                )
+            except (RuntimeError, ValueError) as error:
+                if not allow_reconstruction_fallback:
+                    raise
+                initial_state_overrides = {}
+                reconstruction_status = "fallback_default_init"
+                reconstruction_error = f"{type(error).__name__}: {error}"
+            else:
+                initial_state_overrides = dict(reconstruction.initial_state_overrides)
+                reconstruction_status = "reconstructed"
+                reconstruction_error = ""
+            reconstruction_cache[cache_key] = (
+                initial_state_overrides,
+                reconstruction_status,
+                reconstruction_error,
             )
-            initial_state_overrides = dict(reconstruction.initial_state_overrides)
-            reconstruction_cache[cache_key] = initial_state_overrides
+        else:
+            initial_state_overrides, reconstruction_status, reconstruction_error = cached_reconstruction
         run_cfg = configure_candidate_run(
             base_config=copy.deepcopy(base_config),
             forcing_csv_path=forcing_scenario.forcing_csv_path,
@@ -389,12 +426,15 @@ def run_lane_matrix(
             fruit_params=scenario.harvest_profile.fruit_params,
             leaf_params=scenario.harvest_profile.leaf_params,
         )
+        scored_metrics = dict(result.metrics)
+        scored_metrics["state_reconstruction_status"] = reconstruction_status
+        scored_metrics["state_reconstruction_error"] = reconstruction_error
         scorecard_rows.append(
             build_lane_scorecard_row(
                 scenario,
                 validation_df=result.validation_df,
                 run_df=result.run_df,
-                metrics=result.metrics,
+                metrics=scored_metrics,
                 basis_normalization_resolved=bundle.basis_normalization_resolved,
             )
         )
@@ -410,7 +450,7 @@ def run_lane_matrix(
             scenario_root=scenario_root,
             validation_df=result.validation_df,
             harvest_mass_balance_df=result.harvest_mass_balance_df,
-            metrics=result.metrics,
+            metrics=scored_metrics,
         )
 
     scenario_index_df = pd.DataFrame(scenario_index_rows)
@@ -420,6 +460,12 @@ def run_lane_matrix(
         split_score_df=pd.DataFrame(split_rows),
     )
     scorecard_df.to_csv(paths.lane_scorecard_path, index=False)
+    write_lane_matrix_reproducibility_artifacts(
+        paths=paths,
+        allocation_lanes=allocation_lanes,
+        dataset_roles=dataset_roles,
+        scorecard_df=scorecard_df,
+    )
     return {
         "output_root": str(output_root),
         "scenario_count": len(scenarios),
