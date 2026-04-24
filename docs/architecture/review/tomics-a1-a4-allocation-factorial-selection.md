@@ -200,6 +200,32 @@ Current evidence does not meet that bar.
 - Do not promote on public RDA or public AI alone because both are review-only derived-DW lanes.
 - Do not include `school_trait_bundle__yield` until its raw/sanitized observed-harvest blockers are resolved.
 
+## Multi-dataset reproducibility follow-up
+
+Issue #304 adds a reproducible A1-A4 lane-matrix config for `knu_actual`, `public_rda__yield`, and
+`public_ai_competition__yield` under `configs/exp/tomics_a1_a4_multidataset_lane_matrix.yaml`.
+This follow-up does not reopen the architecture decision from Issue #302 / PR #303.
+The original decision remains unchanged unless a future measured-harvest promotion gate is explicitly reopened:
+A3 remains the shipped incumbent and A4 remains research-only.
+
+The config uses repo-relative sanitized fixtures and writes the review bundle to
+`out/tomics_a1_a4_multidataset_lane_matrix/`.
+It separates direct measured evidence from review-only public evidence:
+
+| Dataset | Evidence grade | Decision weight | Promotion use |
+|---|---|---|---|
+| `knu_actual` | `direct_measured_harvest` | `promotion_gate` | Primary measured-harvest score only |
+| `public_rda__yield` | `review_only_derived_dw` | `review_only_robustness` | Robustness / contradiction check only |
+| `public_ai_competition__yield` | `review_only_derived_dw` | `review_only_robustness` | Public smoke / contradiction check only |
+
+The public RDA and public AI competition lanes are useful for robustness, overfitting detection, and
+directionality checks, but they are not promotion evidence because their observed harvest targets are
+derived dry-weight estimates from public fresh-harvest or shipment measurements.
+The lane gate therefore keeps `primary_measured_score.json` separate from
+`review_only_public_score.json` and does not pool those values into one promotion score.
+No raw/private KNU data are committed by this follow-up.
+
 ## Next minimal issue
 
-Create one follow-up issue to make the A1-A4 lane-matrix run reproducible on repo-relative fixtures, including `knu_actual`, `public_rda__yield`, and `public_ai_competition__yield`, without requiring the missing KNU longrun xlsx file.
+After #304 lands, use the generated multi-dataset bundle to choose the next narrow validation dependency rather
+than treating a KNU-only run as the final reproducibility claim.

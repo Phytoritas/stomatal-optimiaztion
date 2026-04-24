@@ -7,6 +7,7 @@ import pytest
 
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.datasets.contracts import (
     DatasetBasisContract,
+    DatasetDryMatterConversionContract,
     DatasetManagementMetadata,
     DatasetMetadataContract,
     DatasetObservationContract,
@@ -140,6 +141,62 @@ def test_dataset_roles_do_not_auto_promote_yield_environment() -> None:
     assert role_map["traitenv_context"].dataset_role == "trait_plus_env_no_harvest"
     assert role_map["yield_env_only"].dataset_role == "yield_environment_only"
     assert role_map["yield_env_only"].promotion_denominator_eligible is False
+
+
+def test_review_only_derived_dw_harvest_stays_out_of_promotion_denominator() -> None:
+    fixture_root = Path("data") / "fixtures" / "public_rda_sanitized" / "slice"
+    dataset = DatasetMetadataContract(
+        dataset_id="public_rda__yield",
+        dataset_kind="traitenv_candidate",
+        display_name="Public RDA yield",
+        dataset_family="public_rda",
+        observation_family="yield",
+        capability="measured_harvest",
+        ingestion_status="runnable",
+        forcing_path=fixture_root / "forcing_fixture.csv",
+        observed_harvest_path=fixture_root / "observed_harvest_fixture.csv",
+        validation_start="2019-01-17",
+        validation_end="2019-06-30",
+        cultivar="deirose",
+        greenhouse="vinyl",
+        season="season1",
+        basis=DatasetBasisContract(reporting_basis="floor_area_g_m2", plants_per_m2=4.0),
+        observation=DatasetObservationContract(
+            date_column="Date",
+            measured_cumulative_column="Measured_Cumulative_Total_Fruit_DW (g/m^2)",
+            measured_semantics="cumulative_harvested_fruit_dry_weight_floor_area",
+        ),
+        dry_matter_conversion=DatasetDryMatterConversionContract(
+            mode="derived_dw_from_measured_fresh_shipment",
+            fresh_weight_column="raw_total_shipment_kg",
+            dry_matter_ratio=0.065,
+            citations=("fixture provenance",),
+            review_only=True,
+        ),
+        management=DatasetManagementMetadata(),
+        sanitized_fixture=DatasetSanitizedFixtureContract(
+            forcing_fixture_path=fixture_root / "forcing_fixture.csv",
+            observed_harvest_fixture_path=fixture_root / "observed_harvest_fixture.csv",
+        ),
+        notes={
+            "dataset_role_hint": "measured_harvest",
+            "observed_harvest_derivation": "derived_dw_from_measured_fresh_shipment",
+            "is_direct_dry_weight": False,
+            "uses_literature_dry_matter_fraction": True,
+            "review_flags": ["review_only_dry_matter_conversion"],
+            "floor_area_basis_source": "fixture provenance floor area",
+            "dry_matter_conversion_method": "fresh shipment * 0.065 / floor area",
+            "dry_matter_conversion_provenance": "fixture provenance",
+        },
+    )
+    role = resolve_dataset_roles(DatasetRegistry(datasets=(dataset,), default_dataset_ids=("public_rda__yield",)))[0]
+
+    assert role.dataset_role == "measured_harvest"
+    assert role.evidence_grade == "review_only_derived_dw"
+    assert role.decision_weight == "review_only_robustness"
+    assert role.promotion_denominator_eligible is False
+    assert role.is_direct_dry_weight is False
+    assert role.observed_harvest_derivation == "derived_dw_from_measured_fresh_shipment"
 
 
 def test_dataset_role_registry_rejects_unknown_requested_dataset() -> None:

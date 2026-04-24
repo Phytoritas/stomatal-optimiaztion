@@ -337,6 +337,140 @@ def test_lane_matrix_gate_counts_only_audit_passing_measured_datasets_in_denomin
     assert bool(promotion_df.loc[0, "passes"]) is False
 
 
+def test_lane_matrix_gate_excludes_review_only_derived_dw_from_promotion_denominator(tmp_path: Path) -> None:
+    matrix_root = tmp_path / "out" / "tomics" / "validation" / "lane-matrix"
+    matrix_root.mkdir(parents=True, exist_ok=True)
+    base_row = {
+        "scenario_id": "incumbent_current__incumbent_harvest_profile__knu_actual",
+        "allocation_lane_id": "incumbent_current",
+        "harvest_profile_id": "incumbent_harvest_profile",
+        "dataset_id": "knu_actual",
+        "dataset_role": "measured_harvest",
+        "evidence_grade": "direct_measured_harvest",
+        "decision_weight": "promotion_gate",
+        "proxy_caveat": "",
+        "promotion_eligible": True,
+        "reference_only": False,
+        "reporting_basis_in": "floor_area_g_m2",
+        "reporting_basis_canonical": "floor_area_g_m2",
+        "basis_normalization_resolved": True,
+        "rmse_cumulative_offset": 1.0,
+        "r2_cumulative_offset": 0.8,
+        "rmse_daily_increment": 0.5,
+        "fruit_anchor_error": 0.0,
+        "canopy_collapse_days": 0.0,
+        "winner_stability_score": 1.0,
+        "native_state_coverage": 0.9,
+        "shared_tdvs_proxy_fraction": 0.1,
+        "family_separability_score": 0.8,
+        "any_all_zero_harvest_series": False,
+        "dropped_nonharvested_mass_g_m2": 0.0,
+        "offplant_with_positive_mass_flag": False,
+        "runtime_complete_semantics": "explicit_harvested_cumulative_writeback_audited",
+        "selected_family_label": "incumbent",
+        "selected_family_is_native": True,
+        "selected_family_is_proxy": False,
+        "execution_status": "scored",
+        "candidate_label": "shipped_tomics",
+        "architecture_id": "shipped_tomics_control",
+        "partition_policy": "tomics",
+        "mean_alloc_frac_fruit": 0.45,
+        "mean_proxy_family_state_fraction": 0.1,
+    }
+    public_row = {
+        **base_row,
+        "scenario_id": "incumbent_current__incumbent_harvest_profile__public_rda__yield",
+        "dataset_id": "public_rda__yield",
+        "evidence_grade": "review_only_derived_dw",
+        "decision_weight": "review_only_robustness",
+        "proxy_caveat": "derived DW from measured fresh shipment",
+        "rmse_cumulative_offset": 0.2,
+        "r2_cumulative_offset": 0.95,
+    }
+    pd.DataFrame([base_row, public_row]).to_csv(matrix_root / "lane_scorecard.csv", index=False)
+    config = {
+        "validation": {
+            "lane_matrix_gate": {
+                "matrix_root": str(matrix_root),
+                "output_root": str(matrix_root),
+                "min_dataset_count": 2,
+            }
+        }
+    }
+
+    run_lane_matrix_gate(config, repo_root=tmp_path, config_path=tmp_path / "gate.yaml")
+
+    promotion_df = pd.read_csv(matrix_root / "promotion_surface.csv")
+    decision = json.loads((matrix_root / "lane_gate_decision.json").read_text(encoding="utf-8"))
+    promotion_decision = json.loads((matrix_root / "promotion_gate_decision.json").read_text(encoding="utf-8"))
+
+    assert int(decision["measured_dataset_count"]) == 1
+    assert json.loads(promotion_df.loc[0, "dataset_ids"]) == ["knu_actual"]
+    assert "public_rda__yield" not in promotion_df.loc[0, "dataset_ids"]
+    assert promotion_decision["primary_measured_dataset_ids"] == ["knu_actual"]
+    assert promotion_decision["review_only_dataset_ids"] == ["public_rda__yield"]
+    assert promotion_decision["public_proxy_lanes_can_promote_a4"] is False
+
+
+def test_lane_matrix_gate_promotion_decision_matches_legacy_scorecard_denominator(tmp_path: Path) -> None:
+    matrix_root = tmp_path / "out" / "tomics" / "validation" / "lane-matrix"
+    matrix_root.mkdir(parents=True, exist_ok=True)
+    scorecard_df = pd.DataFrame(
+        [
+            {
+                "scenario_id": "incumbent_current__incumbent_harvest_profile__ds1",
+                "allocation_lane_id": "incumbent_current",
+                "harvest_profile_id": "incumbent_harvest_profile",
+                "dataset_id": "ds1",
+                "dataset_role": "measured_harvest",
+                "promotion_eligible": True,
+                "reference_only": False,
+                "reporting_basis_in": "floor_area_g_m2",
+                "reporting_basis_canonical": "floor_area_g_m2",
+                "basis_normalization_resolved": True,
+                "rmse_cumulative_offset": 1.0,
+                "rmse_daily_increment": 0.5,
+                "fruit_anchor_error": 0.0,
+                "canopy_collapse_days": 0.0,
+                "winner_stability_score": 1.0,
+                "native_state_coverage": 0.9,
+                "shared_tdvs_proxy_fraction": 0.1,
+                "family_separability_score": 0.8,
+                "any_all_zero_harvest_series": False,
+                "dropped_nonharvested_mass_g_m2": 0.0,
+                "offplant_with_positive_mass_flag": False,
+                "runtime_complete_semantics": "explicit_harvested_cumulative_writeback_audited",
+                "selected_family_label": "incumbent",
+                "selected_family_is_native": True,
+                "selected_family_is_proxy": False,
+                "execution_status": "scored",
+                "candidate_label": "shipped_tomics",
+                "architecture_id": "shipped_tomics_control",
+                "partition_policy": "tomics",
+                "mean_alloc_frac_fruit": 0.45,
+                "mean_proxy_family_state_fraction": 0.1,
+            }
+        ]
+    )
+    scorecard_df.to_csv(matrix_root / "lane_scorecard.csv", index=False)
+    config = {
+        "validation": {
+            "lane_matrix_gate": {
+                "matrix_root": str(matrix_root),
+                "output_root": str(matrix_root),
+                "min_dataset_count": 1,
+            }
+        }
+    }
+
+    run_lane_matrix_gate(config, repo_root=tmp_path, config_path=tmp_path / "gate.yaml")
+
+    lane_decision = json.loads((matrix_root / "lane_gate_decision.json").read_text(encoding="utf-8"))
+    promotion_decision = json.loads((matrix_root / "promotion_gate_decision.json").read_text(encoding="utf-8"))
+    assert lane_decision["measured_dataset_count"] == 1
+    assert promotion_decision["primary_measured_dataset_ids"] == ["ds1"]
+
+
 def test_lane_matrix_gate_measured_dataset_count_uses_only_promotion_passing_rows(tmp_path: Path) -> None:
     matrix_root = tmp_path / "out" / "tomics" / "validation" / "lane-matrix"
     matrix_root.mkdir(parents=True, exist_ok=True)

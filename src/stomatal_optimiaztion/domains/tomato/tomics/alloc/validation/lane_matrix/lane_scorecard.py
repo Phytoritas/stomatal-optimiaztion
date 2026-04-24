@@ -65,12 +65,19 @@ def build_context_only_lane_scorecard_row(
         "harvest_profile_id": scenario.harvest_profile.harvest_profile_id,
         "dataset_id": dataset_assignment.dataset_id,
         "dataset_role": dataset_assignment.dataset_role,
+        "evidence_grade": dataset_assignment.evidence_grade,
+        "decision_weight": dataset_assignment.decision_weight,
+        "proxy_caveat": dataset_assignment.proxy_caveat,
+        "review_flags": ";".join(dataset_assignment.review_flags),
+        "is_direct_dry_weight": dataset_assignment.is_direct_dry_weight,
+        "observed_harvest_derivation": dataset_assignment.observed_harvest_derivation,
         "promotion_eligible": bool(scenario.promotion_surface_eligible),
         "reference_only": bool(scenario.allocation_lane.reference_only),
         "reporting_basis_in": dataset_assignment.reporting_basis,
         "reporting_basis_canonical": "floor_area_g_m2",
         "basis_normalization_resolved": bool(resolved_basis),
         "rmse_cumulative_offset": math.nan,
+        "r2_cumulative_offset": math.nan,
         "rmse_daily_increment": math.nan,
         "fruit_anchor_error": math.nan,
         "canopy_collapse_days": math.nan,
@@ -86,6 +93,8 @@ def build_context_only_lane_scorecard_row(
         "selected_family_is_native": bool(scenario.harvest_profile.selected_family_is_native),
         "selected_family_is_proxy": bool(scenario.harvest_profile.selected_family_is_proxy),
         "execution_status": execution_status,
+        "state_reconstruction_status": "not_attempted",
+        "state_reconstruction_error": "",
         "candidate_label": scenario.allocation_lane.candidate_label,
         "architecture_id": scenario.allocation_lane.architecture_id,
         "partition_policy": scenario.allocation_lane.partition_policy,
@@ -118,12 +127,19 @@ def build_lane_scorecard_row(
         "harvest_profile_id": scenario.harvest_profile.harvest_profile_id,
         "dataset_id": dataset_assignment.dataset_id,
         "dataset_role": dataset_assignment.dataset_role,
+        "evidence_grade": dataset_assignment.evidence_grade,
+        "decision_weight": dataset_assignment.decision_weight,
+        "proxy_caveat": dataset_assignment.proxy_caveat,
+        "review_flags": ";".join(dataset_assignment.review_flags),
+        "is_direct_dry_weight": dataset_assignment.is_direct_dry_weight,
+        "observed_harvest_derivation": dataset_assignment.observed_harvest_derivation,
         "promotion_eligible": bool(scenario.promotion_surface_eligible),
         "reference_only": bool(scenario.allocation_lane.reference_only),
         "reporting_basis_in": reporting_basis_in,
         "reporting_basis_canonical": "floor_area_g_m2",
         "basis_normalization_resolved": bool(resolved_basis),
         "rmse_cumulative_offset": float(metrics.get("rmse_cumulative_offset", math.nan)),
+        "r2_cumulative_offset": float(metrics.get("r2_cumulative_offset", math.nan)),
         "rmse_daily_increment": float(metrics.get("rmse_daily_increment", math.nan)),
         "fruit_anchor_error": math.nan,
         "canopy_collapse_days": float(metrics.get("canopy_collapse_days", math.nan)),
@@ -142,6 +158,8 @@ def build_lane_scorecard_row(
         "selected_family_is_native": bool(scenario.harvest_profile.selected_family_is_native),
         "selected_family_is_proxy": bool(scenario.harvest_profile.selected_family_is_proxy),
         "execution_status": "scored",
+        "state_reconstruction_status": str(metrics.get("state_reconstruction_status", "reconstructed")),
+        "state_reconstruction_error": str(metrics.get("state_reconstruction_error", "")),
         "candidate_label": scenario.allocation_lane.candidate_label,
         "architecture_id": scenario.allocation_lane.architecture_id,
         "partition_policy": scenario.allocation_lane.partition_policy,
@@ -183,7 +201,11 @@ def build_split_score_rows(
     validation_df: pd.DataFrame,
 ) -> list[dict[str, object]]:
     split_rows: list[dict[str, object]] = []
-    for split in build_split_windows(observed_df):
+    try:
+        split_windows = build_split_windows(observed_df)
+    except ValueError:
+        return split_rows
+    for split in split_windows:
         dates = pd.to_datetime(validation_df["date"], errors="coerce").dt.normalize()
         mask = (dates >= split.calibration_start) & (dates <= split.holdout_end)
         window = validation_df.loc[mask].copy()
