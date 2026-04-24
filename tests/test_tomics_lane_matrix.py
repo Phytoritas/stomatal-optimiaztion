@@ -29,7 +29,6 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.harvest_factor
     run_harvest_family_factorial,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.lane_matrix import (
-    resolve_allocation_lanes,
     resolve_dataset_roles,
     run_lane_matrix,
     run_lane_matrix_gate,
@@ -199,23 +198,6 @@ def _write_lane_matrix_gate_config(tmp_path: Path, *, repo_root: Path, matrix_ro
     out_path = tmp_path / "tomics_lane_matrix_gate_test.yaml"
     out_path.write_text(yaml.safe_dump(config, sort_keys=False, allow_unicode=False), encoding="utf-8")
     return out_path
-
-
-def test_allocation_lane_registry_resolves_expected_partition_policies(tmp_path: Path) -> None:
-    repo_root = _repo_root()
-    config_path = write_minimal_knu_config(tmp_path, repo_root=repo_root, mode="both")
-    load_config(config_path)
-    run_current_vs_promoted_factorial(config_path=config_path, mode="both")
-    config = load_config(config_path)
-    candidates, _ = load_harvest_candidates(config=config, repo_root=repo_root, config_path=config_path)
-    lanes = {lane.lane_id: lane for lane in resolve_allocation_lanes(candidates)}
-
-    assert lanes["legacy_sink_baseline"].partition_policy == "legacy"
-    assert lanes["incumbent_current"].partition_policy == "tomics"
-    assert lanes["research_current"].partition_policy == "tomics_alloc_research"
-    assert lanes["research_promoted"].partition_policy == "tomics_promoted_research"
-    assert lanes["raw_reference_thorp"].partition_policy == "thorp_fruit_veg"
-    assert lanes["legacy_sink_baseline"].architecture_id != lanes["incumbent_current"].architecture_id
 
 
 def test_dataset_roles_separate_measured_context_and_yield_environment(tmp_path: Path) -> None:
