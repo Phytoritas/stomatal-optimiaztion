@@ -277,6 +277,8 @@ def run_tomics_haf_latent_allocation(config_path: str | Path) -> dict[str, Any]:
     identifiability = compute_allocation_identifiability(input_state, observer_metadata)
     support = compute_observer_support_scores(input_state, observer_metadata)
     diagnostics = compute_prior_family_diagnostics(priors, posteriors)
+    for key, value in support.items():
+        diagnostics[key] = value
     guardrails = evaluate_latent_allocation_guardrails(posteriors, {}, config)
 
     metadata = _metadata_base(

@@ -19,6 +19,7 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.latent_allocat
     infer_latent_allocation,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.latent_allocation.input_state import (
+    LatentAllocationInputState,
     build_latent_allocation_input_state,
     check_production_preconditions,
 )
@@ -37,6 +38,7 @@ __all__ = [
     "apply_root_stress_gate",
     "apply_tomato_constraints",
     "apply_wet_root_cap",
+    "LatentAllocationInputState",
     "build_latent_allocation_input_state",
     "build_latent_allocation_priors",
     "check_production_preconditions",

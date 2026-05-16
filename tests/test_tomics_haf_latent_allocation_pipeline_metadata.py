@@ -42,7 +42,10 @@ def test_latent_allocation_pipeline_metadata_contract(tmp_path: Path) -> None:
     assert metadata["production_observer_precondition_passed"] is True
     assert Path(result["outputs"]["posteriors"]).exists()
     posteriors = pd.read_csv(result["outputs"]["posteriors"])
+    diagnostics = pd.read_csv(result["outputs"]["diagnostics"])
     assert not posteriors.empty
+    assert "allocation_identifiability_score" in diagnostics.columns
+    assert "diagnostic_statement" in diagnostics.columns
 
 
 def test_latent_allocation_pipeline_fails_safely_on_row_cap(tmp_path: Path) -> None:

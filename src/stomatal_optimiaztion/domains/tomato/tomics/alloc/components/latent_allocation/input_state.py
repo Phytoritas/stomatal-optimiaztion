@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 import math
 from typing import Any, Mapping
 
@@ -20,6 +21,37 @@ REQUIRED_PRODUCTION_METADATA = {
     "radiation_column_used": "env_inside_radiation_wm2",
     "dataset1_radiation_directly_usable": True,
 }
+
+
+@dataclass(frozen=True, slots=True)
+class LatentAllocationInputState:
+    date: str
+    loadcell_id: int | float | str
+    treatment: str
+    threshold_w_m2: float
+    radiation_day_ET_g: float
+    radiation_night_ET_g: float
+    radiation_total_ET_g: float
+    day_fraction_ET: float
+    night_fraction_ET: float
+    day_radiation_integral_MJ_m2: float
+    day_radiation_mean_wm2: float
+    RZI_main: float
+    RZI_main_source: str
+    RZI_theta_paired: float
+    RZI_theta_group: float
+    tensiometer_available: bool
+    tensiometer_coverage_fraction: float
+    apparent_canopy_conductance: float
+    apparent_canopy_conductance_available: bool
+    day_vpd_kpa_mean: float
+    source_proxy_MJ_CO2_T: float
+    source_proxy_MJ_CO2_T_available: bool
+    LAI_available: bool
+    LAI_proxy_available: bool
+    LAI_proxy_value: float
+    direct_partition_observation_available: bool
+    allocation_validation_basis: str
 
 
 def _truthy(value: object) -> bool:
@@ -235,6 +267,7 @@ def build_latent_allocation_input_state(
 
 
 __all__ = [
+    "LatentAllocationInputState",
     "REQUIRED_PRODUCTION_METADATA",
     "build_latent_allocation_input_state",
     "check_production_preconditions",
