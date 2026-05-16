@@ -10,7 +10,7 @@
   },
   "agents_and_workflow_gate": {
     "status": "pass",
-    "note": "Repo-local AGENTS.md was read and followed for Goal 3C PR #315."
+    "note": "Repo-local AGENTS.md was read and followed for Goal 4A PR #315."
   },
   "scaffold_bootstrap_gate": {
     "status": "pass",
@@ -42,11 +42,15 @@
   },
   "implementation_gate": {
     "status": "slice-complete-promotion-change-blocked",
-    "note": "Goal 3C gate outputs are implemented and validated on PR #315. Promotion gate and cross-dataset gate executed, but single-dataset promotion is blocked by cross-dataset evidence insufficiency; shipped TOMICS incumbent changes remain blocked."
+    "note": "Goal 4A merge-readiness and evidence package outputs are implemented and validated on PR #315. Promotion and shipped default changes remain blocked by cross-dataset evidence insufficiency."
   },
-  "earliest_restart_point": "Stage 3C. TOMICS-HAF 2025-2C Promotion/Cross-Dataset Gate PR #315 Open",
+  "earliest_restart_point": "Stage 4A. TOMICS-HAF 2025-2C Merge-Readiness / Evidence Package Complete on PR #315",
   "goal_3c_gate": {
     "status": "pass",
     "note": "Promotion/cross-dataset gate runners, outputs, claim register, readiness matrix, tests, private runs, Ruff, diff checks, full pytest, and reviewer passes completed."
+  },
+  "goal_4a_gate": {
+    "status": "pass",
+    "note": "PR stack merge-readiness, evidence package manifest, claim boundary freeze, manuscript outlines, process warning closeout, tests, private run, Ruff, diff checks, and full pytest completed."
   }
 }

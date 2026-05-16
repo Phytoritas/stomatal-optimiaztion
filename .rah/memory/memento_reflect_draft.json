@@ -1,28 +1,30 @@
 {
   "summary": [
-    "Goal 3C PR #315 implements TOMICS-HAF 2025-2C promotion and cross-dataset gate outputs.",
-    "Promotion and cross-dataset gates executed, but promotion remains blocked because only one compatible measured dataset is available.",
-    "Tracked RAH/RALPH state avoids hardcoding a self-referential final commit hash and instead points future sessions to git/PR head as source of truth."
+    "Goal 4A PR #315 adds TOMICS-HAF 2025-2C merge-readiness docs, paper/thesis evidence package docs, claim-boundary freeze docs, manuscript outlines, and private evidence package manifests.",
+    "Goal 4A preserves the blocked promotion decision: promotion gate and cross-dataset gate executed, measured dataset count remains 1 of required 2, and no shipped TOMICS default change is recommended."
   ],
   "decisions": [
-    "Do not change shipped TOMICS defaults in Goal 3C; a shipped default change remains blocked until a separate explicit promotion-change task is approved after compatible cross-dataset evidence passes.",
-    "Goal 3C claim register conditions safe claims on metadata guardrails and blocks unsafe claims."
+    "Goal 4A does not change shipped `partition_policy: tomics` or the shipped TOMICS incumbent.",
+    "Goal 4A evidence package generation requires existing Goal 3C promotion metadata with blocked promotion, blocked cross-dataset status, promoted_candidate_id null, and shipped_TOMICS_incumbent_changed false."
   ],
   "errors_resolved": [
-    "RALPH control-plane state was realigned from stale Goal 3B/3B.5 text to Goal 3C PR #315 status."
+    "Goal 4A runner now rejects missing, passed, or contradictory promotion metadata instead of minting evidence-package outputs from defaults.",
+    "Goal 4A PR readiness scanner now blocks all frozen forbidden claims from the claim-boundary list.",
+    "RAH durable restart state was realigned from stale Goal 3C restart wording to completed Goal 4A state."
   ],
   "new_procedures": [
-    "For future RALPH work, verify .rah/state/status.json, .rah/plans/current_loop.md, .rah/memory/wakeup.md, and .rah/ralph/completion_report.md before claiming no missing items.",
-    "Do not hardcode the containing commit SHA in tracked RAH state; use git or PR head as the source of truth and regenerate private output after the final commit."
+    "For merge-readiness packaging, generate evidence manifests only from executed gate metadata and reject metadata that contradicts the frozen no-default-change decision.",
+    "Before final reporting on RALPH goals, check `.rah/memory/wakeup.md`, `.rah/memory/case_map.json`, `.rah/state/gates.json`, `.rah/state/memento_status.json`, `.rah/memory/memento_reflect_draft.json`, `.rah/ralph/goal.json`, and `.rah/ralph/loop_state.json` for stale goal names and validation counts."
   ],
   "open_questions": [
-    "RAH SessionStart/Stop hooks are not registered; this is an operational convenience warning, not a Goal 3C blocker."
+    "RAH SessionStart/Stop hooks are not registered; this remains an operational convenience warning, not a Goal 4A merge blocker."
   ],
   "keywords": [
     "stomatal-optimiaztion",
     "tomics-haf",
-    "goal 3c",
-    "promotion gate",
+    "goal 4a",
+    "merge-readiness",
+    "evidence package",
     "ralph"
   ]
 }

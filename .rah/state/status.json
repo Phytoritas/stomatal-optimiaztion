@@ -1,19 +1,19 @@
 {
   "schema_version": 3,
   "skill": "recursive-architecture-refactoring-auto",
-  "generated_at_utc": "2026-05-16T14:01:15Z",
-  "mode": "goal-3c-promotion-cross-dataset-gate",
+  "generated_at_utc": "2026-05-16T14:40:15Z",
+  "mode": "goal-4a-merge-readiness-evidence-package",
   "scope": "project",
   "root": "C:\\Users\\yhmoo\\OneDrive\\Phytoritas\\projects\\stomatal-optimiaztion",
   "scaffold_root": "docs\\architecture",
   "profile": "python-service",
-  "current_stage": "tomics-haf-2025-2c-goal-3c-promotion-gate-pr315-open",
-  "phase": "validating",
-  "last_completed_step": "Goal 3C promotion and cross-dataset gate outputs implemented on PR #315; gates executed, promotion blocked by cross-dataset evidence insufficiency, shipped TOMICS incumbent unchanged.",
+  "current_stage": "tomics-haf-2025-2c-goal-4a-merge-readiness-pr315-open",
+  "phase": "completed",
+  "last_completed_step": "Goal 4A merge-readiness, paper/thesis evidence package, claim boundary freeze, manuscript outlines, and process-warning closeout implemented on PR #315; promotion and shipped default change remain blocked.",
   "doctor_state": "warn",
   "implementation_gate": "slice-complete-promotion-change-blocked",
-  "earliest_restart_point": "Stage 3C. TOMICS-HAF 2025-2C Promotion/Cross-Dataset Gate PR #315 Open",
-  "next_recommended_action": "Review PR #315 after PR #309, PR #311, and PR #313 prerequisites remain aligned; do not change shipped TOMICS defaults unless a later explicit promotion-change PR is approved after compatible cross-dataset evidence passes.",
+  "earliest_restart_point": "Stage 4A. TOMICS-HAF 2025-2C Merge-Readiness / Evidence Package Complete on PR #315",
+  "next_recommended_action": "Review and merge the stacked PRs in order (#309 -> #311 -> #313 -> #315); keep shipped TOMICS defaults unchanged unless a later explicit promotion-change PR is approved after compatible cross-dataset evidence passes.",
   "agents_file_detected": true,
   "memento_workspace": "stomatal-optimiaztion",
   "memento_topic": "architecture-refactor",
@@ -30,7 +30,7 @@
   "pending_feedback_count": 0,
   "wakeup_path": ".rah/memory/wakeup.md",
   "reflect_draft_path": ".rah/memory/memento_reflect_draft.json",
-  "last_doctor_at": "2026-05-16T14:01:25+00:00",
+  "last_doctor_at": "2026-05-16T14:21:38+00:00",
   "goal_3a6_pr309_head": "de6fe49e03660984076e84819f0c345c9ed8fd74",
   "goal_3a6_pr311_head": "f6b580328a73da2237957fee33f8d9f0982386b9",
   "canonical_fruit_DMC_fraction": 0.056,
@@ -57,5 +57,21 @@
     "full_pytest": "702 passed, 26 skipped, 12 deselected",
     "ruff": "passed",
     "diff_checks": "passed"
+  },
+  "goal_4a_outputs": [
+    "docs/architecture/tomics/pr_stack_merge_readiness_2025_2c.md",
+    "docs/architecture/tomics/tomics_haf_2025_2c_evidence_package.md",
+    "docs/architecture/tomics/tomics_haf_2025_2c_claim_boundary_freeze.md",
+    "docs/manuscript/tomics_haf_2025_2c_methods_outline.md",
+    "out/tomics/validation/promotion-gate/haf_2025_2c/evidence_package_manifest.*"
+  ],
+  "goal_4a_validation": {
+    "targeted_goal_4a_tests": "10 passed",
+    "goal_3c_regression_subset": "17 passed",
+    "private_evidence_package_run": "passed",
+    "full_pytest": "712 passed, 26 skipped, 12 deselected",
+    "ruff": "passed",
+    "diff_checks": "passed with CRLF warning only",
+    "reviewer": "medium findings fixed; final rerun pending"
   }
 }

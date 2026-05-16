@@ -30,5 +30,5 @@
   "health_checked_at": null,
   "health_http_status": null,
   "health_payload": null,
-  "status_note": "Memento context and Goal 3C completion fragments are aligned to PR #315 promotion/cross-dataset gate outputs. Goal 3C gates executed; promotion remains blocked by insufficient compatible measured datasets."
+  "status_note": "Memento context and Goal 4A completion state are aligned to PR #315 merge-readiness and evidence-package outputs. Promotion and shipped default changes remain blocked by insufficient compatible measured datasets."
 }

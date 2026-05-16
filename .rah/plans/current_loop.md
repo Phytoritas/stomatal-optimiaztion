@@ -1,7 +1,7 @@
 # Current Loop
 
 ## Earliest Restart Point
-Stage 3C. TOMICS-HAF 2025-2C Promotion/Cross-Dataset Gate PR #315 Open
+Stage 4A. TOMICS-HAF 2025-2C Merge-Readiness / Evidence Package Complete on PR #315
 
 ## Read First
 - `AGENTS.md`
@@ -11,6 +11,10 @@ Stage 3C. TOMICS-HAF 2025-2C Promotion/Cross-Dataset Gate PR #315 Open
 - `docs/architecture/tomics/claim_register_2025_2c.md`
 - `docs/architecture/tomics/new_phytologist_readiness_checklist.md`
 - `docs/architecture/tomics/pr_stack_merge_sequence_2025_2c.md`
+- `docs/architecture/tomics/pr_stack_merge_readiness_2025_2c.md`
+- `docs/architecture/tomics/tomics_haf_2025_2c_evidence_package.md`
+- `docs/architecture/tomics/tomics_haf_2025_2c_claim_boundary_freeze.md`
+- `docs/manuscript/tomics_haf_2025_2c_methods_outline.md`
 - `configs/exp/tomics_haf_2025_2c_promotion_gate.yaml`
 - `configs/exp/tomics_haf_2025_2c_cross_dataset_gate.yaml`
 - `.rah/state/status.json`
@@ -31,9 +35,9 @@ Stage 3C. TOMICS-HAF 2025-2C Promotion/Cross-Dataset Gate PR #315 Open
 - Shipped TOMICS incumbent remains unchanged unless a separate promotion-change PR is explicitly approved.
 
 ## Next Actions
-1. Review PR #315 after PR #309, PR #311, and PR #313 remain aligned in the stack.
-2. Do not change shipped TOMICS defaults in this PR.
-3. Treat Goal 3C as safeguard evidence: gate executed, promotion blocked, cross-dataset evidence insufficient.
+1. Review and merge the stacked PRs in order: #309 -> #311 -> #313 -> #315.
+2. Keep shipped TOMICS defaults unchanged in this PR.
+3. Use Goal 4A docs and private manifests as the paper/thesis evidence package and claim-boundary freeze.
 
 ## Goal 3C Completed Facts
 - Issue #314 tracks TOMICS-HAF 2025-2C promotion and cross-dataset gate outputs.
@@ -46,10 +50,17 @@ Stage 3C. TOMICS-HAF 2025-2C Promotion/Cross-Dataset Gate PR #315 Open
 - `shipped_TOMICS_incumbent_changed = false`.
 - Final validation: targeted Goal 3C tests `17 passed`; Goal 3B.5 regression `17 passed`; full pytest `702 passed, 26 skipped, 12 deselected`; Ruff passed; diff checks passed; reviewer pass clean.
 
+## Goal 4A Completed Facts
+- PR stack merge-readiness doc and private readiness outputs were generated.
+- Evidence package manifest and claim boundary freeze private outputs were generated.
+- Manuscript/thesis methods, results, limitations, and figure/table outline docs were created.
+- Process warnings were documented as non-blocking.
+- Final validation: targeted Goal 4A tests `10 passed`; Goal 3C regression `17 passed`; full pytest `712 passed, 26 skipped, 12 deselected`; Ruff passed; diff checks passed with CRLF warning only.
+
 <!-- RALPH MANAGED BLOCK START -->
 ## RALPH Goal Loop
 
-- goal_id: `ralph-goal-3c-tomics-haf-2025-2c-promotion-and-cross-dataset-gate-outputs-with-single-dataset-promotion-block-new-phytologist-readiness-matrix-and-paper-safe-claim-register`
+- goal_id: `ralph-goal-4a-tomics-haf-2025-2c-merge-readiness-paper-thesis-evidence-package-claim-boundary-freeze-and-no-shipped-default-change`
 - status: `done`
 - iteration: `2` / `6`
 - loop_phase: `completed`
@@ -58,8 +69,9 @@ Stage 3C. TOMICS-HAF 2025-2C Promotion/Cross-Dataset Gate PR #315 Open
 
 ### Next Actions
 
-- Review PR #315 in the stacked PR sequence.
-- Keep shipped TOMICS default changes blocked until a separate explicit promotion-change task is approved after compatible cross-dataset evidence passes.
+- Review and merge the stacked PRs in order: #309 -> #311 -> #313 -> #315.
+- Keep shipped TOMICS defaults unchanged until a separate approved promotion-change task exists.
+- Use Goal 4A evidence package docs and private manifests as the claim-boundary source.
 
 ### State
 

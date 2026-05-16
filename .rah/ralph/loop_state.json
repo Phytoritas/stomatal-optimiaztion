@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "skill": "recursive-architecture-refactoring-auto",
-  "generated_at_utc": "2026-05-16T13:11:25+00:00",
-  "updated_at_utc": "2026-05-16T14:01:15Z",
+  "generated_at_utc": "2026-05-16T14:40:15+00:00",
+  "updated_at_utc": "2026-05-16T14:40:15+00:00",
   "repo_root": "C:\\Users\\yhmoo\\OneDrive\\Phytoritas\\projects\\stomatal-optimiaztion",
-  "goal_id": "ralph-goal-3c-tomics-haf-2025-2c-promotion-and-cross-dataset-gate-outputs-with-single-dataset-promotion-block-new-phytologist-readiness-matrix-and-paper-safe-claim-register",
-  "goal": "Goal 3C TOMICS-HAF 2025-2C promotion and cross-dataset gate outputs with single-dataset promotion block, New Phytologist readiness matrix, and paper-safe claim register",
+  "goal_id": "ralph-goal-4a-tomics-haf-2025-2c-merge-readiness-paper-thesis-evidence-package-claim-boundary-freeze-and-no-shipped-default-change",
+  "goal": "Goal 4A TOMICS-HAF 2025-2C merge-readiness, paper/thesis evidence package, claim boundary freeze, and no shipped default change",
   "status": "done",
   "done": true,
   "current_iteration": 2,
   "max_iterations": 6,
   "loop_phase": "completed",
   "implementation_gate": "slice-complete-promotion-change-blocked",
-  "current_stage": "tomics-haf-2025-2c-goal-3c-promotion-gate-pr315-open",
-  "harness_phase": "validating",
+  "current_stage": "tomics-haf-2025-2c-goal-4a-merge-readiness-pr315-open",
+  "harness_phase": "completed",
   "blocked_reason": null,
   "read_first": [
     "AGENTS.md",
@@ -27,9 +27,9 @@
     ".rah/ralph/loop_state.json"
   ],
   "next_actions": [
-    "Review PR #315 in the stacked PR sequence after PR #309, PR #311, and PR #313 remain aligned.",
-    "Keep shipped TOMICS defaults unchanged; a shipped default change is blocked until compatible cross-dataset evidence passes in a separate explicit promotion-change task.",
-    "Use Goal 3C outputs as safeguard evidence: gate executed, promotion blocked, cross-dataset evidence insufficient."
+    "Review and merge the stacked PRs in order: #309 -> #311 -> #313 -> #315.",
+    "Keep shipped TOMICS defaults unchanged; a shipped default change remains blocked until compatible cross-dataset evidence passes in a separate explicit task.",
+    "Use Goal 4A docs and private manifests as the paper/thesis evidence package and claim-boundary freeze."
   ],
   "stop_conditions": [
     "definition_of_done_satisfied",
@@ -48,14 +48,17 @@
     "doctor": "python <active-skill-root>/automation/rah.py doctor \"C:\\\\Users\\\\yhmoo\\\\OneDrive\\\\Phytoritas\\\\projects\\\\stomatal-optimiaztion\"",
     "status": "python <active-skill-root>/automation/rah.py status \"C:\\\\Users\\\\yhmoo\\\\OneDrive\\\\Phytoritas\\\\projects\\\\stomatal-optimiaztion\"",
     "resume": "python <active-skill-root>/automation/rah.py resume \"C:\\\\Users\\\\yhmoo\\\\OneDrive\\\\Phytoritas\\\\projects\\\\stomatal-optimiaztion\"",
-    "ralph": "python <active-skill-root>/automation/rah.py ralph \"C:\\\\Users\\\\yhmoo\\\\OneDrive\\\\Phytoritas\\\\projects\\\\stomatal-optimiaztion\" --goal \"Goal 3C TOMICS-HAF 2025-2C promotion and cross-dataset gate outputs with single-dataset promotion block, New Phytologist readiness matrix, and paper-safe claim register\""
+    "ralph": "python <active-skill-root>/automation/rah.py ralph \"C:\\\\Users\\\\yhmoo\\\\OneDrive\\\\Phytoritas\\\\projects\\\\stomatal-optimiaztion\" --goal \"Goal 4A TOMICS-HAF 2025-2C merge-readiness, paper/thesis evidence package, claim boundary freeze, and no shipped default change\""
   },
-  "head_source": "Use `git rev-parse HEAD` or `gh pr view 315 --json headRefOid` for the current PR head; tracked RAH state does not hardcode its containing commit hash.",
-  "validation": {
-    "targeted_goal_3c_tests": "17 passed",
-    "goal_3b5_regression_subset": "17 passed",
-    "full_pytest": "702 passed, 26 skipped, 12 deselected",
+  "completion_evidence": {
+    "targeted_goal_4a_tests": "10 passed",
+    "goal_3c_regression_subset": "17 passed",
+    "private_evidence_package_run": "passed",
+    "full_pytest": "712 passed, 26 skipped, 12 deselected",
     "ruff": "passed",
-    "diff_checks": "passed"
+    "diff_checks": "passed with CRLF warning only",
+    "promotion_gate_status": "blocked_cross_dataset_evidence_insufficient",
+    "cross_dataset_gate_status": "blocked_insufficient_measured_datasets",
+    "shipped_default_change_recommended": false
   }
 }
