@@ -2,7 +2,7 @@
   "schema_version": 1,
   "skill": "recursive-architecture-refactoring-auto",
   "generated_at_utc": "2026-05-16T13:11:25+00:00",
-  "updated_at_utc": "2026-05-16T13:50:28Z",
+  "updated_at_utc": "2026-05-16T14:01:15Z",
   "repo_root": "C:\\Users\\yhmoo\\OneDrive\\Phytoritas\\projects\\stomatal-optimiaztion",
   "goal_id": "ralph-goal-3c-tomics-haf-2025-2c-promotion-and-cross-dataset-gate-outputs-with-single-dataset-promotion-block-new-phytologist-readiness-matrix-and-paper-safe-claim-register",
   "goal": "Goal 3C TOMICS-HAF 2025-2C promotion and cross-dataset gate outputs with single-dataset promotion block, New Phytologist readiness matrix, and paper-safe claim register",
@@ -49,5 +49,13 @@
     "status": "python <active-skill-root>/automation/rah.py status \"C:\\\\Users\\\\yhmoo\\\\OneDrive\\\\Phytoritas\\\\projects\\\\stomatal-optimiaztion\"",
     "resume": "python <active-skill-root>/automation/rah.py resume \"C:\\\\Users\\\\yhmoo\\\\OneDrive\\\\Phytoritas\\\\projects\\\\stomatal-optimiaztion\"",
     "ralph": "python <active-skill-root>/automation/rah.py ralph \"C:\\\\Users\\\\yhmoo\\\\OneDrive\\\\Phytoritas\\\\projects\\\\stomatal-optimiaztion\" --goal \"Goal 3C TOMICS-HAF 2025-2C promotion and cross-dataset gate outputs with single-dataset promotion block, New Phytologist readiness matrix, and paper-safe claim register\""
+  },
+  "head_source": "Use `git rev-parse HEAD` or `gh pr view 315 --json headRefOid` for the current PR head; tracked RAH state does not hardcode its containing commit hash.",
+  "validation": {
+    "targeted_goal_3c_tests": "17 passed",
+    "goal_3b5_regression_subset": "17 passed",
+    "full_pytest": "702 passed, 26 skipped, 12 deselected",
+    "ruff": "passed",
+    "diff_checks": "passed"
   }
 }

@@ -8,7 +8,7 @@
 - issue: `#314`
 - pull_request: `#315`
 - branch: `feat/tomics-haf-2025-2c-promotion-gate`
-- head: `c889d426982369ae74cfde0894ebd2c5d0cffbbc`
+- head_source: Use `git rev-parse HEAD` or `gh pr view 315 --json headRefOid` for the current PR head; tracked RAH state does not hardcode its containing commit hash.
 
 ## Current State
 - current_stage: `tomics-haf-2025-2c-goal-3c-promotion-gate-pr315-open`
@@ -59,9 +59,9 @@
 ## Validation Evidence
 - Private promotion run: passed and wrote promotion outputs under `out/tomics/validation/promotion-gate/haf_2025_2c/`.
 - Private cross-dataset run: passed and wrote cross-dataset outputs under `out/tomics/validation/multi-dataset/haf_2025_2c/`.
-- Targeted Goal 3C tests: `16 passed`.
+- Targeted Goal 3C tests: `17 passed`.
 - Goal 3B.5 regression subset: `17 passed`.
-- Full pytest: `701 passed, 26 skipped, 12 deselected`.
+- Full pytest: `702 passed, 26 skipped, 12 deselected`.
 - Ruff: passed.
 - Diff checks: passed.
 - Final reviewer pass: no blocking or medium findings.

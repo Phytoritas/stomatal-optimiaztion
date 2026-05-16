@@ -5,7 +5,7 @@
   "goal": "Goal 3C TOMICS-HAF 2025-2C promotion and cross-dataset gate outputs with single-dataset promotion block, New Phytologist readiness matrix, and paper-safe claim register",
   "status": "done",
   "created_at_utc": "2026-05-16T13:11:25+00:00",
-  "updated_at_utc": "2026-05-16T13:49:48Z",
+  "updated_at_utc": "2026-05-16T14:01:15Z",
   "repo_root": "C:\\Users\\yhmoo\\OneDrive\\Phytoritas\\projects\\stomatal-optimiaztion",
   "max_iterations": 6,
   "definition_of_done": {
@@ -29,13 +29,14 @@
   ],
   "completion_evidence": {
     "branch": "feat/tomics-haf-2025-2c-promotion-gate",
-    "head": "c889d426982369ae74cfde0894ebd2c5d0cffbbc",
     "issue": 314,
     "pull_request": 315,
     "promotion_gate_status": "blocked_cross_dataset_evidence_insufficient",
     "cross_dataset_gate_status": "blocked_insufficient_measured_datasets",
-    "full_pytest": "701 passed, 26 skipped, 12 deselected",
+    "full_pytest": "702 passed, 26 skipped, 12 deselected",
     "ruff": "passed",
-    "reviewer": "no blocking or medium findings remain"
+    "reviewer": "no blocking or medium findings remain",
+    "head_source": "Use `git rev-parse HEAD` or `gh pr view 315 --json headRefOid` for the current PR head; tracked RAH state does not hardcode its containing commit hash.",
+    "targeted_goal_3c_tests": "17 passed"
   }
 }

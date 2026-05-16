@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "skill": "recursive-architecture-refactoring-auto",
-  "generated_at_utc": "2026-05-16T13:50:28Z",
+  "generated_at_utc": "2026-05-16T14:01:15Z",
   "mode": "goal-3c-promotion-cross-dataset-gate",
   "scope": "project",
   "root": "C:\\Users\\yhmoo\\OneDrive\\Phytoritas\\projects\\stomatal-optimiaztion",
@@ -30,13 +30,12 @@
   "pending_feedback_count": 0,
   "wakeup_path": ".rah/memory/wakeup.md",
   "reflect_draft_path": ".rah/memory/memento_reflect_draft.json",
-  "last_doctor_at": "2026-05-16T13:50:36+00:00",
+  "last_doctor_at": "2026-05-16T14:01:25+00:00",
   "goal_3a6_pr309_head": "de6fe49e03660984076e84819f0c345c9ed8fd74",
   "goal_3a6_pr311_head": "f6b580328a73da2237957fee33f8d9f0982386b9",
   "canonical_fruit_DMC_fraction": 0.056,
   "DMC_sensitivity_enabled": false,
   "goal_3c_branch": "feat/tomics-haf-2025-2c-promotion-gate",
-  "goal_3c_head": "c889d426982369ae74cfde0894ebd2c5d0cffbbc",
   "goal_3c_issue": 314,
   "goal_3c_pull_request": 315,
   "promotion_gate_run": true,
@@ -50,5 +49,13 @@
   "cross_dataset_gate_status": "blocked_insufficient_measured_datasets",
   "measured_dataset_count": 1,
   "required_measured_dataset_count": 2,
-  "shipped_TOMICS_incumbent_changed": false
+  "shipped_TOMICS_incumbent_changed": false,
+  "goal_3c_head_source": "Use `git rev-parse HEAD` or `gh pr view 315 --json headRefOid` for the current PR head; tracked RAH state does not hardcode its containing commit hash.",
+  "goal_3c_validation": {
+    "targeted_goal_3c_tests": "17 passed",
+    "goal_3b5_regression_subset": "17 passed",
+    "full_pytest": "702 passed, 26 skipped, 12 deselected",
+    "ruff": "passed",
+    "diff_checks": "passed"
+  }
 }

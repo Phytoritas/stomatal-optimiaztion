@@ -9,8 +9,12 @@
   "branch": "feat/tomics-haf-2025-2c-promotion-gate",
   "profile": "python-service",
   "source_contract": "artifacts/TOMICS_Architecture_Pipeline.md",
-  "head": "c889d426982369ae74cfde0894ebd2c5d0cffbbc",
   "goal": "Goal 3C TOMICS-HAF 2025-2C promotion and cross-dataset gate outputs",
   "promotion_gate_status": "blocked_cross_dataset_evidence_insufficient",
-  "cross_dataset_gate_status": "blocked_insufficient_measured_datasets"
+  "cross_dataset_gate_status": "blocked_insufficient_measured_datasets",
+  "head_source": "Use `git rev-parse HEAD` or `gh pr view 315 --json headRefOid` for the current PR head; tracked RAH state does not hardcode its containing commit hash.",
+  "validation": {
+    "targeted_goal_3c_tests": "17 passed",
+    "full_pytest": "702 passed, 26 skipped, 12 deselected"
+  }
 }

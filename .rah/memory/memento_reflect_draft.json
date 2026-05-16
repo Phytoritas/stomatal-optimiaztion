@@ -1,7 +1,8 @@
 {
   "summary": [
     "Goal 3C PR #315 implements TOMICS-HAF 2025-2C promotion and cross-dataset gate outputs.",
-    "Promotion and cross-dataset gates executed, but promotion remains blocked because only one compatible measured dataset is available."
+    "Promotion and cross-dataset gates executed, but promotion remains blocked because only one compatible measured dataset is available.",
+    "Tracked RAH/RALPH state avoids hardcoding a self-referential final commit hash and instead points future sessions to git/PR head as source of truth."
   ],
   "decisions": [
     "Do not change shipped TOMICS defaults in Goal 3C; a shipped default change remains blocked until a separate explicit promotion-change task is approved after compatible cross-dataset evidence passes.",
@@ -11,7 +12,8 @@
     "RALPH control-plane state was realigned from stale Goal 3B/3B.5 text to Goal 3C PR #315 status."
   ],
   "new_procedures": [
-    "For future RALPH work, verify .rah/state/status.json, .rah/plans/current_loop.md, .rah/memory/wakeup.md, and .rah/ralph/completion_report.md before claiming no missing items."
+    "For future RALPH work, verify .rah/state/status.json, .rah/plans/current_loop.md, .rah/memory/wakeup.md, and .rah/ralph/completion_report.md before claiming no missing items.",
+    "Do not hardcode the containing commit SHA in tracked RAH state; use git or PR head as the source of truth and regenerate private output after the final commit."
   ],
   "open_questions": [
     "RAH SessionStart/Stop hooks are not registered; this is an operational convenience warning, not a Goal 3C blocker."

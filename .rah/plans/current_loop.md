@@ -38,13 +38,13 @@ Stage 3C. TOMICS-HAF 2025-2C Promotion/Cross-Dataset Gate PR #315 Open
 ## Goal 3C Completed Facts
 - Issue #314 tracks TOMICS-HAF 2025-2C promotion and cross-dataset gate outputs.
 - PR #315 is open from branch `feat/tomics-haf-2025-2c-promotion-gate` into `feat/tomics-haf-2025-2c-harvest-family-eval`.
-- PR #315 head is `c889d426982369ae74cfde0894ebd2c5d0cffbbc`.
+- PR #315 head source: Use `git rev-parse HEAD` or `gh pr view 315 --json headRefOid` for the current PR head; tracked RAH state does not hardcode its containing commit hash.
 - Promotion gate status is `blocked_cross_dataset_evidence_insufficient`.
 - Cross-dataset gate status is `blocked_insufficient_measured_datasets`.
 - `measured_dataset_count = 1`; `required_measured_dataset_count = 2`.
 - `promoted_candidate_id = null`.
 - `shipped_TOMICS_incumbent_changed = false`.
-- Final validation: targeted Goal 3C tests `16 passed`; Goal 3B.5 regression `17 passed`; full pytest `701 passed, 26 skipped, 12 deselected`; Ruff passed; diff checks passed; reviewer pass clean.
+- Final validation: targeted Goal 3C tests `17 passed`; Goal 3B.5 regression `17 passed`; full pytest `702 passed, 26 skipped, 12 deselected`; Ruff passed; diff checks passed; reviewer pass clean.
 
 <!-- RALPH MANAGED BLOCK START -->
 ## RALPH Goal Loop
