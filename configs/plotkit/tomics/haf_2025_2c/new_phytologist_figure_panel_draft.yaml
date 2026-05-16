@@ -1,0 +1,18 @@
+version: 1
+kind: figure_panel_draft
+meta:
+  id: haf_2025_2c_new_phytologist_figure_panel_draft
+  title: HAF 2025-2C New Phytologist draft panel
+  family: tomics_haf_2025_2c_harvest_family
+  support_level: spec_scaffold
+data:
+  frame_roles:
+    - harvest_family_rankings
+    - harvest_family_cumulative_overlay
+    - harvest_family_budget_parity
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png]
+  dpi: 300

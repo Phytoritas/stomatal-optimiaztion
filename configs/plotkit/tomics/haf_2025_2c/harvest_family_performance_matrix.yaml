@@ -1,0 +1,19 @@
+version: 1
+kind: heatmap_matrix
+meta:
+  id: haf_2025_2c_harvest_family_performance_matrix
+  title: HAF 2025-2C harvest-family performance matrix
+  family: tomics_haf_2025_2c_harvest_family
+  support_level: spec_scaffold
+data:
+  frame_role: harvest_family_rankings
+mapping:
+  x_column: fruit_harvest_family
+  y_column: allocator_family
+  value_column: ranking_score
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png]
+  dpi: 300

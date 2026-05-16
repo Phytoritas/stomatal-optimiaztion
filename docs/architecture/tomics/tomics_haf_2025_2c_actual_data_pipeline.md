@@ -25,3 +25,10 @@ Shipped TOMICS incumbent behavior remains unchanged.
 Goal 2.5 hardens the observer export for production by adding chunk aggregation for full Dataset1 and Dataset2 processing. Smoke mode remains capped for fast local checks, while production mode is expected to process all projected parquet rows without full in-memory materialization. The production observer feature frame is a prerequisite input scaffold for later latent allocation inference; it does not infer allocation.
 
 Goal 3A.6 fixes fruit DMC at `0.056` for the 2025-2C TOMICS-HAF analysis. Dry yield derived from fresh yield using DMC `0.056` is an estimated dry-yield basis, not direct destructive dry-mass measurement unless separately verified. DMC sensitivity is disabled for the current 2025-2C run unless explicitly re-enabled in a later goal. Any prior `0.065` DMC references are deprecated previous-default notes and must not drive 2025-2C metrics. Harvest-family ranking, observation operators, and promotion gate must use DMC `0.056` for 2025-2C.
+
+Goal 3B consumes the production observer feature frame and latent allocation
+posterior to run a bounded 2025-2C harvest-family architecture-discrimination
+test. It writes by-loadcell metrics, pooled metrics, mean-SD metrics,
+mass-balance diagnostics, budget parity, rankings, and promotion prerequisite
+summaries only. It does not run final promotion, does not run cross-dataset
+validation, and does not change the shipped TOMICS incumbent.

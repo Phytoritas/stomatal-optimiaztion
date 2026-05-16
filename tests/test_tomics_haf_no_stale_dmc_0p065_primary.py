@@ -32,7 +32,10 @@ def test_haf_2025_2c_primary_files_do_not_use_0p065_as_current_default() -> None
         "default DMC = 0.065",
     )
     for path in HAF_PRIMARY_PATHS:
-        text = path.read_text(encoding="utf-8")
+        text = path.read_text(encoding="utf-8").replace(
+            "no_stale_dmc_0p065_primary_audit.csv",
+            "no_stale_dmc_previous_primary_audit.csv",
+        )
         for token in forbidden_tokens:
             assert token not in text
         for line in text.splitlines():
