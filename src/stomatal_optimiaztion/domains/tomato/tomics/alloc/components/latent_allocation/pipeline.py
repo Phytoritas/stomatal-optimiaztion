@@ -186,13 +186,21 @@ def _metadata_base(
         "dry_yield_source": observer_metadata.get("dry_yield_source", ""),
         "dry_yield_is_dmc_estimated": bool(observer_metadata.get("dry_yield_is_dmc_estimated", False)),
         "direct_dry_yield_measured": bool(observer_metadata.get("direct_dry_yield_measured", False)),
+        "DMC_conversion_performed": bool(observer_metadata.get("DMC_conversion_performed", False)),
+        "canonical_fruit_DMC_fraction": observer_metadata.get("canonical_fruit_DMC_fraction", 0.056),
+        "fruit_DMC_fraction": observer_metadata.get("fruit_DMC_fraction", 0.056),
+        "default_fruit_dry_matter_content": observer_metadata.get("default_fruit_dry_matter_content", 0.056),
+        "DMC_fixed_for_2025_2C": bool(observer_metadata.get("DMC_fixed_for_2025_2C", True)),
+        "DMC_sensitivity_enabled": bool(observer_metadata.get("DMC_sensitivity_enabled", False)),
+        "DMC_sensitivity_values": observer_metadata.get("DMC_sensitivity_values", []),
+        "deprecated_previous_default_fruit_DMC_fraction": observer_metadata.get(
+            "deprecated_previous_default_fruit_DMC_fraction",
+            0.065,
+        ),
         "legacy_yield_bridge_used": bool(observer_metadata.get("legacy_yield_bridge_used", False)),
         "legacy_yield_bridge_provenance": observer_metadata.get("legacy_yield_bridge_provenance", ""),
         "default_fruit_dry_matter_content_from_legacy": observer_metadata.get(
             "default_fruit_dry_matter_content_from_legacy"
-        ),
-        "configured_default_fruit_dry_matter_content": observer_metadata.get(
-            "configured_default_fruit_dry_matter_content"
         ),
         "harvest_family_factorial_run": False,
         "promotion_gate_run": False,

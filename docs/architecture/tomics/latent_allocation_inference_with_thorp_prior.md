@@ -34,5 +34,13 @@ Fruit diameter remains sensor-level apparent expansion diagnostics. It is not
 used for p-values, allocation calibration, hydraulic gate calibration, or model
 promotion.
 
+For the 2025-2C TOMICS-HAF analysis, fruit DMC is fixed at `0.056`. Dry
+yield derived from fresh yield using DMC `0.056` is an estimated dry-yield
+basis, not direct destructive dry-mass measurement unless separately verified.
+DMC sensitivity is disabled for the current 2025-2C run unless explicitly
+re-enabled in a later goal. Any prior `0.065` DMC references are deprecated
+previous-default notes and must not drive latent metadata, harvest-family
+ranking, or promotion metrics.
+
 Goal 3A does not run harvest-family factorials, cross-dataset promotion gates,
 or promotion gates. Those remain blocked for later explicit goals.

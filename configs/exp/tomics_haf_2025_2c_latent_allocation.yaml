@@ -10,6 +10,13 @@ tomics_haf:
   observer_metadata: out/tomics/analysis/haf_2025_2c/2025_2c_tomics_haf_metadata.json
   output_root: out/tomics/validation/latent-allocation/haf_2025_2c
 
+dmc:
+  canonical_fruit_DMC_fraction: 0.056
+  DMC_fixed_for_2025_2C: true
+  DMC_sensitivity_enabled: false
+  DMC_sensitivity_values: []
+  deprecated_previous_default_fruit_DMC_fraction: 0.065
+
 latent_allocation:
   require_production_observer_export: true
   require_row_cap_absent: true

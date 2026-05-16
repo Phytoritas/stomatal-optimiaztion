@@ -48,13 +48,20 @@ def test_latent_allocation_pipeline_metadata_contract(tmp_path: Path) -> None:
                 "fresh_yield_available": True,
                 "fresh_yield_source": "legacy_v1_3_derived_output",
                 "dry_yield_available": True,
-                "dry_yield_source": "legacy_v1_3_derived_output",
+                "dry_yield_source": "fresh_yield_times_canonical_DMC_0p056",
                 "dry_yield_is_dmc_estimated": True,
                 "direct_dry_yield_measured": False,
+                "DMC_conversion_performed": True,
+                "canonical_fruit_DMC_fraction": 0.056,
+                "fruit_DMC_fraction": 0.056,
+                "default_fruit_dry_matter_content": 0.056,
+                "DMC_fixed_for_2025_2C": True,
+                "DMC_sensitivity_enabled": False,
+                "DMC_sensitivity_values": [],
+                "deprecated_previous_default_fruit_DMC_fraction": 0.065,
                 "legacy_yield_bridge_used": True,
                 "legacy_yield_bridge_provenance": "legacy_v1_3_derived_output",
                 "default_fruit_dry_matter_content_from_legacy": 0.056,
-                "configured_default_fruit_dry_matter_content": 0.065,
             },
         )
     )
@@ -73,6 +80,15 @@ def test_latent_allocation_pipeline_metadata_contract(tmp_path: Path) -> None:
     assert metadata["event_bridged_ET_calibration_status"] == "calibrated_to_legacy_daily_event_total"
     assert metadata["dry_yield_is_dmc_estimated"] is True
     assert metadata["direct_dry_yield_measured"] is False
+    assert metadata["DMC_conversion_performed"] is True
+    assert metadata["canonical_fruit_DMC_fraction"] == 0.056
+    assert metadata["fruit_DMC_fraction"] == 0.056
+    assert metadata["default_fruit_dry_matter_content"] == 0.056
+    assert metadata["DMC_fixed_for_2025_2C"] is True
+    assert metadata["DMC_sensitivity_enabled"] is False
+    assert metadata["DMC_sensitivity_values"] == []
+    assert metadata["deprecated_previous_default_fruit_DMC_fraction"] == 0.065
+    assert "configured_default_fruit_dry_matter_content" not in metadata
     assert metadata["legacy_yield_bridge_provenance"] == "legacy_v1_3_derived_output"
     assert metadata["latent_allocation_directly_validated"] is False
     assert Path(result["outputs"]["posteriors"]).exists()
