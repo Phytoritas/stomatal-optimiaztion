@@ -6,17 +6,25 @@ import yaml
 
 from tomics_haf_latent_fixtures import feature_frame, latent_config, observer_metadata
 
+from scripts.run_tomics_haf_latent_allocation import main
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.latent_allocation.pipeline import (
     run_tomics_haf_latent_allocation,
 )
 
 
-def _write_config(tmp_path: Path, *, row_cap_applied: bool = False) -> Path:
+def _write_config(
+    tmp_path: Path,
+    *,
+    row_cap_applied: bool = False,
+    metadata_overrides: dict | None = None,
+) -> Path:
     feature_path = tmp_path / "feature.csv"
     metadata_path = tmp_path / "metadata.json"
     output_root = tmp_path / "latent_out"
     feature_frame().to_csv(feature_path, index=False)
-    metadata_path.write_text(json.dumps(observer_metadata(row_cap_applied=row_cap_applied)), encoding="utf-8")
+    metadata = observer_metadata(row_cap_applied=row_cap_applied)
+    metadata.update(metadata_overrides or {})
+    metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
     config = latent_config(output_root)
     config["paths"]["repo_root"] = str(tmp_path)
     config["tomics_haf"]["observer_feature_frame"] = str(feature_path)
@@ -55,3 +63,22 @@ def test_latent_allocation_pipeline_fails_safely_on_row_cap(tmp_path: Path) -> N
     assert metadata["latent_allocation_inference_run"] is False
     assert metadata["latent_allocation_ready"] is False
     assert metadata["production_observer_precondition_passed"] is False
+
+
+def test_pipeline_guardrails_fail_on_forbidden_upstream_metadata(tmp_path: Path) -> None:
+    result = run_tomics_haf_latent_allocation(
+        _write_config(tmp_path, metadata_overrides={"raw_THORP_allocator_used": True})
+    )
+    metadata = result["metadata"]
+
+    assert metadata["latent_allocation_guardrails_passed"] is False
+    assert metadata["no_raw_THORP_guard_passed"] is False
+
+
+def test_runner_returns_nonzero_when_guardrails_fail(tmp_path: Path) -> None:
+    config_path = _write_config(
+        tmp_path,
+        metadata_overrides={"fruit_diameter_allocation_calibration_target": True},
+    )
+
+    assert main(["--config", str(config_path)]) == 1

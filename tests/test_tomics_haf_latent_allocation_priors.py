@@ -10,6 +10,7 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.latent_allocat
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.latent_allocation.priors import (
     build_latent_allocation_priors,
+    validate_prior_families,
 )
 
 
@@ -44,3 +45,10 @@ def test_thorp_bounded_prior_respects_root_cap_and_fruit_gate() -> None:
 
     assert (thorp["u_root_prior"] <= 0.25 + 1e-9).all()
     assert (hybrid["u_fruit_prior"] >= hybrid["legacy_prior_u_fruit"] - 1e-9).all()
+
+
+def test_prior_family_contract_rejects_missing_or_unknown_family() -> None:
+    with pytest.raises(ValueError, match="unknown prior families"):
+        validate_prior_families(("legacy_tomato_prior", "typo_prior"))
+    with pytest.raises(ValueError, match="missing required prior families"):
+        validate_prior_families(("legacy_tomato_prior",))

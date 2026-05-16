@@ -24,6 +24,11 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     result = run_tomics_haf_latent_allocation(args.config)
     print(json.dumps(result["outputs"], indent=2, ensure_ascii=False))
+    metadata = result.get("metadata", {})
+    if not bool(metadata.get("latent_allocation_ready", False)):
+        return 1
+    if not bool(metadata.get("latent_allocation_guardrails_passed", False)):
+        return 1
     return 0
 
 

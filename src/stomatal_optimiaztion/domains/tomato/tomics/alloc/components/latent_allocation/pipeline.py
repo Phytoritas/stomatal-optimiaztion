@@ -77,6 +77,50 @@ def _guardrail_pass_map(guardrails: pd.DataFrame) -> dict[str, bool]:
     }
 
 
+def _truthy(value: object) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return bool(value)
+    if isinstance(value, str):
+        return value.strip().lower() in {"true", "1", "yes", "y"}
+    return False
+
+
+def _frame_flag_any(frame: pd.DataFrame, column: str) -> bool:
+    if column not in frame.columns:
+        return False
+    return bool(frame[column].fillna(False).map(_truthy).any())
+
+
+def _forbidden_contract_metadata(
+    observer_metadata: dict[str, Any],
+    feature_frame: pd.DataFrame,
+) -> dict[str, Any]:
+    return {
+        "raw_THORP_allocator_used": bool(observer_metadata.get("raw_THORP_allocator_used", False))
+        or _frame_flag_any(feature_frame, "raw_THORP_allocator_used"),
+        "fruit_diameter_p_values_allowed": bool(observer_metadata.get("fruit_diameter_p_values_allowed", False))
+        or _frame_flag_any(feature_frame, "fruit_diameter_p_values_allowed"),
+        "fruit_diameter_allocation_calibration_target": bool(
+            observer_metadata.get("fruit_diameter_allocation_calibration_target", False)
+        )
+        or _frame_flag_any(feature_frame, "fruit_diameter_allocation_calibration_target"),
+        "fruit_diameter_model_promotion_target": bool(
+            observer_metadata.get("fruit_diameter_model_promotion_target", False)
+        )
+        or _frame_flag_any(feature_frame, "fruit_diameter_model_promotion_target"),
+        "direct_partition_observation_available": bool(
+            observer_metadata.get("direct_partition_observation_available", False)
+        )
+        or _frame_flag_any(feature_frame, "direct_partition_observation_available"),
+        "latent_allocation_directly_validated": bool(
+            observer_metadata.get("latent_allocation_directly_validated", False)
+        )
+        or _frame_flag_any(feature_frame, "latent_allocation_directly_validated"),
+    }
+
+
 def _metadata_base(
     *,
     config: dict[str, Any],
@@ -87,8 +131,8 @@ def _metadata_base(
     input_state: pd.DataFrame | None = None,
     diagnostics: dict[str, Any] | None = None,
     guardrails: pd.DataFrame | None = None,
+    prior_families_run: list[str] | None = None,
 ) -> dict[str, Any]:
-    latent_cfg = as_dict(config.get("latent_allocation"))
     diagnostics = diagnostics or {}
     guardrail_map = _guardrail_pass_map(guardrails if guardrails is not None else pd.DataFrame())
     return {
@@ -112,7 +156,7 @@ def _metadata_base(
         "direct_partition_observation_available": False,
         "allocation_validation_basis": "latent_inference_from_observer_features",
         "latent_allocation_promotable_by_itself": False,
-        "prior_families_run": list(latent_cfg.get("prior_families", PRIOR_FAMILIES)),
+        "prior_families_run": prior_families_run or list(PRIOR_FAMILIES),
         "raw_THORP_allocator_used": False,
         "THORP_used_as_bounded_prior": True,
         "THORP_used_as_raw_allocator": False,
@@ -141,6 +185,7 @@ def _metadata_base(
         "shipped_TOMICS_incumbent_changed": False,
         "diagnostic_statement": DIRECT_VALIDATION_STATEMENT,
         **precondition_meta,
+        "latent_allocation_guardrails_passed": all(guardrail_map.values()) if guardrail_map else False,
         **guardrail_map,
     }
 
@@ -279,7 +324,13 @@ def run_tomics_haf_latent_allocation(config_path: str | Path) -> dict[str, Any]:
     diagnostics = compute_prior_family_diagnostics(priors, posteriors)
     for key, value in support.items():
         diagnostics[key] = value
-    guardrails = evaluate_latent_allocation_guardrails(posteriors, {}, config)
+    forbidden_metadata = _forbidden_contract_metadata(observer_metadata, feature_frame)
+    guardrails = evaluate_latent_allocation_guardrails(posteriors, forbidden_metadata, config)
+    prior_families_run = (
+        list(priors["prior_family"].drop_duplicates())
+        if "prior_family" in priors.columns and not priors.empty
+        else []
+    )
 
     metadata = _metadata_base(
         config=config,
@@ -290,6 +341,7 @@ def run_tomics_haf_latent_allocation(config_path: str | Path) -> dict[str, Any]:
         input_state=input_state,
         diagnostics=support,
         guardrails=guardrails,
+        prior_families_run=prior_families_run,
     )
     metadata["latent_allocation_ready"] = True
     metadata["posterior_row_count"] = int(posteriors.shape[0])

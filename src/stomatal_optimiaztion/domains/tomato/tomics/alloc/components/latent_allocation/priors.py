@@ -165,12 +165,28 @@ def _prior_payload(
     return payload
 
 
+def validate_prior_families(requested: tuple[str, ...]) -> tuple[str, ...]:
+    known = set(PRIOR_FAMILIES)
+    requested_set = set(requested)
+    unknown = sorted(requested_set - known)
+    missing = [family for family in PRIOR_FAMILIES if family not in requested_set]
+    if unknown or missing:
+        parts = []
+        if unknown:
+            parts.append(f"unknown prior families: {unknown}")
+        if missing:
+            parts.append(f"missing required prior families: {missing}")
+        raise ValueError("; ".join(parts))
+    return tuple(family for family in PRIOR_FAMILIES if family in requested_set)
+
+
 def build_latent_allocation_priors(
     input_state: pd.DataFrame,
     config: dict[str, Any],
 ) -> pd.DataFrame:
     latent_cfg = as_dict(config.get("latent_allocation"))
     requested = tuple(str(item) for item in latent_cfg.get("prior_families", PRIOR_FAMILIES))
+    requested = validate_prior_families(requested)
     rows: list[dict[str, Any]] = []
     builders = {
         "legacy_tomato_prior": legacy_tomato_prior,
@@ -197,4 +213,5 @@ __all__ = [
     "legacy_tomato_prior",
     "thorp_bounded_prior",
     "tomato_constrained_thorp_prior",
+    "validate_prior_families",
 ]

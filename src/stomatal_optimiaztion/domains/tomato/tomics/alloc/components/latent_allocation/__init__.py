@@ -31,6 +31,7 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.latent_allocat
     legacy_tomato_prior,
     thorp_bounded_prior,
     tomato_constrained_thorp_prior,
+    validate_prior_families,
 )
 
 __all__ = [
@@ -52,4 +53,5 @@ __all__ = [
     "run_tomics_haf_latent_allocation",
     "thorp_bounded_prior",
     "tomato_constrained_thorp_prior",
+    "validate_prior_families",
 ]
