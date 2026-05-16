@@ -8,6 +8,8 @@ import pandas as pd
 
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.core import ensure_dir
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.haf_budget_parity import (
+    BUDGET_PARITY_BASIS,
+    BUDGET_PARITY_LIMITATIONS,
     build_haf_budget_parity_frame,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.haf_harvest_metrics import (
@@ -26,6 +28,12 @@ from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.haf_observatio
     build_harvest_observation_frame_dmc_0p056,
     dry_floor_area_to_fresh_loadcell,
     observation_operator_audit,
+)
+from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.haf_pre_gate_artifacts import (
+    build_reproducibility_manifest,
+    sanitize_generated_metadata_files,
+    write_goal3c_readiness_audit,
+    write_reproducibility_manifest,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.observers.contracts import (
     CANONICAL_2025_2C_FRUIT_DMC,
@@ -547,6 +555,10 @@ def _metadata(
             "",
         ),
         "latent_allocation_available": bool(latent_metadata.get("latent_allocation_ready", False)),
+        "latent_allocation_ready": bool(latent_metadata.get("latent_allocation_ready", False)),
+        "production_observer_ready": bool(
+            observer_metadata.get("production_ready_for_latent_allocation", False)
+        ),
         "latent_allocation_used_in_harvest_family": bool(
             design["allocator_family"].eq("tomics_haf_latent_allocation_research").any()
         ),
@@ -584,6 +596,12 @@ def _metadata(
         "final_promotion_gate_was_run": False,
         "cross_dataset_validation_was_run": False,
         "raw_THORP_was_promoted": False,
+        "fruit_diameter_promotion_target": False,
+        "fruit_diameter_model_promotion_target": False,
+        "budget_parity_basis": BUDGET_PARITY_BASIS,
+        "wall_clock_compute_budget_parity_evaluated": False,
+        "wall_clock_compute_budget_parity_required_for_goal_3b": False,
+        "budget_parity_limitations": BUDGET_PARITY_LIMITATIONS,
         "config_name": _as_dict(config.get("exp")).get("name", ""),
     }
     return normalize_metadata(metadata)
@@ -622,6 +640,15 @@ def run_tomics_haf_harvest_family_factorial(
             repo_root=repo_root,
             config_path=config_path,
         )
+    )
+
+    sanitize_generated_metadata_files(
+        [
+            observer_metadata_path,
+            observer_metadata_path.parent / "metadata_goal2_observer.json",
+            observer_metadata_path.parent / "metadata_goal2_5_production_observer.json",
+            latent_metadata_path,
+        ]
     )
 
     observer_frame = pd.read_csv(observer_feature_frame_path)
@@ -664,6 +691,10 @@ def run_tomics_haf_harvest_family_factorial(
         design_df=design,
         input_metadata={**observer_metadata, **latent_metadata},
     )
+    analysis_stale_audit_path = (
+        observer_metadata_path.parent / "no_stale_dmc_0p065_primary_audit.csv"
+    )
+    stale_audit.to_csv(analysis_stale_audit_path, index=False)
 
     manifest = design[
         [
@@ -757,6 +788,39 @@ def run_tomics_haf_harvest_family_factorial(
         frames=frames,
         selected_payload=selected,
         metadata=metadata,
+    )
+    paths["analysis_stale_dmc_audit"] = str(analysis_stale_audit_path)
+    repro_manifest = build_reproducibility_manifest(
+        repo_root=repo_root,
+        config=config,
+        config_path=config_path,
+        output_root=output_root,
+        command_run=(
+            "poetry run python scripts/run_tomics_haf_harvest_family_factorial.py "
+            f"--config {config_path}"
+        ),
+        input_paths={
+            "observer_feature_frame": observer_feature_frame_path,
+            "observer_metadata": observer_metadata_path,
+            "latent_allocation_posteriors": latent_posteriors_path,
+            "latent_allocation_metadata": latent_metadata_path,
+        },
+        output_paths=paths,
+        metadata=metadata,
+    )
+    paths.update(
+        write_reproducibility_manifest(
+            output_root=output_root,
+            manifest=repro_manifest,
+        )
+    )
+    paths.update(
+        write_goal3c_readiness_audit(
+            output_root=output_root,
+            repo_root=repo_root,
+            metadata=metadata,
+            stale_audit=stale_audit,
+        )
     )
     return {
         "output_root": str(output_root),

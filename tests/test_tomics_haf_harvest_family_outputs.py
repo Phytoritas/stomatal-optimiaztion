@@ -36,6 +36,12 @@ def test_haf_harvest_runner_writes_required_outputs(tmp_path: Path) -> None:
         "harvest_family_prerequisite_promotion_summary.csv",
         "harvest_family_prerequisite_promotion_summary.md",
         "harvest_family_metadata.json",
+        "harvest_family_reproducibility_manifest.json",
+        "harvest_family_reproducibility_manifest.csv",
+        "harvest_family_reproducibility_manifest.md",
+        "goal3c_readiness_audit.json",
+        "goal3c_readiness_audit.csv",
+        "goal3c_readiness_audit.md",
         "observation_operator_dmc_0p056_audit.csv",
         "no_stale_dmc_0p065_primary_audit.csv",
     }

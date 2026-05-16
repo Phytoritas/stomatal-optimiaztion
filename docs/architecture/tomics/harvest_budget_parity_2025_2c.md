@@ -11,6 +11,18 @@ Budget accounting includes:
 - latent allocation prior-family knobs;
 - extra calibration budget flags.
 
+The budget-parity basis is `knob_count_and_hidden_calibration_budget`.
+This means Goal 3B controls the number of harvest, observation-operator,
+latent-prior, and hidden-calibration knobs exposed to each candidate. It does
+not evaluate wall-clock compute-budget parity.
+
+The harvest-family metadata must retain:
+
+- `budget_parity_basis = "knob_count_and_hidden_calibration_budget"`
+- `wall_clock_compute_budget_parity_evaluated = false`
+- `wall_clock_compute_budget_parity_required_for_goal_3b = false`
+- `budget_parity_limitations` explaining that parity is not wall-clock parity
+
 No candidate may be considered ready for promotion in Goal 3B. Output metadata
 must retain:
 

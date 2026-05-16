@@ -16,6 +16,11 @@ GROUP_BUDGET_LIMITS = {
     "equal_budget_medium": 10,
     "parity_audit_only": 10,
 }
+BUDGET_PARITY_BASIS = "knob_count_and_hidden_calibration_budget"
+BUDGET_PARITY_LIMITATIONS = (
+    "Budget parity counts harvest, observation-operator, latent-prior, and "
+    "hidden-calibration knobs; it does not evaluate wall-clock compute-budget parity."
+)
 
 
 def build_haf_budget_parity_frame(design_df: pd.DataFrame) -> pd.DataFrame:
@@ -56,6 +61,10 @@ def build_haf_budget_parity_frame(design_df: pd.DataFrame) -> pd.DataFrame:
     frame["budget_limit_units"] = frame["budget_parity_group"].map(GROUP_BUDGET_LIMITS).fillna(0).astype(int)
     frame["budget_parity_violation"] = frame["budget_units_used"].gt(frame["budget_limit_units"])
     frame["budget_penalty"] = frame["budget_parity_violation"].astype(float) * 1_000.0
+    frame["budget_parity_basis"] = BUDGET_PARITY_BASIS
+    frame["wall_clock_compute_budget_parity_evaluated"] = False
+    frame["wall_clock_compute_budget_parity_required_for_goal_3b"] = False
+    frame["budget_parity_limitations"] = BUDGET_PARITY_LIMITATIONS
     return frame[
         [
             "candidate_id",
@@ -75,8 +84,17 @@ def build_haf_budget_parity_frame(design_df: pd.DataFrame) -> pd.DataFrame:
             "extra_calibration_budget_flag",
             "budget_parity_violation",
             "budget_penalty",
+            "budget_parity_basis",
+            "wall_clock_compute_budget_parity_evaluated",
+            "wall_clock_compute_budget_parity_required_for_goal_3b",
+            "budget_parity_limitations",
         ]
     ].copy()
 
 
-__all__ = ["STAGE_BUDGET_UNITS", "build_haf_budget_parity_frame"]
+__all__ = [
+    "BUDGET_PARITY_BASIS",
+    "BUDGET_PARITY_LIMITATIONS",
+    "STAGE_BUDGET_UNITS",
+    "build_haf_budget_parity_frame",
+]

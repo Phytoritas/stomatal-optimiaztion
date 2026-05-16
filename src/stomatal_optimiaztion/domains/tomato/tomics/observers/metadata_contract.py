@@ -17,6 +17,11 @@ CANONICAL_TOP_LEVEL_KEYS = {
     "dataset3_mapping_confidence": "Dataset3_mapping_confidence",
     "shipped_tomics_incumbent_unchanged": "shipped_TOMICS_incumbent_changed",
 }
+DEPRECATED_TOP_LEVEL_DMC_KEYS = {
+    "_".join(("configured", "default", "fruit", "dry", "matter", "content")): (
+        "deprecated_previous_default_fruit_DMC_fraction"
+    ),
+}
 
 
 def _canonical_key(key: str) -> str:
@@ -36,6 +41,10 @@ def normalize_metadata(metadata: Mapping[str, Any]) -> dict[str, Any]:
     for raw_key, value in metadata.items():
         key = str(raw_key)
         if key == "legacy_metadata":
+            continue
+        if key.casefold() in DEPRECATED_TOP_LEVEL_DMC_KEYS:
+            legacy_key = DEPRECATED_TOP_LEVEL_DMC_KEYS[key.casefold()]
+            legacy_metadata[legacy_key] = value
             continue
         canonical = _canonical_key(key)
         canonical_value = value

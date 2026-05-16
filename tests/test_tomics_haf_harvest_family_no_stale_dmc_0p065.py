@@ -38,7 +38,7 @@ def test_haf_harvest_no_stale_primary_0p065(tmp_path: Path) -> None:
     assert audit["status"].iloc[0] == "pass"
 
 
-def test_haf_harvest_stale_audit_records_upstream_metadata_warning(tmp_path: Path) -> None:
+def test_haf_harvest_stale_audit_cleans_upstream_metadata_warning(tmp_path: Path) -> None:
     paths = write_synthetic_haf_harvest_inputs(tmp_path)
     observer_metadata = json.loads(paths["observer_metadata"].read_text())
     observer_metadata["configured_default_fruit_dry_matter_content"] = 0.065
@@ -51,6 +51,12 @@ def test_haf_harvest_stale_audit_records_upstream_metadata_warning(tmp_path: Pat
     )
 
     audit = pd.read_csv(result["paths"]["stale_dmc_audit"])
+    cleaned_metadata = json.loads(paths["observer_metadata"].read_text())
     warning_hits = json.loads(audit["upstream_metadata_warning_hits_json"].iloc[0])
     assert audit["status"].iloc[0] == "pass"
-    assert "configured_default_fruit_dry_matter_content" in warning_hits
+    assert warning_hits == []
+    assert "configured_default_fruit_dry_matter_content" not in cleaned_metadata
+    assert (
+        cleaned_metadata["legacy_metadata"]["deprecated_previous_default_fruit_DMC_fraction"]
+        == 0.065
+    )
