@@ -26,3 +26,10 @@ Goal 3B readiness additions:
 - Final promotion and cross-dataset validation remain separate future gates.
 - Budget parity is knob-count and hidden-calibration-budget parity, not wall-clock compute-budget parity.
 - Goal 3C readiness requires a reproducibility manifest and a Plotkit render manifest or rendered bundle status before the promotion gate is considered.
+
+Goal 3C readiness matrix:
+
+- Goal 3C writes `out/tomics/validation/promotion-gate/haf_2025_2c/new_phytologist_readiness_matrix.{csv,md}` and `new_phytologist_readiness_metadata.json`.
+- Promotion and cross-dataset categories may be `blocked` while architecture, observer, latent inference, harvest-family, DMC observation-operator, reproducibility, and claim-safety categories pass.
+- Manifest-only Plotkit evidence is `partial` until rendered PNG bundles exist.
+- New Phytologist readiness must not be claimed unless the readiness metadata explicitly passes without `blocked`, `partial`, or `not_run` categories.

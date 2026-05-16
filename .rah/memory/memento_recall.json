@@ -1,0 +1,27 @@
+{
+  "workspace": "stomatal-optimiaztion",
+  "topic": "architecture-refactor",
+  "sessionId": "stomatal-optimiaztion#adhoc:tomics-haf-2025-2c-pipeline-contract",
+  "caseId": "case/stomatal-optimiaztion/adhoc/tomics-haf-2025-2c-pipeline-contract",
+  "timestamp": "2026-05-16T03:17:25Z",
+  "query_mode": "narrow",
+  "keywords": [
+    "stomatal-optimiaztion",
+    "TOMICS",
+    "Architecture",
+    "Pipeline",
+    "harness",
+    "RAH"
+  ],
+  "contextText": "TOMICS-HAF 2025_2C pipeline contract intake and harness restart-state reflection",
+  "caseMode": false,
+  "depth": "detail",
+  "fragment_ids": [
+    "frag-58b58b930a8c2665",
+    "frag-3b47ffc5f033b0c3",
+    "frag-4440cc23041fe033",
+    "frag-2ec8876612c0de24"
+  ],
+  "_searchEventId": "8838",
+  "quality_notes": "recall() was relevant and sufficient for harness-state hygiene; several results were stale, so fresh file reads remained authoritative."
+}

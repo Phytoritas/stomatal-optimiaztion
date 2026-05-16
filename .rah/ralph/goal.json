@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "skill": "recursive-architecture-refactoring-auto",
+  "goal_id": "ralph-goal-4a-tomics-haf-2025-2c-merge-readiness-paper-thesis-evidence-package-claim-boundary-freeze-and-no-shipped-default-change",
+  "goal": "Goal 4A TOMICS-HAF 2025-2C merge-readiness, paper/thesis evidence package, claim boundary freeze, and no shipped default change",
+  "status": "done",
+  "created_at_utc": "2026-05-16T14:40:15+00:00",
+  "updated_at_utc": "2026-05-16T14:40:15+00:00",
+  "repo_root": "C:\\Users\\yhmoo\\OneDrive\\Phytoritas\\projects\\stomatal-optimiaztion",
+  "max_iterations": 6,
+  "definition_of_done": {
+    "acceptance_criteria": [
+      "PR stack merge-readiness docs and private outputs exist; evidence package manifest exists; claim boundary freeze exists; manuscript/thesis outlines exist; process warnings are closed out; promotion and shipped default change remain blocked"
+    ],
+    "validation_commands": [
+      "Goal 4A targeted tests: 11 passed; Goal 3C regression tests: 17 passed; private evidence package run: passed; ruff: passed; git diff --check: passed with CRLF warning only; full pytest: 713 passed, 26 skipped, 12 deselected"
+    ],
+    "evidence_required": [
+      "iteration note under .rah/ralph/iterations/",
+      "validation output or documented validation gap",
+      "diff review notes before completion"
+    ]
+  },
+  "constraints": [
+    "Follow the nearest active AGENTS.md before any write.",
+    "Do not bypass the implementation gate; work on gate prerequisites when it is blocked.",
+    "Keep every implementation pass bounded and verification-backed.",
+    "Stop when the goal is done, blocked by missing information, or max_iterations is reached."
+  ],
+  "completion_evidence": {
+    "targeted_goal_4a_tests": "11 passed",
+    "goal_3c_regression_subset": "17 passed",
+    "private_evidence_package_run": "passed",
+    "full_pytest": "713 passed, 26 skipped, 12 deselected",
+    "ruff": "passed",
+    "diff_checks": "passed with CRLF warning only",
+    "promotion_gate_status": "blocked_cross_dataset_evidence_insufficient",
+    "cross_dataset_gate_status": "blocked_insufficient_measured_datasets",
+    "shipped_default_change_recommended": false
+  }
+}
