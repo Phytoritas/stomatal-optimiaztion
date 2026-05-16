@@ -1,0 +1,60 @@
+exp:
+  name: tomics_haf_2025_2c_promotion_gate
+
+paths:
+  repo_root: ../..
+
+tomics_haf:
+  season_id: "2025_2C"
+  current_dataset_id: "haf_2025_2c"
+  observer_metadata: out/tomics/analysis/haf_2025_2c/2025_2c_tomics_haf_metadata.json
+  latent_allocation_metadata: out/tomics/validation/latent-allocation/haf_2025_2c/latent_allocation_metadata.json
+  latent_allocation_guardrails: out/tomics/validation/latent-allocation/haf_2025_2c/latent_allocation_guardrails.csv
+  harvest_family_output_root: out/tomics/validation/harvest-family/haf_2025_2c
+  harvest_family_metadata: out/tomics/validation/harvest-family/haf_2025_2c/harvest_family_metadata.json
+  harvest_family_rankings: out/tomics/validation/harvest-family/haf_2025_2c/harvest_family_rankings.csv
+  harvest_family_metrics_by_loadcell: out/tomics/validation/harvest-family/haf_2025_2c/harvest_family_metrics_by_loadcell.csv
+  harvest_family_metrics_mean_sd: out/tomics/validation/harvest-family/haf_2025_2c/harvest_family_metrics_mean_sd.csv
+  harvest_family_budget_parity: out/tomics/validation/harvest-family/haf_2025_2c/harvest_family_budget_parity.csv
+  harvest_family_mass_balance: out/tomics/validation/harvest-family/haf_2025_2c/harvest_family_mass_balance.csv
+  goal3c_readiness_audit: out/tomics/validation/harvest-family/haf_2025_2c/goal3c_readiness_audit.json
+  output_root: out/tomics/validation/promotion-gate/haf_2025_2c
+
+gate:
+  run_promotion_gate: true
+  run_cross_dataset_gate: true
+  allow_single_dataset_promotion: false
+  require_cross_dataset_for_promotion: true
+  require_measured_dataset_count_min: 2
+  current_measured_dataset_count: 1
+  current_dataset_id: "haf_2025_2c"
+
+  require_dmc_0p056: true
+  require_dmc_sensitivity_disabled: true
+  require_dry_yield_estimated_flag: true
+  require_direct_dry_yield_false: true
+  require_latent_allocation_not_direct_validation: true
+  require_no_raw_thorp: true
+  require_no_fruit_diameter_targets: true
+  require_shipped_incumbent_unchanged: true
+
+  require_budget_parity_pass: true
+  require_mass_balance_pass: true
+  require_no_leaf_collapse: true
+  require_no_wet_root_excess: true
+  require_stress_gated_root_increase: true
+  require_sum_to_one: true
+  require_nonfinite_flag_zero: true
+  require_invalid_run_flag_zero_for_selected: true
+
+  promotion_effect_size_requirements:
+    min_relative_improvement_vs_incumbent: 0.05
+    max_final_bias_pct_abs: 20.0
+    require_by_loadcell_consistency: true
+    require_no_treatment_group_failure: true
+
+  outputs:
+    write_candidate_selection_for_future_gate: true
+    write_gate_blockers: true
+    write_claim_register: true
+    write_new_phytologist_readiness: true
