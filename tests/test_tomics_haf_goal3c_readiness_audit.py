@@ -2,7 +2,9 @@ import pandas as pd
 
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.validation.haf_pre_gate_artifacts import (
     BUDGET_PARITY_BASIS,
+    REQUIRED_PLOTKIT_BUNDLES,
     WALL_CLOCK_LIMITATION,
+    _plotkit_manifest_passes,
     build_goal3c_readiness_payload,
 )
 
@@ -118,3 +120,19 @@ def test_goal3c_readiness_fails_if_wall_clock_parity_marked_required() -> None:
 
     assert payload["goal3c_ready"] is False
     assert "budget_parity_limitations_documented" in payload["blockers"]
+
+
+def test_plotkit_manifest_fails_when_required_bundle_data_is_missing(tmp_path) -> None:
+    figure_root = tmp_path / "figures"
+    figure_root.mkdir()
+    rows = [
+        {
+            "bundle": bundle,
+            "render_status": "failed_missing_data",
+            "blocker": "missing input CSV",
+        }
+        for bundle in REQUIRED_PLOTKIT_BUNDLES
+    ]
+    pd.DataFrame(rows).to_csv(figure_root / "plotkit_render_manifest.csv", index=False)
+
+    assert _plotkit_manifest_passes(figure_root) is False

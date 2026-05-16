@@ -37,7 +37,6 @@ PLOTKIT_ACCEPTED_STATUSES = {
     "rendered",
     "spec_validated_only",
     "failed_missing_renderer",
-    "failed_missing_data",
 }
 
 
