@@ -1,5 +1,5 @@
 exp:
-  name: tomics_haf_2025_2c_observer_pipeline
+  name: tomics_haf_2025_2c_observer_pipeline_production
 
 paths:
   repo_root: ../..
@@ -17,12 +17,17 @@ tomics_haf:
     dataset3: dataset3_individual_stem_diameter_flower_height_flowering_date.parquet
 
 observer_pipeline:
-  mode: smoke
+  mode: production
   parquet_batch_size: 250000
   max_full_rows_without_limit: 2000000
-  fail_on_full_in_memory_large_dataset: true
-  # Local smoke caps keep the private run bounded. Remove or raise these caps for a full production observer export.
   max_rows:
-    dataset1: 1000000
-    dataset2: 500000
+    dataset1:
+    dataset2:
     dataset3:
+  require_chunk_aggregation: true
+  require_row_cap_absent_for_production: true
+  require_dataset1_full_processed: true
+  require_dataset2_full_processed: true
+  write_intermediate_chunk_manifests: true
+  fail_on_full_in_memory_large_dataset: true
+

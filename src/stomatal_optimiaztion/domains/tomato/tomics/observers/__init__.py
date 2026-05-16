@@ -19,6 +19,10 @@ from stomatal_optimiaztion.domains.tomato.tomics.observers.radiation_source impo
 from stomatal_optimiaztion.domains.tomato.tomics.observers.pipeline import (
     run_tomics_haf_observer_pipeline,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.observers.production_export import (
+    aggregate_dataset1_streaming,
+    aggregate_dataset2_daily_streaming,
+)
 
 __all__ = [
     "DEFAULT_INPUT_FILE_SPECS",
@@ -26,6 +30,8 @@ __all__ = [
     "RADIATION_THRESHOLDS_TO_TEST",
     "SENSOR_MAPPING_METADATA",
     "audit_input_file",
+    "aggregate_dataset1_streaming",
+    "aggregate_dataset2_daily_streaming",
     "build_radiation_source_verification",
     "match_semantic_roles",
     "run_tomics_haf_observer_pipeline",

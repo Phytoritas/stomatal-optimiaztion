@@ -23,24 +23,38 @@ def build_rootzone_indices(
     if not group_cols:
         return pd.DataFrame()
 
-    agg = (
-        frame.groupby(group_cols, dropna=False)
-        .agg(
-            moisture_percent_mean=("moisture_percent", "mean") if "moisture_percent" in frame.columns else ("date", "size"),
-            ec_ds_mean=("ec_ds", "mean") if "ec_ds" in frame.columns else ("date", "size"),
-            tensiometer_hp_mean=("tensiometer_hp", "mean") if "tensiometer_hp" in frame.columns else ("date", "size"),
-            tensiometer_count=("tensiometer_hp", "count") if "tensiometer_hp" in frame.columns else ("date", "size"),
-            row_count=("date", "size") if "date" in frame.columns else (group_cols[0], "size"),
+    if {"moisture_percent_mean", "ec_ds_mean", "tensiometer_hp_mean"}.intersection(frame.columns):
+        agg = frame.copy()
+        if "source_row_count" in agg.columns:
+            agg["row_count"] = pd.to_numeric(agg["source_row_count"], errors="coerce")
+        elif "row_count" not in agg.columns:
+            agg["row_count"] = 1
+        if "tensiometer_hp_count" in agg.columns:
+            agg["tensiometer_count"] = pd.to_numeric(agg["tensiometer_hp_count"], errors="coerce")
+        elif "tensiometer_count" not in agg.columns:
+            agg["tensiometer_count"] = agg["tensiometer_hp_mean"].notna().astype("int64")
+        for column in ("moisture_percent_mean", "ec_ds_mean", "tensiometer_hp_mean"):
+            if column not in agg.columns:
+                agg[column] = np.nan
+    else:
+        agg = (
+            frame.groupby(group_cols, dropna=False)
+            .agg(
+                moisture_percent_mean=("moisture_percent", "mean") if "moisture_percent" in frame.columns else ("date", "size"),
+                ec_ds_mean=("ec_ds", "mean") if "ec_ds" in frame.columns else ("date", "size"),
+                tensiometer_hp_mean=("tensiometer_hp", "mean") if "tensiometer_hp" in frame.columns else ("date", "size"),
+                tensiometer_count=("tensiometer_hp", "count") if "tensiometer_hp" in frame.columns else ("date", "size"),
+                row_count=("date", "size") if "date" in frame.columns else (group_cols[0], "size"),
+            )
+            .reset_index()
         )
-        .reset_index()
-    )
-    if "moisture_percent" not in frame.columns:
-        agg["moisture_percent_mean"] = np.nan
-    if "ec_ds" not in frame.columns:
-        agg["ec_ds_mean"] = np.nan
-    if "tensiometer_hp" not in frame.columns:
-        agg["tensiometer_hp_mean"] = np.nan
-        agg["tensiometer_count"] = 0
+        if "moisture_percent" not in frame.columns:
+            agg["moisture_percent_mean"] = np.nan
+        if "ec_ds" not in frame.columns:
+            agg["ec_ds_mean"] = np.nan
+        if "tensiometer_hp" not in frame.columns:
+            agg["tensiometer_hp_mean"] = np.nan
+            agg["tensiometer_count"] = 0
 
     agg["tensiometer_available"] = agg["tensiometer_count"].gt(0)
     agg["tensiometer_coverage_fraction"] = agg["tensiometer_count"] / agg["row_count"].replace(0, np.nan)

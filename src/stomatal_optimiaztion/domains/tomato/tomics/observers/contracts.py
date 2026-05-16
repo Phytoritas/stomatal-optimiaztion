@@ -82,6 +82,8 @@ OUTPUT_FILENAMES = {
     "dataset3_bridge": "2025_2c_dataset3_growth_phenology_bridge.csv",
     "observer_feature_frame": "2025_2c_tomics_haf_observer_feature_frame.csv",
     "metadata": "2025_2c_tomics_haf_metadata.json",
+    "chunk_manifest": "observer_production_chunk_manifest.csv",
+    "production_export_summary": "observer_production_export_summary.md",
 }
 
 
@@ -128,4 +130,3 @@ def base_metadata() -> dict[str, Any]:
         "harvest_family_factorial_run": False,
         "promotion_gate_run": False,
     }
-

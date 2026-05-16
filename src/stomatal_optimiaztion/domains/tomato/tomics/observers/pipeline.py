@@ -28,6 +28,17 @@ from stomatal_optimiaztion.domains.tomato.tomics.observers.fruit_diameter_window
     build_fruit_leaf_loadcell_bridge,
     build_fruit_leaf_radiation_windows,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.observers.parquet_streaming import (
+    assert_no_large_full_load_without_limit,
+    iter_projected_parquet_batches,
+    parquet_metadata_summary,
+    projected_columns,
+    validate_production_row_cap_policy,
+)
+from stomatal_optimiaztion.domains.tomato.tomics.observers.production_export import (
+    aggregate_dataset1_streaming,
+    aggregate_dataset2_daily_streaming,
+)
 from stomatal_optimiaztion.domains.tomato.tomics.observers.qc import apply_fruit_leaf_qc
 from stomatal_optimiaztion.domains.tomato.tomics.observers.radiation_source import (
     build_radiation_source_verification,
@@ -66,7 +77,14 @@ def _tomics_haf_config(config: dict[str, Any]) -> dict[str, Any]:
 def _write_csv(output_root: Path, key: str, frame: pd.DataFrame) -> Path:
     ensure_dir(output_root)
     path = output_root / OUTPUT_FILENAMES[key]
-    frame.to_csv(path, index=False)
+    frame.to_csv(path, index=False, encoding="utf-8")
+    return path
+
+
+def _write_text(output_root: Path, key: str, text: str) -> Path:
+    ensure_dir(output_root)
+    path = output_root / OUTPUT_FILENAMES[key]
+    path.write_text(text, encoding="utf-8")
     return path
 
 
@@ -94,41 +112,49 @@ def _read_projected_parquet(
     max_rows: int | None,
     batch_size: int,
     max_full_rows_without_limit: int,
+    mode: str = "smoke",
+    fail_on_full_in_memory_large_dataset: bool = True,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
-    import pyarrow.parquet as pq
+    parquet_meta = parquet_metadata_summary(path)
+    available = projected_columns(path, columns)
+    total_rows = int(parquet_meta["total_rows"])
+    assert_no_large_full_load_without_limit(
+        total_rows=total_rows,
+        max_rows=max_rows,
+        mode=mode,
+        max_full_rows_without_limit=max_full_rows_without_limit,
+        fail_on_full_in_memory_large_dataset=fail_on_full_in_memory_large_dataset,
+    )
 
-    parquet_file = pq.ParquetFile(path)
-    available = [column for column in columns if column in parquet_file.schema_arrow.names]
-    total_rows = int(parquet_file.metadata.num_rows)
-    if max_rows is None and total_rows > max_full_rows_without_limit:
-        raise RuntimeError(
-            f"Refusing to load {total_rows:,} rows from {path.name} without max_rows. "
-            "Set observer_pipeline.max_rows for a bounded local smoke run."
-        )
-
-    remaining = max_rows
     frames: list[pd.DataFrame] = []
     rows_loaded = 0
-    for batch in parquet_file.iter_batches(batch_size=batch_size, columns=available):
-        chunk = batch.to_pandas()
-        if remaining is not None and chunk.shape[0] > remaining:
-            chunk = chunk.iloc[:remaining].copy()
+    batches_processed = 0
+    for chunk in iter_projected_parquet_batches(path, columns, batch_size=batch_size, max_rows=max_rows):
+        batches_processed += 1
         frames.append(chunk)
         rows_loaded += int(chunk.shape[0])
-        if remaining is not None:
-            remaining -= int(chunk.shape[0])
-            if remaining <= 0:
-                break
     frame = pd.concat(frames, ignore_index=True) if frames else pd.DataFrame(columns=available)
     metadata = {
         "path": str(path),
         "projected_columns": available,
         "total_rows": total_rows,
         "rows_loaded": rows_loaded,
+        "rows_processed": rows_loaded,
+        "rows_processed_fraction": rows_loaded / total_rows if total_rows else 1.0,
         "row_limit_applied": max_rows is not None and rows_loaded < total_rows,
         "max_rows": max_rows,
+        "batches_processed": batches_processed,
+        "chunk_aggregation_complete": rows_loaded == total_rows,
+        "chunk_aggregation_used": False,
+        "full_in_memory_large_dataset_used": bool(total_rows > max_full_rows_without_limit),
     }
     return frame, metadata
+
+
+def _read_projected_sample(path: Path, columns: tuple[str, ...], *, batch_size: int = 10_000) -> pd.DataFrame:
+    for chunk in iter_projected_parquet_batches(path, columns, batch_size=batch_size, max_rows=batch_size):
+        return chunk
+    return pd.DataFrame(columns=projected_columns(path, columns))
 
 
 def _path_for_input(raw_root: Path, role: str, config: dict[str, Any]) -> Path:
@@ -149,9 +175,23 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
     ensure_dir(output_root)
 
     pipeline_config = dict(config.get("observer_pipeline", {}))
+    mode = str(pipeline_config.get("mode", "smoke"))
+    if mode not in {"smoke", "production"}:
+        raise ValueError(f"observer_pipeline.mode must be 'smoke' or 'production', got {mode!r}.")
     batch_size = int(pipeline_config.get("parquet_batch_size", 250_000))
     max_full_rows_without_limit = int(pipeline_config.get("max_full_rows_without_limit", 2_000_000))
+    fail_on_full_in_memory_large_dataset = bool(pipeline_config.get("fail_on_full_in_memory_large_dataset", True))
+    require_row_cap_absent_for_production = bool(
+        pipeline_config.get("require_row_cap_absent_for_production", True)
+    )
+    write_intermediate_chunk_manifests = bool(pipeline_config.get("write_intermediate_chunk_manifests", False))
     max_rows = pipeline_config.get("max_rows", {})
+    max_rows = max_rows if isinstance(max_rows, dict) else {}
+    validate_production_row_cap_policy(
+        mode=mode,
+        max_rows_by_dataset=max_rows,
+        require_row_cap_absent_for_production=require_row_cap_absent_for_production,
+    )
     dataset1_max_rows = max_rows.get("dataset1") if isinstance(max_rows, dict) else None
     dataset2_max_rows = max_rows.get("dataset2") if isinstance(max_rows, dict) else None
     dataset3_max_rows = max_rows.get("dataset3") if isinstance(max_rows, dict) else None
@@ -177,32 +217,45 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
     fruit_leaf_qc_path = _write_csv(output_root, "fruit_leaf_timeseries_qc", fruit_leaf_qc)
     sensor_qc_path = _write_csv(output_root, "sensor_qc_report", sensor_qc_report)
 
-    dataset1, dataset1_load_meta = _read_projected_parquet(
-        dataset1_path,
-        DATASET1_COLUMN_CANDIDATES,
-        max_rows=int(dataset1_max_rows) if dataset1_max_rows is not None else None,
-        batch_size=batch_size,
-        max_full_rows_without_limit=max_full_rows_without_limit,
-    )
-    dataset1["timestamp"] = pd.to_datetime(dataset1["timestamp"], errors="coerce")
-
     audit_rows = _load_audit_rows(output_root)
+    dataset1_sample = _read_projected_sample(dataset1_path, DATASET1_COLUMN_CANDIDATES)
     radiation_rows, radiation_decision = build_radiation_source_verification(
-        {"dataset1": dataset1, "fruit_leaf_temperature_solar_raw_dat": raw_dat},
+        {"dataset1": dataset1_sample, "fruit_leaf_temperature_solar_raw_dat": raw_dat},
         audit_rows,
     )
 
-    radiation_intervals = build_radiation_intervals(
-        dataset1,
-        thresholds_w_m2=RADIATION_THRESHOLDS_W_M2,
-        timestamp_col="timestamp",
-        radiation_col=RADIATION_COLUMN_USED,
-    )
+    chunk_manifest_frames: list[pd.DataFrame] = []
+    if mode == "production":
+        radiation_intervals, event_intervals, dataset1_load_meta, dataset1_manifest = aggregate_dataset1_streaming(
+            path=dataset1_path,
+            columns=DATASET1_COLUMN_CANDIDATES,
+            batch_size=batch_size,
+            max_rows=None,
+            thresholds_w_m2=RADIATION_THRESHOLDS_W_M2,
+        )
+        chunk_manifest_frames.append(dataset1_manifest)
+    else:
+        dataset1, dataset1_load_meta = _read_projected_parquet(
+            dataset1_path,
+            DATASET1_COLUMN_CANDIDATES,
+            max_rows=int(dataset1_max_rows) if dataset1_max_rows is not None else None,
+            batch_size=batch_size,
+            max_full_rows_without_limit=max_full_rows_without_limit,
+            mode=mode,
+            fail_on_full_in_memory_large_dataset=fail_on_full_in_memory_large_dataset,
+        )
+        dataset1["timestamp"] = pd.to_datetime(dataset1["timestamp"], errors="coerce")
+        radiation_intervals = build_radiation_intervals(
+            dataset1,
+            thresholds_w_m2=RADIATION_THRESHOLDS_W_M2,
+            timestamp_col="timestamp",
+            radiation_col=RADIATION_COLUMN_USED,
+        )
+        event_intervals = build_10min_event_bridged_water_loss(dataset1, radiation_intervals)
     photoperiod = build_photoperiod_table(radiation_intervals)
     radiation_daily = build_radiation_daily_summary(radiation_intervals)
     photoperiod_path = _write_csv(output_root, "radiation_photoperiod", photoperiod)
 
-    event_intervals = build_10min_event_bridged_water_loss(dataset1, radiation_intervals)
     event_intervals = calibrate_to_daily_event_bridged_total(event_intervals)
     event_intervals_path = _write_csv(output_root, "event_intervals", event_intervals)
     event_daily_all = summarize_radiation_daynight_et(event_intervals)
@@ -250,13 +303,24 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
     sensor_bridge = build_fruit_leaf_loadcell_bridge(mapping)
     sensor_bridge_path = _write_csv(output_root, "fruit_leaf_loadcell_bridge", sensor_bridge)
 
-    dataset2, dataset2_load_meta = _read_projected_parquet(
-        dataset2_path,
-        DATASET2_COLUMN_CANDIDATES,
-        max_rows=int(dataset2_max_rows) if dataset2_max_rows is not None else None,
-        batch_size=batch_size,
-        max_full_rows_without_limit=max_full_rows_without_limit,
-    )
+    if mode == "production":
+        dataset2, dataset2_load_meta, dataset2_manifest = aggregate_dataset2_daily_streaming(
+            path=dataset2_path,
+            columns=DATASET2_COLUMN_CANDIDATES,
+            batch_size=batch_size,
+            max_rows=None,
+        )
+        chunk_manifest_frames.append(dataset2_manifest)
+    else:
+        dataset2, dataset2_load_meta = _read_projected_parquet(
+            dataset2_path,
+            DATASET2_COLUMN_CANDIDATES,
+            max_rows=int(dataset2_max_rows) if dataset2_max_rows is not None else None,
+            batch_size=batch_size,
+            max_full_rows_without_limit=max_full_rows_without_limit,
+            mode=mode,
+            fail_on_full_in_memory_large_dataset=fail_on_full_in_memory_large_dataset,
+        )
     rootzone = build_rootzone_indices(dataset2, daily_wide)
     rootzone_path = _write_csv(output_root, "rootzone_indices", rootzone)
 
@@ -266,6 +330,8 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
         max_rows=int(dataset3_max_rows) if dataset3_max_rows is not None else None,
         batch_size=batch_size,
         max_full_rows_without_limit=max_full_rows_without_limit,
+        mode=mode,
+        fail_on_full_in_memory_large_dataset=fail_on_full_in_memory_large_dataset,
     )
     dataset3_bridge, dataset3_metadata = build_dataset3_growth_phenology_bridge(dataset3)
     dataset3_path_out = _write_csv(output_root, "dataset3_bridge", dataset3_bridge)
@@ -279,6 +345,61 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
         dataset3_bridge=dataset3_bridge,
     )
     feature_frame_path = _write_csv(output_root, "observer_feature_frame", feature_frame)
+
+    chunk_manifest = (
+        pd.concat(chunk_manifest_frames, ignore_index=True)
+        if chunk_manifest_frames
+        else pd.DataFrame(columns=["dataset_role", "batch_index", "rows_processed", "aggregation_status"])
+    )
+    chunk_manifest_path: Path | None = None
+    if mode == "production" or write_intermediate_chunk_manifests:
+        chunk_manifest_path = _write_csv(output_root, "chunk_manifest", chunk_manifest)
+
+    row_cap_applied = bool(
+        dataset1_load_meta.get("row_limit_applied")
+        or dataset2_load_meta.get("row_limit_applied")
+        or dataset3_load_meta.get("row_limit_applied")
+    )
+    chunk_aggregation_used = bool(
+        dataset1_load_meta.get("chunk_aggregation_used") and dataset2_load_meta.get("chunk_aggregation_used")
+    )
+    production_export_completed = bool(
+        mode == "production"
+        and not row_cap_applied
+        and dataset1_load_meta.get("rows_processed_fraction") == 1.0
+        and dataset2_load_meta.get("rows_processed_fraction") == 1.0
+    )
+    production_ready_for_latent_allocation = bool(
+        production_export_completed
+        and chunk_aggregation_used
+        and not row_cap_applied
+        and feature_frame_path.exists()
+        and rootzone_path.exists()
+        and event_intervals_path.exists()
+    )
+    production_summary_path: Path | None = None
+    if mode == "production" or write_intermediate_chunk_manifests:
+        production_summary_path = _write_text(
+            output_root,
+            "production_export_summary",
+            "\n".join(
+                [
+                    "# TOMICS-HAF 2025-2C Observer Production Export Summary",
+                    "",
+                    f"- observer_pipeline_mode: {mode}",
+                    f"- production_export_completed: {production_export_completed}",
+                    f"- production_ready_for_latent_allocation: {production_ready_for_latent_allocation}",
+                    f"- dataset1_rows_processed: {dataset1_load_meta.get('rows_processed')}",
+                    f"- dataset1_total_rows: {dataset1_load_meta.get('total_rows')}",
+                    f"- dataset2_rows_processed: {dataset2_load_meta.get('rows_processed')}",
+                    f"- dataset2_total_rows: {dataset2_load_meta.get('total_rows')}",
+                    f"- row_cap_applied: {row_cap_applied}",
+                    f"- chunk_aggregation_used: {chunk_aggregation_used}",
+                    f"- full_in_memory_large_dataset_used: {bool(dataset1_load_meta.get('full_in_memory_large_dataset_used') or dataset2_load_meta.get('full_in_memory_large_dataset_used'))}",
+                    "",
+                ]
+            ),
+        )
 
     metadata = base_metadata()
     metadata.update(_load_goal1_metadata(output_root))
@@ -298,6 +419,42 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
             "Dataset3_mapping_confidence_counts": dataset3_metadata.get("Dataset3_mapping_confidence_counts", {}),
             "Dataset3_datetime_or_date_available": bool(dataset3_metadata.get("datetime_or_date_available", False)),
             "Dataset3_truss_position_available": bool(dataset3_metadata.get("truss_position_available", False)),
+            "observer_pipeline_mode": mode,
+            "production_export_requested": mode == "production",
+            "production_export_completed": production_export_completed,
+            "chunk_aggregation_used": chunk_aggregation_used,
+            "full_in_memory_large_dataset_used": bool(
+                dataset1_load_meta.get("full_in_memory_large_dataset_used")
+                or dataset2_load_meta.get("full_in_memory_large_dataset_used")
+            ),
+            "row_cap_applied": row_cap_applied,
+            "row_cap_allowed": mode == "smoke",
+            "dataset1_total_rows": dataset1_load_meta.get("total_rows"),
+            "dataset1_rows_processed": dataset1_load_meta.get("rows_processed"),
+            "dataset1_rows_processed_fraction": dataset1_load_meta.get("rows_processed_fraction"),
+            "dataset1_batches_processed": dataset1_load_meta.get("batches_processed"),
+            "dataset1_projected_columns": dataset1_load_meta.get("projected_columns"),
+            "dataset1_chunk_aggregation_complete": bool(dataset1_load_meta.get("chunk_aggregation_complete")),
+            "dataset2_total_rows": dataset2_load_meta.get("total_rows"),
+            "dataset2_rows_processed": dataset2_load_meta.get("rows_processed"),
+            "dataset2_rows_processed_fraction": dataset2_load_meta.get("rows_processed_fraction"),
+            "dataset2_batches_processed": dataset2_load_meta.get("batches_processed"),
+            "dataset2_projected_columns": dataset2_load_meta.get("projected_columns"),
+            "dataset2_chunk_aggregation_complete": bool(dataset2_load_meta.get("chunk_aggregation_complete")),
+            "dataset3_total_rows": dataset3_load_meta.get("total_rows"),
+            "dataset3_rows_processed": dataset3_load_meta.get("rows_processed"),
+            "row_cap_warning": (
+                "row caps applied; observer feature frame is not production-ready for latent allocation"
+                if row_cap_applied
+                else ""
+            ),
+            "water_flux_chunk_carryover_used": bool(dataset1_load_meta.get("water_flux_chunk_carryover_used", False)),
+            "water_flux_chunk_carryover_group_keys": dataset1_load_meta.get("water_flux_chunk_carryover_group_keys", []),
+            "event_bridged_ET_calibration_status": "uncalibrated_no_daily_total",
+            "existing_daily_event_bridged_total_available": False,
+            "radiation_interval_aggregation_grain": "10min",
+            "radiation_phase_rule": "day_if_any_interval_sample_gt_threshold",
+            "production_ready_for_latent_allocation": production_ready_for_latent_allocation,
             "row_loading": {
                 "dataset1": dataset1_load_meta,
                 "dataset2": dataset2_load_meta,
@@ -332,6 +489,10 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
         "observer_feature_frame": feature_frame_path,
         "metadata": output_root / OUTPUT_FILENAMES["metadata"],
     }
+    if chunk_manifest_path is not None:
+        output_paths["chunk_manifest"] = chunk_manifest_path
+    if production_summary_path is not None:
+        output_paths["production_export_summary"] = production_summary_path
     metadata["outputs"] = {key: str(path) for key, path in output_paths.items()}
     metadata_path = write_json(output_root / OUTPUT_FILENAMES["metadata"], metadata)
     output_paths["metadata"] = metadata_path
@@ -341,4 +502,3 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
         "outputs": {key: str(path) for key, path in output_paths.items()},
         "metadata": metadata,
     }
-

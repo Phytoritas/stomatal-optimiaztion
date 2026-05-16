@@ -22,3 +22,4 @@ The observer feature frame is a prerequisite scaffold for later latent allocatio
 
 Shipped TOMICS incumbent behavior remains unchanged.
 
+Goal 2.5 hardens the observer export for production by adding chunk aggregation for full Dataset1 and Dataset2 processing. Smoke mode remains capped for fast local checks, while production mode is expected to process all projected parquet rows without full in-memory materialization. The production observer feature frame is a prerequisite input scaffold for later latent allocation inference; it does not infer allocation.

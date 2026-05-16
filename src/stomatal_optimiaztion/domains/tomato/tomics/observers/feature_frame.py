@@ -73,8 +73,12 @@ def build_observer_feature_frame(
         fruit_main = fruit_windows[fruit_windows["threshold_w_m2"].eq(float(MAIN_RADIATION_THRESHOLD_W_M2))].copy()
         base = _merge_optional(base, fruit_main, ["date", "loadcell_id", "treatment", "threshold_w_m2"])
     if dataset3_bridge is not None and not dataset3_bridge.empty:
-        base = _merge_optional(base, dataset3_bridge, ["date", "loadcell_id", "treatment"])
-        base = _merge_optional(base, dataset3_bridge, ["loadcell_id", "treatment"])
+        if "date" in dataset3_bridge.columns:
+            base = _merge_optional(base, dataset3_bridge, ["date", "loadcell_id", "treatment"])
+        elif {"loadcell_id", "treatment"}.issubset(dataset3_bridge.columns):
+            base = _merge_optional(base, dataset3_bridge, ["loadcell_id", "treatment"])
+        elif "treatment" in dataset3_bridge.columns:
+            base = _merge_optional(base, dataset3_bridge, ["treatment"])
 
     base["biological_replication"] = False
     base["sensor_level_only"] = True
