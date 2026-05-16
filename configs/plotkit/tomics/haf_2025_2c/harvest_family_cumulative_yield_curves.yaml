@@ -1,0 +1,19 @@
+version: 1
+kind: multi_panel_timeseries
+meta:
+  id: haf_2025_2c_harvest_family_cumulative_yield_curves
+  title: HAF 2025-2C cumulative yield curves
+  family: tomics_haf_2025_2c_harvest_family
+  support_level: spec_scaffold
+data:
+  frame_role: harvest_family_cumulative_overlay
+mapping:
+  datetime_column: date
+  source_column: candidate_id
+  value_column: model_cumulative_fruit_DW_g_m2_floor
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png]
+  dpi: 300

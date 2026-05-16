@@ -1,0 +1,19 @@
+version: 1
+kind: bar_summary
+meta:
+  id: haf_2025_2c_latent_allocation_prior_comparison
+  title: HAF 2025-2C latent allocation prior comparison
+  family: tomics_haf_2025_2c_harvest_family
+  support_level: spec_scaffold
+data:
+  frame_role: harvest_family_rankings
+mapping:
+  x_column: latent_allocation_prior_family
+  y_column: ranking_score
+  color_column: fruit_harvest_family
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png]
+  dpi: 300

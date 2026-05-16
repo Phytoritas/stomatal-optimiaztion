@@ -1,0 +1,19 @@
+version: 1
+kind: bar_summary
+meta:
+  id: haf_2025_2c_harvest_budget_parity
+  title: HAF 2025-2C harvest budget parity
+  family: tomics_haf_2025_2c_harvest_family
+  support_level: spec_scaffold
+data:
+  frame_role: harvest_family_budget_parity
+mapping:
+  x_column: budget_parity_group
+  y_column: budget_units_used
+  color_column: allocator_family
+theme:
+  name: phytoritas_legacy_muted_botanical
+  tokens: ../../themes/phytoritas_legacy_muted_botanical_tokens.yaml
+export:
+  formats: [png]
+  dpi: 300

@@ -1,6 +1,8 @@
 # TOMICS-HAF 2025-2C Harvest-Family Factorial Design
 
-Goal 3B remains blocked until it is explicitly started. This document records the DMC precondition for that later goal.
+Goal 3B runs a bounded 2025-2C harvest-family architecture-discrimination test
+from the production observer feature frame and latent allocation posterior. It
+does not run the final promotion gate and does not run the cross-dataset gate.
 
 For the 2025-2C TOMICS-HAF analysis, fruit DMC is fixed at `0.056`.
 
@@ -15,9 +17,32 @@ Goal 3B acceptance criteria:
 - DMC fixed output exists.
 - Fresh and DMC-estimated dry yield bases are both reported.
 - DMC sensitivity outputs are not required for the current 2025-2C run.
+- Budget parity is `knob_count_and_hidden_calibration_budget`, not wall-clock
+  compute-budget parity.
 
 DMC sensitivity is disabled for the current 2025-2C run unless explicitly re-enabled in a later goal. Any prior `0.065` DMC references are deprecated previous-default notes and must not drive 2025-2C metrics.
 
 Dry yield derived from fresh yield using DMC `0.056` is an estimated dry-yield basis, not direct destructive dry-mass measurement unless separately verified.
 
 Harvest-family ranking, observation operators, and promotion gate must use DMC `0.056` for 2025-2C.
+
+## Goal 3B staged design
+
+- HF0 replays the shipped TOMICS incumbent with the DMC `0.056` observation operator.
+- HF1 screens fruit and leaf harvest families with the shipped allocator fixed.
+- HF2 evaluates allocator families against the bounded harvest shortlist.
+- HF3 performs one-axis-at-a-time parameter screening.
+- HF4 writes the budget-parity audit.
+- HF5 and HF6 remain disabled in this goal.
+
+The HAF runner uses `constant_0p056` only. The previous 6.5 percent constant
+mode and DMC sensitivity mode are forbidden for current 2025-2C primary metrics.
+
+Latent allocation posterior rows may enter only through the
+`tomics_haf_latent_allocation_research` allocator family. This is a research
+candidate input, not direct allocation validation.
+
+The HF4 budget-parity audit documents the limitation explicitly with
+`wall_clock_compute_budget_parity_evaluated = false` and
+`wall_clock_compute_budget_parity_required_for_goal_3b = false`. Goal 3C may
+add a wall-clock compute-budget audit, but Goal 3B does not claim one.

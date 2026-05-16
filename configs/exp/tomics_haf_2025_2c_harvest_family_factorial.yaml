@@ -1,0 +1,109 @@
+exp:
+  name: tomics_haf_2025_2c_harvest_family_factorial
+
+paths:
+  repo_root: ../..
+
+tomics_haf:
+  season_id: "2025_2C"
+  observer_feature_frame: out/tomics/analysis/haf_2025_2c/2025_2c_tomics_haf_observer_feature_frame.csv
+  observer_metadata: out/tomics/analysis/haf_2025_2c/2025_2c_tomics_haf_metadata.json
+  latent_allocation_posteriors: out/tomics/validation/latent-allocation/haf_2025_2c/latent_allocation_posteriors.csv
+  latent_allocation_metadata: out/tomics/validation/latent-allocation/haf_2025_2c/latent_allocation_metadata.json
+  output_root: out/tomics/validation/harvest-family/haf_2025_2c
+
+observation_operator:
+  family: fresh_to_dry_dmc_0p056
+  inverse_family: dry_to_fresh_dmc_0p056
+  family_set:
+    - fresh_to_dry_dmc_0p056
+    - dry_to_fresh_dmc_0p056
+  canonical_fruit_DMC_fraction: 0.056
+  DMC_fixed_for_2025_2C: true
+  DMC_sensitivity_enabled: false
+  dry_yield_is_dmc_estimated: true
+  direct_dry_yield_measured: false
+  effective_floor_area_per_loadcell_m2: 3.148672656
+  observed_yield_basis: fresh_weight
+  model_yield_basis: dry_weight_floor_area
+
+harvest_family_factorial:
+  mode: staged
+  run_HF0: true
+  run_HF1: true
+  run_HF2: true
+  run_HF3: true
+  run_HF4_budget_parity: true
+  run_HF5_promotion_gate: false
+  run_HF6_oracle_diagnostics: false
+
+  require_budget_parity: true
+  require_mass_balance: true
+  require_by_loadcell_metrics: true
+  require_mean_sd_metrics: true
+  require_observation_operator_dmc_0p056: true
+
+  incumbent:
+    allocator_family: shipped_tomics
+    fruit_harvest_family: tomsim_truss_incumbent
+    leaf_harvest_family: leaf_harvest_tomsim_legacy
+    observation_operator: fresh_to_dry_dmc_0p056
+
+  allocator_families:
+    - shipped_tomics
+    - source_only
+    - hydraulic_only
+    - allocation_only
+    - tomics_haf_latent_allocation_research
+
+  latent_allocation_prior_families:
+    - legacy_tomato_prior
+    - thorp_bounded_prior
+    - tomato_constrained_thorp_prior
+
+  fruit_harvest_families:
+    - tomsim_truss_incumbent
+    - tomgro_ageclass_mature_pool
+    - dekoning_fds_ripe
+    - vanthoor_boxcar_stageflow
+
+  leaf_harvest_families:
+    - leaf_harvest_tomsim_legacy
+    - leaf_harvest_none
+    - leaf_harvest_max_lai
+    - leaf_harvest_vanthoor_mcleafhar
+
+  always_include:
+    fruit_harvest_families:
+      - tomsim_truss_incumbent
+      - dekoning_fds_ripe
+
+  stage_budgets:
+    HF0: none
+    HF1: equal_budget_low
+    HF2: equal_budget_medium
+    HF3: equal_budget_medium
+    HF4: parity_audit_only
+
+  parameter_grid:
+    harvest_delay_days: [0, 1, 2, 3, 5]
+    harvest_readiness_threshold: [0.90, 0.95, 1.00, 1.05]
+    vanthoor_boxcar_n_stages: [4, 5, 6, 7]
+    tomgro_mature_pool_age_class: [last, last_two]
+    fdmc_mode:
+      - constant_0p056
+
+  forbidden:
+    fdmc_mode:
+      - constant_0p065
+      - dmc_sensitivity
+    raw_THORP_allocator: true
+    fruit_diameter_calibration_target: true
+    fruit_diameter_p_values: true
+    fruit_diameter_promotion_target: true
+
+promotion:
+  run_final_promotion_gate: false
+  single_dataset_promotion_allowed: false
+  require_cross_dataset_for_promotion: true
+  write_promotion_prerequisite_summary: true

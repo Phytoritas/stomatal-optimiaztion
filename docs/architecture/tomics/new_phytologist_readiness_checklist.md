@@ -17,3 +17,12 @@ Observer constraints remain:
 - Fruit diameter remains sensor-level apparent expansion diagnostics.
 - Latent allocation remains observer-supported inference, not direct allocation validation.
 - Shipped TOMICS incumbent remains unchanged.
+
+Goal 3B readiness additions:
+
+- Harvest-family evaluation is a bounded 2025-2C architecture-discrimination test, not universal multi-season generalization.
+- Latent allocation is allowed only as a research candidate input.
+- THORP is allowed only as a bounded mechanistic prior/correction, not as a raw tomato allocator.
+- Final promotion and cross-dataset validation remain separate future gates.
+- Budget parity is knob-count and hidden-calibration-budget parity, not wall-clock compute-budget parity.
+- Goal 3C readiness requires a reproducibility manifest and a Plotkit render manifest or rendered bundle status before the promotion gate is considered.
