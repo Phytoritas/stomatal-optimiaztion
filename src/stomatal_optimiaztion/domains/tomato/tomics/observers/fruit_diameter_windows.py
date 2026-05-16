@@ -181,4 +181,3 @@ def build_fixed_clock_compat_windows(
                 }
             )
     return pd.DataFrame(rows)
-

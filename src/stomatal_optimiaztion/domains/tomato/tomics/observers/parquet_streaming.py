@@ -84,4 +84,3 @@ def validate_production_row_cap_policy(
     }
     if capped:
         raise ValueError(f"Production mode forbids row caps, got {capped}.")
-

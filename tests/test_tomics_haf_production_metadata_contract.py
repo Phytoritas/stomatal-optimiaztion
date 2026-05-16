@@ -153,4 +153,3 @@ def test_production_and_smoke_metadata_contracts(tmp_path: Path) -> None:
     assert smoke["observer_pipeline_mode"] == "smoke"
     assert smoke["row_cap_applied"] is True
     assert smoke["production_ready_for_latent_allocation"] is False
-

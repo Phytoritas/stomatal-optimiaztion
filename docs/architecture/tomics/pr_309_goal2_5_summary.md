@@ -52,4 +52,3 @@ Day/night phases remain radiation-defined from Dataset1 `env_inside_radiation_wm
 Fruit diameter remains sensor-level apparent expansion diagnostics.
 
 Shipped TOMICS incumbent remains unchanged.
-

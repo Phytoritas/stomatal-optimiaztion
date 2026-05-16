@@ -25,4 +25,3 @@ def test_dataset3_mapping_confidence_modes() -> None:
     assert no_date["allocation_use"].eq("growth_phenology_observer_only").all()
     assert treatment_only.shape[0] == 1
     assert unlinked.shape[0] == 1
-

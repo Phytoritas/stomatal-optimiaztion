@@ -129,4 +129,3 @@ def fruit_diameter_policy_metadata(mapping: dict[str, Any]) -> dict[str, Any]:
         "fruit_mapping_status": metadata.get("fruit_mapping_status", "provisional"),
         "leaf_mapping_status": metadata.get("leaf_mapping_status", "confirmed_by_user"),
     }
-

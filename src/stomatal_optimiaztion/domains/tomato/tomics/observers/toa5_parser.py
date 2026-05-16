@@ -15,4 +15,3 @@ def read_toa5_dat(path: str | Path, *, timestamp_col: str = "TIMESTAMP") -> pd.D
     if timestamp_col in frame.columns:
         frame[timestamp_col] = pd.to_datetime(frame[timestamp_col], errors="coerce")
     return frame
-

@@ -54,4 +54,3 @@ def test_event_bridge_missing_daily_total_is_safe_uncalibrated() -> None:
 
     assert calibrated["bridge_status"].iloc[0] == "uncalibrated_no_daily_total"
     assert calibrated["loss_g_10min_event_bridged_calibrated"].isna().all()
-

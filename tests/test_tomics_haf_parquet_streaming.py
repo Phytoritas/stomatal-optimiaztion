@@ -50,4 +50,3 @@ def test_large_full_load_guard_and_production_row_cap_policy() -> None:
             max_rows_by_dataset={"dataset1": 2, "dataset2": None},
             require_row_cap_absent_for_production=True,
         )
-

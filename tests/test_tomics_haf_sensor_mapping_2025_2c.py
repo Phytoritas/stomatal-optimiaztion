@@ -17,4 +17,3 @@ def test_2025_2c_sensor_mapping_contract() -> None:
     policy = fruit_diameter_policy_metadata(mapping)
     assert policy["fruit_diameter_p_values_allowed"] is False
     assert policy["fruit_diameter_allocation_calibration_target"] is False
-

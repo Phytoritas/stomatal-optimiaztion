@@ -17,4 +17,3 @@ Fruit diameter is sensor-level apparent expansion diagnostics only. It may be us
 Fruit diameter must not be used for treatment p-values, allocation calibration, hydraulic gate calibration, model promotion, or harvest-family promotion targets.
 
 The observer layer writes radiation-phase and fixed-clock compatibility summaries, but day/night phases for downstream observer features are radiation-defined from Dataset1 `env_inside_radiation_wm2`.
-

@@ -11,4 +11,3 @@ Fruit diameter remains sensor-level apparent expansion diagnostics only. It is n
 Full production observer export is a prerequisite for latent allocation inference on actual 2025-2C data. Latent allocation inference, harvest-family factorials, cross-dataset gates, and promotion gates remain blocked until production observer export completes and metadata reports `production_ready_for_latent_allocation = true`.
 
 The production metadata contract records total rows, processed rows, processed fractions, batch counts, row-cap status, chunk aggregation status, water-flux carryover status, and whether full in-memory loading was avoided.
-

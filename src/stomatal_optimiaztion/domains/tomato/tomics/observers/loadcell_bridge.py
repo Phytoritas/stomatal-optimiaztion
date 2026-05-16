@@ -20,4 +20,3 @@ def loadcell_treatment_lookup(frame: pd.DataFrame) -> pd.DataFrame:
         .sort_values("loadcell_id")
         .reset_index(drop=True)
     )
-

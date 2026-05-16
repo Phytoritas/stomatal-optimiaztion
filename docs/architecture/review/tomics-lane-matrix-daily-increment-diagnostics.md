@@ -123,4 +123,3 @@ series is all zero.
 
 For short review-only public smoke lanes, keep the resulting warning explicit
 instead of using the lane for promotion.
-

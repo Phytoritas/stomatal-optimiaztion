@@ -24,4 +24,3 @@ def test_toa5_parser_handles_quoted_headers_and_units(tmp_path: Path) -> None:
     assert list(frame.columns) == ["TIMESTAMP", "RECORD", "SolarRad_Avg", "LeafTemp1_Avg", "Fruit1Diameter_Avg"]
     assert frame["TIMESTAMP"].notna().all()
     assert frame["SolarRad_Avg"].tolist() == [0, 15]
-

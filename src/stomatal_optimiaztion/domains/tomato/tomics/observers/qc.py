@@ -77,4 +77,3 @@ def apply_fruit_leaf_qc(
         )
 
     return qc, pd.DataFrame(report_rows)
-

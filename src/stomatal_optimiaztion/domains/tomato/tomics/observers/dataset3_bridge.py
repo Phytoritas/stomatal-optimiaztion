@@ -70,4 +70,3 @@ def build_dataset3_growth_phenology_bridge(frame: pd.DataFrame) -> tuple[pd.Data
         "Dataset3_mapping_confidence_counts": {str(key): int(value) for key, value in counts.items()},
     }
     return summary, metadata
-

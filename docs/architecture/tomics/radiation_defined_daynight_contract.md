@@ -14,4 +14,3 @@ Fixed `06:00-18:00` windows are not primary. They are compatibility-only outputs
 The raw `.dat` `SolarRad_Avg` column is verified as a fallback candidate for this dataset, but Goal 1 established that Dataset1 radiation is high-frequency and directly usable. Therefore `SolarRad_Avg` remains fallback-only for the 2025-2C observer run.
 
 This contract does not change shipped TOMICS defaults and does not promote any allocator.
-
