@@ -106,6 +106,12 @@ def metadata_contract_audit(metadata: Mapping[str, Any]) -> pd.DataFrame:
         "fruit_diameter_allocation_calibration_target",
         "fruit_diameter_model_promotion_target",
         "shipped_TOMICS_incumbent_changed",
+        "canonical_fruit_DMC_fraction",
+        "fruit_DMC_fraction",
+        "default_fruit_dry_matter_content",
+        "DMC_fixed_for_2025_2C",
+        "DMC_sensitivity_enabled",
+        "deprecated_previous_default_fruit_DMC_fraction",
     )
     missing = [key for key in required if key not in normalized]
     rows.append(

@@ -16,8 +16,11 @@ MAIN_RADIATION_THRESHOLD_W_M2 = 0
 RADIATION_COLUMN_USED = "env_inside_radiation_wm2"
 RADIATION_PRIMARY_SOURCE = "dataset1"
 
-DEFAULT_FRUIT_DRY_MATTER_CONTENT = 0.065
-DMC_SENSITIVITY: tuple[float, ...] = (0.040, 0.052, 0.056, 0.060, 0.065, 0.080)
+CANONICAL_2025_2C_FRUIT_DMC = 0.056
+DEFAULT_FRUIT_DRY_MATTER_CONTENT = CANONICAL_2025_2C_FRUIT_DMC
+DEPRECATED_PREVIOUS_DEFAULT_FRUIT_DMC = 0.065
+DMC_SENSITIVITY: tuple[float, ...] = ()
+HAF_2025_2C_LOADCELL_FLOOR_AREA_M2 = 3.148672656
 
 RAW_INPUT_FILENAMES = {
     "fruit_leaf_temperature_solar_raw_dat": "2026_2작기_토마토_엽온_과실직경.dat",
@@ -125,8 +128,15 @@ def base_metadata() -> dict[str, Any]:
         "fresh_yield_available": False,
         "dry_yield_available": False,
         "DMC_conversion_performed": False,
+        "canonical_fruit_DMC_fraction": CANONICAL_2025_2C_FRUIT_DMC,
+        "fruit_DMC_fraction": CANONICAL_2025_2C_FRUIT_DMC,
         "default_fruit_dry_matter_content": DEFAULT_FRUIT_DRY_MATTER_CONTENT,
-        "dmc_sensitivity": list(DMC_SENSITIVITY),
+        "DMC_fixed_for_2025_2C": True,
+        "DMC_sensitivity_enabled": False,
+        "DMC_sensitivity_values": list(DMC_SENSITIVITY),
+        "deprecated_previous_default_fruit_DMC_fraction": DEPRECATED_PREVIOUS_DEFAULT_FRUIT_DMC,
+        "dry_yield_is_dmc_estimated": False,
+        "direct_dry_yield_measured": False,
         "biological_replication": False,
         "fruit_diameter_sensor_level_only": True,
         "fruit_diameter_treatment_endpoint": False,

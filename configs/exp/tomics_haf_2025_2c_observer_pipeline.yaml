@@ -26,3 +26,10 @@ observer_pipeline:
     dataset1: 1000000
     dataset2: 500000
     dataset3:
+
+dmc:
+  canonical_fruit_DMC_fraction: 0.056
+  DMC_fixed_for_2025_2C: true
+  DMC_sensitivity_enabled: false
+  DMC_sensitivity_values: []
+  deprecated_previous_default_fruit_DMC_fraction: 0.065

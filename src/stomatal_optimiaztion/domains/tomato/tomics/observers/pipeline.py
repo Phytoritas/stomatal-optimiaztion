@@ -212,15 +212,59 @@ def _merge_legacy_yield_bridge(feature_frame: pd.DataFrame, yield_bridge: pd.Dat
         return feature_frame
     bridge_columns = keys + [column for column in right.columns if column not in keys]
     merged = left.merge(right[bridge_columns], on=keys, how="left", suffixes=("", "_legacy_yield"))
-    fresh_cols = [column for column in ("measured_or_legacy_fresh_yield_g", "loadcell_daily_yield_g", "final_fresh_yield_g") if column in merged.columns]
-    dry_cols = [column for column in merged.columns if "_dry_yield_g_est_" in column or column.endswith("_dry_yield_g_est_5p6pct")]
+    for column in (
+        "fresh_yield_source",
+        "dry_yield_source",
+        "observed_fruit_FW_g_loadcell",
+        "observed_fruit_DW_g_loadcell_dmc_0p056",
+        "observed_fruit_DW_g_m2_floor_dmc_0p056",
+        "canonical_fruit_DMC_fraction",
+        "fruit_DMC_fraction",
+        "default_fruit_dry_matter_content",
+        "DMC_fixed_for_2025_2C",
+        "DMC_sensitivity_enabled",
+        "dry_yield_is_dmc_estimated",
+        "direct_dry_yield_measured",
+        "legacy_yield_bridge_provenance",
+        "legacy_sensitivity_columns_present",
+    ):
+        legacy_column = f"{column}_legacy_yield"
+        if legacy_column in merged.columns:
+            if column in merged.columns:
+                merged[column] = merged[legacy_column].combine_first(merged[column])
+            else:
+                merged[column] = merged[legacy_column]
+    fresh_cols = [
+        column
+        for column in (
+            "measured_or_legacy_fresh_yield_g",
+            "loadcell_daily_yield_g",
+            "loadcell_cumulative_yield_g",
+            "individual_cumulative_yield_g",
+            "final_fresh_yield_g",
+        )
+        if column in merged.columns
+    ]
+    dry_cols = [
+        column
+        for column in (
+            "observed_fruit_DW_g_loadcell_dmc_0p056",
+            "observed_fruit_DW_g_m2_floor_dmc_0p056",
+        )
+        if column in merged.columns
+    ]
     fresh_available = merged[fresh_cols].notna().any(axis=1) if fresh_cols else pd.Series(False, index=merged.index)
     dry_available = merged[dry_cols].notna().any(axis=1) if dry_cols else pd.Series(False, index=merged.index)
+    direct_dry = (
+        merged["direct_dry_yield_measured"].fillna(False).astype(bool)
+        if "direct_dry_yield_measured" in merged.columns
+        else pd.Series(False, index=merged.index)
+    )
     merged["harvest_yield_available"] = fresh_available | dry_available
     merged["fresh_yield_available"] = fresh_available
     merged["dry_yield_available"] = dry_available
-    merged["dry_yield_is_dmc_estimated"] = dry_available
-    merged["direct_dry_yield_measured"] = False
+    merged["direct_dry_yield_measured"] = direct_dry & dry_available
+    merged["dry_yield_is_dmc_estimated"] = dry_available & ~merged["direct_dry_yield_measured"]
     merged["DMC_conversion_performed"] = dry_available
     return merged
 

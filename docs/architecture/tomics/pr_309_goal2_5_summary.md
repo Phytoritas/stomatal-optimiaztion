@@ -35,6 +35,14 @@ Closes #308
 - `production_export_completed = true`.
 - `production_ready_for_latent_allocation = true`.
 
+## Goal 3A.6 DMC Canonicalization
+
+- For the 2025-2C TOMICS-HAF analysis, fruit DMC is fixed at `0.056`.
+- Dry yield derived from fresh yield using DMC `0.056` is an estimated dry-yield basis, not direct destructive dry-mass measurement unless separately verified.
+- DMC sensitivity is disabled for the current 2025-2C run unless explicitly re-enabled in a later goal.
+- Any prior `0.065` DMC references are deprecated previous-default notes and must not drive 2025-2C metrics.
+- Harvest-family ranking, observation operators, and promotion gate must use DMC `0.056` for 2025-2C.
+
 ## Unresolved Assumptions
 
 - Fruit1/Fruit2 mapping remains provisional.

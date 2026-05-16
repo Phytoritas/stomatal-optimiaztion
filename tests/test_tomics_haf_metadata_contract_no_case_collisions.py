@@ -49,6 +49,12 @@ def test_metadata_contract_audit_requires_canonical_top_level_keys() -> None:
             "fruit_diameter_allocation_calibration_target": False,
             "fruit_diameter_model_promotion_target": False,
             "shipped_TOMICS_incumbent_changed": False,
+            "canonical_fruit_DMC_fraction": 0.056,
+            "fruit_DMC_fraction": 0.056,
+            "default_fruit_dry_matter_content": 0.056,
+            "DMC_fixed_for_2025_2C": True,
+            "DMC_sensitivity_enabled": False,
+            "deprecated_previous_default_fruit_DMC_fraction": 0.065,
         }
     )
 

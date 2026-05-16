@@ -4,6 +4,10 @@ import numpy as np
 import pandas as pd
 
 from stomatal_optimiaztion.domains.tomato.tomics.observers.contracts import (
+    CANONICAL_2025_2C_FRUIT_DMC,
+    DEFAULT_FRUIT_DRY_MATTER_CONTENT,
+    DEPRECATED_PREVIOUS_DEFAULT_FRUIT_DMC,
+    HAF_2025_2C_LOADCELL_FLOOR_AREA_M2,
     MAIN_RADIATION_THRESHOLD_W_M2,
     RADIATION_COLUMN_USED,
 )
@@ -94,8 +98,23 @@ def build_observer_feature_frame(
     base["LAI_source"] = "not_available"
     base["harvest_yield_available"] = False
     base["fresh_yield_available"] = False
+    base["fresh_yield_source"] = ""
     base["dry_yield_available"] = False
+    base["dry_yield_source"] = ""
+    base["observed_fruit_FW_g_loadcell"] = np.nan
+    base["observed_fruit_DW_g_loadcell_dmc_0p056"] = np.nan
+    base["observed_fruit_DW_g_m2_floor_dmc_0p056"] = np.nan
+    base["canonical_fruit_DMC_fraction"] = CANONICAL_2025_2C_FRUIT_DMC
+    base["fruit_DMC_fraction"] = CANONICAL_2025_2C_FRUIT_DMC
+    base["default_fruit_dry_matter_content"] = DEFAULT_FRUIT_DRY_MATTER_CONTENT
+    base["DMC_fixed_for_2025_2C"] = True
+    base["DMC_sensitivity_enabled"] = False
+    base["DMC_sensitivity_values"] = ""
+    base["deprecated_previous_default_fruit_DMC_fraction"] = DEPRECATED_PREVIOUS_DEFAULT_FRUIT_DMC
     base["DMC_conversion_performed"] = False
+    base["dry_yield_is_dmc_estimated"] = False
+    base["direct_dry_yield_measured"] = False
+    base["loadcell_floor_area_m2"] = HAF_2025_2C_LOADCELL_FLOOR_AREA_M2
     base["latent_allocation_inference_run"] = False
     base["allocation_promotion_allowed"] = False
 

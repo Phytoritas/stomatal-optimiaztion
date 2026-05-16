@@ -31,6 +31,13 @@ observer_pipeline:
   write_intermediate_chunk_manifests: true
   fail_on_full_in_memory_large_dataset: true
 
+dmc:
+  canonical_fruit_DMC_fraction: 0.056
+  DMC_fixed_for_2025_2C: true
+  DMC_sensitivity_enabled: false
+  DMC_sensitivity_values: []
+  deprecated_previous_default_fruit_DMC_fraction: 0.065
+
 legacy_v1_3:
   enabled: true
   archive_root: artifacts/tomato_integrated_radiation_architecture_v1_3

@@ -31,5 +31,12 @@ def test_observer_feature_frame_flags_unavailable_lai_yield_and_indirect_allocat
     assert bool(row["LAI_available"]) is False
     assert bool(row["fresh_yield_available"]) is False
     assert bool(row["dry_yield_available"]) is False
+    assert row["canonical_fruit_DMC_fraction"] == 0.056
+    assert row["fruit_DMC_fraction"] == 0.056
+    assert row["default_fruit_dry_matter_content"] == 0.056
+    assert bool(row["DMC_fixed_for_2025_2C"]) is True
+    assert bool(row["DMC_sensitivity_enabled"]) is False
+    assert bool(row["dry_yield_is_dmc_estimated"]) is False
+    assert bool(row["direct_dry_yield_measured"]) is False
     assert bool(row["direct_partition_observation_available"]) is False
     assert row["allocation_validation_basis"] == "indirect_observer_features_only"

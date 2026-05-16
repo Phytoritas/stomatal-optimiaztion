@@ -60,10 +60,17 @@ def test_observer_metadata_after_hardening_preserves_latent_prerequisite_contrac
         "promotion_gate_run": False,
         "direct_dry_yield_measured": False,
         "dry_yield_is_dmc_estimated": True,
+        "canonical_fruit_DMC_fraction": 0.056,
+        "fruit_DMC_fraction": 0.056,
+        "default_fruit_dry_matter_content": 0.056,
+        "DMC_fixed_for_2025_2C": True,
+        "DMC_sensitivity_enabled": False,
+        "deprecated_previous_default_fruit_DMC_fraction": 0.065,
     }
 
     audit = metadata_contract_audit(metadata)
     assert audit["status"].tolist() == ["pass", "pass"]
     assert metadata["direct_dry_yield_measured"] is False
     assert metadata["dry_yield_is_dmc_estimated"] is True
+    assert metadata["DMC_sensitivity_enabled"] is False
     assert metadata["latent_allocation_inference_run"] is False

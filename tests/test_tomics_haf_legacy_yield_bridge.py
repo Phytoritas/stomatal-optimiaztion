@@ -46,9 +46,18 @@ def test_legacy_yield_bridge_distinguishes_fresh_from_dmc_estimated_dry_yield(tm
     assert metadata["dry_yield_available"] is True
     assert metadata["dry_yield_is_dmc_estimated"] is True
     assert metadata["direct_dry_yield_measured"] is False
+    assert metadata["canonical_fruit_DMC_fraction"] == 0.056
+    assert metadata["fruit_DMC_fraction"] == 0.056
+    assert metadata["default_fruit_dry_matter_content"] == 0.056
+    assert metadata["DMC_fixed_for_2025_2C"] is True
+    assert metadata["DMC_sensitivity_enabled"] is False
+    assert metadata["DMC_sensitivity_values"] == []
+    assert metadata["deprecated_previous_default_fruit_DMC_fraction"] == 0.065
     assert metadata["default_fruit_dry_matter_content_from_legacy"] == 0.056
-    assert metadata["configured_default_fruit_dry_matter_content"] == 0.065
-    assert 0.04 in metadata["dmc_sensitivity"]
+    assert bridge["observed_fruit_FW_g_loadcell"].iloc[0] == 120.0
+    assert bridge["observed_fruit_DW_g_loadcell_dmc_0p056"].iloc[0] == 6.72
+    assert bridge["dry_yield_source"].iloc[0] == "fresh_yield_times_canonical_DMC_0p056"
+    assert "loadcell_daily_dry_yield_g_est_lower_5p2pct" in metadata["legacy_sensitivity_columns_present"]
 
 
 def test_legacy_yield_bridge_accepts_cumulative_fresh_yield_without_daily_yield(tmp_path: Path) -> None:
@@ -79,6 +88,7 @@ def test_legacy_yield_bridge_accepts_cumulative_fresh_yield_without_daily_yield(
 
     assert audit["status"].iloc[0] == "ok"
     assert bridge["measured_or_legacy_fresh_yield_g"].iloc[0] == 300.0
+    assert bridge["observed_fruit_DW_g_loadcell_dmc_0p056"].iloc[0] == 16.8
     assert metadata["fresh_yield_available"] is True
-    assert metadata["dry_yield_available"] is False
+    assert metadata["dry_yield_available"] is True
     assert metadata["legacy_yield_bridge_used"] is True

@@ -149,6 +149,13 @@ def test_production_and_smoke_metadata_contracts(tmp_path: Path) -> None:
     assert production["fruit_diameter_p_values_allowed"] is False
     assert production["fruit_diameter_allocation_calibration_target"] is False
     assert production["fruit_diameter_model_promotion_target"] is False
+    assert production["canonical_fruit_DMC_fraction"] == 0.056
+    assert production["fruit_DMC_fraction"] == 0.056
+    assert production["default_fruit_dry_matter_content"] == 0.056
+    assert production["DMC_fixed_for_2025_2C"] is True
+    assert production["DMC_sensitivity_enabled"] is False
+    assert production["DMC_sensitivity_values"] == []
+    assert production["deprecated_previous_default_fruit_DMC_fraction"] == 0.065
 
     assert smoke["observer_pipeline_mode"] == "smoke"
     assert smoke["row_cap_applied"] is True
