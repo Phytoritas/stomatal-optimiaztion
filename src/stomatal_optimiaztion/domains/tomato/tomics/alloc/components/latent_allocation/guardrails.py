@@ -154,8 +154,10 @@ def evaluate_latent_allocation_guardrails(
         )
     )
 
-    fruit_calibration_violation = bool(metadata.get("fruit_diameter_allocation_calibration_target", False)) or bool(
-        metadata.get("fruit_diameter_p_values_allowed", False)
+    fruit_calibration_violation = (
+        bool(metadata.get("fruit_diameter_allocation_calibration_target", False))
+        or bool(metadata.get("fruit_diameter_p_values_allowed", False))
+        or bool(metadata.get("fruit_diameter_model_promotion_target", False))
     )
     rows.append(
         _guardrail_row(

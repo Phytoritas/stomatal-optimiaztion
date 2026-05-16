@@ -198,6 +198,9 @@ def _failure_outputs(
     feature_frame_path: Path,
     observer_metadata_path: Path,
     precondition_meta: dict[str, Any],
+    guardrail_name: str = "production_observer_precondition",
+    failure_message: str = "Latent allocation inference was not run because production observer preconditions failed.",
+    force_precondition_failed: bool = True,
 ) -> dict[str, Any]:
     empty = pd.DataFrame()
     outputs = {
@@ -212,7 +215,7 @@ def _failure_outputs(
             pd.DataFrame(
                 [
                     {
-                        "guardrail_name": "production_observer_precondition",
+                        "guardrail_name": guardrail_name,
                         "status": "fail",
                         "pass_fail": False,
                         "violation_count": 1,
@@ -224,12 +227,15 @@ def _failure_outputs(
             ),
         ),
     }
+    metadata_precondition = precondition_meta
+    if force_precondition_failed:
+        metadata_precondition = precondition_meta | {"production_observer_precondition_passed": False}
     metadata = _metadata_base(
         config=config,
         observer_metadata=observer_metadata,
         feature_frame_path=feature_frame_path,
         observer_metadata_path=observer_metadata_path,
-        precondition_meta=precondition_meta | {"production_observer_precondition_passed": False},
+        precondition_meta=metadata_precondition,
     )
     metadata["latent_allocation_inference_run"] = False
     metadata["latent_allocation_ready"] = False
@@ -239,7 +245,7 @@ def _failure_outputs(
         output_root,
         "summary",
         "# TOMICS-HAF 2025-2C Latent Allocation Inference\n\n"
-        "Latent allocation inference was not run because production observer preconditions failed.\n\n"
+        f"{failure_message}\n\n"
         f"Failure reasons: {metadata.get('precondition_failure_reasons', [])}\n",
     )
     outputs["metadata"] = metadata_path
@@ -317,6 +323,19 @@ def run_tomics_haf_latent_allocation(config_path: str | Path) -> dict[str, Any]:
 
     feature_frame = pd.read_csv(feature_frame_path)
     input_state, input_meta = build_latent_allocation_input_state(feature_frame, observer_metadata, config)
+    if input_state.empty or not bool(input_meta.get("latent_allocation_ready", False)):
+        return _failure_outputs(
+            output_root=output_root,
+            config=config,
+            observer_metadata=observer_metadata,
+            feature_frame_path=feature_frame_path,
+            observer_metadata_path=observer_metadata_path,
+            precondition_meta=input_meta
+            | {"precondition_failure_reasons": input_meta.get("precondition_failure_reasons", []) or ["empty_input_state"]},
+            guardrail_name="latent_allocation_input_state",
+            failure_message="Latent allocation inference was not run because no latent allocation input rows were available.",
+            force_precondition_failed=False,
+        )
     priors = build_latent_allocation_priors(input_state, config)
     posteriors = infer_latent_allocation(priors, config)
     identifiability = compute_allocation_identifiability(input_state, observer_metadata)

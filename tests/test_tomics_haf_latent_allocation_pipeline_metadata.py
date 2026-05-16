@@ -17,11 +17,15 @@ def _write_config(
     *,
     row_cap_applied: bool = False,
     metadata_overrides: dict | None = None,
+    empty_feature_frame: bool = False,
 ) -> Path:
     feature_path = tmp_path / "feature.csv"
     metadata_path = tmp_path / "metadata.json"
     output_root = tmp_path / "latent_out"
-    feature_frame().to_csv(feature_path, index=False)
+    frame = feature_frame()
+    if empty_feature_frame:
+        frame = frame.iloc[0:0]
+    frame.to_csv(feature_path, index=False)
     metadata = observer_metadata(row_cap_applied=row_cap_applied)
     metadata.update(metadata_overrides or {})
     metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
@@ -78,7 +82,28 @@ def test_pipeline_guardrails_fail_on_forbidden_upstream_metadata(tmp_path: Path)
 def test_runner_returns_nonzero_when_guardrails_fail(tmp_path: Path) -> None:
     config_path = _write_config(
         tmp_path,
-        metadata_overrides={"fruit_diameter_allocation_calibration_target": True},
+        metadata_overrides={"fruit_diameter_model_promotion_target": True},
     )
 
     assert main(["--config", str(config_path)]) == 1
+
+
+def test_pipeline_fails_safely_on_empty_input_state(tmp_path: Path) -> None:
+    result = run_tomics_haf_latent_allocation(_write_config(tmp_path, empty_feature_frame=True))
+    metadata = result["metadata"]
+    guardrails = pd.read_csv(result["outputs"]["guardrails"])
+
+    assert metadata["production_observer_precondition_passed"] is True
+    assert metadata["latent_allocation_inference_run"] is False
+    assert metadata["latent_allocation_ready"] is False
+    assert guardrails.iloc[0]["guardrail_name"] == "latent_allocation_input_state"
+
+
+def test_pipeline_guardrails_fail_on_fruit_promotion_target(tmp_path: Path) -> None:
+    result = run_tomics_haf_latent_allocation(
+        _write_config(tmp_path, metadata_overrides={"fruit_diameter_model_promotion_target": True})
+    )
+    metadata = result["metadata"]
+
+    assert metadata["latent_allocation_guardrails_passed"] is False
+    assert metadata["no_fruit_diameter_calibration_guard_passed"] is False

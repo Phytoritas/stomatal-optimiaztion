@@ -1,3 +1,5 @@
+import pytest
+
 from tomics_haf_latent_fixtures import feature_frame, latent_config, observer_metadata
 
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.components.latent_allocation.input_state import (
@@ -24,6 +26,26 @@ def test_latent_input_state_fails_safely_when_row_cap_applied() -> None:
     assert frame.empty
     assert meta["latent_allocation_ready"] is False
     assert "row_cap_applied" in meta["precondition_failure_reasons"]
+
+
+@pytest.mark.parametrize(
+    ("override", "reason"),
+    [
+        ({"production_export_completed": False}, "production_export_completed"),
+        ({"chunk_aggregation_used": False}, "chunk_aggregation_used"),
+        ({"fixed_clock_daynight_primary": True}, "fixed_clock_daynight_primary"),
+        ({"radiation_column_used": "SolarRad_Avg"}, "radiation_column_used"),
+        ({"dataset1_radiation_directly_usable": False}, "dataset1_radiation_directly_usable"),
+    ],
+)
+def test_latent_input_state_precondition_failures_are_explicit(override: dict, reason: str) -> None:
+    metadata = observer_metadata()
+    metadata.update(override)
+    passed, details = check_production_preconditions(metadata, latent_config())
+
+    assert passed is False
+    assert details["production_observer_precondition_passed"] is False
+    assert reason in details["precondition_failure_reasons"]
 
 
 def test_latent_input_state_marks_fruit_diameter_diagnostic_only() -> None:
