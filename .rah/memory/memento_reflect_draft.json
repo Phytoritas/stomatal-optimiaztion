@@ -1,0 +1,26 @@
+{
+  "summary": [
+    "Goal 3C PR #315 implements TOMICS-HAF 2025-2C promotion and cross-dataset gate outputs.",
+    "Promotion and cross-dataset gates executed, but promotion remains blocked because only one compatible measured dataset is available."
+  ],
+  "decisions": [
+    "Do not change shipped TOMICS defaults in Goal 3C; a shipped default change remains blocked until a separate explicit promotion-change task is approved after compatible cross-dataset evidence passes.",
+    "Goal 3C claim register conditions safe claims on metadata guardrails and blocks unsafe claims."
+  ],
+  "errors_resolved": [
+    "RALPH control-plane state was realigned from stale Goal 3B/3B.5 text to Goal 3C PR #315 status."
+  ],
+  "new_procedures": [
+    "For future RALPH work, verify .rah/state/status.json, .rah/plans/current_loop.md, .rah/memory/wakeup.md, and .rah/ralph/completion_report.md before claiming no missing items."
+  ],
+  "open_questions": [
+    "RAH SessionStart/Stop hooks are not registered; this is an operational convenience warning, not a Goal 3C blocker."
+  ],
+  "keywords": [
+    "stomatal-optimiaztion",
+    "tomics-haf",
+    "goal 3c",
+    "promotion gate",
+    "ralph"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "skill": "recursive-architecture-refactoring-auto",
+  "goal_id": "ralph-goal-3c-tomics-haf-2025-2c-promotion-and-cross-dataset-gate-outputs-with-single-dataset-promotion-block-new-phytologist-readiness-matrix-and-paper-safe-claim-register",
+  "goal": "Goal 3C TOMICS-HAF 2025-2C promotion and cross-dataset gate outputs with single-dataset promotion block, New Phytologist readiness matrix, and paper-safe claim register",
+  "status": "done",
+  "created_at_utc": "2026-05-16T13:11:25+00:00",
+  "updated_at_utc": "2026-05-16T13:49:48Z",
+  "repo_root": "C:\\Users\\yhmoo\\OneDrive\\Phytoritas\\projects\\stomatal-optimiaztion",
+  "max_iterations": 6,
+  "definition_of_done": {
+    "acceptance_criteria": [
+      "Promotion and cross-dataset gates execute and produce outputs; single-dataset promotion remains blocked unless criteria truly pass; shipped TOMICS incumbent unchanged; claim register and readiness matrix exist; tests/private runs/ruff/diff checks pass"
+    ],
+    "validation_commands": [
+      "targeted Goal 3C tests, Goal 3B.5 regression subset, private promotion and cross-dataset gate runs, ruff, git diff --check, full pytest if fast"
+    ],
+    "evidence_required": [
+      "iteration note under .rah/ralph/iterations/",
+      "validation output or documented validation gap",
+      "diff review notes before completion"
+    ]
+  },
+  "constraints": [
+    "Follow the nearest active AGENTS.md before any write.",
+    "Do not bypass the implementation gate; work on gate prerequisites when it is blocked.",
+    "Keep every implementation pass bounded and verification-backed.",
+    "Stop when the goal is done, blocked by missing information, or max_iterations is reached."
+  ],
+  "completion_evidence": {
+    "branch": "feat/tomics-haf-2025-2c-promotion-gate",
+    "head": "c889d426982369ae74cfde0894ebd2c5d0cffbbc",
+    "issue": 314,
+    "pull_request": 315,
+    "promotion_gate_status": "blocked_cross_dataset_evidence_insufficient",
+    "cross_dataset_gate_status": "blocked_insufficient_measured_datasets",
+    "full_pytest": "701 passed, 26 skipped, 12 deselected",
+    "ruff": "passed",
+    "reviewer": "no blocking or medium findings remain"
+  }
+}

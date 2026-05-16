@@ -1,0 +1,16 @@
+{
+  "workspace": "stomatal-optimiaztion",
+  "topic": "architecture-refactor",
+  "sessionId": "stomatal-optimiaztion#adhoc:tomics-haf-2025-2c-promotion-gate",
+  "caseId": "case/stomatal-optimiaztion/adhoc/tomics-haf-2025-2c-promotion-gate",
+  "phase": "validating",
+  "issue_number": 314,
+  "pull_request_number": 315,
+  "branch": "feat/tomics-haf-2025-2c-promotion-gate",
+  "profile": "python-service",
+  "source_contract": "artifacts/TOMICS_Architecture_Pipeline.md",
+  "head": "c889d426982369ae74cfde0894ebd2c5d0cffbbc",
+  "goal": "Goal 3C TOMICS-HAF 2025-2C promotion and cross-dataset gate outputs",
+  "promotion_gate_status": "blocked_cross_dataset_evidence_insufficient",
+  "cross_dataset_gate_status": "blocked_insufficient_measured_datasets"
+}

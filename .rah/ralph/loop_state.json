@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "skill": "recursive-architecture-refactoring-auto",
+  "generated_at_utc": "2026-05-16T13:11:25+00:00",
+  "updated_at_utc": "2026-05-16T13:50:28Z",
+  "repo_root": "C:\\Users\\yhmoo\\OneDrive\\Phytoritas\\projects\\stomatal-optimiaztion",
+  "goal_id": "ralph-goal-3c-tomics-haf-2025-2c-promotion-and-cross-dataset-gate-outputs-with-single-dataset-promotion-block-new-phytologist-readiness-matrix-and-paper-safe-claim-register",
+  "goal": "Goal 3C TOMICS-HAF 2025-2C promotion and cross-dataset gate outputs with single-dataset promotion block, New Phytologist readiness matrix, and paper-safe claim register",
+  "status": "done",
+  "done": true,
+  "current_iteration": 2,
+  "max_iterations": 6,
+  "loop_phase": "completed",
+  "implementation_gate": "slice-complete-promotion-change-blocked",
+  "current_stage": "tomics-haf-2025-2c-goal-3c-promotion-gate-pr315-open",
+  "harness_phase": "validating",
+  "blocked_reason": null,
+  "read_first": [
+    "AGENTS.md",
+    "docs/architecture/Phytoritas.md",
+    "docs/architecture/00_workspace_audit.md",
+    ".rah/state/status.json",
+    ".rah/state/gates.json",
+    ".rah/memory/wakeup.md",
+    ".rah/plans/current_loop.md",
+    ".rah/ralph/goal.json",
+    ".rah/ralph/loop_state.json"
+  ],
+  "next_actions": [
+    "Review PR #315 in the stacked PR sequence after PR #309, PR #311, and PR #313 remain aligned.",
+    "Keep shipped TOMICS defaults unchanged; a shipped default change is blocked until compatible cross-dataset evidence passes in a separate explicit promotion-change task.",
+    "Use Goal 3C outputs as safeguard evidence: gate executed, promotion blocked, cross-dataset evidence insufficient."
+  ],
+  "stop_conditions": [
+    "definition_of_done_satisfied",
+    "blocked_by_missing_user_input_or_external_access",
+    "max_iterations_reached",
+    "repo_policy_or_validation_failure_requires_attention"
+  ],
+  "state_paths": {
+    "goal": ".rah/ralph/goal.json",
+    "loop_state": ".rah/ralph/loop_state.json",
+    "iterations": ".rah/ralph/iterations/",
+    "completion_report": ".rah/ralph/completion_report.md",
+    "blockers": ".rah/ralph/blockers.md"
+  },
+  "command_recipes": {
+    "doctor": "python <active-skill-root>/automation/rah.py doctor \"C:\\\\Users\\\\yhmoo\\\\OneDrive\\\\Phytoritas\\\\projects\\\\stomatal-optimiaztion\"",
+    "status": "python <active-skill-root>/automation/rah.py status \"C:\\\\Users\\\\yhmoo\\\\OneDrive\\\\Phytoritas\\\\projects\\\\stomatal-optimiaztion\"",
+    "resume": "python <active-skill-root>/automation/rah.py resume \"C:\\\\Users\\\\yhmoo\\\\OneDrive\\\\Phytoritas\\\\projects\\\\stomatal-optimiaztion\"",
+    "ralph": "python <active-skill-root>/automation/rah.py ralph \"C:\\\\Users\\\\yhmoo\\\\OneDrive\\\\Phytoritas\\\\projects\\\\stomatal-optimiaztion\" --goal \"Goal 3C TOMICS-HAF 2025-2C promotion and cross-dataset gate outputs with single-dataset promotion block, New Phytologist readiness matrix, and paper-safe claim register\""
+  }
+}

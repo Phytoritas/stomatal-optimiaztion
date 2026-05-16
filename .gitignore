@@ -12,7 +12,20 @@ out/
 results/
 runs*/
 logs/
-.rah/
+!.rah/logs/
+.rah/helpers/
+.rah/pr-*.md
+.rah/state/*.log
+.rah/state/*.pid
+.rah/state/*.tmp
+.rah/logs/*.log
+.rah/logs/*.out
+.rah/logs/*.err
+.rah/tmp/
+.rah/cache/
+.rah/**/__pycache__/
+.rah/**/*.pyc
+.rah/runtime/recursive-architecture-refactoring-auto/
 
 docs/references/source_papers/
 

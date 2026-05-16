@@ -143,6 +143,49 @@ def _relative(path: Path, repo_root: Path) -> str:
         return str(path)
 
 
+def _cross_dataset_gate_config(
+    *,
+    config: Mapping[str, Any],
+    haf_cfg: Mapping[str, Any],
+    gate_cfg: Mapping[str, Any],
+) -> dict[str, Any]:
+    cross_cfg = as_dict(config.get("cross_dataset_gate"))
+    available_outputs = cross_cfg.get("available_dataset_outputs") or gate_cfg.get("available_dataset_outputs")
+    if not available_outputs:
+        available_outputs = [
+            {
+                "dataset_id": gate_cfg.get("current_dataset_id", haf_cfg.get("current_dataset_id", "haf_2025_2c")),
+                "dataset_type": "haf_measured_actual",
+                "measured_or_proxy": "measured",
+                "harvest_family_metadata": haf_cfg.get("harvest_family_metadata"),
+                "harvest_family_rankings": haf_cfg.get("harvest_family_rankings"),
+                "contributes_to_promotion_gate": True,
+            }
+        ]
+    return {
+        "cross_dataset_gate": {
+            "current_dataset_id": cross_cfg.get(
+                "current_dataset_id",
+                gate_cfg.get("current_dataset_id", haf_cfg.get("current_dataset_id", "haf_2025_2c")),
+            ),
+            "require_measured_dataset_count_min": cross_cfg.get(
+                "require_measured_dataset_count_min",
+                gate_cfg.get("require_measured_dataset_count_min", 2),
+            ),
+            "available_dataset_outputs": available_outputs,
+            "single_dataset_promotion_allowed": cross_cfg.get(
+                "single_dataset_promotion_allowed",
+                gate_cfg.get("allow_single_dataset_promotion", False),
+            ),
+            "allow_legacy_or_public_proxy_for_promotion": cross_cfg.get(
+                "allow_legacy_or_public_proxy_for_promotion",
+                False,
+            ),
+            "proxy_dataset_use": cross_cfg.get("proxy_dataset_use", "diagnostic_only"),
+        }
+    }
+
+
 def build_haf_promotion_gate_payload(
     *,
     config: Mapping[str, Any],
@@ -295,25 +338,7 @@ def build_haf_promotion_gate_payload(
         _candidate_max_abs(mean_sd, selected_id, "mean_final_cumulative_bias_pct"),
     )
     cross_payload = build_haf_cross_dataset_gate_payload(
-        config={
-            "cross_dataset_gate": {
-                "current_dataset_id": haf_cfg.get("current_dataset_id", "haf_2025_2c"),
-                "require_measured_dataset_count_min": gate_cfg.get("require_measured_dataset_count_min", 2),
-                "available_dataset_outputs": [
-                    {
-                        "dataset_id": gate_cfg.get("current_dataset_id", "haf_2025_2c"),
-                        "dataset_type": "haf_measured_actual",
-                        "measured_or_proxy": "measured",
-                        "harvest_family_metadata": haf_cfg.get("harvest_family_metadata"),
-                        "harvest_family_rankings": haf_cfg.get("harvest_family_rankings"),
-                        "contributes_to_promotion_gate": True,
-                    }
-                ],
-                "single_dataset_promotion_allowed": gate_cfg.get("allow_single_dataset_promotion", False),
-                "allow_legacy_or_public_proxy_for_promotion": False,
-                "proxy_dataset_use": "diagnostic_only",
-            }
-        },
+        config=_cross_dataset_gate_config(config=config, haf_cfg=haf_cfg, gate_cfg=gate_cfg),
         repo_root=repo_root,
         config_path=config_path,
     )

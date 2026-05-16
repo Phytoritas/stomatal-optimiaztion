@@ -1,0 +1,16 @@
+{
+  "installed_at_source": "C:\\Users\\yhmoo\\.codex\\skills\\recursive-architecture-refactoring-auto",
+  "package_install": {
+    "source": "C:\\Users\\yhmoo\\.codex\\skills\\recursive-architecture-refactoring-auto",
+    "target": "C:\\Users\\yhmoo\\OneDrive\\Phytoritas\\projects\\stomatal-optimiaztion\\.rah\\helpers\\recursive-architecture-refactoring-auto",
+    "mode": "copy",
+    "action": "updated",
+    "note": "Repo helper bundle refreshed with automation scripts only."
+  },
+  "memento_config": null,
+  "hooks_install": null,
+  "bootstrap": null,
+  "codex_home": "C:\\Users\\yhmoo\\.codex",
+  "skills_home": "C:\\Users\\yhmoo\\.agents\\skills",
+  "scope": "repo"
+}

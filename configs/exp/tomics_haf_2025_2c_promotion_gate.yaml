@@ -58,3 +58,17 @@ gate:
     write_gate_blockers: true
     write_claim_register: true
     write_new_phytologist_readiness: true
+
+cross_dataset_gate:
+  current_dataset_id: "haf_2025_2c"
+  require_measured_dataset_count_min: 2
+  available_dataset_outputs:
+    - dataset_id: "haf_2025_2c"
+      dataset_type: "haf_measured_actual"
+      measured_or_proxy: "measured"
+      harvest_family_metadata: out/tomics/validation/harvest-family/haf_2025_2c/harvest_family_metadata.json
+      harvest_family_rankings: out/tomics/validation/harvest-family/haf_2025_2c/harvest_family_rankings.csv
+      contributes_to_promotion_gate: true
+  allow_legacy_or_public_proxy_for_promotion: false
+  proxy_dataset_use: "diagnostic_only"
+  single_dataset_promotion_allowed: false

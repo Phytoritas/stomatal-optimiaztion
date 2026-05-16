@@ -1,0 +1,42 @@
+{
+  "items": [
+    {
+      "time_utc": "2026-05-16T03:17:25Z",
+      "tool_name": "recall",
+      "search_event_id": "8838",
+      "relevant": true,
+      "sufficient": true,
+      "context": "tomics harness pipeline intake",
+      "fragment_ids": [
+        "frag-58b58b930a8c2665",
+        "frag-3b47ffc5f033b0c3"
+      ],
+      "note": "Recall surfaced the existing rule that tracked harness state must reflect stable restart truth and avoid stale branch references; result was useful for replacing Issue #304 restart state with TOMICS-HAF pipeline contract intake."
+    },
+    {
+      "time_utc": "2026-05-16T12:15:00Z",
+      "tool_name": "recall",
+      "search_event_id": "9108",
+      "relevant": true,
+      "sufficient": false,
+      "context": "RAH RALPH state update",
+      "fragment_ids": [],
+      "note": "Recall surfaced related TOMICS-HAF architecture context but did not provide current PR #313 / issue #312 branch facts; live git and gh PR state were used as authority."
+    },
+    {
+      "time_utc": "2026-05-16T12:15:00Z",
+      "tool_name": "recall",
+      "search_event_id": "9109",
+      "relevant": true,
+      "sufficient": true,
+      "context": "Windows command preflight",
+      "fragment_ids": [
+        "frag-ba9704b1490898f1",
+        "frag-dce3cbcb08c7b9c7",
+        "frag-1b16bea93a70e4a6"
+      ],
+      "note": "Recall matched the PowerShell command risks for quoting, encoding, and command separators; commands were run as separate calls with UTF-8 reads and single-quoted paths."
+    }
+  ],
+  "note": "Append recall feedback entries here after meaningful memory use."
+}

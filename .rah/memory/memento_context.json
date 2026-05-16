@@ -1,0 +1,34 @@
+{
+  "workspace": "stomatal-optimiaztion",
+  "sessionId": "stomatal-optimiaztion#adhoc:tomics-haf-2025-2c-pipeline-contract",
+  "timestamp": "2026-05-16T03:17:25Z",
+  "types": [
+    "preference",
+    "procedure",
+    "error",
+    "decision"
+  ],
+  "fragment_counts": {
+    "context_core_total": 18,
+    "anchors": 10,
+    "working_memory": 0
+  },
+  "top_fragments": [
+    {
+      "id": "frag-1b16bea93a70e4a6",
+      "type": "error",
+      "summary": "PowerShell UTF-8/BOM/Hangul edits should prefer apply_patch, Python, or explicit .NET encoding."
+    },
+    {
+      "id": "frag-023305948b7e229e",
+      "type": "error",
+      "summary": "TOMICS-HAF radiation selection keeps raw .dat SolarRad_Avg fallback-only and Dataset1-only for chosen_primary."
+    },
+    {
+      "id": "frag-aac464e7d5d78d8f",
+      "type": "procedure",
+      "summary": "Non-trivial Phytoritas repo work should follow issue/branch workflow unless explicitly scoped otherwise."
+    }
+  ],
+  "quality_notes": "context() succeeded before reading artifacts/TOMICS_Architecture_Pipeline.md and before .rah harness reflection edits."
+}

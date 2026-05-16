@@ -14,6 +14,11 @@ The gate preserves the 2025-2C contracts:
 
 Promotion requires at least two compatible measured datasets and a passing cross-dataset gate. With only `haf_2025_2c` available, promotion is blocked by `cross_dataset_evidence_insufficient`.
 
+Future compatible measured datasets must be listed in the promotion config under
+`cross_dataset_gate.available_dataset_outputs`. The gate counts only unique measured
+datasets by `dataset_id` and resolved metadata artifact path; proxy or duplicated
+artifacts remain diagnostic and do not satisfy promotion evidence.
+
 Primary command:
 
 ```powershell
