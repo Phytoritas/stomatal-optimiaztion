@@ -1,0 +1,78 @@
+exp:
+  name: tomics_haf_2025_2c_latent_allocation
+
+paths:
+  repo_root: ../..
+
+tomics_haf:
+  season_id: "2025_2C"
+  observer_feature_frame: out/tomics/analysis/haf_2025_2c/2025_2c_tomics_haf_observer_feature_frame.csv
+  observer_metadata: out/tomics/analysis/haf_2025_2c/2025_2c_tomics_haf_metadata.json
+  output_root: out/tomics/validation/latent-allocation/haf_2025_2c
+
+latent_allocation:
+  require_production_observer_export: true
+  require_row_cap_absent: true
+  require_radiation_defined_daynight: true
+  main_radiation_threshold_wm2: 0
+
+  prior_families:
+    - legacy_tomato_prior
+    - thorp_bounded_prior
+    - tomato_constrained_thorp_prior
+
+  inference_method: prior_weighted_softmax
+  softmax_beta: 1.0
+  low_pass_memory_enabled: true
+  low_pass_alpha: 0.35
+
+  biological_floors:
+    fruit: 0.05
+    leaf: 0.12
+    stem: 0.08
+    root: 0.02
+
+  biological_caps:
+    fruit: 0.85
+    leaf: 0.55
+    stem: 0.45
+    root: 0.25
+    wet_root: 0.12
+
+  lai:
+    target_lai: 3.0
+    lai_available: false
+    lai_proxy_allowed: true
+    lai_proxy_source: radiation_source_capacity_and_leaf_temperature_observer
+    lai_protection_enabled: true
+
+  thorp:
+    enabled_as_raw_allocator: false
+    enabled_as_bounded_prior: true
+    enabled_as_diagnostic_comparator: true
+    root_hydraulic_correction_max_abs: 0.08
+    vegetative_redistribution_only: true
+    fruit_gate_override_allowed: false
+
+  stress_gates:
+    root_stress_gate_enabled: true
+    rzi_activation_threshold: 0.15
+    wet_rzi_threshold: 0.05
+    apparent_conductance_required_for_hydraulic_signal: false
+
+  identifiability:
+    min_required_observer_groups:
+      - radiation_daynight_et
+      - rootzone_rzi
+      - apparent_conductance
+    optional_observer_groups:
+      - fruit_apparent_expansion
+      - leaf_temperature_pair
+      - dataset3_growth_phenology
+    direct_partition_observation_required_for_validation: true
+
+  forbidden_targets:
+    fruit_diameter_p_values: true
+    fruit_diameter_allocation_calibration: true
+    fruit_diameter_promotion_target: true
+    raw_thorp_allocator: true
