@@ -428,13 +428,19 @@ def build_pr_stack_merge_readiness_rows(
             warnings.append("stacked_pr_closing_issue_reference_may_resolve_after_stack_lands")
         if not closes_issue and number == 315:
             warnings.append("closing_issue_reference_missing")
-        if merge_state not in {"CLEAN", "HAS_HOOKS", "UNKNOWN"}:
-            warnings.append(f"merge_state_{merge_state.casefold()}")
+        if merge_state == "UNKNOWN":
+            warnings.append("merge_state_unknown")
+        elif merge_state not in {"CLEAN", "HAS_HOOKS"}:
+            blockers.append(f"merge_state_{merge_state.casefold() or 'missing'}")
         if not _validation_summary_present(body):
             warnings.append("validation_summary_not_visible_in_pr_body")
         unsafe_claims_absent = _unsafe_claims_absent(body)
         if not unsafe_claims_absent:
             blockers.append("unsafe_claims_present")
+        if tracked_out_paths:
+            blockers.append("out_artifacts_committed")
+        if raw_data_committed:
+            blockers.append("raw_data_committed")
         rows.append(
             {
                 "pr_number": number,

@@ -13,7 +13,7 @@
       "PR stack merge-readiness docs and private outputs exist; evidence package manifest exists; claim boundary freeze exists; manuscript/thesis outlines exist; process warnings are closed out; promotion and shipped default change remain blocked"
     ],
     "validation_commands": [
-      "Goal 4A targeted tests: 10 passed; Goal 3C regression tests: 17 passed; private evidence package run: passed; ruff: passed; git diff --check: passed with CRLF warning only; full pytest: 712 passed, 26 skipped, 12 deselected"
+      "Goal 4A targeted tests: 11 passed; Goal 3C regression tests: 17 passed; private evidence package run: passed; ruff: passed; git diff --check: passed with CRLF warning only; full pytest: 713 passed, 26 skipped, 12 deselected"
     ],
     "evidence_required": [
       "iteration note under .rah/ralph/iterations/",
@@ -28,10 +28,10 @@
     "Stop when the goal is done, blocked by missing information, or max_iterations is reached."
   ],
   "completion_evidence": {
-    "targeted_goal_4a_tests": "10 passed",
+    "targeted_goal_4a_tests": "11 passed",
     "goal_3c_regression_subset": "17 passed",
     "private_evidence_package_run": "passed",
-    "full_pytest": "712 passed, 26 skipped, 12 deselected",
+    "full_pytest": "713 passed, 26 skipped, 12 deselected",
     "ruff": "passed",
     "diff_checks": "passed with CRLF warning only",
     "promotion_gate_status": "blocked_cross_dataset_evidence_insufficient",

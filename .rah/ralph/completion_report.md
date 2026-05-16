@@ -11,10 +11,10 @@ Goal 4A TOMICS-HAF 2025-2C merge-readiness, paper/thesis evidence package, claim
 
 ## Evidence
 
-- Goal 4A targeted tests: `10 passed`.
+- Goal 4A targeted tests: `11 passed`.
 - Goal 3C regression subset: `17 passed`.
 - Private evidence package run: passed and wrote `pr_stack_merge_readiness.*`, `evidence_package_manifest.*`, `claim_boundary_freeze.*`, and `goal4a_decision_metadata.json`.
-- Full pytest: `712 passed, 26 skipped, 12 deselected`.
+- Full pytest: `713 passed, 26 skipped, 12 deselected`.
 - Ruff: passed.
 - `git diff --check`: passed with CRLF warning only.
 - Promotion remains blocked by `cross_dataset_evidence_insufficient`.

@@ -51,10 +51,10 @@
     "ralph": "python <active-skill-root>/automation/rah.py ralph \"C:\\\\Users\\\\yhmoo\\\\OneDrive\\\\Phytoritas\\\\projects\\\\stomatal-optimiaztion\" --goal \"Goal 4A TOMICS-HAF 2025-2C merge-readiness, paper/thesis evidence package, claim boundary freeze, and no shipped default change\""
   },
   "completion_evidence": {
-    "targeted_goal_4a_tests": "10 passed",
+    "targeted_goal_4a_tests": "11 passed",
     "goal_3c_regression_subset": "17 passed",
     "private_evidence_package_run": "passed",
-    "full_pytest": "712 passed, 26 skipped, 12 deselected",
+    "full_pytest": "713 passed, 26 skipped, 12 deselected",
     "ruff": "passed",
     "diff_checks": "passed with CRLF warning only",
     "promotion_gate_status": "blocked_cross_dataset_evidence_insufficient",

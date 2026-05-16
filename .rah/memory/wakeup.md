@@ -64,9 +64,9 @@
 - Private promotion run: passed and wrote promotion outputs under `out/tomics/validation/promotion-gate/haf_2025_2c/`.
 - Private cross-dataset run: passed and wrote cross-dataset outputs under `out/tomics/validation/multi-dataset/haf_2025_2c/`.
 - Targeted gate regression tests: `17 passed`.
-- Targeted Goal 4A tests: `10 passed`.
+- Targeted Goal 4A tests: `11 passed`.
 - Goal 3B.5 regression subset: `17 passed`.
-- Full pytest: `712 passed, 26 skipped, 12 deselected`.
+- Full pytest: `713 passed, 26 skipped, 12 deselected`.
 - Ruff: passed.
 - Diff checks: passed.
 - Final reviewer pass: no blocking or medium findings.

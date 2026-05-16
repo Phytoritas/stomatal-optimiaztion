@@ -55,7 +55,7 @@ Stage 4A. TOMICS-HAF 2025-2C Merge-Readiness / Evidence Package Complete on PR #
 - Evidence package manifest and claim boundary freeze private outputs were generated.
 - Manuscript/thesis methods, results, limitations, and figure/table outline docs were created.
 - Process warnings were documented as non-blocking.
-- Final validation: targeted Goal 4A tests `10 passed`; Goal 3C regression `17 passed`; full pytest `712 passed, 26 skipped, 12 deselected`; Ruff passed; diff checks passed with CRLF warning only.
+- Final validation: targeted Goal 4A tests `11 passed`; Goal 3C regression `17 passed`; full pytest `713 passed, 26 skipped, 12 deselected`; Ruff passed; diff checks passed with CRLF warning only.
 
 <!-- RALPH MANAGED BLOCK START -->
 ## RALPH Goal Loop

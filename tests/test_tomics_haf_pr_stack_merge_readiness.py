@@ -126,3 +126,36 @@ def test_goal4a_pr_stack_merge_readiness_blocks_all_frozen_forbidden_claims():
     row = frame.loc[frame["pr_number"].eq(315)].iloc[0]
     assert not bool(row["unsafe_claims_absent"])
     assert "unsafe_claims_present" in row["merge_blockers"]
+
+
+def test_goal4a_pr_stack_merge_readiness_blocks_unmergeable_state_and_private_artifacts():
+    dirty_pr = _pr(
+        315,
+        "feat/tomics-haf-2025-2c-harvest-family-eval",
+        "feat/tomics-haf-2025-2c-promotion-gate",
+        body="Closes #314\n\n## Validation\npytest passed",
+    )
+    dirty_pr["mergeStateStatus"] = "DIRTY"
+    frame = build_pr_stack_merge_readiness_rows(
+        [
+            _pr(309, "main", "fix/308-diagnose-tomics-daily-harvest-increments"),
+            _pr(
+                311,
+                "fix/308-diagnose-tomics-daily-harvest-increments",
+                "feat/tomics-haf-2025-2c-latent-allocation",
+            ),
+            _pr(
+                313,
+                "feat/tomics-haf-2025-2c-latent-allocation",
+                "feat/tomics-haf-2025-2c-harvest-family-eval",
+            ),
+            dirty_pr,
+        ],
+        tracked_out_paths=["out/leaked_private_result.csv"],
+        raw_data_committed=True,
+    )
+
+    row = frame.loc[frame["pr_number"].eq(315)].iloc[0]
+    assert "merge_state_dirty" in row["merge_blockers"]
+    assert "out_artifacts_committed" in row["merge_blockers"]
+    assert "raw_data_committed" in row["merge_blockers"]
