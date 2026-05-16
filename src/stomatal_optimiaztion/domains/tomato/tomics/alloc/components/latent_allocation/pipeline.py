@@ -179,6 +179,21 @@ def _metadata_base(
             "unknown",
         ),
         "Dataset3_mapping_confidence": observer_metadata.get("Dataset3_mapping_confidence", "unknown"),
+        "harvest_yield_available": bool(observer_metadata.get("harvest_yield_available", False)),
+        "fresh_yield_available": bool(observer_metadata.get("fresh_yield_available", False)),
+        "fresh_yield_source": observer_metadata.get("fresh_yield_source", ""),
+        "dry_yield_available": bool(observer_metadata.get("dry_yield_available", False)),
+        "dry_yield_source": observer_metadata.get("dry_yield_source", ""),
+        "dry_yield_is_dmc_estimated": bool(observer_metadata.get("dry_yield_is_dmc_estimated", False)),
+        "direct_dry_yield_measured": bool(observer_metadata.get("direct_dry_yield_measured", False)),
+        "legacy_yield_bridge_used": bool(observer_metadata.get("legacy_yield_bridge_used", False)),
+        "legacy_yield_bridge_provenance": observer_metadata.get("legacy_yield_bridge_provenance", ""),
+        "default_fruit_dry_matter_content_from_legacy": observer_metadata.get(
+            "default_fruit_dry_matter_content_from_legacy"
+        ),
+        "configured_default_fruit_dry_matter_content": observer_metadata.get(
+            "configured_default_fruit_dry_matter_content"
+        ),
         "harvest_family_factorial_run": False,
         "promotion_gate_run": False,
         "cross_dataset_gate_run": False,

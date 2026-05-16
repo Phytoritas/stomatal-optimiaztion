@@ -39,7 +39,25 @@ def _write_config(
 
 
 def test_latent_allocation_pipeline_metadata_contract(tmp_path: Path) -> None:
-    result = run_tomics_haf_latent_allocation(_write_config(tmp_path))
+    result = run_tomics_haf_latent_allocation(
+        _write_config(
+            tmp_path,
+            metadata_overrides={
+                "event_bridged_ET_calibration_status": "calibrated_to_legacy_daily_event_total",
+                "harvest_yield_available": True,
+                "fresh_yield_available": True,
+                "fresh_yield_source": "legacy_v1_3_derived_output",
+                "dry_yield_available": True,
+                "dry_yield_source": "legacy_v1_3_derived_output",
+                "dry_yield_is_dmc_estimated": True,
+                "direct_dry_yield_measured": False,
+                "legacy_yield_bridge_used": True,
+                "legacy_yield_bridge_provenance": "legacy_v1_3_derived_output",
+                "default_fruit_dry_matter_content_from_legacy": 0.056,
+                "configured_default_fruit_dry_matter_content": 0.065,
+            },
+        )
+    )
     metadata = result["metadata"]
 
     assert metadata["season_id"] == "2025_2C"
@@ -52,6 +70,11 @@ def test_latent_allocation_pipeline_metadata_contract(tmp_path: Path) -> None:
     assert metadata["THORP_used_as_bounded_prior"] is True
     assert metadata["latent_allocation_promotable_by_itself"] is False
     assert metadata["production_observer_precondition_passed"] is True
+    assert metadata["event_bridged_ET_calibration_status"] == "calibrated_to_legacy_daily_event_total"
+    assert metadata["dry_yield_is_dmc_estimated"] is True
+    assert metadata["direct_dry_yield_measured"] is False
+    assert metadata["legacy_yield_bridge_provenance"] == "legacy_v1_3_derived_output"
+    assert metadata["latent_allocation_directly_validated"] is False
     assert Path(result["outputs"]["posteriors"]).exists()
     posteriors = pd.read_csv(result["outputs"]["posteriors"])
     diagnostics = pd.read_csv(result["outputs"]["diagnostics"])
