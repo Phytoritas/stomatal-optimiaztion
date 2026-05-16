@@ -72,7 +72,7 @@ def test_dataset1_daily_only_radiation_is_not_usable_for_10min_and_raw_dat_is_fa
         },
     )
 
-    chosen = [row for row in rows if row["chosen_primary"]][0]
+    chosen = [row for row in rows if row["selected_for_daily_summary_only"]][0]
     raw_candidate = [
         row
         for row in rows
@@ -80,8 +80,11 @@ def test_dataset1_daily_only_radiation_is_not_usable_for_10min_and_raw_dat_is_fa
         and row["candidate_column"] == "SolarRad_Avg"
     ][0]
     assert chosen["candidate_column"] == "env_inside_radiation_wm2"
+    assert chosen["chosen_primary"] is False
+    assert chosen["selected_for_daynight_10min"] is False
     assert chosen["usable_for_10min_daynight"] is False
     assert chosen["usable_for_daily_summary_only"] is True
+    assert chosen["candidate_rejection_reason"] == "daily_only_not_valid_for_10min_daynight"
     assert metadata["dataset1_radiation_directly_usable"] is False
     assert metadata["dataset1_radiation_grain"] == "daily_only"
     assert metadata["radiation_daynight_primary_source"] == ""

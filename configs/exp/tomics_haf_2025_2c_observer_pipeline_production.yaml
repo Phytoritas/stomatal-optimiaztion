@@ -31,3 +31,19 @@ observer_pipeline:
   write_intermediate_chunk_manifests: true
   fail_on_full_in_memory_large_dataset: true
 
+legacy_v1_3:
+  enabled: true
+  archive_root: artifacts/tomato_integrated_radiation_architecture_v1_3
+  event_bridge_daily_candidates:
+    - previous_outputs/event_bridge_outputs/daily_event_bridged_transpiration.csv
+    - outputs/derived/legacy_daily_event_bridged_transpiration.csv
+  integrated_daily_master: outputs/derived/integrated_daily_master_radiation_daynight_fresh_dry.csv
+  fresh_dry_loadcell_summary: outputs/tables/fresh_dry_weight_loadcell_final_summary.csv
+  fresh_dry_treatment_summary: outputs/tables/fresh_dry_weight_treatment_summary.csv
+  dataset3_traits_plus_yield: outputs/derived/dataset3_traits_plus_fresh_dry_yield.csv
+  provenance_label: legacy_v1_3_derived_output
+  allow_legacy_event_bridge_calibration: true
+  allow_legacy_event_bridge_qc_false: true
+  event_bridge_min_valid_coverage_fraction: 0.0
+  allow_legacy_yield_bridge: true
+  direct_dry_yield_measured: false

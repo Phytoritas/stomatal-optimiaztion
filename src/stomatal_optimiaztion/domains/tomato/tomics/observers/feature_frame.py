@@ -26,6 +26,8 @@ def build_observer_feature_frame(
     fruit_windows: pd.DataFrame | None = None,
     leaf_windows: pd.DataFrame | None = None,
     dataset3_bridge: pd.DataFrame | None = None,
+    radiation_source_used: str = "dataset1",
+    radiation_column_used: str = RADIATION_COLUMN_USED,
 ) -> pd.DataFrame:
     if daily_et_wide is not None and not daily_et_wide.empty:
         base = daily_et_wide.copy()
@@ -83,8 +85,8 @@ def build_observer_feature_frame(
     base["biological_replication"] = False
     base["sensor_level_only"] = True
     base["fruit_mapping_status"] = "provisional"
-    base["radiation_source_used"] = "dataset1"
-    base["radiation_column_used"] = RADIATION_COLUMN_USED
+    base["radiation_source_used"] = radiation_source_used
+    base["radiation_column_used"] = radiation_column_used
     base["fixed_clock_daynight_primary"] = False
     base["direct_partition_observation_available"] = False
     base["allocation_validation_basis"] = "indirect_observer_features_only"

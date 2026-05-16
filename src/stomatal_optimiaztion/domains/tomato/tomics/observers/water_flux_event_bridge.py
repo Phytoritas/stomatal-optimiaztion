@@ -98,6 +98,17 @@ def calibrate_to_daily_event_bridged_total(
         out["bridge_status"] = "uncalibrated_no_daily_total"
         return out
 
+    daily_totals = daily_totals.copy()
+    if "date" in out.columns:
+        out["date"] = pd.to_datetime(out["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+    if "date" in daily_totals.columns:
+        daily_totals["date"] = pd.to_datetime(daily_totals["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+    if "loadcell_id" in out.columns and "loadcell_id" in daily_totals.columns:
+        out["loadcell_id"] = pd.to_numeric(out["loadcell_id"], errors="coerce").astype("Int64")
+        daily_totals["loadcell_id"] = pd.to_numeric(daily_totals["loadcell_id"], errors="coerce").astype("Int64")
+    if "treatment" in out.columns and "treatment" in daily_totals.columns:
+        out["treatment"] = out["treatment"].astype(str)
+        daily_totals["treatment"] = daily_totals["treatment"].astype(str)
     merge_cols = [column for column in ("date", "loadcell_id", "treatment") if column in out.columns and column in daily_totals.columns]
     totals = out.groupby(merge_cols, dropna=False)["loss_g_10min_unscaled"].sum().rename("unscaled_daily_loss_g").reset_index()
     scale = totals.merge(daily_totals[merge_cols + [total_col]], on=merge_cols, how="left")

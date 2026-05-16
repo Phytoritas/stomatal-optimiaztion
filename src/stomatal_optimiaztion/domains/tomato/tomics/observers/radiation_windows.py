@@ -127,6 +127,16 @@ def build_photoperiod_table(
             photoperiod_seconds = 0.0
         else:
             photoperiod_seconds = float((last_light - first_light).total_seconds() + 600)
+        radiation_source_used = (
+            str(deduped["radiation_source_used"].dropna().iloc[0])
+            if "radiation_source_used" in deduped.columns and deduped["radiation_source_used"].notna().any()
+            else RADIATION_PRIMARY_SOURCE
+        )
+        radiation_column_used = (
+            str(deduped["radiation_column_used"].dropna().iloc[0])
+            if "radiation_column_used" in deduped.columns and deduped["radiation_column_used"].notna().any()
+            else RADIATION_COLUMN_USED
+        )
         rows.append(
             {
                 "date": date,
@@ -136,8 +146,8 @@ def build_photoperiod_table(
                 "photoperiod_seconds": photoperiod_seconds,
                 "day_interval_count": int(day.shape[0]),
                 "night_interval_count": int(night.shape[0]),
-                "radiation_source_used": RADIATION_PRIMARY_SOURCE,
-                "radiation_column_used": RADIATION_COLUMN_USED,
+                "radiation_source_used": radiation_source_used,
+                "radiation_column_used": radiation_column_used,
                 "dataset1_radiation_directly_usable": dataset1_radiation_directly_usable,
                 "fallback_required": fallback_required,
                 "fallback_source_if_required": fallback_source_if_required,
@@ -179,8 +189,16 @@ def build_radiation_daily_summary(intervals: pd.DataFrame) -> pd.DataFrame:
         else:
             row["source_proxy_MJ_CO2_T"] = np.nan
             row["source_proxy_MJ_CO2_T_available"] = False
-        row["radiation_source_used"] = RADIATION_PRIMARY_SOURCE
-        row["radiation_column_used"] = RADIATION_COLUMN_USED
+        row["radiation_source_used"] = (
+            str(group["radiation_source_used"].dropna().iloc[0])
+            if "radiation_source_used" in group.columns and group["radiation_source_used"].notna().any()
+            else RADIATION_PRIMARY_SOURCE
+        )
+        row["radiation_column_used"] = (
+            str(group["radiation_column_used"].dropna().iloc[0])
+            if "radiation_column_used" in group.columns and group["radiation_column_used"].notna().any()
+            else RADIATION_COLUMN_USED
+        )
         rows.append(row)
     return pd.DataFrame(rows).sort_values(group_cols).reset_index(drop=True)
 
@@ -199,4 +217,3 @@ def add_clock_compatibility_audit(
     out["fixed_clock_daynight_primary"] = False
     out["clock_06_18_used_only_for_compatibility"] = True
     return out
-

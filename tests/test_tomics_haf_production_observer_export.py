@@ -6,6 +6,8 @@ from stomatal_optimiaztion.domains.tomato.tomics.observers.contracts import DATA
 from stomatal_optimiaztion.domains.tomato.tomics.observers.production_export import (
     aggregate_dataset1_streaming,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.observers.pipeline import _dataset3_size_guard
+from stomatal_optimiaztion.domains.tomato.tomics.observers.pipeline import _assert_dataset3_size_guard_before_read
 from stomatal_optimiaztion.domains.tomato.tomics.observers.radiation_windows import build_radiation_intervals
 
 
@@ -53,3 +55,32 @@ def test_chunked_dataset1_interval_aggregation_matches_non_chunked(tmp_path: Pat
     assert meta["chunk_aggregation_used"] is True
     assert meta["rows_processed_fraction"] == 1.0
 
+
+def test_dataset3_size_guard_records_small_full_read_reason() -> None:
+    metadata = _dataset3_size_guard(
+        {"total_rows": 252, "rows_processed": 252, "row_limit_applied": False},
+        max_full_rows_without_limit=2_000_000,
+        mode="production",
+    )
+
+    assert metadata["dataset3_total_rows"] == 252
+    assert metadata["dataset3_rows_processed"] == 252
+    assert metadata["dataset3_size_guard_passed"] is True
+    assert metadata["dataset3_full_in_memory_allowed_reason"] == "small_dataset3_within_max_full_rows_without_limit"
+
+
+def test_dataset3_size_guard_fails_before_large_production_full_read(tmp_path: Path) -> None:
+    path = tmp_path / "dataset3.parquet"
+    pd.DataFrame({"loadcell_id": [1, 2, 3]}).to_parquet(path, index=False)
+
+    try:
+        _assert_dataset3_size_guard_before_read(
+            path=path,
+            max_rows=None,
+            max_full_rows_without_limit=2,
+            mode="production",
+        )
+    except RuntimeError as exc:
+        assert "before full read" in str(exc)
+    else:  # pragma: no cover - keeps the assertion message explicit
+        raise AssertionError("Expected Dataset3 pre-read size guard to fail.")

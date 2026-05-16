@@ -3,6 +3,7 @@ import pandas as pd
 from stomatal_optimiaztion.domains.tomato.tomics.observers.radiation_windows import (
     add_clock_compatibility_audit,
     build_photoperiod_table,
+    build_radiation_daily_summary,
     build_radiation_intervals,
 )
 
@@ -35,3 +36,20 @@ def test_radiation_thresholds_define_day_not_clock() -> None:
     assert photoperiod["radiation_column_used"].eq("env_inside_radiation_wm2").all()
     assert clock["fixed_clock_daynight_primary"].eq(False).all()
 
+
+def test_radiation_summary_uses_interval_provenance_not_global_default() -> None:
+    frame = pd.DataFrame(
+        {
+            "timestamp": pd.to_datetime(["2025-12-14 06:00:00", "2025-12-14 18:00:00"]),
+            "loadcell_id": [1, 1],
+            "treatment": ["Control", "Control"],
+            "env_radiation_wm2": [100.0, 0.0],
+        }
+    )
+
+    intervals = build_radiation_intervals(frame, radiation_col="env_radiation_wm2")
+    photoperiod = build_photoperiod_table(intervals)
+    daily = build_radiation_daily_summary(intervals)
+
+    assert photoperiod["radiation_column_used"].eq("env_radiation_wm2").all()
+    assert daily["radiation_column_used"].eq("env_radiation_wm2").all()

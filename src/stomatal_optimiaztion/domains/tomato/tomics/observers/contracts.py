@@ -84,6 +84,15 @@ OUTPUT_FILENAMES = {
     "metadata": "2025_2c_tomics_haf_metadata.json",
     "chunk_manifest": "observer_production_chunk_manifest.csv",
     "production_export_summary": "observer_production_export_summary.md",
+    "legacy_bridge_audit": "legacy_v1_3_bridge_audit.csv",
+    "legacy_bridge_audit_json": "legacy_v1_3_bridge_audit.json",
+    "event_bridge_calibration_audit": "event_bridge_calibration_audit.csv",
+    "fresh_dry_yield_bridge_audit": "fresh_dry_yield_bridge_audit.csv",
+    "metadata_contract_audit": "metadata_contract_audit.csv",
+    "rootzone_rzi_reference_audit": "rootzone_rzi_reference_audit.csv",
+    "metadata_goal1_schema_radiation": "metadata_goal1_schema_radiation.json",
+    "metadata_goal2_observer": "metadata_goal2_observer.json",
+    "metadata_goal2_5_production_observer": "metadata_goal2_5_production_observer.json",
 }
 
 

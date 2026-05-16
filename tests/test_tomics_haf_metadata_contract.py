@@ -80,10 +80,10 @@ def test_metadata_contract_records_season_radiation_and_fruit_diameter_rules(tmp
     assert metadata["fruit_diameter_rules"]["fruit_diameter_treatment_endpoint"] is False
     assert metadata["fruit_diameter_rules"]["fruit_diameter_p_values_allowed"] is False
     assert metadata["fruit_diameter_rules"]["fruit_diameter_allocation_calibration_target"] is False
-    assert metadata["dataset3_mapping"] == "treatment_level_only"
-    assert metadata["vpd_available"] is True
-    assert metadata["lai_available"] is False
+    assert metadata["Dataset3_mapping_confidence"] == "treatment_level_only"
+    assert metadata["VPD_available"] is True
+    assert metadata["LAI_available"] is False
     assert metadata["fresh_yield_available"] is True
     assert metadata["dry_yield_available"] is False
     assert metadata["raw_thorp_promoted"] is False
-    assert metadata["shipped_tomics_incumbent_unchanged"] is True
+    assert metadata["shipped_TOMICS_incumbent_changed"] is False

@@ -88,6 +88,27 @@ def _grain_from_resolution(seconds: float | None) -> str:
     return "coarser_than_daily"
 
 
+def _infer_resolution_from_frame(frame: pd.DataFrame | None) -> float | None:
+    if frame is None or frame.empty:
+        return None
+    timestamp_col = next(
+        (column for column in ("timestamp", "TIMESTAMP", "datetime", "date_time", "DateTime", "time") if column in frame.columns),
+        None,
+    )
+    if timestamp_col is None:
+        return None
+    values = pd.to_datetime(frame[timestamp_col], errors="coerce").dropna().sort_values()
+    if values.shape[0] < 2:
+        return None
+    deltas = values.diff().dt.total_seconds().dropna()
+    if deltas.empty:
+        return None
+    positive = deltas[deltas.gt(0)]
+    if positive.empty:
+        return None
+    return float(positive.median())
+
+
 def _radiation_metrics(
     frame: pd.DataFrame | None,
     *,
@@ -96,6 +117,8 @@ def _radiation_metrics(
 ) -> dict[str, object]:
     exists = frame is not None and column in frame.columns
     resolution = _to_float((audit_row or {}).get("inferred_time_resolution_seconds"))
+    if resolution is None:
+        resolution = _infer_resolution_from_frame(frame)
     stats = _column_stats(audit_row, column)
     if not exists or frame is None:
         stats_num_values = int(stats.get("num_values") or 0)
@@ -179,6 +202,22 @@ def _candidate_is_selectable(row: Mapping[str, object]) -> bool:
     )
 
 
+def _candidate_rejection_reason(row: Mapping[str, object]) -> str:
+    if not _bool(row.get("exists")):
+        return "column_missing"
+    if int(row.get("non_null_count") or 0) <= 0:
+        return "no_non_null_values"
+    if not _bool(row.get("has_positive_values")):
+        return "no_positive_radiation_values"
+    if not _bool(row.get("usable_for_10min_daynight")) and _bool(row.get("usable_for_daily_summary_only")):
+        return "daily_only_not_valid_for_10min_daynight"
+    if not _bool(row.get("has_zero_values")):
+        return "no_zero_radiation_values_for_night"
+    if not _bool(row.get("usable_for_10min_daynight")):
+        return "grain_not_valid_for_10min_daynight"
+    return ""
+
+
 def build_radiation_source_verification(
     tables_by_role: Mapping[str, pd.DataFrame | None],
     audit_rows_by_role: Mapping[str, Mapping[str, object]],
@@ -203,6 +242,9 @@ def build_radiation_source_verification(
                 "candidate_column": candidate_column,
                 **metrics,
                 "chosen_primary": False,
+                "selected_for_daynight_10min": False,
+                "selected_for_daily_summary_only": False,
+                "candidate_rejection_reason": "",
                 "fallback_reason": "",
                 "notes": "",
             }
@@ -212,8 +254,9 @@ def build_radiation_source_verification(
     for idx, row in enumerate(rows):
         if row["source_file_role"] == "dataset1" and _candidate_is_selectable(row):
             chosen_index = idx
-            row["chosen_primary"] = True
             break
+    for row in rows:
+        row["candidate_rejection_reason"] = _candidate_rejection_reason(row)
 
     fallback_required = True
     fallback_source = ""
@@ -227,14 +270,18 @@ def build_radiation_source_verification(
         chosen = rows[chosen_index]
         fallback_required = not _bool(chosen.get("usable_for_10min_daynight"))
         if _bool(chosen.get("usable_for_10min_daynight")):
+            chosen["selected_for_daynight_10min"] = True
+            chosen["chosen_primary"] = True
             primary_source = str(chosen["source_file_role"])
             primary_column = str(chosen["candidate_column"])
+        elif _bool(chosen.get("usable_for_daily_summary_only")):
+            chosen["selected_for_daily_summary_only"] = True
         if primary_source == "dataset1":
             dataset1_direct = _bool(chosen.get("usable_for_10min_daynight"))
             dataset1_grain = _grain_from_resolution(_to_float(chosen.get("inferred_time_resolution_seconds")))
         chosen["notes"] = (
-            "Primary preference candidate selected. "
-            "Goal 2 still requires 10-minute usability if interval day/night is built."
+            "Highest-ranked available Dataset1 radiation candidate. "
+            "It is selected for 10-minute day/night only when grain and zero/positive values support that use."
         )
     else:
         decision_notes.append("No selectable Dataset1 radiation candidate with positive numeric values was found.")
@@ -248,7 +295,7 @@ def build_radiation_source_verification(
 
     if fallback_required:
         for row in rows:
-            if row.get("chosen_primary"):
+            if row.get("selected_for_daynight_10min"):
                 continue
             if _bool(row.get("usable_for_10min_daynight")):
                 fallback_source = f"{row['source_file_role']}:{row['candidate_column']}"
@@ -281,6 +328,10 @@ def build_radiation_source_verification(
     metadata = {
         "radiation_daynight_primary_source": primary_source,
         "radiation_column_used": primary_column,
+        "selected_for_daynight_10min": bool(primary_source and primary_column),
+        "selected_for_daily_summary_only": bool(
+            chosen_index is not None and rows[chosen_index].get("selected_for_daily_summary_only")
+        ),
         "radiation_thresholds_to_test": RADIATION_THRESHOLDS_TO_TEST,
         "fixed_clock_daynight_primary": False,
         "clock_06_18_used_only_for_compatibility": True,

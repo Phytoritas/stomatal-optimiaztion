@@ -9,6 +9,10 @@ from typing import Any
 import pandas as pd
 
 from stomatal_optimiaztion.domains.tomato.tomics.alloc.core import ensure_dir, write_json
+from stomatal_optimiaztion.domains.tomato.tomics.observers.metadata_contract import (
+    normalize_metadata,
+    write_stage_metadata_snapshot,
+)
 from stomatal_optimiaztion.domains.tomato.tomics.observers.radiation_source import (
     build_radiation_source_verification,
 )
@@ -33,6 +37,7 @@ SENSOR_MAPPING_METADATA = {
         "fruit_diameter_treatment_endpoint": False,
         "fruit_diameter_p_values_allowed": False,
         "fruit_diameter_allocation_calibration_target": False,
+        "fruit_diameter_model_promotion_target": False,
     },
 }
 
@@ -74,22 +79,33 @@ DEFAULT_ROLE_ALIASES: dict[str, tuple[str, ...]] = {
     "temperature": ("env_air_temperature_c", "air_temperature_c", "T_air_C", "temperature_c"),
     "co2": ("env_co2_ppm", "CO2_ppm", "co2_ppm"),
     "rh": ("env_rh_pct", "RH_percent", "rh_pct"),
-    "moisture": ("moisture_percent_mean", "substrate_moisture", "theta", "vwc", "water_content"),
-    "ec": ("ec_ds_mean", "substrate_ec", "EC", "ec"),
-    "tensiometer": ("tensiometer_hp_mean", "tensiometer", "matric_potential", "substrate_tension"),
+    "moisture": ("moisture_percent_mean", "moisture_percent", "substrate_moisture", "theta", "vwc", "water_content"),
+    "ec": ("ec_ds_mean", "ec_ds", "substrate_ec", "EC", "ec"),
+    "tensiometer": ("tensiometer_hp_mean", "tensiometer_hp", "tensiometer", "matric_potential", "substrate_tension"),
     "yield_fresh": (
         "yield_fresh_g",
         "fresh_yield_g",
         "individual_fresh_yield_g",
         "harvest_fresh_weight_g",
+        "loadcell_daily_yield_g",
+        "loadcell_cumulative_yield_g",
+        "individual_cumulative_yield_g",
+        "final_fresh_yield_g",
     ),
     "yield_dry": ("yield_dry_g", "dry_yield_g", "fruit_dry_weight_g", "harvest_dry_weight_g"),
+    "estimated_dry_yield_from_dmc": (
+        "final_dry_yield_g_est_5p6pct",
+        "loadcell_daily_dry_yield_g_est_default_5p6pct",
+        "loadcell_cumulative_dry_yield_g_est_default_5p6pct",
+        "individual_cumulative_dry_yield_g_est_5p6pct",
+    ),
+    "direct_dry_yield_measured": ("yield_dry_g", "dry_yield_g", "fruit_dry_weight_g", "harvest_dry_weight_g"),
     "lai": ("LAI", "lai", "leaf_area_index"),
     "fruit_count": ("fruit_count", "n_fruits", "fruits_per_truss", "n_fruits_per_truss"),
     "stem_diameter": ("stem_diameter", "stem diameter", "stem_diameter_mm"),
     "flower_height": ("flower_height", "flower height", "flower_cluster_height"),
     "flowering_date": ("flowering_date", "flowering date"),
-    "truss_position": ("truss_position", "truss", "cluster"),
+    "truss_position": ("truss_position", "flower_cluster_no", "truss", "cluster"),
     "plant_id": ("plant_id", "sample_id", "individual_id"),
     "leaf_temperature": ("LeafTemp1_Avg", "LeafTemp2_Avg"),
     "fruit_diameter": ("Fruit1Diameter_Avg", "Fruit2Diameter_Avg"),
@@ -548,12 +564,18 @@ def _build_metadata(
         "raw_filename_note": RAW_FILENAME_NOTE,
         **SENSOR_MAPPING_METADATA,
         **dict(radiation_metadata),
-        "vpd_available": _role_available(audit_rows, "vpd"),
-        "lai_available": _role_available(audit_rows, "lai"),
+        "VPD_available": _role_available(audit_rows, "vpd"),
+        "LAI_available": _role_available(audit_rows, "lai"),
         "fresh_yield_available": _role_available(audit_rows, "yield_fresh"),
-        "dry_yield_available": _role_available(audit_rows, "yield_dry"),
-        "dataset3_mapping": _dataset3_mapping(audit_rows_by_role),
-        "shipped_tomics_incumbent_unchanged": True,
+        "dry_yield_available": _role_available(audit_rows, "yield_dry")
+        or _role_available(audit_rows, "estimated_dry_yield_from_dmc"),
+        "dry_yield_is_dmc_estimated": _role_available(audit_rows, "estimated_dry_yield_from_dmc"),
+        "direct_dry_yield_measured": _role_available(audit_rows, "direct_dry_yield_measured"),
+        "Dataset3_mapping_confidence": _dataset3_mapping(audit_rows_by_role),
+        "fruit_diameter_p_values_allowed": False,
+        "fruit_diameter_allocation_calibration_target": False,
+        "fruit_diameter_model_promotion_target": False,
+        "shipped_TOMICS_incumbent_changed": False,
         "raw_thorp_promoted": False,
     }
 
@@ -603,11 +625,11 @@ def _markdown_report(
     lines.append(f"- Fallback source if required: `{metadata['fallback_source_if_required']}`")
     lines.append("- Thresholds to test later: `[0, 1, 5, 10]`")
     lines.extend(["", "## Role availability"])
-    lines.append(f"- VPD available: `{metadata['vpd_available']}`")
-    lines.append(f"- LAI available: `{metadata['lai_available']}`")
+    lines.append(f"- VPD available: `{metadata['VPD_available']}`")
+    lines.append(f"- LAI available: `{metadata['LAI_available']}`")
     lines.append(f"- Fresh yield available: `{metadata['fresh_yield_available']}`")
     lines.append(f"- Dry yield available: `{metadata['dry_yield_available']}`")
-    lines.append(f"- Dataset3 mapping: `{metadata['dataset3_mapping']}`")
+    lines.append(f"- Dataset3 mapping: `{metadata['Dataset3_mapping_confidence']}`")
     lines.extend(["", "## Unresolved assumptions"])
     notes = metadata.get("radiation_source_decision_notes") or []
     if notes:
@@ -651,10 +673,12 @@ def run_tomics_haf_input_schema_audit(
         tables_by_role,
         audit_rows_by_role,
     )
-    metadata = _build_metadata(
+    metadata = normalize_metadata(
+        _build_metadata(
         audit_rows=audit_rows,
         audit_rows_by_role=audit_rows_by_role,
         radiation_metadata=radiation_metadata,
+        )
     )
 
     input_csv = output_root / "input_schema_audit.csv"
@@ -663,12 +687,14 @@ def run_tomics_haf_input_schema_audit(
     radiation_json = output_root / "radiation_source_verification.json"
     radiation_md = output_root / "radiation_source_verification.md"
     metadata_json = output_root / "2025_2c_tomics_haf_metadata.json"
+    metadata_snapshot = output_root / "metadata_goal1_schema_radiation.json"
 
     pd.DataFrame.from_records(audit_rows).to_csv(input_csv, index=False)
     write_json(input_json, {"files": audit_rows})
     pd.DataFrame.from_records(radiation_rows).to_csv(radiation_csv, index=False)
     write_json(radiation_json, {"candidates": radiation_rows, "metadata": metadata})
     write_json(metadata_json, metadata)
+    write_stage_metadata_snapshot(metadata_snapshot, metadata)
     radiation_md.write_text(
         _markdown_report(audit_rows=audit_rows, radiation_rows=radiation_rows, metadata=metadata),
         encoding="utf-8",

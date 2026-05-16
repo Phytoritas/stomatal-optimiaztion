@@ -13,7 +13,6 @@ from stomatal_optimiaztion.domains.tomato.tomics.observers.contracts import (
     DATASET3_COLUMN_CANDIDATES,
     MAIN_RADIATION_THRESHOLD_W_M2,
     OUTPUT_FILENAMES,
-    RADIATION_COLUMN_USED,
     RADIATION_THRESHOLDS_W_M2,
     RAW_INPUT_FILENAMES,
     base_metadata,
@@ -22,11 +21,26 @@ from stomatal_optimiaztion.domains.tomato.tomics.observers.contracts import (
 from stomatal_optimiaztion.domains.tomato.tomics.observers.dataset3_bridge import (
     build_dataset3_growth_phenology_bridge,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.observers.event_bridge_calibration import (
+    CALIBRATION_TOTAL_COL,
+    calibration_match_metadata,
+    load_legacy_event_bridge_daily_totals,
+)
 from stomatal_optimiaztion.domains.tomato.tomics.observers.feature_frame import build_observer_feature_frame
 from stomatal_optimiaztion.domains.tomato.tomics.observers.fruit_diameter_windows import (
     build_fixed_clock_compat_windows,
     build_fruit_leaf_loadcell_bridge,
     build_fruit_leaf_radiation_windows,
+)
+from stomatal_optimiaztion.domains.tomato.tomics.observers.legacy_v1_3_bridge import (
+    audit_legacy_v1_3_bridge,
+    legacy_v1_3_config,
+)
+from stomatal_optimiaztion.domains.tomato.tomics.observers.metadata_contract import (
+    metadata_contract_audit,
+    normalize_metadata,
+    write_normalized_metadata,
+    write_stage_metadata_snapshot,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.observers.parquet_streaming import (
     assert_no_large_full_load_without_limit,
@@ -36,6 +50,7 @@ from stomatal_optimiaztion.domains.tomato.tomics.observers.parquet_streaming imp
     validate_production_row_cap_policy,
 )
 from stomatal_optimiaztion.domains.tomato.tomics.observers.production_export import (
+    aggregate_dataset1_rootzone_reference_streaming,
     aggregate_dataset1_streaming,
     aggregate_dataset2_daily_streaming,
 )
@@ -60,6 +75,7 @@ from stomatal_optimiaztion.domains.tomato.tomics.observers.water_flux_event_brid
     calibrate_to_daily_event_bridged_total,
     summarize_radiation_daynight_et,
 )
+from stomatal_optimiaztion.domains.tomato.tomics.observers.yield_bridge import load_legacy_yield_bridge
 
 
 def _repo_root_from_config(config_path: Path, config: dict[str, Any]) -> Path:
@@ -157,6 +173,168 @@ def _read_projected_sample(path: Path, columns: tuple[str, ...], *, batch_size: 
     return pd.DataFrame(columns=projected_columns(path, columns))
 
 
+def _radiation_column_for_pipeline(radiation_decision: dict[str, Any]) -> str:
+    source = str(radiation_decision.get("radiation_daynight_primary_source") or "")
+    column = str(radiation_decision.get("radiation_column_used") or "")
+    if not bool(radiation_decision.get("selected_for_daynight_10min")):
+        raise RuntimeError(
+            "No radiation source is selected for 10-minute day/night intervals; "
+            f"decision={radiation_decision}"
+        )
+    if source != "dataset1":
+        raise RuntimeError(
+            "The HAF 2025-2C observer pipeline currently requires Dataset1 radiation for canonical "
+            f"10-minute day/night intervals; selected source={source!r} column={column!r}."
+        )
+    if not column:
+        raise RuntimeError("Radiation decision selected Dataset1 but did not provide radiation_column_used.")
+    return column
+
+
+def _normalize_join_keys(frame: pd.DataFrame) -> pd.DataFrame:
+    out = frame.copy()
+    if "date" in out.columns:
+        out["date"] = pd.to_datetime(out["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+    if "loadcell_id" in out.columns:
+        out["loadcell_id"] = pd.to_numeric(out["loadcell_id"], errors="coerce").astype("Int64")
+    if "treatment" in out.columns:
+        out["treatment"] = out["treatment"].astype(str)
+    return out
+
+
+def _merge_legacy_yield_bridge(feature_frame: pd.DataFrame, yield_bridge: pd.DataFrame) -> pd.DataFrame:
+    if yield_bridge.empty or feature_frame.empty:
+        return feature_frame
+    left = _normalize_join_keys(feature_frame)
+    right = _normalize_join_keys(yield_bridge)
+    keys = [column for column in ("date", "loadcell_id", "treatment") if column in left.columns and column in right.columns]
+    if not keys:
+        return feature_frame
+    bridge_columns = keys + [column for column in right.columns if column not in keys]
+    merged = left.merge(right[bridge_columns], on=keys, how="left", suffixes=("", "_legacy_yield"))
+    fresh_cols = [column for column in ("measured_or_legacy_fresh_yield_g", "loadcell_daily_yield_g", "final_fresh_yield_g") if column in merged.columns]
+    dry_cols = [column for column in merged.columns if "_dry_yield_g_est_" in column or column.endswith("_dry_yield_g_est_5p6pct")]
+    fresh_available = merged[fresh_cols].notna().any(axis=1) if fresh_cols else pd.Series(False, index=merged.index)
+    dry_available = merged[dry_cols].notna().any(axis=1) if dry_cols else pd.Series(False, index=merged.index)
+    merged["harvest_yield_available"] = fresh_available | dry_available
+    merged["fresh_yield_available"] = fresh_available
+    merged["dry_yield_available"] = dry_available
+    merged["dry_yield_is_dmc_estimated"] = dry_available
+    merged["direct_dry_yield_measured"] = False
+    merged["DMC_conversion_performed"] = dry_available
+    return merged
+
+
+def _rootzone_reference_audit(rootzone: pd.DataFrame) -> pd.DataFrame:
+    if rootzone.empty:
+        return pd.DataFrame(
+            [
+                {
+                    "check_name": "RZI_main_available",
+                    "status": "fail",
+                    "value": False,
+                    "notes": "No rootzone rows were produced.",
+                }
+            ]
+        )
+    available = bool(rootzone.get("RZI_main_available", pd.Series(dtype=bool)).fillna(False).any())
+    source_values = (
+        ";".join(sorted(rootzone.get("RZI_main_source", pd.Series(dtype=str)).dropna().astype(str).unique()))
+        if "RZI_main_source" in rootzone.columns
+        else ""
+    )
+    control_source = (
+        ";".join(sorted(rootzone.get("RZI_control_reference_source", pd.Series(dtype=str)).dropna().astype(str).unique()))
+        if "RZI_control_reference_source" in rootzone.columns
+        else ""
+    )
+    return pd.DataFrame(
+        [
+            {
+                "check_name": "RZI_main_available",
+                "status": "pass" if available else "fail",
+                "value": available,
+                "notes": source_values,
+            },
+            {
+                "check_name": "RZI_control_reference_source",
+                "status": "pass" if control_source else "fail",
+                "value": control_source,
+                "notes": "Dataset1 moisture should be preferred when available.",
+            },
+        ]
+    )
+
+
+def _dataset3_size_guard(
+    dataset3_load_meta: dict[str, Any],
+    *,
+    max_full_rows_without_limit: int,
+    mode: str,
+) -> dict[str, Any]:
+    total_rows = int(dataset3_load_meta.get("total_rows") or 0)
+    rows_processed = int(dataset3_load_meta.get("rows_processed") or 0)
+    guard_passed = bool(total_rows <= max_full_rows_without_limit or dataset3_load_meta.get("row_limit_applied"))
+    allowed_reason = (
+        "small_dataset3_within_max_full_rows_without_limit"
+        if total_rows <= max_full_rows_without_limit
+        else "dataset3_row_cap_applied"
+        if dataset3_load_meta.get("row_limit_applied")
+        else "dataset3_exceeds_max_full_rows_without_limit"
+    )
+    if mode == "production" and not guard_passed:
+        raise RuntimeError(f"Dataset3 size guard failed: total_rows={total_rows}, limit={max_full_rows_without_limit}.")
+    return {
+        "dataset3_total_rows": total_rows,
+        "dataset3_rows_processed": rows_processed,
+        "dataset3_full_in_memory_allowed_reason": allowed_reason,
+        "dataset3_size_guard_passed": guard_passed,
+    }
+
+
+def _assert_dataset3_size_guard_before_read(
+    *,
+    path: Path,
+    max_rows: int | None,
+    max_full_rows_without_limit: int,
+    mode: str,
+) -> dict[str, Any]:
+    parquet_meta = parquet_metadata_summary(path)
+    total_rows = int(parquet_meta["total_rows"])
+    if mode == "production" and max_rows is None and total_rows > max_full_rows_without_limit:
+        raise RuntimeError(
+            "Dataset3 size guard failed before full read: "
+            f"total_rows={total_rows}, limit={max_full_rows_without_limit}."
+        )
+    return {"dataset3_total_rows_preflight": total_rows}
+
+
+def _production_requirement_failures(
+    *,
+    mode: str,
+    pipeline_config: dict[str, Any],
+    row_cap_applied: bool,
+    chunk_aggregation_used: bool,
+    full_in_memory_large_dataset_used: bool,
+    dataset1_load_meta: dict[str, Any],
+    dataset2_load_meta: dict[str, Any],
+) -> list[str]:
+    if mode != "production":
+        return []
+    failures: list[str] = []
+    if bool(pipeline_config.get("require_chunk_aggregation")) and not chunk_aggregation_used:
+        failures.append("require_chunk_aggregation=true but chunk_aggregation_used=false")
+    if bool(pipeline_config.get("require_dataset1_full_processed")) and dataset1_load_meta.get("rows_processed_fraction") != 1.0:
+        failures.append("require_dataset1_full_processed=true but dataset1_rows_processed_fraction != 1.0")
+    if bool(pipeline_config.get("require_dataset2_full_processed")) and dataset2_load_meta.get("rows_processed_fraction") != 1.0:
+        failures.append("require_dataset2_full_processed=true but dataset2_rows_processed_fraction != 1.0")
+    if full_in_memory_large_dataset_used:
+        failures.append("full_in_memory_large_dataset_used=true")
+    if row_cap_applied:
+        failures.append("row_cap_applied=true")
+    return failures
+
+
 def _path_for_input(raw_root: Path, role: str, config: dict[str, Any]) -> Path:
     configured = config.get("input_files", {}).get(role, RAW_INPUT_FILENAMES[role])
     return raw_root / configured
@@ -173,6 +351,19 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
         tomics_haf.get("raw_data_root", "artifacts/tomato_integrated_radiation_architecture_v1_3/input_raw"),
     )
     ensure_dir(output_root)
+    legacy_config = legacy_v1_3_config(config, repo_root=repo_root)
+    legacy_audit = audit_legacy_v1_3_bridge(legacy_config)
+    legacy_audit_path = _write_csv(output_root, "legacy_bridge_audit", legacy_audit)
+    legacy_audit_json_path = write_json(
+        output_root / OUTPUT_FILENAMES["legacy_bridge_audit_json"],
+        {"sources": legacy_audit.to_dict(orient="records")},
+    )
+    legacy_event_totals, event_calibration_audit, event_calibration_metadata = (
+        load_legacy_event_bridge_daily_totals(legacy_config)
+    )
+    event_calibration_audit_path = _write_csv(output_root, "event_bridge_calibration_audit", event_calibration_audit)
+    legacy_yield, yield_audit, yield_metadata = load_legacy_yield_bridge(legacy_config)
+    yield_audit_path = _write_csv(output_root, "fresh_dry_yield_bridge_audit", yield_audit)
 
     pipeline_config = dict(config.get("observer_pipeline", {}))
     mode = str(pipeline_config.get("mode", "smoke"))
@@ -223,6 +414,7 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
         {"dataset1": dataset1_sample, "fruit_leaf_temperature_solar_raw_dat": raw_dat},
         audit_rows,
     )
+    radiation_col = _radiation_column_for_pipeline(radiation_decision)
 
     chunk_manifest_frames: list[pd.DataFrame] = []
     if mode == "production":
@@ -232,8 +424,18 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
             batch_size=batch_size,
             max_rows=None,
             thresholds_w_m2=RADIATION_THRESHOLDS_W_M2,
+            radiation_col=radiation_col,
+        )
+        dataset1_rootzone_reference, dataset1_rootzone_meta, dataset1_rootzone_manifest = (
+            aggregate_dataset1_rootzone_reference_streaming(
+                path=dataset1_path,
+                columns=DATASET1_COLUMN_CANDIDATES,
+                batch_size=batch_size,
+                max_rows=None,
+            )
         )
         chunk_manifest_frames.append(dataset1_manifest)
+        chunk_manifest_frames.append(dataset1_rootzone_manifest)
     else:
         dataset1, dataset1_load_meta = _read_projected_parquet(
             dataset1_path,
@@ -249,14 +451,25 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
             dataset1,
             thresholds_w_m2=RADIATION_THRESHOLDS_W_M2,
             timestamp_col="timestamp",
-            radiation_col=RADIATION_COLUMN_USED,
+            radiation_col=radiation_col,
         )
         event_intervals = build_10min_event_bridged_water_loss(dataset1, radiation_intervals)
+        dataset1_rootzone_reference = dataset1
+        dataset1_rootzone_meta = dict(dataset1_load_meta)
     photoperiod = build_photoperiod_table(radiation_intervals)
     radiation_daily = build_radiation_daily_summary(radiation_intervals)
     photoperiod_path = _write_csv(output_root, "radiation_photoperiod", photoperiod)
 
-    event_intervals = calibrate_to_daily_event_bridged_total(event_intervals)
+    event_intervals = calibrate_to_daily_event_bridged_total(
+        event_intervals,
+        legacy_event_totals,
+        total_col=CALIBRATION_TOTAL_COL,
+    )
+    event_calibration_metadata = calibration_match_metadata(
+        event_intervals,
+        legacy_event_totals,
+        event_calibration_metadata,
+    )
     event_intervals_path = _write_csv(output_root, "event_intervals", event_intervals)
     event_daily_all = summarize_radiation_daynight_et(event_intervals)
     event_daily_all_path = _write_csv(output_root, "event_daily_all_thresholds", event_daily_all)
@@ -321,9 +534,18 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
             mode=mode,
             fail_on_full_in_memory_large_dataset=fail_on_full_in_memory_large_dataset,
         )
-    rootzone = build_rootzone_indices(dataset2, daily_wide)
+    rootzone = build_rootzone_indices(dataset2, daily_wide, dataset1_reference_frame=dataset1_rootzone_reference)
     rootzone_path = _write_csv(output_root, "rootzone_indices", rootzone)
+    rootzone_reference_audit = _rootzone_reference_audit(rootzone)
+    rootzone_reference_audit_passed = bool(rootzone_reference_audit["status"].eq("pass").all())
+    rootzone_reference_audit_path = _write_csv(output_root, "rootzone_rzi_reference_audit", rootzone_reference_audit)
 
+    dataset3_preflight_metadata = _assert_dataset3_size_guard_before_read(
+        path=dataset3_path,
+        max_rows=int(dataset3_max_rows) if dataset3_max_rows is not None else None,
+        max_full_rows_without_limit=max_full_rows_without_limit,
+        mode=mode,
+    )
     dataset3, dataset3_load_meta = _read_projected_parquet(
         dataset3_path,
         DATASET3_COLUMN_CANDIDATES,
@@ -333,6 +555,12 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
         mode=mode,
         fail_on_full_in_memory_large_dataset=fail_on_full_in_memory_large_dataset,
     )
+    dataset3_guard_metadata = _dataset3_size_guard(
+        dataset3_load_meta,
+        max_full_rows_without_limit=max_full_rows_without_limit,
+        mode=mode,
+    )
+    dataset3_guard_metadata.update(dataset3_preflight_metadata)
     dataset3_bridge, dataset3_metadata = build_dataset3_growth_phenology_bridge(dataset3)
     dataset3_path_out = _write_csv(output_root, "dataset3_bridge", dataset3_bridge)
 
@@ -343,7 +571,10 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
         fruit_windows=fruit_windows,
         leaf_windows=leaf_windows,
         dataset3_bridge=dataset3_bridge,
+        radiation_source_used=str(radiation_decision.get("radiation_daynight_primary_source") or "dataset1"),
+        radiation_column_used=radiation_col,
     )
+    feature_frame = _merge_legacy_yield_bridge(feature_frame, legacy_yield)
     feature_frame_path = _write_csv(output_root, "observer_feature_frame", feature_frame)
 
     chunk_manifest = (
@@ -363,11 +594,26 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
     chunk_aggregation_used = bool(
         dataset1_load_meta.get("chunk_aggregation_used") and dataset2_load_meta.get("chunk_aggregation_used")
     )
+    full_in_memory_large_dataset_used = bool(
+        dataset1_load_meta.get("full_in_memory_large_dataset_used")
+        or dataset2_load_meta.get("full_in_memory_large_dataset_used")
+        or dataset3_load_meta.get("full_in_memory_large_dataset_used")
+    )
+    production_failures = _production_requirement_failures(
+        mode=mode,
+        pipeline_config=pipeline_config,
+        row_cap_applied=row_cap_applied,
+        chunk_aggregation_used=chunk_aggregation_used,
+        full_in_memory_large_dataset_used=full_in_memory_large_dataset_used,
+        dataset1_load_meta=dataset1_load_meta,
+        dataset2_load_meta=dataset2_load_meta,
+    )
     production_export_completed = bool(
         mode == "production"
         and not row_cap_applied
         and dataset1_load_meta.get("rows_processed_fraction") == 1.0
         and dataset2_load_meta.get("rows_processed_fraction") == 1.0
+        and not production_failures
     )
     production_ready_for_latent_allocation = bool(
         production_export_completed
@@ -375,6 +621,7 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
         and not row_cap_applied
         and feature_frame_path.exists()
         and rootzone_path.exists()
+        and rootzone_reference_audit_passed
         and event_intervals_path.exists()
     )
     production_summary_path: Path | None = None
@@ -395,7 +642,8 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
                     f"- dataset2_total_rows: {dataset2_load_meta.get('total_rows')}",
                     f"- row_cap_applied: {row_cap_applied}",
                     f"- chunk_aggregation_used: {chunk_aggregation_used}",
-                    f"- full_in_memory_large_dataset_used: {bool(dataset1_load_meta.get('full_in_memory_large_dataset_used') or dataset2_load_meta.get('full_in_memory_large_dataset_used'))}",
+                    f"- full_in_memory_large_dataset_used: {full_in_memory_large_dataset_used}",
+                    f"- production_requirement_failures: {'; '.join(production_failures)}",
                     "",
                 ]
             ),
@@ -409,6 +657,12 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
         {
             "radiation_source_decision": radiation_decision,
             "radiation_source_candidate_count": len(radiation_rows),
+            "radiation_daynight_primary_source": radiation_decision.get("radiation_daynight_primary_source"),
+            "radiation_column_used": radiation_decision.get("radiation_column_used"),
+            "dataset1_radiation_directly_usable": radiation_decision.get("dataset1_radiation_directly_usable"),
+            "dataset1_radiation_grain": radiation_decision.get("dataset1_radiation_grain"),
+            "fallback_required": radiation_decision.get("fallback_required"),
+            "fallback_source_if_required": radiation_decision.get("fallback_source_if_required") or None,
             "event_bridged_ET_outputs_produced": True,
             "fruit_leaf_qc_outputs_produced": True,
             "fruit_diameter_observer_inference_level": "sensor_level_apparent_expansion_diagnostics",
@@ -423,12 +677,10 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
             "production_export_requested": mode == "production",
             "production_export_completed": production_export_completed,
             "chunk_aggregation_used": chunk_aggregation_used,
-            "full_in_memory_large_dataset_used": bool(
-                dataset1_load_meta.get("full_in_memory_large_dataset_used")
-                or dataset2_load_meta.get("full_in_memory_large_dataset_used")
-            ),
+            "full_in_memory_large_dataset_used": full_in_memory_large_dataset_used,
             "row_cap_applied": row_cap_applied,
             "row_cap_allowed": mode == "smoke",
+            "production_requirement_failures": production_failures,
             "dataset1_total_rows": dataset1_load_meta.get("total_rows"),
             "dataset1_rows_processed": dataset1_load_meta.get("rows_processed"),
             "dataset1_rows_processed_fraction": dataset1_load_meta.get("rows_processed_fraction"),
@@ -441,8 +693,7 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
             "dataset2_batches_processed": dataset2_load_meta.get("batches_processed"),
             "dataset2_projected_columns": dataset2_load_meta.get("projected_columns"),
             "dataset2_chunk_aggregation_complete": bool(dataset2_load_meta.get("chunk_aggregation_complete")),
-            "dataset3_total_rows": dataset3_load_meta.get("total_rows"),
-            "dataset3_rows_processed": dataset3_load_meta.get("rows_processed"),
+            **dataset3_guard_metadata,
             "row_cap_warning": (
                 "row caps applied; observer feature frame is not production-ready for latent allocation"
                 if row_cap_applied
@@ -450,8 +701,22 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
             ),
             "water_flux_chunk_carryover_used": bool(dataset1_load_meta.get("water_flux_chunk_carryover_used", False)),
             "water_flux_chunk_carryover_group_keys": dataset1_load_meta.get("water_flux_chunk_carryover_group_keys", []),
-            "event_bridged_ET_calibration_status": "uncalibrated_no_daily_total",
-            "existing_daily_event_bridged_total_available": False,
+            "dataset1_rootzone_reference_rows_processed": dataset1_rootzone_meta.get("rows_processed"),
+            "dataset1_rootzone_reference_rows_processed_fraction": dataset1_rootzone_meta.get("rows_processed_fraction"),
+            "RZI_main_available": bool(rootzone.get("RZI_main_available", pd.Series(dtype=bool)).fillna(False).any()),
+            "RZI_main_source": ";".join(
+                sorted(rootzone.get("RZI_main_source", pd.Series(dtype=str)).dropna().astype(str).unique())
+            ),
+            "RZI_control_reference_source": ";".join(
+                sorted(rootzone.get("RZI_control_reference_source", pd.Series(dtype=str)).dropna().astype(str).unique())
+            ),
+            "rootzone_rzi_reference_audit_passed": rootzone_reference_audit_passed,
+            "Dataset2_tensiometer_drought_only": bool(
+                rootzone.get("Dataset2_tensiometer_drought_only", pd.Series(dtype=bool)).fillna(False).any()
+            ),
+            "tensiometer_extrapolated_to_all_loadcells": False,
+            **event_calibration_metadata,
+            **yield_metadata,
             "radiation_interval_aggregation_grain": "10min",
             "radiation_phase_rule": "day_if_any_interval_sample_gt_threshold",
             "production_ready_for_latent_allocation": production_ready_for_latent_allocation,
@@ -463,8 +728,6 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
             "outputs": {},
             "fixed_clock_daynight_primary": False,
             "clock_06_18_used_only_for_compatibility": True,
-            "fallback_required": False,
-            "fallback_source_if_required": None,
             "raw_dat_solar_rad_fallback_verified": True,
             "shipped_TOMICS_incumbent_changed": False,
             "latent_allocation_inference_run": False,
@@ -485,8 +748,16 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
         "fruit_leaf_clock_windows": clock_windows_path,
         "fruit_leaf_loadcell_bridge": sensor_bridge_path,
         "rootzone_indices": rootzone_path,
+        "rootzone_rzi_reference_audit": rootzone_reference_audit_path,
         "dataset3_bridge": dataset3_path_out,
         "observer_feature_frame": feature_frame_path,
+        "legacy_v1_3_bridge_audit": legacy_audit_path,
+        "legacy_v1_3_bridge_audit_json": legacy_audit_json_path,
+        "event_bridge_calibration_audit": event_calibration_audit_path,
+        "fresh_dry_yield_bridge_audit": yield_audit_path,
+        "metadata_contract_audit": output_root / OUTPUT_FILENAMES["metadata_contract_audit"],
+        "metadata_goal2_observer": output_root / OUTPUT_FILENAMES["metadata_goal2_observer"],
+        "metadata_goal2_5_production_observer": output_root / OUTPUT_FILENAMES["metadata_goal2_5_production_observer"],
         "metadata": output_root / OUTPUT_FILENAMES["metadata"],
     }
     if chunk_manifest_path is not None:
@@ -494,8 +765,18 @@ def run_tomics_haf_observer_pipeline(config_path: str | Path) -> dict[str, Any]:
     if production_summary_path is not None:
         output_paths["production_export_summary"] = production_summary_path
     metadata["outputs"] = {key: str(path) for key, path in output_paths.items()}
-    metadata_path = write_json(output_root / OUTPUT_FILENAMES["metadata"], metadata)
+    metadata = normalize_metadata(metadata)
+    metadata_contract_path = _write_csv(output_root, "metadata_contract_audit", metadata_contract_audit(metadata))
+    output_paths["metadata_contract_audit"] = metadata_contract_path
+    write_stage_metadata_snapshot(output_root / OUTPUT_FILENAMES["metadata_goal2_observer"], metadata)
+    if mode == "production":
+        write_stage_metadata_snapshot(output_root / OUTPUT_FILENAMES["metadata_goal2_5_production_observer"], metadata)
+    metadata["outputs"] = {key: str(path) for key, path in output_paths.items()}
+    metadata_path = write_normalized_metadata(output_root / OUTPUT_FILENAMES["metadata"], metadata)
     output_paths["metadata"] = metadata_path
+
+    if production_failures:
+        raise RuntimeError("Production observer export failed hard requirements: " + "; ".join(production_failures))
 
     return {
         "output_root": str(output_root),

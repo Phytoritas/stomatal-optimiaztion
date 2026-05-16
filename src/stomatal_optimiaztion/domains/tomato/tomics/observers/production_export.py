@@ -37,7 +37,7 @@ def _combine_mean(numerator: pd.Series, denominator: pd.Series) -> pd.Series:
     return numerator / denominator.replace(0, np.nan)
 
 
-def _finalize_radiation_base(partials: list[pd.DataFrame]) -> pd.DataFrame:
+def _finalize_radiation_base(partials: list[pd.DataFrame], *, radiation_col: str = RADIATION_COLUMN_USED) -> pd.DataFrame:
     if not partials:
         return pd.DataFrame()
     combined = pd.concat(partials, ignore_index=True)
@@ -68,7 +68,7 @@ def _finalize_radiation_base(partials: list[pd.DataFrame]) -> pd.DataFrame:
     out["date"] = out["interval_start"].dt.strftime("%Y-%m-%d")
     out["interval_seconds"] = 600.0
     out["radiation_source_used"] = RADIATION_PRIMARY_SOURCE
-    out["radiation_column_used"] = RADIATION_COLUMN_USED
+    out["radiation_column_used"] = radiation_col
     keep = [
         column
         for column in (
@@ -114,20 +114,20 @@ def expand_radiation_thresholds(
     return pd.concat(rows, ignore_index=True) if rows else radiation_base.iloc[0:0].copy()
 
 
-def _radiation_partial(chunk: pd.DataFrame) -> pd.DataFrame:
+def _radiation_partial(chunk: pd.DataFrame, *, radiation_col: str = RADIATION_COLUMN_USED) -> pd.DataFrame:
     data = chunk.copy()
     data["timestamp"] = pd.to_datetime(data["timestamp"], errors="coerce")
     data = data.dropna(subset=["timestamp"])
-    data[RADIATION_COLUMN_USED] = pd.to_numeric(data[RADIATION_COLUMN_USED], errors="coerce")
+    data[radiation_col] = pd.to_numeric(data[radiation_col], errors="coerce")
     data["interval_start"] = data["timestamp"].dt.floor("10min")
     group_cols = [column for column in ("interval_start", "loadcell_id", "treatment") if column in data.columns]
     data["_source_row"] = 1
     aggregations: dict[str, tuple[str, str]] = {
-        "radiation_sum": (RADIATION_COLUMN_USED, "sum"),
-        "radiation_count": (RADIATION_COLUMN_USED, "count"),
-        "radiation_wm2_max": (RADIATION_COLUMN_USED, "max"),
-        "radiation_wm2_min": (RADIATION_COLUMN_USED, "min"),
-        "sample_count": (RADIATION_COLUMN_USED, "count"),
+        "radiation_sum": (radiation_col, "sum"),
+        "radiation_count": (radiation_col, "count"),
+        "radiation_wm2_max": (radiation_col, "max"),
+        "radiation_wm2_min": (radiation_col, "min"),
+        "sample_count": (radiation_col, "count"),
         "source_row_count": ("_source_row", "sum"),
     }
     for env_col in ("env_vpd_kpa", "env_air_temperature_c", "env_co2_ppm"):
@@ -266,6 +266,7 @@ def aggregate_dataset1_streaming(
     max_rows: int | None,
     event_threshold_g: float = 50.0,
     thresholds_w_m2: Iterable[int | float] = RADIATION_THRESHOLDS_W_M2,
+    radiation_col: str = RADIATION_COLUMN_USED,
 ) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, Any], pd.DataFrame]:
     metadata = parquet_metadata_summary(path)
     available = projected_columns(path, columns)
@@ -281,7 +282,7 @@ def aggregate_dataset1_streaming(
     ):
         batches_processed += 1
         rows_processed += int(chunk.shape[0])
-        radiation_partials.append(_radiation_partial(chunk))
+        radiation_partials.append(_radiation_partial(chunk, radiation_col=radiation_col))
         water_partials.append(
             _water_partial(
                 chunk,
@@ -303,7 +304,7 @@ def aggregate_dataset1_streaming(
         sample = "; ".join(carry_state.sortedness_violations[:5])
         raise RuntimeError(f"Dataset1 timestamp sortedness precondition failed for water flux carryover: {sample}")
 
-    radiation_base = _finalize_radiation_base(radiation_partials)
+    radiation_base = _finalize_radiation_base(radiation_partials, radiation_col=radiation_col)
     radiation_intervals = expand_radiation_thresholds(radiation_base, thresholds_w_m2=thresholds_w_m2)
     water_intervals = _finalize_water_intervals(water_partials, radiation_intervals)
     total_rows = int(metadata["total_rows"])
@@ -324,6 +325,85 @@ def aggregate_dataset1_streaming(
         "water_flux_chunk_carryover_group_keys": ["loadcell_id", "treatment", "sample_id"],
     }
     return radiation_intervals, water_intervals, load_meta, pd.DataFrame(manifest_rows)
+
+
+def aggregate_dataset1_rootzone_reference_streaming(
+    *,
+    path: str | Path,
+    columns: tuple[str, ...],
+    batch_size: int,
+    max_rows: int | None,
+) -> tuple[pd.DataFrame, dict[str, Any], pd.DataFrame]:
+    metadata = parquet_metadata_summary(path)
+    available = projected_columns(path, columns)
+    partials: list[pd.DataFrame] = []
+    manifest_rows: list[dict[str, Any]] = []
+    rows_processed = 0
+    batches_processed = 0
+    for batch_idx, chunk in enumerate(
+        iter_projected_parquet_batches(path, columns, batch_size=batch_size, max_rows=max_rows),
+        start=1,
+    ):
+        batches_processed += 1
+        rows_processed += int(chunk.shape[0])
+        data = chunk.copy()
+        if "date" not in data.columns and "timestamp" in data.columns:
+            data["date"] = pd.to_datetime(data["timestamp"], errors="coerce").dt.strftime("%Y-%m-%d")
+        if "date" in data.columns:
+            data["date"] = data["date"].astype(str)
+        group_cols = [column for column in ("date", "loadcell_id", "treatment") if column in data.columns]
+        data["_source_row"] = 1
+        aggregations: dict[str, tuple[str, str]] = {"source_row_count": ("_source_row", "sum")}
+        for column in ("moisture_percent", "ec_ds"):
+            if column in data.columns:
+                data[column] = pd.to_numeric(data[column], errors="coerce")
+                data[f"{column}_present"] = data[column].notna().astype("int64")
+                aggregations[f"{column}_sum"] = (column, "sum")
+                aggregations[f"{column}_count"] = (f"{column}_present", "sum")
+        partials.append(data.groupby(group_cols, dropna=False).agg(**aggregations).reset_index())
+        manifest_rows.append(
+            {
+                "dataset_role": "dataset1_rootzone_reference",
+                "batch_index": batch_idx,
+                "rows_processed": int(chunk.shape[0]),
+                "cumulative_rows_processed": rows_processed,
+                "aggregation_status": "ok",
+            }
+        )
+
+    combined = pd.concat(partials, ignore_index=True) if partials else pd.DataFrame()
+    if combined.empty:
+        daily = combined
+    else:
+        group_cols = [column for column in ("date", "loadcell_id", "treatment") if column in combined.columns]
+        aggregations = {"source_row_count": ("source_row_count", "sum")}
+        for column in ("moisture_percent", "ec_ds"):
+            sum_col = f"{column}_sum"
+            count_col = f"{column}_count"
+            if sum_col in combined.columns:
+                aggregations[sum_col] = (sum_col, "sum")
+                aggregations[count_col] = (count_col, "sum")
+        daily = combined.groupby(group_cols, dropna=False).agg(**aggregations).reset_index()
+        if "moisture_percent_sum" in daily.columns:
+            daily["moisture_percent_mean"] = _combine_mean(daily["moisture_percent_sum"], daily["moisture_percent_count"])
+        if "ec_ds_sum" in daily.columns:
+            daily["ec_ds_mean"] = _combine_mean(daily["ec_ds_sum"], daily["ec_ds_count"])
+    total_rows = int(metadata["total_rows"])
+    load_meta = {
+        "path": str(path),
+        "projected_columns": available,
+        "total_rows": total_rows,
+        "rows_loaded": rows_processed,
+        "rows_processed": rows_processed,
+        "rows_processed_fraction": rows_processed / total_rows if total_rows else 1.0,
+        "row_limit_applied": max_rows is not None and rows_processed < total_rows,
+        "max_rows": max_rows,
+        "batches_processed": batches_processed,
+        "chunk_aggregation_complete": rows_processed == total_rows,
+        "chunk_aggregation_used": True,
+        "full_in_memory_large_dataset_used": False,
+    }
+    return daily, load_meta, pd.DataFrame(manifest_rows)
 
 
 def aggregate_dataset2_daily_streaming(
