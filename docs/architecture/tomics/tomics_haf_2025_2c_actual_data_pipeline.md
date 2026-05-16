@@ -1,0 +1,24 @@
+# TOMICS-HAF 2025-2C Actual Data Observer Pipeline
+
+Goal 1 schema and radiation verification passed for the required 2025-2C raw inputs. Dataset1 `env_inside_radiation_wm2` is directly usable for radiation-defined day/night. The raw `.dat` `SolarRad_Avg` signal is fallback-only and is not required as the primary day/night source for this observer run.
+
+Goal 2 builds a thin TOMICS-HAF observer/profile layer. It produces:
+
+- radiation-defined 10-minute day/night intervals for thresholds `0`, `1`, `5`, and `10 W m-2`;
+- photoperiod tables;
+- event-bridged water-flux interval and daily summaries;
+- fruit/leaf QC and radiation-window observer summaries;
+- fixed `06:00-18:00` compatibility-only summaries;
+- Dataset2 root-zone moisture/EC/tensiometer indices;
+- apparent canopy conductance when VPD is available;
+- Dataset3 growth/phenology bridge outputs;
+- the TOMICS-HAF observer feature frame.
+
+Goal 1 established that VPD is available. LAI is unavailable and is not fabricated. Fresh/dry yield aliases are unavailable under the verified alias contract unless a later source is separately verified.
+
+Dataset3 is direct-loadcell mappable, but date/datetime and truss-position alias limitations remain. Without a safe date key, Dataset3 is emitted as direct-loadcell standalone structural/phenology summaries rather than causal allocation fitting data.
+
+The observer feature frame is a prerequisite scaffold for later latent allocation inference and harvest-family evaluation. Latent allocation inference, harvest-family factorial evaluation, cross-dataset gates, and promotion gates are not run in Goal 2.
+
+Shipped TOMICS incumbent behavior remains unchanged.
+

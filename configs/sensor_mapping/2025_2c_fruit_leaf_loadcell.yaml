@@ -1,0 +1,60 @@
+season_id: "2025_2C"
+
+raw_filename_note: "Some raw filenames contain 2026_2; biological evaluation season is user-defined as 2025 second cropping cycle."
+
+timestamp_col: "TIMESTAMP"
+record_col: "RECORD"
+cadence_minutes: 10
+
+raw_columns:
+  leaf_temperature_1: "LeafTemp1_Avg"
+  leaf_temperature_2: "LeafTemp2_Avg"
+  fruit_diameter_1: "Fruit1Diameter_Avg"
+  fruit_diameter_2: "Fruit2Diameter_Avg"
+  solar_radiation: "SolarRad_Avg"
+
+loadcell_treatment_map:
+  1: "Control"
+  2: "Control"
+  3: "Control"
+  4: "Drought"
+  5: "Drought"
+  6: "Drought"
+
+leaf_sensor_map:
+  LeafTemp1_Avg:
+    loadcell_id: 4
+    treatment: "Drought"
+    mapping_status: "confirmed_by_user"
+  LeafTemp2_Avg:
+    loadcell_id: 1
+    treatment: "Control"
+    mapping_status: "confirmed_by_user"
+
+fruit_sensor_map:
+  Fruit1Diameter_Avg:
+    loadcell_id: 4
+    treatment: "Drought"
+    mapping_status: "provisional"
+  Fruit2Diameter_Avg:
+    loadcell_id: 1
+    treatment: "Control"
+    mapping_status: "provisional"
+
+metadata:
+  biological_replication: false
+  sensor_level_only: true
+  fruit_diameter_inference_level: "sensor_level_descriptive_only"
+  fruit_diameter_allowed_use: "apparent_growth_observer"
+  fruit_diameter_disallowed_use:
+    - "replicated_treatment_effect_test"
+    - "p_value_for_treatment_effect"
+    - "allocation_parameter_calibration"
+    - "hydraulic_growth_gate_calibration"
+    - "model_promotion_gate"
+  leaf_temperature_allowed_use: "paired_leaf_thermal_observer"
+  leaf_mapping_status: "confirmed_by_user"
+  fruit_mapping_status: "provisional"
+  fruit_diameter_p_values_allowed: false
+  fruit_diameter_allocation_calibration_target: false
+

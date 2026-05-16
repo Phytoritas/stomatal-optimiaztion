@@ -1,0 +1,27 @@
+exp:
+  name: tomics_haf_2025_2c_observer_pipeline
+
+paths:
+  repo_root: ../..
+
+tomics_haf:
+  season_id: "2025_2C"
+  raw_filename_note: "Some raw filenames contain 2026_2; biological evaluation season is user-defined as 2025 second cropping cycle."
+  raw_data_root: artifacts/tomato_integrated_radiation_architecture_v1_3/input_raw
+  output_root: out/tomics/analysis/haf_2025_2c
+  sensor_mapping_path: configs/sensor_mapping/2025_2c_fruit_leaf_loadcell.yaml
+  input_files:
+    fruit_leaf_temperature_solar_raw_dat: "2026_2작기_토마토_엽온_과실직경.dat"
+    dataset1: dataset1_loadcell_1_6_daily_ec_moisture_yield_env.parquet
+    dataset2: dataset2_loadcell_4_5_daily_ec_moisture_tensiometer.parquet
+    dataset3: dataset3_individual_stem_diameter_flower_height_flowering_date.parquet
+
+observer_pipeline:
+  parquet_batch_size: 250000
+  max_full_rows_without_limit: 2000000
+  # Local smoke caps keep the private run bounded. Remove or raise these caps for a full production observer export.
+  max_rows:
+    dataset1: 1000000
+    dataset2: 500000
+    dataset3:
+
