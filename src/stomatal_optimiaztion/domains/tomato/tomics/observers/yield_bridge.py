@@ -14,6 +14,13 @@ from stomatal_optimiaztion.domains.tomato.tomics.observers.contracts import (
 
 LEGACY_DEFAULT_DMC = 0.056
 
+FRESH_YIELD_COLUMNS = (
+    "loadcell_daily_yield_g",
+    "loadcell_cumulative_yield_g",
+    "individual_cumulative_yield_g",
+    "final_fresh_yield_g",
+)
+
 
 def _normalize_keys(frame: pd.DataFrame) -> pd.DataFrame:
     out = frame.copy()
@@ -75,15 +82,15 @@ def load_legacy_yield_bridge(config: Mapping[str, Any]) -> tuple[pd.DataFrame, p
             }
         ]
         usable = work[keep].copy()
-        if "loadcell_daily_yield_g" in usable.columns:
-            usable["measured_or_legacy_fresh_yield_g"] = usable["loadcell_daily_yield_g"]
-        elif "final_fresh_yield_g" in usable.columns:
-            usable["measured_or_legacy_fresh_yield_g"] = usable["final_fresh_yield_g"]
+        for fresh_column in FRESH_YIELD_COLUMNS:
+            if fresh_column in usable.columns:
+                usable["measured_or_legacy_fresh_yield_g"] = usable[fresh_column]
+                break
         dry_cols = [column for column in usable.columns if "_dry_yield_g_est_" in column or column.endswith("_dry_yield_g_est_5p6pct")]
         fresh_available = bool(
             any(
                 column in usable.columns and usable[column].notna().any()
-                for column in ("measured_or_legacy_fresh_yield_g", "loadcell_daily_yield_g", "final_fresh_yield_g")
+                for column in ("measured_or_legacy_fresh_yield_g", *FRESH_YIELD_COLUMNS)
             )
         )
         dry_available = bool(dry_cols and usable[dry_cols].notna().any().any())
