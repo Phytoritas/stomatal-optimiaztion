@@ -4,6 +4,7 @@ from pathlib import Path
 HAF_PRIMARY_PATHS = [
     Path("configs/exp/tomics_haf_2025_2c_observer_pipeline.yaml"),
     Path("configs/exp/tomics_haf_2025_2c_observer_pipeline_production.yaml"),
+    Path("configs/exp/tomics_haf_2025_2c_latent_allocation.yaml"),
     Path("src/stomatal_optimiaztion/domains/tomato/tomics/observers/contracts.py"),
     Path("src/stomatal_optimiaztion/domains/tomato/tomics/observers/feature_frame.py"),
     Path("src/stomatal_optimiaztion/domains/tomato/tomics/observers/metadata_contract.py"),
@@ -14,6 +15,7 @@ HAF_PRIMARY_PATHS = [
     Path("docs/architecture/tomics/harvest_family_architecture.md"),
     Path("docs/architecture/tomics/harvest_family_factorial_design_2025_2c.md"),
     Path("docs/architecture/tomics/legacy_v1_3_bridge_contract.md"),
+    Path("docs/architecture/tomics/latent_allocation_inference_with_thorp_prior.md"),
     Path("docs/architecture/tomics/new_phytologist_readiness_checklist.md"),
     Path("docs/architecture/tomics/pr_309_goal2_5_summary.md"),
     Path("docs/architecture/tomics/tomics_haf_2025_2c_actual_data_pipeline.md"),

@@ -29,6 +29,9 @@ def _disable_windows_platform_wmi_for_pytest() -> None:
 _disable_windows_platform_wmi_for_pytest()
 
 SRC_ROOT = Path(__file__).resolve().parents[1] / "src"
+TEST_ROOT = Path(__file__).resolve().parent
 
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
+if str(TEST_ROOT) not in sys.path:
+    sys.path.insert(0, str(TEST_ROOT))
